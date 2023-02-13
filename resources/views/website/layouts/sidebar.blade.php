@@ -1,74 +1,114 @@
- <!-- Sidebar -->
-  <nav
-       id="sidebarMenu"
-       class="collapse d-lg-block sidebar collapse bg-white"
-       >
-    <div class="position-sticky">
-      <div class="list-group list-group-flush mx-3 mt-4">
-        <!-- Collapse 1 -->
-        <a
-           class="list-group-item list-group-item-action py-2 ripple"
-           aria-current="true"
-           data-mdb-toggle="collapse"
-           href="#collapseExample1"
-           aria-expanded="true"
-           aria-controls="collapseExample1"
-           >
-          <i class="fas fa-tachometer-alt fa-fw me-3"></i
-            ><span>Expanded menu</span>
-        </a>
-        <!-- Collapsed content -->
-        <ul
-            id="collapseExample1"
-            class="collapse show list-group list-group-flush"
-            >
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
-          </li>
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
-          </li>
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
-          </li>
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
-          </li>
-        </ul>
-        <!-- Collapse 1 -->
+<aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
 
-        <!-- Collapse 2 -->
-        <a
-           class="list-group-item list-group-item-action py-2 ripple"
-           aria-current="true"
-           data-mdb-toggle="collapse"
-           href="#collapseExample2"
-           aria-expanded="true"
-           aria-controls="collapseExample2"
-           >
-          <i class="fas fa-chart-area fa-fw me-3"></i
-            ><span>Collapsed menu</span>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
         </a>
-        <!-- Collapsed content -->
-        <ul
-            id="collapseExample2"
-            class="collapse list-group list-group-flush"
-            >
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{{ route('website.account.create') }}">
+              <i class="bi bi-circle"></i><span>Form Account</span>
+            </a>
           </li>
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
+          <li>
+            <a href="forms-layouts.html">
+              <i class="bi bi-circle"></i><span>Form Folder Access</span>
+            </a>
           </li>
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
+          <li>
+            <a href="forms-editors.html">
+              <i class="bi bi-circle"></i><span>Form New Folder</span>
+            </a>
           </li>
-          <li class="list-group-item py-1">
-            <a href="" class="text-reset">Link</a>
+          <li>
+            <a href="forms-validation.html">
+              <i class="bi bi-circle"></i><span>Form S/W Installation</span>
+            </a>
+          </li>
+          <li>
+            <a href="forms-validation.html">
+              <i class="bi bi-circle"></i><span>Form H/W Installation</span>
+            </a>
+          </li>
+          <li>
+            <a href="forms-validation.html">
+              <i class="bi bi-circle"></i><span>Form VPN</span>
+            </a>
           </li>
         </ul>
-        <!-- Collapse 2 -->
-      </div>
-    </div>
-  </nav>
-  <!-- Sidebar -->
+      </li><!-- End Forms Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>Manager Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{{ route('website.account.show_manager_approval')}}">
+              <i class="bi bi-circle"></i><span>Form Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="tables-data.html">
+              <i class="bi bi-circle"></i><span>Data Tables</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Tables Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#app_it_nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>ITD Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="app_it_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{{ route('website.account.show_manager_approval')}}">
+              <i class="bi bi-circle"></i><span>Form Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="tables-data.html">
+              <i class="bi bi-circle"></i><span>Data Tables</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Tables Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#app_it_mgr_nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>ITD MGR Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="app_it_mgr_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="tables-general.html">
+              <i class="bi bi-circle"></i><span>General Tables</span>
+            </a>
+          </li>
+          <li>
+            <a href="tables-data.html">
+              <i class="bi bi-circle"></i><span>Data Tables</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Tables Nav -->
+
+
+      <li class="nav-heading">Pages</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="pages-login.html">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+      </li><!-- End Login Page Nav -->
+    </ul>
+
+  </aside>

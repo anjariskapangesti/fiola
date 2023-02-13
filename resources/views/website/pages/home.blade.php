@@ -2,19 +2,25 @@
 @section('title','Homepage')
 
 @section('content')
-
-<div class="col-md-12">
-	<!-- <div class="card">
-		<div class="card-header bg-light">
-			<b>Welcome</b>
+<div class="pagetitle">
+	<h1>Dashboard</h1>
+	<nav>
+	  <ol class="breadcrumb">
+		<li class="breadcrumb-item active"><a href="#">Dashboard</a></li>
+	  </ol>
+	</nav>
+  </div><!-- End Page Title -->
+  <section class="section">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-body">
+				  <h5 class="card-title">Tooltips Examples</h5>
+				</div>
+			  </div>
 		</div>
-		<div class="card-body">
-			<p class="lead">Selamat Datang di Aplikasi</p>
-		</div>
-	</div> -->
-	<h3>Welcome</h3>
-	<p class="lead">Selamat Datang di Aplikasi User</p>
-</div>
+	</div>
+  </section>
 
 @endsection
 
@@ -23,6 +29,4 @@
 
 @push('scripts')
 
-
-</script>
 @endpush
