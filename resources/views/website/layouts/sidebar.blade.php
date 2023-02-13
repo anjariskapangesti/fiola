@@ -46,6 +46,7 @@
         </ul>
       </li><!-- End Forms Nav -->
 
+      @can('can_approve_mgr')
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>Manager Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -63,14 +64,16 @@
           </li>
         </ul>
       </li><!-- End Tables Nav -->
+      @endcan
 
+      @can('can_approve_it')
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#app_it_nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>ITD Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="app_it_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="{{ route('website.account.show_manager_approval')}}">
+            <a href="{{ route('website.account.show_it_approval')}}">
               <i class="bi bi-circle"></i><span>Form Account</span>
             </a>
           </li>
@@ -81,15 +84,17 @@
           </li>
         </ul>
       </li><!-- End Tables Nav -->
+      @endcan
 
+      @can('can_approve_mgr_it')
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#app_it_mgr_nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-layout-text-window-reverse"></i><span>ITD MGR Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="app_it_mgr_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="tables-general.html">
-              <i class="bi bi-circle"></i><span>General Tables</span>
+            <a href="{{ route('website.account.show_mgr_it_approval')}}">
+              <i class="bi bi-circle"></i><span>Form Account</span>
             </a>
           </li>
           <li>
@@ -99,6 +104,7 @@
           </li>
         </ul>
       </li><!-- End Tables Nav -->
+      @endcan
 
 
       <li class="nav-heading">Pages</li>

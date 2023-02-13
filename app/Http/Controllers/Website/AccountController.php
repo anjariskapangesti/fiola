@@ -70,7 +70,7 @@ class AccountController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve(Request $request)
+    public function approve_manager(Request $request)
     {
         $id=$request->id;
         $type=$request->type;
@@ -85,6 +85,65 @@ class AccountController extends Controller
         $account->manager_approval_date= Carbon::now();
         $account->save();
         return view('website.pages.account.approval_manager')->with('success', 'Request is Successfully Updated!');
+    }
+
+    /// ITD APPROVE ///
+
+    public function show_it_approval()
+    {
+        return view('website.pages.account.approval_it');
+    }
+
+    public function show_it_approval_ajax(Request $request)
+    {
+        $data = Account::where('final_status','Manager Approve');
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function approve_it(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $account = Account::findOrFail($id);
+        if($type=='ok'){
+            $account->is_it_approve=1;
+            $account->final_status='IT Approve';
+        }else{
+            $account->is_it_approve=0;
+            $account->final_status='IT Reject';
+        }
+        $account->it_approval_date= Carbon::now();
+        $account->save();
+        return view('website.pages.account.approval_it')->with('success', 'Request is Successfully Updated!');
+    }
+
+    /// MGR IT ///
+    public function show_mgr_it_approval()
+    {
+        return view('website.pages.account.approval_mgr_it');
+    }
+
+    public function show_mgr_it_approval_ajax(Request $request)
+    {
+        $data = Account::where('final_status','IT Approve');
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function approve_mgr_it(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $account = Account::findOrFail($id);
+        if($type=='ok'){
+            $account->is_it_mgr_approve=1;
+            $account->final_status='MGR IT Approve';
+        }else{
+            $account->is_it_mgr_approve=0;
+            $account->final_status='MGR IT Reject';
+        }
+        $account->it_mgr_approval_date= Carbon::now();
+        $account->save();
+        return view('website.pages.account.approval_mgr_it')->with('success', 'Request is Successfully Updated!');
     }
 
 }
