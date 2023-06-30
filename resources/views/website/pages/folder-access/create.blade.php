@@ -29,7 +29,7 @@
                 <div class="col-lg-12">
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">B. Information Folder Access Permission</h5>
+                            <h5 class="card-title">A. Information Folder Access Permission</h5>
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <div class="input-group has-validation">
@@ -61,23 +61,15 @@
                                                 <select name="subfolder[]" id="" class="form-control" required>
                                                     <option value="">-- Choose Sub Folder --</option>
                                                     <option value="01_Official Report">01_Official Report</option>
+                                                    <option value="02_WO_Realease">02_WO_Realease</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-4">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="permission[]"
-                                                        id="read-only" value="Read-only" required>
-                                                    <label class="form-check-label" for="read-only">
-                                                        Ready-only
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="permission[]"
-                                                        id="modify" value="Modify">
-                                                    <label class="form-check-label" for="modify">
-                                                        Modify
-                                                    </label>
-                                                </div>
+                                                <select name="permission[]" id="" class="form-control" required>
+                                                    <option value="">-- Choose Permission --</option>
+                                                    <option value="Read-only">Read-only</option>
+                                                    <option value="Modify">Modify</option>
+                                                </select>
                                             </div>
                                             <div class="col-sm-2">
                                                 <button type="button" class="btn btn-light border btn-sm btn-tambah">Tambah
@@ -175,22 +167,16 @@
                     <select name="subfolder[]" id="" class="form-control">
                         <option value="">-- Choose Sub Folder --</option>
                         <option value="01_Official Report">01_Official Report</option>
+                        <option value="02_WO_Realease">02_WO_Realease</option>
                     </select>
                 </div>
                 <div class="col-sm-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="permission[]" id="permission1" value="Read-only">
-                        <label class="form-check-label" for="permission1">
-                          Ready-only
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="permission[]" id="permission2" value="Modify">
-                        <label class="form-check-label" for="permission2">
-                          Modify
-                        </label>
-                      </div>
-                </div>                                           
+                    <select name="permission[]" id="" class="form-control" required>
+                        <option value="">-- Choose Permission --</option>
+                        <option value="Read-only">Read-only</option>
+                        <option value="Modify">Modify</option>
+                    </select>
+                </div>                                         
                 <div class="col-sm-2">
                     <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Hapus Baris</button>
                 </div>

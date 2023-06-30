@@ -19,7 +19,7 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Fullname</th>
+                                <th>Username</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
                                 <th>Option</th>
@@ -88,7 +88,7 @@
 
                     <tr>
                         <td width="30%">NPK / Full Name</td>
-                        <td>${d.npk} / ${d.fullname} </td>
+                        <td>${d.username} </td>
                     </tr>
                     <tr>
                         <td>Dept.</td>
@@ -125,7 +125,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.account.show_manager_approval_ajax') }}",
+                    url: "{{ route('website.folder-access.show_manager_approval_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -135,8 +135,8 @@
                         searchable: false,
                     },
                     {
-                        data: 'fullname',
-                        name: 'fullname',
+                        data: 'username',
+                        name: 'username',
                     },
                     {
                         data: 'budget_type',
@@ -187,7 +187,7 @@
             });
 
             $('#btn-approve').on('click', function(){
-                window.location.href= "{{ route('website.account.approve_manager') }}";
+                window.location.href= "{{ route('website.folder-access.approve_manager') }}";
             });
 
         });

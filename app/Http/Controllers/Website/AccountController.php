@@ -58,7 +58,7 @@ class AccountController extends Controller
                 'final_status' => 'created'
             ]);
             $depts = Department::all();
-            return redirect()->back()->with('success', 'Sukses Menyimpan Data');
+            return redirect()->back()->with('success', 'Success Create Form');
         }
         catch(\Exception $e)
         {
@@ -98,7 +98,9 @@ class AccountController extends Controller
         $id=$request->id;
         
         $type=$request->type;
+        
         $account = Account::findOrFail($id);
+        
         if($type=='ok'){
             $account->is_manager_approve=1;
             $account->final_status='Manager Approve';

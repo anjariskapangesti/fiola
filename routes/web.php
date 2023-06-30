@@ -31,7 +31,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'AccountController@show_manager_approval')->name('account.show_manager_approval');
                 Route::get('/show_manager_approval_ajax', 'AccountController@show_manager_approval_ajax')->name('account.show_manager_approval_ajax');
-                Route::get('/approve_manager', 'AccountController@approve_manager')->name('account.approve_manager');
+                Route::post('/approve_manager', 'AccountController@approve_manager')->name('account.approve_manager');
                 Route::get('/show_data_manager_approval', 'AccountController@show_data_manager_approval')->name('account.show_data_manager_approval');
                 Route::get('/show_data_manager_approval_ajax', 'AccountController@show_data_manager_approval_ajax')->name('account.show_data_manager_approval_ajax');
                 
@@ -54,6 +54,15 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::group(['prefix' => 'folder-access'], function(){
             Route::get('/create', 'FolderAccessController@create')->name('folder-access.create');
             Route::post('/store', 'FolderAccessController@store')->name('folder-access.store');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'FolderAccessController@show_manager_approval')->name('folder-access.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'FolderAccessController@show_manager_approval_ajax')->name('folder-access.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'FolderAccessController@approve_manager')->name('folder-access.approve_manager');
+                Route::get('/show_data_manager_approval', 'FolderAccessController@show_data_manager_approval')->name('folder-access.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'FolderAccessController@show_data_manager_approval_ajax')->name('folder-access.show_data_manager_approval_ajax');
+                
+            });
         });
     });
 });

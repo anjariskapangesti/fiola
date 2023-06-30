@@ -17,7 +17,6 @@ use Auth;
 
 class FolderAccessController extends Controller
 {
-    /// Form Folder Access ///
     public function create()
     {
         $depts = Department::all();
@@ -26,7 +25,6 @@ class FolderAccessController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
         try {
             $request->validate([
                 'username' => 'required',
@@ -38,25 +36,9 @@ class FolderAccessController extends Controller
 
 
             DB::transaction(function () use ($request) {
-                // $spv_app = null;
-                // $mgr_app = null;
-                // $spv_app_by = null;
-                // $mgr_app_by = null;
-                $final_status = 'Created';
+                $final_status = 'created';
                 $user = Auth::user();
 
-                // if ($user->hasPermissionTo('spv_app')) {
-                //     $spv_app = Carbon::now();
-                //     $final_status = 'SPV Approved';
-                //     $spv_app_by = $user->id;
-                // }
-                // if ($user->hasPermissionTo('mgr_app')) {
-                //     $spv_app = Carbon::now();
-                //     $mgr_app = Carbon::now();
-                //     $spv_app_by = $user->id;
-                //     $mgr_app_by = $user->id;
-                //     $final_status = 'MGR Approved';
-                // }
                 $folderaccess = FolderAccess::create([
                     'username' => $request->username,
                     'purpose' => $request->purpose,
@@ -64,59 +46,33 @@ class FolderAccessController extends Controller
                     'created_dept' => $user->dept_id,
                     'final_status' => $final_status,
                 ]);
-                
-                // $date = Carbon::now();
-                // $reg_no = $izin->id . '/' . 'GA/FIMBKA/' . $date->format('m') . '/' . $date->format('Y');
-                // $izin->reg_no = $reg_no;
                 $folderaccess->save();
 
-                for ($i = 0; $i < count($request->folder); $i++) {
+                for ($i = 0; $i < count($request->folder ); $i++) {
                     FolderAccessPath::create([
-                        'folder_access_id' => 1,
+                        'folder_access_id' => $folderaccess->id,
                         'folder' => $request->folder[$i],
                         'subfolder' => $request->subfolder[$i],
                         'permission' => $request->permission[$i],
                     ]);
                 }
             });
-            return redirect()->back()->with('success', 'Sukses Menyimpan Data');
+            return redirect()->back()->with('success', 'Success Create Form');
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 
-    // public function store(Request $request)
-    // {
-    //     // Validasi data input
-    //     $request->validate([
-    //         'username' => 'required|string',
-    //         'folder' => 'required|array',
-    //         'subfolder' => 'required|array',
-    //         'permission' => 'required',
-    //         'purpose' =>'required',
-    //         // 'paths.*' => 'string',
-    //     ]);
-
-    //     // Simpan entitas induk "FolderAccess"
-    //     $folderAccess = FolderAccess::create([
-    //         'username' => $request->username,
-    //         'purpose' => $request->purpose,
-    //         'final_status' => 'created',
-    //     ]);
-
-    //     // Simpan entitas anak "FolderAccessPath"
-    //     foreach ($request->input('folder') as $path) {
-    //         FolderAccessPath::create([
-    //             'folder_access_id' => $folderAccess->id,
-    //             'folder' => $path,
-    //             'subfolder' => $request->subfolder
-    //         ]);
-    //     }
-        
-
-    //     // Redirect atau berikan respon sukses
-    //     return redirect()->back()->with('success', 'Sukses Menyimpan Data');
-    // }
-
-    // END //
+    public function show_manager_approval()
+    {
+        return view('website.pages.folder-access.approval_manager');
+    }
+    
+    public function show_manager_approval_ajax(Request $request)
+    {
+        // return Auth::user()->dept_id;
+        $data = FolderAccess::where('created_dept', Auth::user()->dept_id)->where('final_status','created');
+        // return $data;
+        return DataTables::eloquent($data)->make(true);
+    }
 }

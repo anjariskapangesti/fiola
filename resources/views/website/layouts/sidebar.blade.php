@@ -58,6 +58,11 @@
             </a>
           </li>
           <li>
+            <a href="{{ route('website.folder-access.show_manager_approval')}}">
+              <i class="bi bi-circle"></i><span>Form Folder Access</span>
+            </a>
+          </li>
+          <li>
             <a href="{{ route('website.account.show_data_manager_approval')}}">
               <i class="bi bi-circle"></i><span>Data Tables</span>
             </a>
