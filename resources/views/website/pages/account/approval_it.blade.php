@@ -32,42 +32,43 @@
         <!-- Approve Confirmation Modal -->
         <div class="modal fade" id="confirmModal" tabindex="-1">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Approve Confirmation</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Approve Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to approve this request?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success"><a
+                                href="{{ route('website.account.approve_manager') }}">Yes, Approve!</a></button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                  Are you sure want to approve this request?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-success">Yes, Approve!</button>
-                </div>
-              </div>
             </div>
-          </div>
-           <!-- End Confirmation Modal -->
-           <!-- Confirmation Modal -->
+        </div>
+        <!-- End Confirmation Modal -->
+        <!-- Confirmation Modal -->
         <div class="modal fade" id="rejectModal" tabindex="-1">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Reject Confirmation</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reject Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Please share the reason why you're rejecting<br /><br />
+                        <textarea class="form-control" id="reject_reason"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="btn-reject" class="btn btn-danger" disabled>Reject!</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                  Please share the reason why you're rejecting<br/><br/>
-                  <textarea class="form-control" id="reject_reason"></textarea>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" id="btn-reject" class="btn btn-danger" disabled>Reject!</button>
-                </div>
-              </div>
             </div>
-          </div>
-           <!-- End Confirmation Modal -->
+        </div>
+        <!-- End Confirmation Modal -->
     </section>
 @endsection
 
@@ -76,7 +77,6 @@
 @endpush
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script>
         function format(d) {
@@ -140,10 +140,10 @@
                     {
                         data: 'budget_type',
                         name: 'budget_type',
-                        render: function(data,type,row,meta){
-                            if(data == 'budget'){
+                        render: function(data, type, row, meta) {
+                            if (data == 'budget') {
                                 return `<span class="badge bg-success">Budget</span>`;
-                            }else{
+                            } else {
                                 return `<span class="badge bg-danger">UN-budget</span>`;
                             }
                         }
@@ -177,14 +177,14 @@
                 }
             });
 
-            $('#reject_reason').on('keyup', function(){
-                if($(this).val()!="")
+            $('#reject_reason').on('keyup', function() {
+                if ($(this).val() != "")
                     $('#btn-reject').removeAttr('disabled');
                 else
-                    $('#btn-reject').attr('disabled','disabled');
+                    $('#btn-reject').attr('disabled', 'disabled');
             });
 
-            $('#btn-approve').on('clcik', function(){
+            $('#btn-approve').on('clcik', function() {
 
             });
 

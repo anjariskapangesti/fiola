@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Models\User;
+use App\Models\Department;
 use Spatie\Permission\Models\Permission;
 
 class RegisterController extends Controller
@@ -21,6 +22,7 @@ class RegisterController extends Controller
 
     public function __construct()
     {
+        
         $this->middleware('guest');
     }
 
@@ -37,6 +39,7 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
+        
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -52,6 +55,7 @@ class RegisterController extends Controller
 
     public function showRegisterForm()
     {
+        
        return view('website.auth.register');
    }
 }

@@ -1,0 +1,217 @@
+@extends('website.layouts.main')
+@section('title', 'Folder Access')
+
+@section('content')
+    <div class="pagetitle">
+        <h4>Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h4>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item "><a href="#">Forms</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Folder Access</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Ooops..</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            <form method="post" action="{{ route('website.folder-access.store') }}" class="needs-validation" novalidate>
+                @csrf
+                <div class="col-lg-12">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">B. Information Folder Access Permission</h5>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                        <input type="text" name="username" class="form-control" placeholder="Username"
+                                            required>
+                                        <div class="invalid-feedback">Please enter your email</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mt-1 row border bg-light">
+                                        <label for="message" class="col-sm-6 col-form-label">Folder Path</label>
+                                        <label for="message" class="col-sm-4 col-form-label">Permission</label>
+                                    </div>
+                                    <div id="dynamic-row" class="">
+                                        <div class="row border p-3">
+                                            <div class="col-sm-3">
+                                                <select name="folder[]" id="" class="form-control" required>
+                                                    <option value="">-- Choose Folder --</option>
+                                                    <option value="01_AIIA_BUSINESS">01_AIIA_BUSINESS</option>
+                                                    <option value="02_EXECUTIVES">02_EXECUTIVES</option>
+                                                    <option value="03_ADMINISTRATION">03_ADMINISTRATION</option>
+                                                    <option value="04_PRODUCTION">04_PRODUCTION</option>
+                                                    <option value="05_ENGINEERING">05_ENGINEERING</option>
+                                                    <option value="99_PUBLIC_FOLDER">99_PUBLIC_FOLDER</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <select name="subfolder[]" id="" class="form-control" required>
+                                                    <option value="">-- Choose Sub Folder --</option>
+                                                    <option value="01_Official Report">01_Official Report</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="permission[]"
+                                                        id="read-only" value="Read-only" required>
+                                                    <label class="form-check-label" for="read-only">
+                                                        Ready-only
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="permission[]"
+                                                        id="modify" value="Modify">
+                                                    <label class="form-check-label" for="modify">
+                                                        Modify
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button type="button" class="btn btn-light border btn-sm btn-tambah">Tambah
+                                                    Baris</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-floating mb-3 mt-3">
+                                                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                                    name="purpose" maxlength="100" required></textarea>
+                                                <label for="floatingTextarea">Purpose</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">D. Approval Flow</h5>
+                                    <div class="md-stepper-horizontal orange">
+                                        <div class="md-step active">
+                                            <div class="md-step-circle"><span>1</span></div>
+                                            <div class="md-step-title">Submit Request</div>
+                                            <div class="md-step-optional">This step</div>
+                                            <div class="md-step-bar-left"></div>
+                                            <div class="md-step-bar-right"></div>
+                                        </div>
+                                        <div class="md-step active">
+                                            <div class="md-step-circle"><span>2</span></div>
+                                            <div class="md-step-title">Approval Manager</div>
+                                            <div class="md-step-optional">Request Approveal to your Manager</div>
+                                            <div class="md-step-bar-left"></div>
+                                            <div class="md-step-bar-right"></div>
+                                        </div>
+                                        <div class="md-step active">
+                                            <div class="md-step-circle"><span>3</span></div>
+                                            <div class="md-step-title">Approval ITD</div>
+                                            <div class="md-step-bar-left"></div>
+                                            <div class="md-step-bar-right"></div>
+                                        </div>
+                                        <div class="md-step active">
+                                            <div class="md-step-circle"><span>4</span></div>
+                                            <div class="md-step-title">Approval MGR ITD</div>
+                                            <div class="md-step-bar-left"></div>
+                                            <div class="md-step-bar-right"></div>
+                                        </div>
+                                        <div class="md-step active">
+                                            <div class="md-step-circle"><span>5</span></div>
+                                            <div class="md-step-title">Execution</div>
+                                            <div class="md-step-bar-left"></div>
+                                            <div class="md-step-bar-right"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <button class="btn btn-success" type="submit">Save & Submit Request</button>
+                    </div>
+            </form>
+        </div>
+    </section>
+
+@endsection
+
+@push('styles')
+    <link href="{{ asset('vendor/bs-step/bs-step.css') }}" rel="stylesheet">
+@endpush
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+
+            @if (session()->has('success'))
+                toastr['success']("{{ Session('success') }}")
+            @endif
+
+
+            $('#dynamic-row').on('click', '.btn-tambah', function() {
+                const html = `
+            <div class="row border p-2">
+                <div class="col-sm-3">
+                    <select name="folder[]" id="" class="form-control">
+                        <option value="">-- Choose Folder --</option>
+                        <option value="01_AIIA_BUSINESS">01_AIIA_BUSINESS</option>
+                        <option value="02_EXECUTIVES">02_EXECUTIVES</option>
+                        <option value="03_ADMINISTRATION">03_ADMINISTRATION</option>
+                        <option value="04_PRODUCTION">04_PRODUCTION</option>
+                        <option value="05_ENGINEERING">05_ENGINEERING</option>
+                        <option value="99_PUBLIC_FOLDER">99_PUBLIC_FOLDER</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <select name="subfolder[]" id="" class="form-control">
+                        <option value="">-- Choose Sub Folder --</option>
+                        <option value="01_Official Report">01_Official Report</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="permission[]" id="permission1" value="Read-only">
+                        <label class="form-check-label" for="permission1">
+                          Ready-only
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="permission[]" id="permission2" value="Modify">
+                        <label class="form-check-label" for="permission2">
+                          Modify
+                        </label>
+                      </div>
+                </div>                                           
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Hapus Baris</button>
+                </div>
+            </div>  
+        `
+                $('#dynamic-row').prepend(html);
+
+            })
+
+            $('#dynamic-row').on('click', '.btn-hapus', function() {
+                if (confirm('Hapus baris ini?'))
+                    $(this).parent().parent().remove()
+            })
+
+            $('#dynamic-row').on('click', '.date-input', function() {
+                var today = new Date();
+                var maxDate = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate());
+                var formattedMaxDate = maxDate.toISOString().split('T')[0];
+                $(this).attr('max', formattedMaxDate);
+            })
+
+        })
+    </script>
+@endpush

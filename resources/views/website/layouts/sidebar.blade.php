@@ -2,7 +2,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="index.html">
+        <a class="nav-link collapsed" href="/">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -19,7 +19,7 @@
             </a>
           </li>
           <li>
-            <a href="forms-layouts.html">
+            <a href="{{ route('website.folder-access.create') }}">
               <i class="bi bi-circle"></i><span>Form Folder Access</span>
             </a>
           </li>
@@ -58,7 +58,7 @@
             </a>
           </li>
           <li>
-            <a href="tables-data.html">
+            <a href="{{ route('website.account.show_data_manager_approval')}}">
               <i class="bi bi-circle"></i><span>Data Tables</span>
             </a>
           </li>
@@ -78,7 +78,7 @@
             </a>
           </li>
           <li>
-            <a href="tables-data.html">
+            <a href="{{ route('website.account.show_data_it_approval')}}">
               <i class="bi bi-circle"></i><span>Data Tables</span>
             </a>
           </li>
@@ -86,6 +86,7 @@
       </li><!-- End Tables Nav -->
       @endcan
 
+      {{-- @if(Auth::user()->hasPermissionTo('can_approve_mgr_it')) --}}
       @can('can_approve_mgr_it')
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#app_it_mgr_nav" data-bs-toggle="collapse" href="#">
@@ -105,6 +106,8 @@
         </ul>
       </li><!-- End Tables Nav -->
       @endcan
+      {{-- @endif --}}
+
 
 
       <li class="nav-heading">Pages</li>

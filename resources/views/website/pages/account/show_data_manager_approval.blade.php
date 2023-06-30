@@ -1,13 +1,13 @@
 @extends('website.layouts.main')
-@section('title', 'Manager Approval')
+@section('title', 'Data Manager Approval')
 
 @section('content')
     <div class="pagetitle">
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
+                <li class="breadcrumb-item active"><a href="#">Data Tables</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -22,53 +22,13 @@
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
-                                <th>Option</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                     </table>
                 </div>
             </div>
-        </div>
-        <!-- Approve Confirmation Modal -->
-        <div class="modal fade" id="confirmModal" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Approve Confirmation</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  Are you sure want to approve this request?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
-                </div>
-              </div>
-            </div>
-          </div>
-           <!-- End Confirmation Modal -->
-           <!-- Confirmation Modal -->
-        <div class="modal fade" id="rejectModal" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Reject Confirmation</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  Please share the reason why you're rejecting<br/><br/>
-                  <textarea class="form-control" id="reject_reason"></textarea>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" id="btn-reject" class="btn btn-danger" disabled>Reject!</button>
-                </div>
-              </div>
-            </div>
-          </div>
-           <!-- End Confirmation Modal -->
-    </section>
+        </div>        
 @endsection
 
 @push('styles')
@@ -123,7 +83,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.account.show_manager_approval_ajax') }}",
+                    url: "{{ route('website.account.show_data_manager_approval_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -152,13 +112,8 @@
                         name: 'form_type'
                     },
                     {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return `<button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal">Approve</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>`;
-                        }
+                        data: 'manager_approval_date',
+                        name: 'manager_approval_date'
                     },
                 ],
             });
@@ -183,8 +138,8 @@
                     $('#btn-reject').attr('disabled','disabled');
             });
 
-            $('#btn-approve').on('click', function(){
-                window.location.href= "{{ route('website.account.approve_manager') }}";
+            $('#btn-approve').on('clcik', function(){
+
             });
 
         });

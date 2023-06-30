@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use App\Models\Account;
 use App\Models\Department;
-use DataTables;
+use App\Models\User;
+
 use Carbon\Carbon;
+use DataTables;
+use Auth;
 
 class AccountController extends Controller
 {
-    public  function create()
+    public function create()
     {
         $depts = Department::all();
         return view('website.pages.account.create', compact(['depts']));
@@ -49,9 +53,12 @@ class AccountController extends Controller
                 'purpose' => $request->purpose ,
                 'ad_name' => $request->ad_name ,
                 'is_email' => $request->is_email ,
+                'created_by' => Auth::user()->id,
+                'created_dept' => Auth::user()->dept_id,
+                'final_status' => 'created'
             ]);
-
-            return view('website.pages.account.create')->with('success', 'Form Successfully Submitted!');
+            $depts = Department::all();
+            return redirect()->back()->with('success', 'Sukses Menyimpan Data');
         }
         catch(\Exception $e)
         {
@@ -66,13 +73,30 @@ class AccountController extends Controller
 
     public function show_manager_approval_ajax(Request $request)
     {
-        $data = Account::where('final_status','created');
+        // return Auth::user()->dept_id;
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('final_status','created');
+        // return $data;
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function show_data_manager_approval()
+    {
+        $depts = Department::all();
+        return view('website.pages.account.show_data_manager_approval', compact(['depts']));
+    }
+
+    public function show_data_manager_approval_ajax(Request $request)
+    {
+        // return Auth::user()->dept_id;
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_manager_approve','1');
+        // return $data;
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_manager(Request $request)
     {
         $id=$request->id;
+        
         $type=$request->type;
         $account = Account::findOrFail($id);
         if($type=='ok'){
@@ -97,6 +121,20 @@ class AccountController extends Controller
     public function show_it_approval_ajax(Request $request)
     {
         $data = Account::where('final_status','Manager Approve');
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function show_data_it_approval()
+    {
+        $depts = Department::all();
+        return view('website.pages.account.show_data_it_approval', compact(['depts']));
+    }
+
+    public function show_data_it_approval_ajax(Request $request)
+    {
+        // return Auth::user()->dept_id;
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_approve','1');
+        // return $data;
         return DataTables::eloquent($data)->make(true);
     }
 
