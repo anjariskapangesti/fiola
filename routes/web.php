@@ -23,7 +23,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/home', 'HomeController@index')->name('auth.home');
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
-
+        // FORM ACCOUNT //
         Route::group(['prefix' => 'account'], function(){
             Route::get('/create', 'AccountController@create')->name('account.create');
             Route::post('/store', 'AccountController@store')->name('account.store');
@@ -43,14 +43,24 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/show_data_it_approval', 'AccountController@show_data_it_approval')->name('account.show_data_it_approval');
                 Route::get('/show_data_it_approval_ajax', 'AccountController@show_data_it_approval_ajax')->name('account.show_data_it_approval_ajax');
             });
-            Route::group(['middleware' => ['can:can_approve_mgr_it']], function () {
-                Route::get('/show_mgr_it_approval', 'AccountController@show_mgr_it_approval')->name('account.show_mgr_it_approval');
-                Route::get('/show_mgr_it_approval_ajax', 'AccountController@show_mgr_it_approval_ajax')->name('account.show_mgr_it_approval_ajax');
-                Route::post('/approve_mgr_it', 'AccountController@approve_it')->name('account.approve_mgr_it');
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'AccountController@show_it_mgr_approval')->name('account.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'AccountController@show_it_mgr_approval_ajax')->name('account.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'AccountController@approve_it_mgr')->name('account.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'AccountController@show_data_it_mgr_approval')->name('account.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'AccountController@show_data_it_mgr_approval_ajax')->name('account.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution_approval', 'AccountController@show_execution_approval')->name('account.show_execution_approval');
+                Route::get('/show_execution_approval_ajax', 'AccountController@show_execution_approval_ajax')->name('account.show_execution_approval_ajax');
+                Route::post('/approve_execution', 'AccountController@approve_execution')->name('account.approve_execution');
+                Route::get('/show_data_execution_approval', 'AccountController@show_data_execution_approval')->name('account.show_data_execution_approval');
+                Route::get('/show_data_execution_approval_ajax', 'AccountController@show_data_execution_approval_ajax')->name('account.show_data_execution_approval_ajax');
             });
             
         });
-
+        // FORM FOLDER ACCESS //
         Route::group(['prefix' => 'folder-access'], function(){
             Route::get('/create', 'FolderAccessController@create')->name('folder-access.create');
             Route::post('/store', 'FolderAccessController@store')->name('folder-access.store');

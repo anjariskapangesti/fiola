@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'ITD Approval Account'])
+@extends('website.layouts.main', ['title' => 'ITD Manager Approval Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -128,7 +128,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.account.show_it_approval_ajax') }}",
+                    url: "{{ route('website.account.show_it_mgr_approval_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -194,7 +194,7 @@
                 console.log(id_form_account);
                 // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.account.approve_it') }}",
+                    url: "{{ route('website.account.approve_it_mgr') }}",
                     type: "POST",
                     data: {
                         id: id_form_account,
@@ -218,7 +218,7 @@
                 console.log(id_form_account_reject);
                 // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.account.approve_it') }}",
+                    url: "{{ route('website.account.approve_it_mgr') }}",
                     type: "POST",
                     data: {
                         id: id_form_account_reject,

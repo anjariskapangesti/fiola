@@ -111,8 +111,7 @@ class AccountController extends Controller
         }
         $account->manager_approval_date= Carbon::now();
         $account->save();
-        return "Request is Saved!";
-        // return view('website.pages.account.approval_manager')->with('success', 'Request is Successfully Updated!');
+        return "Request is Saved!";        
     }
 
     /// ITD APPROVE ///
@@ -153,25 +152,26 @@ class AccountController extends Controller
         }else{
             $account->is_it_approve=0;
             $account->final_status='IT Reject';
+            $account->it_note=$request->it_note;
         }
         $account->it_approval_date= Carbon::now();
         $account->save();
-        return view('website.pages.account.approval_it')->with('success', 'Request is Successfully Updated!');
+        return "Request is Saved!";
     }
 
     /// MGR IT ///
-    public function show_mgr_it_approval()
+    public function show_it_mgr_approval()
     {
-        return view('website.pages.account.approval_mgr_it');
+        return view('website.pages.account.approval_it_mgr');
     }
 
-    public function show_mgr_it_approval_ajax(Request $request)
+    public function show_it_mgr_approval_ajax(Request $request)
     {
         $data = Account::where('final_status','IT Approve');
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_mgr_it(Request $request)
+    public function approve_it_mgr(Request $request)
     {
         $id=$request->id;
         $type=$request->type;
@@ -182,10 +182,68 @@ class AccountController extends Controller
         }else{
             $account->is_it_mgr_approve=0;
             $account->final_status='MGR IT Reject';
+            $account->it_mgr_note=$request->it_mgr_note;
         }
         $account->it_mgr_approval_date= Carbon::now();
         $account->save();
-        return view('website.pages.account.approval_mgr_it')->with('success', 'Request is Successfully Updated!');
+        return "Request is Saved!";
+    }
+
+    public function show_data_it_mgr_approval()
+    {
+        $depts = Department::all();
+        return view('website.pages.account.show_data_it_mgr_approval', compact(['depts']));
+    }
+
+    public function show_data_it_mgr_approval_ajax(Request $request)
+    {
+        // return Auth::user()->dept_id;
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_mgr_approve','1');
+        // return $data;
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    /// EXECUTION ///
+    public function show_execution_approval()
+    {
+        return view('website.pages.account.approval_execution');
+    }
+
+    public function show_execution_approval_ajax(Request $request)
+    {
+        $data = Account::where('final_status','MGR IT Approve');
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function approve_execution(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $account = Account::findOrFail($id);
+        if($type=='ok'){
+            $account->is_finish=1;
+            $account->final_status='Finished';
+        }else{
+            $account->is_finish=0;
+            $account->final_status='Rejected';
+        }
+        $account->finish_date= Carbon::now();
+        $account->save();
+        return "Request is Saved!";
+    }
+
+    public function show_data_execution_approval()
+    {
+        $depts = Department::all();
+        return view('website.pages.account.show_data_execution_approval', compact(['depts']));
+    }
+
+    public function show_data_execution_approval_ajax(Request $request)
+    {
+        // return Auth::user()->dept_id;
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_mgr_approve','1');
+        // return $data;
+        return DataTables::eloquent($data)->make(true);
     }
 
 }

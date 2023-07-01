@@ -1,5 +1,4 @@
-@extends('website.layouts.main')
-@section('title', 'Data Manager Approval')
+@extends('website.layouts.main', ['title' => 'Manager Data Approval Account'])
 
 @section('content')
     <div class="pagetitle">

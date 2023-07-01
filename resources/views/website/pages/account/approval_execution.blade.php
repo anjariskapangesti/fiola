@@ -1,12 +1,11 @@
-@extends('website.layouts.main')
-@section('title', 'MGR ITD Approval')
+@extends('website.layouts.main', ['title' => 'Execution Approval Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">Execution Approval</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -30,6 +29,7 @@
             </div>
         </div>
         <!-- Approve Confirmation Modal -->
+
         <div class="modal fade" id="confirmModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -39,10 +39,12 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
+                        <input type="hidden" id="id_form_account">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-success">Yes, Approve!</button>
+                        <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
                     </div>
                 </div>
             </div>
@@ -59,15 +61,18 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting<br /><br />
                         <textarea class="form-control" id="reject_reason"></textarea>
+                        <input type="hidden" id="id_form_account_reject">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" id="btn-reject" class="btn btn-danger" disabled>Reject!</button>
+                        <button type="button" id="btn-reject" class="btn btn-danger" disabled
+                            id="btn-reject">Reject!</button>
                     </div>
                 </div>
             </div>
         </div>
         <!-- End Confirmation Modal -->
+
     </section>
 @endsection
 
@@ -123,7 +128,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.account.show_mgr_it_approval_ajax') }}",
+                    url: "{{ route('website.account.show_execution_approval_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -156,8 +161,9 @@
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            return `<button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal">Approve</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>`;
+                            return `
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                         }
                     },
                 ],
@@ -183,9 +189,72 @@
                     $('#btn-reject').attr('disabled', 'disabled');
             });
 
-            $('#btn-approve').on('clcik', function() {
+            $('#btn-approve').on('click', function() {
+                let id_form_account = $('#id_form_account').val();
+                console.log(id_form_account);
+                // window.location.href = "{{ route('website.account.approve_it') }}";
+                $.ajax({
+                    url: "{{ route('website.account.approve_execution') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
 
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
             });
+
+            $('#btn-reject').on('click', function() {
+                let id_form_account_reject = $('#id_form_account_reject').val();
+                console.log(id_form_account_reject);
+                // window.location.href = "{{ route('website.account.approve_it') }}";
+                $.ajax({
+                    url: "{{ route('website.account.approve_execution') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account_reject,
+                        type: 'reject',
+                        it_note: $('#reject_reason').val(),
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#rejectModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            // $('#confirmModal').on('shown.bs.modal', function() {
+            //     $('#nama').text('Nama Requestor')
+            // });
+
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_form_account = $(this).data('id');
+                var fullname_form_account = $(this).data('fullname');
+                $('#id_form_account').val(id_form_account)
+                $('#fullname_form_account').val(fullname_form_account)
+                // console.log(id_form_account);
+            })
+
+            $('#app_table').on('click', '.btn-table-reject', function() {
+                var id_form_account_reject = $(this).data('id');
+                $('#id_form_account_reject').val(id_form_account_reject)
+                // console.log(id_form_account_reject);
+            })
 
         });
     </script>

@@ -1,5 +1,4 @@
-@extends('website.layouts.main')
-@section('title','Dashboard')
+@extends('website.layouts.main', ['title' => 'Dashboard'])
 
 @section('content')
 <div class="pagetitle">

@@ -1,5 +1,4 @@
-@extends('website.layouts.main')
-@section('title', 'Folder Access')
+@extends('website.layouts.main', ['title' => 'Form Folder Access'])
 
 @section('content')
     <div class="pagetitle">

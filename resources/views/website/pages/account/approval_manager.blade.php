@@ -1,5 +1,4 @@
-@extends('website.layouts.main')
-@section('title', 'Manager Approval')
+@extends('website.layouts.main', ['title' => 'Manager Approval Account'])
 
 @section('content')
     <div class="pagetitle">
@@ -40,7 +39,7 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <p id="nama"></p>
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
                         <input type="hidden" id="id_form_account">
                     </div>
                     <div class="modal-footer">
@@ -245,7 +244,9 @@
 
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_form_account = $(this).data('id');
+                var fullname_form_account = $(this).data('fullname');
                 $('#id_form_account').val(id_form_account)
+                $('#fullname_form_account').val(fullname_form_account)
                 // console.log(id_form_account);
             })
 

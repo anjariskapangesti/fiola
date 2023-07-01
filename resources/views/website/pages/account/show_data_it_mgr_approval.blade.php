@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'ITD Data Approval Account'])
+@extends('website.layouts.main', ['title' => 'ITD Manager Data Approval Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -82,7 +82,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.account.show_data_it_approval_ajax') }}",
+                        url: "{{ route('website.account.show_data_it_mgr_approval_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -111,8 +111,8 @@
                             name: 'form_type'
                         },
                         {
-                            data: 'it_approval_date',
-                            name: 'it_approval_date'
+                            data: 'it_mgr_approval_date',
+                            name: 'it_mgr_approval_date'
                         },
                     ],
                 });

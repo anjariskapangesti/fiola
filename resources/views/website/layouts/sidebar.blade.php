@@ -91,20 +91,20 @@
       </li><!-- End Tables Nav -->
       @endcan
 
-      {{-- @if(Auth::user()->hasPermissionTo('can_approve_mgr_it')) --}}
-      @can('can_approve_mgr_it')
+      {{-- @if(Auth::user()->hasPermissionTo('can_approve_it_mgr')) --}}
+      @can('can_approve_it_mgr')
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#app_it_mgr_nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>ITD MGR Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-layout-text-window-reverse"></i><span>ITD Manager Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="app_it_mgr_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="{{ route('website.account.show_mgr_it_approval')}}">
+            <a href="{{ route('website.account.show_it_mgr_approval')}}">
               <i class="bi bi-circle"></i><span>Form Account</span>
             </a>
           </li>
           <li>
-            <a href="tables-data.html">
+            <a href="{{ route('website.account.show_data_it_mgr_approval')}}">
               <i class="bi bi-circle"></i><span>Data Tables</span>
             </a>
           </li>
@@ -113,12 +113,32 @@
       @endcan
       {{-- @endif --}}
 
+      @can('can_execution')
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#app_execution_nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>Execution Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="app_execution_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{{ route('website.account.show_execution_approval')}}">
+              <i class="bi bi-circle"></i><span>Form Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('website.account.show_data_execution_approval')}}">
+              <i class="bi bi-circle"></i><span>Data Tables</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Tables Nav -->
+      @endcan
+
 
 
       <li class="nav-heading">Pages</li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-login.html">
+        <a class="nav-link collapsed" href="{{ route('website.auth.logout') }}">
           <i class="bi bi-box-arrow-right"></i>
           <span>Logout</span>
         </a>

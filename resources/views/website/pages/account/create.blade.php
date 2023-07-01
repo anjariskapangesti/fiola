@@ -1,5 +1,4 @@
-@extends('website.layouts.main')
-@section('title', 'Account Registration/Change/Deletion Form')
+@extends('website.layouts.main', ['title' => 'Form Account'])
 
 @section('content')
     <div class="pagetitle">
