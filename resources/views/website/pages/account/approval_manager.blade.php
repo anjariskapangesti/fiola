@@ -30,46 +30,50 @@
             </div>
         </div>
         <!-- Approve Confirmation Modal -->
-        
+
         <div class="modal fade" id="confirmModal" tabindex="-1">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Approve Confirmation</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Approve Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to approve this request?
+                        <p id="nama"></p>
+                        <input type="hidden" id="id_form_account">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                  Are you sure want to approve this request?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
-                </div>
-              </div>
             </div>
-          </div>
-           <!-- End Confirmation Modal -->
-           <!-- Confirmation Modal -->
+        </div>
+        <!-- End Confirmation Modal -->
+        <!-- Confirmation Modal -->
         <div class="modal fade" id="rejectModal" tabindex="-1">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Reject Confirmation</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reject Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Please share the reason why you're rejecting<br /><br />
+                        <textarea class="form-control" id="reject_reason"></textarea>
+                        <input type="hidden" id="id_form_account_reject">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="btn-reject" class="btn btn-danger" disabled
+                            id="btn-reject">Reject!</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                  Please share the reason why you're rejecting<br/><br/>
-                  <textarea class="form-control" id="reject_reason"></textarea>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" id="btn-reject" class="btn btn-danger" disabled>Reject!</button>
-                </div>
-              </div>
             </div>
-          </div>
-           <!-- End Confirmation Modal -->
-   
+        </div>
+        <!-- End Confirmation Modal -->
+
     </section>
 @endsection
 
@@ -141,10 +145,10 @@
                     {
                         data: 'budget_type',
                         name: 'budget_type',
-                        render: function(data,type,row,meta){
-                            if(data == 'budget'){
+                        render: function(data, type, row, meta) {
+                            if (data == 'budget') {
                                 return `<span class="badge bg-success">Budget</span>`;
-                            }else{
+                            } else {
                                 return `<span class="badge bg-danger">UN-budget</span>`;
                             }
                         }
@@ -159,8 +163,8 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal">Approve</button>
-                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal">Reject</button>`;
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                         }
                     },
                 ],
@@ -179,16 +183,77 @@
                 }
             });
 
-            $('#reject_reason').on('keyup', function(){
-                if($(this).val()!="")
+            $('#reject_reason').on('keyup', function() {
+                if ($(this).val() != "")
                     $('#btn-reject').removeAttr('disabled');
                 else
-                    $('#btn-reject').attr('disabled','disabled');
+                    $('#btn-reject').attr('disabled', 'disabled');
             });
 
-            $('#btn-approve').on('click', function(){
-                window.location.href= "{{ route('website.account.approve_manager') }}";
+            $('#btn-approve').on('click', function() {
+                let id_form_account = $('#id_form_account').val();
+                console.log(id_form_account);
+                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                $.ajax({
+                    url: "{{ route('website.account.approve_manager') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
             });
+
+            $('#btn-reject').on('click', function() {
+                let id_form_account_reject = $('#id_form_account_reject').val();
+                console.log(id_form_account_reject);
+                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                $.ajax({
+                    url: "{{ route('website.account.approve_manager') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account_reject,
+                        type: 'reject',
+                        manager_note: $('#reject_reason').val(),
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#rejectModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            // $('#confirmModal').on('shown.bs.modal', function() {
+            //     $('#nama').text('Nama Requestor')
+            // });
+
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_form_account = $(this).data('id');
+                $('#id_form_account').val(id_form_account)
+                // console.log(id_form_account);
+            })
+
+            $('#app_table').on('click', '.btn-table-reject', function() {
+                var id_form_account_reject = $(this).data('id');
+                $('#id_form_account_reject').val(id_form_account_reject)
+                // console.log(id_form_account_reject);
+            })
 
         });
     </script>

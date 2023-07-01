@@ -107,10 +107,12 @@ class AccountController extends Controller
         }else{
             $account->is_manager_approve=0;
             $account->final_status='Manager Reject';
+            $account->manager_note=$request->manager_note;
         }
         $account->manager_approval_date= Carbon::now();
         $account->save();
-        return view('website.pages.account.approval_manager')->with('success', 'Request is Successfully Updated!');
+        return "Request is Saved!";
+        // return view('website.pages.account.approval_manager')->with('success', 'Request is Successfully Updated!');
     }
 
     /// ITD APPROVE ///
