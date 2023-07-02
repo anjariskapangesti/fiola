@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Name" name="name"
-                                        maxlength="6" required>
+                                        maxlength="100" required>
                                 </div>
                             </div>
                         </div>
