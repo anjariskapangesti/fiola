@@ -71,8 +71,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-sm-2">
-                                                <button type="button" class="btn btn-light border btn-sm btn-tambah">Tambah
-                                                    Baris</button>
+                                                <button type="button" class="btn btn-light border btn-sm btn-tambah">Add
+                                                    Row</button>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -177,7 +177,7 @@
                     </select>
                 </div>                                         
                 <div class="col-sm-2">
-                    <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Hapus Baris</button>
+                    <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Delete Row</button>
                 </div>
             </div>  
         `
@@ -186,7 +186,7 @@
             })
 
             $('#dynamic-row').on('click', '.btn-hapus', function() {
-                if (confirm('Hapus baris ini?'))
+                if (confirm('Delete this row?'))
                     $(this).parent().parent().remove()
             })
 

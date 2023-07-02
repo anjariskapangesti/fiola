@@ -23,6 +23,14 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/home', 'HomeController@index')->name('auth.home');
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
+        // DEPARTMENT //
+        Route::group(['prefix' => 'department'], function(){
+            Route::get('/create', 'DepartmentController@create')->name('department.create');
+            Route::post('/store', 'DepartmentController@store')->name('department.store');
+            Route::delete('/destroy', 'DepartmentController@destroy')->name('department.destroy');
+            Route::get('/show_data_department', 'DepartmentController@show_data_department')->name('department.show_data_department');
+            Route::get('/show_data_department_ajax', 'DepartmentController@show_data_department_ajax')->name('department.show_data_department_ajax');
+        });
         // FORM ACCOUNT //
         Route::group(['prefix' => 'account'], function(){
             Route::get('/create', 'AccountController@create')->name('account.create');
