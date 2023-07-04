@@ -22,16 +22,21 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required' ,
+            'code' => 'required|unique:department,code' ,
             'name' => 'required' ,            
+        ], [
+            'code.unique' => 'CODE already exists',
+            // ...
         ]);
+        
         try
         {
             Department::create([
                 'code' => $request->code ,
                 'name' => $request->name ,                
             ]);
-            return redirect()->back()->with('success', 'Success Add Department');
+            // return redirect()->back()->with('success', 'Success Add Department');
+            return redirect('/department/show_data_department')->with('success', 'Success Add Department');
         }
         catch(\Exception $e)
         {

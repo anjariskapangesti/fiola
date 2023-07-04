@@ -85,6 +85,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('website.folder-access.show_it_approval') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('website.account.show_data_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Tables</span>
                         </a>
@@ -139,21 +144,32 @@
         @can('can_master')
             <li class="nav-heading">Master</li>
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_department_nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-bank"></i><span>Department</span><i class="bi bi-chevron-down ms-auto"></i>
+                <a class="nav-link collapsed"  href="{{ route('website.department.show_data_department') }}">
+                    <i class="bi bi-bank"></i><span>Department</span>
                 </a>
-                <ul id="app_department_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#app_folder_path_nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-folder"></i><span>Folder Path</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="app_folder_path_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{ route('website.department.create') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Add Department</span>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('website.department.show_data_department') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Department</span>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Sub Folder</span>
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed"  href="#">
+                    <i class="bi bi-people"></i><span>Users</span>
+                </a>
             </li><!-- End Tables Nav -->
         @endcan
 

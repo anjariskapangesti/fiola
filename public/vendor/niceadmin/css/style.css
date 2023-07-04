@@ -1302,6 +1302,11 @@ h6 {
     opacity: 0.1;
 }
 
+.l-bg-yellow {
+  background: linear-gradient(135deg, #f5cc28, #ecde84) !important;
+  color: #fff;
+}
+
 .l-bg-cyan {
     background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
     color: #fff;
@@ -1314,10 +1319,5 @@ h6 {
 
 .l-bg-orange {
     background: linear-gradient(to right, #f9900e, #ffba56) !important;
-    color: #fff;
-}
-
-.l-bg-cyan {
-    background: linear-gradient(135deg, #289cf5, #84c0ec) !important;
     color: #fff;
 }

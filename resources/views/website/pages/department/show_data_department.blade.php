@@ -14,6 +14,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+                    <a href="{{ route('website.department.create') }}" class="btn btn-success">Add Department</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
