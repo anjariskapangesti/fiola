@@ -13,7 +13,7 @@ class FolderAccessPath extends Model
         'folder_access_id',
         'folder',
         'subfolder',
-        'permission',        
+        'permission',     
     ];
 
     public function FolderAccess()

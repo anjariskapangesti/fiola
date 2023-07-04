@@ -32,4 +32,9 @@ class FolderAccess extends Model
     {
         return $this->hasMany(FolderAccessPath::class);
     }
+
+    public function form_folder_access_path()
+    {
+        return $this->hasMany('App\Models\FolderAccessPath', 'folder_access_id', 'id');
+    }
 }

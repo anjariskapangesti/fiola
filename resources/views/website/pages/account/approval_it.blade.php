@@ -117,6 +117,14 @@
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
                     </tr>
+
+                    <tfoot>
+                    <tr>
+                        <th>Purpose</th>
+                        <th>${d.purpose}</th>
+                    </tr>
+                    </tfoot>
+
                 </table>
                 `
             );

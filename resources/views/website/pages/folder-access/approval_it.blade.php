@@ -37,8 +37,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_form_account">
-                        <input type="hidden" id="id_form_account">
+                        <input type="text" readonly class="form-control-plaintext" id="username_folder_access">
+                        <input type="hidden" id="id_folder_access">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -59,7 +59,7 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting<br /><br />
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        <input type="hidden" id="id_form_account_reject">
+                        <input type="hidden" id="id_folder_access_reject">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -156,14 +156,14 @@
             });
 
             $('#btn-approve').on('click', function() {
-                let id_form_account = $('#id_form_account').val();
-                console.log(id_form_account);
+                let id_folder_access = $('#id_folder_access').val();
+                console.log(id_folder_access);
                 // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_it') }}",
                     type: "POST",
                     data: {
-                        id: id_form_account,
+                        id: id_folder_access,
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -180,14 +180,14 @@
             });
 
             $('#btn-reject').on('click', function() {
-                let id_form_account_reject = $('#id_form_account_reject').val();
-                console.log(id_form_account_reject);
+                let id_folder_access_reject = $('#id_folder_access_reject').val();
+                console.log(id_folder_access_reject);
                 // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_it') }}",
                     type: "POST",
                     data: {
-                        id: id_form_account_reject,
+                        id: id_folder_access_reject,
                         type: 'reject',
                         manager_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
@@ -209,17 +209,17 @@
             // });
 
             $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_account = $(this).data('id');
-                var username_form_account = $(this).data('username');
-                $('#id_form_account').val(id_form_account)
-                $('#username_form_account').val(username_form_account)
-                // console.log(id_form_account);
+                var id_folder_access = $(this).data('id');
+                var username_folder_access = $(this).data('username');
+                $('#id_folder_access').val(id_folder_access)
+                $('#username_folder_access').val(username_folder_access)
+                // console.log(id_folder_access);
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {
-                var id_form_account_reject = $(this).data('id');
-                $('#id_form_account_reject').val(id_form_account_reject)
-                // console.log(id_form_account_reject);
+                var id_folder_access_reject = $(this).data('id');
+                $('#id_folder_access_reject').val(id_folder_access_reject)
+                // console.log(id_folder_access_reject);
             })
 
         });

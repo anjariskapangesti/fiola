@@ -68,13 +68,23 @@ class FolderAccessController extends Controller
         return view('website.pages.folder-access.approval_manager');
     }
     
-    public function show_manager_approval_ajax(Request $request)
+    // public function show_manager_approval_ajax(Request $request)
+    // {
+    //     // return Auth::user()->dept_id;
+    //     $data = FolderAccess::where('created_dept', Auth::user()->dept_id)->where('final_status','created');
+    //     // $path = FolderAccessPath::where('folder_access_id', $request->id);
+    //     // return $data;
+    //     return DataTables::eloquent($data)->make(true);
+    // }
+
+    public function show_manager_approval_ajax()
     {
-        // return Auth::user()->dept_id;
-        $data = FolderAccess::where('created_dept', Auth::user()->dept_id)->where('final_status','created');
-        // $path = FolderAccessPath::where('folder_access_id', $request->id);
-        // return $data;
-        return DataTables::eloquent($data)->make(true);
+        $data = FolderAccess::select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), ('form_folder_access.purpose as creator_purpose'), 'form_folder_access.created_at', 'final_status')
+            ->join('users', 'form_folder_access.created_by', 'users.id')
+            ->where('form_folder_access.created_dept', Auth::user()->department->id)
+            ->where('final_status','created')
+            ->orderBy('form_folder_access.id', 'desc')->with('form_folder_access_path')->get();
+        return DataTables::of($data)->make(true);
     }
 
     // public function show_manager_approval_ajax(Request $request)
