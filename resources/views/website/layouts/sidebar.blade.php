@@ -24,22 +24,22 @@
                     </a>
                 </li>
                 <li>
-                    <a href="forms-editors.html">
+                    <a href="#">
                         <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                     </a>
                 </li>
                 <li>
-                    <a href="forms-validation.html">
+                    <a href="#">
                         <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
                     </a>
                 </li>
                 <li>
-                    <a href="forms-validation.html">
+                    <a href="#">
                         <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
                     </a>
                 </li>
                 <li>
-                    <a href="forms-validation.html">
+                    <a href="#">
                         <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                     </a>
                 </li>
@@ -49,8 +49,7 @@
         @can('can_approve_mgr')
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#approval_mgr" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-hourglass"></i><span>Manager Approvals</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-hourglass"></i><span>Manager Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="approval_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -61,6 +60,26 @@
                     <li>
                         <a href="{{ route('website.folder-access.show_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
                 </ul>
@@ -77,17 +96,41 @@
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('website.folder-access.show_data_manager_approval') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
                 </ul>
             </li><!-- End Tables Nav -->
         @endcan
 
         @can('can_approve_it')
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_it_nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>ITD Approvals</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
+                <a class="nav-link collapsed" data-bs-target="#approval_it" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-hourglass"></i><span>ITD Approvals</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="app_it_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="approval_it" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
@@ -98,9 +141,17 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                         </a>
                     </li>
+                </ul>
+            </li><!-- End Tables Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#approved_it" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-clipboard-check"></i><span>ITD Approved</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="approved_it" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_it_approval') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Tables</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
                         </a>
                     </li>
                 </ul>
@@ -132,7 +183,8 @@
 
         @can('can_execution')
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_execution_nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#app_execution_nav" data-bs-toggle="collapse"
+                    href="#">
                     <i class="bi bi-clipboard-check"></i><span>Execution Approvals</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
@@ -153,13 +205,14 @@
         @can('can_master')
             <li class="nav-heading">Master</li>
             <li class="nav-item">
-                <a class="nav-link collapsed"  href="{{ route('website.department.show_data_department') }}">
+                <a class="nav-link collapsed" href="{{ route('website.department.show_data_department') }}">
                     <i class="bi bi-bank"></i><span>Department</span>
                 </a>
             </li>
-            
+
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_folder_path_nav" data-bs-toggle="collapse" href="#">
+                <a class="nav-link collapsed" data-bs-target="#app_folder_path_nav" data-bs-toggle="collapse"
+                    href="#">
                     <i class="bi bi-folder"></i><span>Folder Path</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="app_folder_path_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -176,7 +229,7 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link collapsed"  href="#">
+                <a class="nav-link collapsed" href="#">
                     <i class="bi bi-people"></i><span>Users</span>
                 </a>
             </li><!-- End Tables Nav -->
