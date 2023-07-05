@@ -74,7 +74,9 @@ class AccountController extends Controller
     public function show_manager_approval_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Account::where('created_dept', Auth::user()->dept_id)->where('final_status','created');
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('final_status','created')
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
@@ -88,7 +90,9 @@ class AccountController extends Controller
     public function show_data_manager_approval_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_manager_approve','1');
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_manager_approve','1')
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
@@ -123,7 +127,10 @@ class AccountController extends Controller
 
     public function show_it_approval_ajax(Request $request)
     {
-        $data = Account::where('final_status','Manager Approve');
+        $data = Account::where('final_status','Manager Approve')
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');
+
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -137,6 +144,7 @@ class AccountController extends Controller
     {
         // return Auth::user()->dept_id;
         $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_approve','1');
+        
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
@@ -198,7 +206,9 @@ class AccountController extends Controller
     public function show_data_it_mgr_approval_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_mgr_approve','1');
+        $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_mgr_approve','1')
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');;
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }

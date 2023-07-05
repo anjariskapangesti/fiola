@@ -17,11 +17,11 @@
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
-                                <th>Date</th>
+                                <th>Date Approved</th>
                             </tr>
                         </thead>
                     </table>
@@ -71,6 +71,16 @@
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
                     </tr>
+                    <tfoot>
+                    <tr>
+                        <th>Created by</th>
+                        <th>${d.user_name}</th>
+                    </tr>
+                    <tr>
+                        <th>Purpose</th>
+                        <th>${d.purpose}</th>
+                    </tr>
+                </tfoot>
                 </table>
                 `
             );

@@ -48,11 +48,11 @@
 
         @can('can_approve_mgr')
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>Manager Approvals</span><i
+                <a class="nav-link collapsed" data-bs-target="#approval_mgr" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-hourglass"></i><span>Manager Approvals</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="approval_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
@@ -63,9 +63,18 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                         </a>
                     </li>
+                </ul>
+            </li><!-- End Tables Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#approved_mgr" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-clipboard-check"></i><span>Manager Approved</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="approved_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_manager_approval') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Tables</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
                         </a>
                     </li>
                 </ul>

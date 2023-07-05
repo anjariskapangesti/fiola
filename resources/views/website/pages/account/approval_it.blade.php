@@ -59,8 +59,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Please share the reason why you're rejecting<br /><br />
-                        <textarea class="form-control" id="reject_reason"></textarea>
+                        Please share the reason why you're rejecting
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account_reject">
+                                               
+                        <textarea class="form-control" id="reject_reason"></textarea>                        
                         <input type="hidden" id="id_form_account_reject">
                     </div>
                     <div class="modal-footer">
@@ -119,6 +121,10 @@
                     </tr>
 
                     <tfoot>
+                    <tr>
+                        <th>Created by</th>
+                        <th>${d.user_name}</th>
+                    </tr>
                     <tr>
                         <th>Purpose</th>
                         <th>${d.purpose}</th>
@@ -260,7 +266,9 @@
 
             $('#app_table').on('click', '.btn-table-reject', function() {
                 var id_form_account_reject = $(this).data('id');
+                var fullname_form_account_reject = $(this).data('fullname');
                 $('#id_form_account_reject').val(id_form_account_reject)
+                $('#fullname_form_account_reject').val(fullname_form_account_reject)
                 // console.log(id_form_account_reject);
             })
 

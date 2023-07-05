@@ -36,5 +36,8 @@ class Account extends Model
         'created_dept'
     ];
 
-    
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

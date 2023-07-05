@@ -46,11 +46,11 @@
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-
-              <div class="d-flex justify-content-center py-4">
-                <a href="index.html" class="logo d-flex align-items-center w-auto">
-                  <img src="{{ asset('vendor/niceadmin/img/logo.png') }}" alt="">
-                  <span class="d-none d-lg-block">ITD Online Form</span>
+              <img src="{{ asset('img/aiia.jpg') }}" alt=""  width="80" class="shadow-light rounded-circle mb-2 mt-2">
+              <div class="d-flex justify-content-center py-2">
+                <a href="/" class="logo d-flex align-items-center w-auto">
+                  
+                  <span class="d-none d-lg-block">Form ITD Online Approvals</span>
                 </a>
               </div><!-- End Logo -->
 
