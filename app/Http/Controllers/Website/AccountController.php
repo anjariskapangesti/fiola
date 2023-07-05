@@ -214,12 +214,12 @@ class AccountController extends Controller
     }
 
     /// EXECUTION ///
-    public function show_execution_approval()
+    public function show_execution()
     {
         return view('website.pages.account.approval_execution');
     }
 
-    public function show_execution_approval_ajax(Request $request)
+    public function show_execution_ajax(Request $request)
     {
         $data = Account::where('final_status','MGR IT Approve');
         return DataTables::eloquent($data)->make(true);
@@ -242,13 +242,13 @@ class AccountController extends Controller
         return "Request is Saved!";
     }
 
-    public function show_data_execution_approval()
+    public function show_data_execution()
     {
         $depts = Department::all();
-        return view('website.pages.account.show_data_execution_approval', compact(['depts']));
+        return view('website.pages.account.show_data_execution', compact(['depts']));
     }
 
-    public function show_data_execution_approval_ajax(Request $request)
+    public function show_data_execution_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
         $data = Account::where('created_dept', Auth::user()->dept_id)->where('is_it_mgr_approve','1');

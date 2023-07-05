@@ -68,11 +68,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             });
 
             Route::group(['middleware' => ['can:can_execution']], function () {
-                Route::get('/show_execution_approval', 'AccountController@show_execution_approval')->name('account.show_execution_approval');
-                Route::get('/show_execution_approval_ajax', 'AccountController@show_execution_approval_ajax')->name('account.show_execution_approval_ajax');
+                Route::get('/show_execution', 'AccountController@show_execution')->name('account.show_execution');
+                Route::get('/show_execution_ajax', 'AccountController@show_execution_ajax')->name('account.show_execution_ajax');
                 Route::post('/approve_execution', 'AccountController@approve_execution')->name('account.approve_execution');
-                Route::get('/show_data_execution_approval', 'AccountController@show_data_execution_approval')->name('account.show_data_execution_approval');
-                Route::get('/show_data_execution_approval_ajax', 'AccountController@show_data_execution_approval_ajax')->name('account.show_data_execution_approval_ajax');
+                Route::get('/show_data_execution', 'AccountController@show_data_execution')->name('account.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'AccountController@show_data_execution_ajax')->name('account.show_data_execution_ajax');
             });
             
         });

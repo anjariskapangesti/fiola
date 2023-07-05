@@ -2,7 +2,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="/">
+            <a class="nav-link collapsed" href="{{ route('website.auth.home') }}">
                 <i class="bi bi-speedometer"></i>
                 <span>Dashboard</span>
             </a>
@@ -141,12 +141,33 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                        </a>
+                    </li>
                 </ul>
             </li><!-- End Tables Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#approved_it" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>ITD Approved</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-clipboard-check"></i><span>ITD Approved</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="approved_it" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -154,54 +175,196 @@
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
                 </ul>
             </li><!-- End Tables Nav -->
         @endcan
 
-        {{-- @if (Auth::user()->hasPermissionTo('can_approve_it_mgr')) --}}
         @can('can_approve_it_mgr')
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_it_mgr_nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>ITD Manager Approvals</span><i
+                <a class="nav-link collapsed" data-bs-target="#approval_it_mgr" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-hourglass"></i><span>ITD Manager Approvals</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="app_it_mgr_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="approval_it_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('website.folder-access.show_it_mgr_approval') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Tables Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#approved_it_mgr" data-bs-toggle="collapse"
+                    href="#">
+                    <i class="bi bi-clipboard-check"></i><span>ITD Manager Approved</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="approved_it_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
                         <a href="{{ route('website.account.show_data_it_mgr_approval') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Tables</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                         </a>
                     </li>
                 </ul>
             </li><!-- End Tables Nav -->
         @endcan
-        {{-- @endif --}}
 
         @can('can_execution')
             <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_execution_nav" data-bs-toggle="collapse"
-                    href="#">
-                    <i class="bi bi-clipboard-check"></i><span>Execution Approvals</span><i
+                <a class="nav-link collapsed" data-bs-target="#execution" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-hand-index-thumb"></i></i><span>Execution</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
-                <ul id="app_execution_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <ul id="execution" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="{{ route('website.account.show_execution_approval') }}">
+                        <a href="{{ route('website.account.show_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('website.account.show_data_execution_approval') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Tables</span>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Tables Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#finished" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-list-check"></i><span>Finished</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="finished" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                         </a>
                     </li>
                 </ul>
             </li><!-- End Tables Nav -->
         @endcan
+
         @can('can_master')
             <li class="nav-heading">Master</li>
             <li class="nav-item">
