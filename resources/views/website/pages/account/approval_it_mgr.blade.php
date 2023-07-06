@@ -14,10 +14,11 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+                    <a href="{{ route('website.account.show_data_it_mgr_approval') }}" class="btn btn-primary">Show Data</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
@@ -116,14 +117,17 @@
                     <tr>
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
+                    </tr>                    
+                <tfoot>
+                    <tr>
+                        <th>Created by</th>
+                        <th>${d.user_name}</th>
                     </tr>
-
-                    <tfoot>
                     <tr>
                         <th>Purpose</th>
                         <th>${d.purpose}</th>
                     </tr>
-                    </tfoot>
+                </tfoot>
                 </table>
                 `
             );

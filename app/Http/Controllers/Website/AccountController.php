@@ -175,7 +175,9 @@ class AccountController extends Controller
 
     public function show_it_mgr_approval_ajax(Request $request)
     {
-        $data = Account::where('final_status','IT Approve');
+        $data = Account::where('final_status','IT Approve')
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -221,7 +223,10 @@ class AccountController extends Controller
 
     public function show_execution_ajax(Request $request)
     {
-        $data = Account::where('final_status','MGR IT Approve');
+        $data = Account::where('final_status','MGR IT Approve')
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');
+                        
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -239,6 +244,7 @@ class AccountController extends Controller
         }
         $account->finish_date= Carbon::now();
         $account->save();
+
         return "Request is Saved!";
     }
 

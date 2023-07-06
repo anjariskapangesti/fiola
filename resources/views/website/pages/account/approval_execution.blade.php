@@ -14,10 +14,11 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+                    <a href="{{ route('website.account.show_data_execution') }}" class="btn btn-primary">Show Data</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
@@ -120,10 +121,14 @@
 
                     <tfoot>
                     <tr>
+                        <th>Created by</th>
+                        <th>${d.user_name}</th>
+                    </tr>
+                    <tr>
                         <th>Purpose</th>
                         <th>${d.purpose}</th>
                     </tr>
-                    </tfoot>
+                </tfoot>
                 </table>
                 `
             );
@@ -135,7 +140,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.account.show_execution_approval_ajax') }}",
+                    url: "{{ route('website.account.show_execution_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',

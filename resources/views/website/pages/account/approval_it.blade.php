@@ -14,10 +14,11 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+                    <a href="{{ route('website.account.show_data_it_approval') }}" class="btn btn-primary">Show Data</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>

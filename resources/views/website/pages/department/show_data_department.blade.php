@@ -18,7 +18,7 @@
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th width="5%">No</th>
                                 <th>Code</th>
                                 <th>Name</th>
                                 <th>Action</th>
@@ -85,11 +85,14 @@
                         url: "{{ route('website.department.show_data_department_ajax') }}",
                     },
                     columns: [{
-                            className: 'dt-control',
-                            orderable: false,
                             data: null,
-                            defaultContent: '',
-                            searchable: false,
+                            orderable: false,
+                            searchable: true,
+                            render: function(data, type, row, meta) {
+                                // Calculate the row number using the meta object
+                                var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
+                                return rowIndex;
+                            },
                         },
                         {
                             data: 'code',
@@ -111,18 +114,18 @@
                     ],
                 });
 
-                $('#app_table tbody').on('click', 'td.dt-control', function() {
-                    var tr = $(this).closest('tr');
-                    var row = table.row(tr);
+                // $('#app_table tbody').on('click', 'td.dt-control', function() {
+                //     var tr = $(this).closest('tr');
+                //     var row = table.row(tr);
 
-                    if (row.child.isShown()) {
-                        row.child.hide();
-                        tr.removeClass('shown');
-                    } else {
-                        row.child(format(row.data())).show();
-                        tr.addClass('shown');
-                    }
-                });
+                //     if (row.child.isShown()) {
+                //         row.child.hide();
+                //         tr.removeClass('shown');
+                //     } else {
+                //         row.child(format(row.data())).show();
+                //         tr.addClass('shown');
+                //     }
+                // });
 
                 $('#reject_reason').on('keyup', function() {
                     if ($(this).val() != "")
