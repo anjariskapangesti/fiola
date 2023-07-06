@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Data Department'])
+@extends('website.layouts.main', ['title' => 'Data User'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Department</h4>
+        <h4>User</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Department</a></li>
-                <li class="breadcrumb-item active"><a href="#">Data Department</a></li>
+                <li class="breadcrumb-item "><a href="#">User</a></li>
+                <li class="breadcrumb-item active"><a href="#">Data User</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -14,14 +14,15 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-                    <a href="{{ route('website.department.create') }}" class="btn btn-success">Add Department</a>
+                    <a href="{{ route('website.user.create') }}" class="btn btn-success">Add User</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th>Code</th>
                                 <th>Name</th>
-                                <th>Action</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                     </table>
@@ -38,8 +39,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to delete this item?
-                        <input type="text" readonly class="form-control-plaintext" id="name_department">
-                        <input type="hidden" id="id_department">
+                        <input type="text" readonly class="form-control-plaintext" id="name_user">
+                        <input type="hidden" id="id_user">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -64,13 +65,21 @@
                 <table class="table table-sm">
 
                     <tr>
-                        <td width="30%">Code</td>
-                        <td>${d.code} </td>
+                        <td width="30%">Name</td>
+                        <td>${d.name} </td>
                     </tr>
                     <tr>
-                        <td>Name</td>
-                        <td>${d.name} </td>
-                    </tr>                    
+                        <td>Email</td>
+                        <td>${d.email} </td>
+                    </tr>
+                    <tr>
+                        <td>user</td>
+                        <td>${d.dept_id} </td>
+                    </tr>    
+                    <tr>
+                        <td>No. Handphone</td>
+                        <td>${d.nohp} </td>
+                    </tr>               
                 </table>
                 `
                 );
@@ -82,7 +91,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.department.show_data_department_ajax') }}",
+                        url: "{{ route('website.user.show_data_user_ajax') }}",
                     },
                     columns: [{
                             data: null,
@@ -95,12 +104,16 @@
                             },
                         },
                         {
-                            data: 'code',
-                            name: 'code',
-                        },
-                        {
                             data: 'name',
                             name: 'name',
+                        },
+                        {
+                            data: 'email',
+                            name: 'email',
+                        },
+                        {
+                            data: 'dept_name',
+                            name: 'dept_name',
                         },
                         {
                             orderable: false,
@@ -139,21 +152,21 @@
                 });
 
                 $('#app_table').on('click', '.btn-delete', function() {
-                    var id_department = $(this).data('id');
-                    var name_department = $(this).data('name');
-                    $('#id_department').val(id_department)
-                    $('#name_department').val(name_department)
+                    var id_user = $(this).data('id');
+                    var name_user = $(this).data('name');
+                    $('#id_user').val(id_user)
+                    $('#name_user').val(name_user)
                     // console.log(id_form_account);
                 })
 
                 $('#btn-approve-delete').on('click', function() {
-                    let id_department = $('#id_department').val();
-                    console.log(id_department);
+                    let id_user = $('#id_user').val();
+                    console.log(id_user);
                     $.ajax({
-                        url: "{{ route('website.department.destroy') }}",
+                        url: "{{ route('website.user.destroy') }}",
                         type: "DELETE",
                         data: {
-                            id: id_department,
+                            id: id_user,
                             '_token': "{{ csrf_token() }}",
                         },
                         success: function(response) {

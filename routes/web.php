@@ -25,11 +25,23 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
         // DEPARTMENT //
         Route::group(['prefix' => 'department'], function(){
-            Route::get('/create', 'DepartmentController@create')->name('department.create');
-            Route::post('/store', 'DepartmentController@store')->name('department.store');
-            Route::delete('/destroy', 'DepartmentController@destroy')->name('department.destroy');
-            Route::get('/show_data_department', 'DepartmentController@show_data_department')->name('department.show_data_department');
-            Route::get('/show_data_department_ajax', 'DepartmentController@show_data_department_ajax')->name('department.show_data_department_ajax');
+            Route::group(['middleware' => ['can:can_master']], function () {
+                Route::get('/create', 'DepartmentController@create')->name('department.create');
+                Route::post('/store', 'DepartmentController@store')->name('department.store');
+                Route::delete('/destroy', 'DepartmentController@destroy')->name('department.destroy');
+                Route::get('/show_data_department', 'DepartmentController@show_data_department')->name('department.show_data_department');
+                Route::get('/show_data_department_ajax', 'DepartmentController@show_data_department_ajax')->name('department.show_data_department_ajax');
+            });
+        });
+
+        Route::group(['prefix' => 'user'], function(){
+            Route::group(['middleware' => ['can:can_master']], function () {
+                Route::get('/create', 'UserController@create')->name('user.create');
+                Route::post('/store', 'UserController@store')->name('user.store');
+                Route::delete('/destroy', 'UserController@destroy')->name('user.destroy');
+                Route::get('/show_data_user', 'UserController@show_data_user')->name('user.show_data_user');
+                Route::get('/show_data_user_ajax', 'UserController@show_data_user_ajax')->name('user.show_data_user_ajax');
+            });
         });
         // // DEPARTMENT //
         // Route::group(['prefix' => 'folder-path'], function(){

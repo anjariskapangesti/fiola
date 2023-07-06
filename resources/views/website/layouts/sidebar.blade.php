@@ -392,7 +392,7 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#">
+                <a class="nav-link collapsed" href="{{ route('website.user.show_data_user') }}">
                     <i class="bi bi-people"></i><span>Users</span>
                 </a>
             </li><!-- End Tables Nav -->
