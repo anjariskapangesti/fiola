@@ -17,8 +17,11 @@ class AccountController extends Controller
 {
     public function create()
     {
-        $depts = Department::all();
-        return view('website.pages.account.create', compact(['depts']));
+        $departments = Department::all();
+
+        $userDepartment = Auth::user()->createdDepartments;
+        // dd($userDepartment);
+        return view('website.pages.account.create', compact(['departments', 'userDepartment']));
     }
 
     public function store(Request $request)
@@ -54,7 +57,8 @@ class AccountController extends Controller
                 'ad_name' => $request->ad_name ,
                 'is_email' => $request->is_email ,
                 'created_by' => Auth::user()->id,
-                'created_dept' => Auth::user()->dept_id,
+                // 'created_dept' => Auth::user()->dept_id,
+                'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => 'created'
             ]);
             $depts = Department::all();
@@ -74,7 +78,7 @@ class AccountController extends Controller
     public function show_manager_approval_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Account::where('created_dept', Auth::user()->dept_id)->where('final_status','created')
+        $data = Account::where('created_dept', Auth::user()->departments->pluck('id')->first())->where('final_status','created')
                         ->join('users', 'form_account.created_by', '=', 'users.id')
                         ->select('form_account.*', 'users.name as user_name');
         // return $data;

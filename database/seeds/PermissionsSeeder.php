@@ -12,6 +12,13 @@ class PermissionsSeeder extends Seeder
     public function run()
     {
         DB::table('permissions')->insert([
+            'name' => 'can_create_form',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('permissions')->insert([
             'name' => 'can_approve_mgr',
             'guard_name' => 'web',
             'created_at' => now(),

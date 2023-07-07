@@ -53,8 +53,10 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         // });
         // FORM ACCOUNT //
         Route::group(['prefix' => 'account'], function(){
+            Route::group(['middleware' => ['can:can_create_form']], function () {
             Route::get('/create', 'AccountController@create')->name('account.create');
             Route::post('/store', 'AccountController@store')->name('account.store');
+            });
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'AccountController@show_manager_approval')->name('account.show_manager_approval');

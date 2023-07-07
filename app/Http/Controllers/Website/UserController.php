@@ -20,20 +20,24 @@ class UserController extends Controller
 
     public function create()
     {
-        $departments = Department::orderBy('name', 'ASC')->get();
-        $roles = Role::all();
-        $permissions = Permission::all();
+        
+        $departments = Department::pluck('name', 'id');
+
+        $permissions = Permission::pluck('name', 'id');
         // dd($permissions);
         
-        return view('website.pages.user.create', compact('departments', 'roles', 'permissions'));
+        return view('website.pages.user.create', compact('departments', 'permissions'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required' ,
-            'dept_id' => 'required',
             'email' => 'required|unique:users,email',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
+            'departments' => 'nullable|array',
+            'departments.*' => 'exists:departments,id',
 
         ], [
             'email.unique' => 'Email already exists',
@@ -46,31 +50,37 @@ class UserController extends Controller
                 'name' => $request->name ,
                 'password' => bcrypt($request->password) ,
                 'email' => $request->email ,
-                'dept_id' => $request->dept_id,
             ]);
-
+            foreach ($request->input('departments') as $departmentId) {
+                $user->departments()->attach($departmentId, ['model_type' => 'App\Models\User']);
+            }
             // $permission = Permission::findOrFail($request->input('permission_id'));
             // $user->givePermissionTo($permission);
 
-            if ($request->has('permission_id')) {
+            if ($request->has('permissions')) {
                 // Mengambil permission yang diperlukan
-                $permission = Permission::findOrFail($request->input('permission_id'));
+                // $permission = Permission::findOrFail($request->input('permission_id'));
         
                 // Menetapkan permission kepada user
-                $user->givePermissionTo($permission);
+                // $user->givePermissionTo($request->input('permissions'));
         
-                // Mengisi model_has_permissions
-                $permissionId = $request->input('permission_id');
-                $modelType = 'App\Models\User';
-                $modelId = $user->id;
+                // // Mengisi model_has_permissions
+                // $permissionId = $request->input('permission_id');
+                // $modelType = 'App\Models\User';
+                // $modelId = $user->id;
         
-                DB::table('model_has_permissions')->insert([
-                    'permission_id' => $permissionId,
-                    'model_type' => $modelType,
-                    'model_id' => $modelId,
-                ]);
-            }
+                // DB::table('model_has_permissions')->insert([
+                //     'permission_id' => $permissionId,
+                //     'model_type' => $modelType,
+                //     'model_id' => $modelId,
+                // ]);
 
+                $permissions = $request->input('permissions', []);
+                // $departments = $request->input('departments', []);
+                // $user->departments()->sync($validatedData['departments']);
+                $user->syncPermissions($permissions);
+            }
+            
             return redirect()->back()->with('success', 'Success Create User');
             
         }
@@ -82,22 +92,28 @@ class UserController extends Controller
 
     public function show_data_user()
     {
-        return view('website.pages.user.show_data_user');
+        // $users = User::with('departments', 'permissions')->get();
+        $users = User::all();
+        // dd($users);
+        return view('website.pages.user.show_data_user', compact('users'));
     }
 
     public function show_data_user_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = User::orderBy('name', 'DESC')
-                    ->join('department', 'users.dept_id', '=', 'department.id')
-                    ->select('users.*', 'department.name as dept_name');;
+        $data = User::orderBy('name', 'DESC');
+                    // ->join('departments', 'users.dept_id', '=', 'department.id')
+                    // ->select('users.*', 'department.name as dept_name');;
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        User::findOrFail($id)->delete();
+        $user->delete();
+
+        // Hapus entri dari tabel model_has_permissions
+        $user->permissions()->detach();
 
         return redirect()->back()->with('error', 'Delete Item');
     }

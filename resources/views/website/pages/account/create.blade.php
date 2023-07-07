@@ -77,8 +77,8 @@
                                 <div class="col-md-6">
                                     <select name="department" class="form-control" required>
                                         <option selected disabled value="">-- Choose Department --</option>
-                                        @foreach ($depts as $dept)
-                                            <option value="{{ $dept->name }}">{{ $dept->name }} </option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -167,6 +167,7 @@
 
                         </div>
                     </div>
+                    {{-- <input type="hidden" name="created_dept" value="{{ $userDepartment->id }}"> --}}
                     <button class="btn btn-success" type="submit">Save & Submit Request</button>
                 </div>
             </form>

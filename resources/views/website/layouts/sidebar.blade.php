@@ -8,6 +8,7 @@
             </a>
         </li><!-- End Dashboard Nav -->
         <li class="nav-heading">Pages</li>
+        @can('can_create_form')
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -45,6 +46,7 @@
                 </li>
             </ul>
         </li><!-- End Forms Nav -->
+        @endcan
 
         @can('can_approve_mgr')
             <li class="nav-item">

@@ -24,8 +24,8 @@
                     <li class="dropdown-header">
                         @if (Auth())
                             <h6>{{ Auth::user()->name }}</h6>
-                            @if (auth()->user()->department)
-                                <p>{{ auth()->user()->department->name }}</p>
+                            @if (auth()->user()->departments)
+                                <p>{{ auth()->user()->departments->pluck('name')->first() }}</p>
                             @endif
                         @endif
                     </li>

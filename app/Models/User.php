@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class User extends Authenticatable
 {
     
@@ -20,7 +22,7 @@ class User extends Authenticatable
      */
     protected $table = 'users';
     protected $fillable = [
-        'name', 'email', 'password', 'dept_id', 'nohp'
+        'name', 'email', 'password', 'nohp'
     ];
 
     /**
@@ -41,13 +43,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function department()
+    public function departments(): BelongsToMany
     {
-        return $this->belongsTo(Department::class, 'dept_id');
+        return $this->belongsToMany(Department::class, 'model_has_departments', 'model_id', 'department_id');
     }
 
-    public function departments()
+    public function createdDepartments()
     {
-        return $this->belongsToMany(Department::class, 'user_has_department', 'user_id', 'department_id');
+        return $this->hasManyThrough(Department::class, ModelHasDepartment::class, 'model_id', 'id', 'id', 'department_id')
+            ->where('model_type', User::class);
     }
 }

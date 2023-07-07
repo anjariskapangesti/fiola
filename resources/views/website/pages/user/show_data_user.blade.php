@@ -21,7 +21,6 @@
                                 <th width="5%">No</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Department</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -112,10 +111,6 @@
                             name: 'email',
                         },
                         {
-                            data: 'dept_name',
-                            name: 'dept_name',
-                        },
-                        {
                             orderable: false,
                             searchable: false,
                             data: null,
@@ -161,6 +156,7 @@
 
                 $('#btn-approve-delete').on('click', function() {
                     let id_user = $('#id_user').val();
+                    
                     console.log(id_user);
                     $.ajax({
                         url: "{{ route('website.user.destroy') }}",

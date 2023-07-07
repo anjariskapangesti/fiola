@@ -30,18 +30,34 @@
                         <div class="card-body">
                             <h5 class="card-title">A. User</h5>
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <input type="text" class="form-control" placeholder="Name" name="name"
                                         maxlength="100" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <select name="dept_id" class="form-control" required>
+                                {{-- <div class="col-md-6">
+                                    <select name="departments" class="form-control" required>
                                         <option selected disabled value="">-- Choose Department --</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->id }}">{{ $department->name }} </option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div> --}}
+
+                                {{-- <div class="col-md-6">                    
+                                    <div class="department-container">
+                                        <div class="department-item">
+                                            <select name="departments[]" id="departments"  class="form-control" multiple required>
+                                                <option value="">-- Select department --</option>
+                                                @foreach($departments as $id => $name)
+                                                    <option value="{{ $id }}">{{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>                                        
+                                    </div>
+                                </div> --}}
+
+                                
+
                                 <div class="col-md-6">
                                     <input type="email" class="form-control" placeholder="Email" name="email"
                                         maxlength="100" required>
@@ -50,15 +66,41 @@
                                     <input type="password" class="form-control" placeholder="Password" name="password"
                                         maxlength="100" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <select class="form-control" id="permission_id" name="permission_id">
-                                        <option selected disabled value="">-- Choose Permission --</option>
-                                        @foreach ($permissions as $permission)
-                                            <option value="{{ $permission->id }}">{{ $permission->name }}</option>
-                                        @endforeach
-                                    </select>
+
+                                <div class="col-md-6">                    
+                                    <div class="department-container">
+                                        <div class="department-item mb-3">
+                                            <select name="departments[]" class="form-control">
+                                                <option value="">-- Select Department --</option>
+                                                @foreach($departments as $id => $name)
+                                                    <option value="{{ $id }}">{{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>                                        
+                                    </div>
                                 </div>
 
+                                <div class="col-md-6">  
+                                    <button type="button" class="btn btn-primary" id="add-department">Add Department</button>
+                                </div>  
+                                
+                                <div class="col-md-6">                    
+                                    <div class="permission-container">
+                                        <div class="permission-item mb-3">
+                                            <select name="permissions[]" class="form-control">
+                                                <option value="">-- Select Permission --</option>
+                                                @foreach($permissions as $id => $name)
+                                                    <option value="{{ $id }}">{{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">  
+                                    <button type="button" class="btn btn-primary" id="add-permission">Add Permission</button>
+                                </div>                                    
+                                
                             </div>
                         </div>
                     </div>
@@ -85,4 +127,70 @@
             @endif
         })
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addPermissionButton = document.getElementById('add-permission');
+        const permissionContainer = document.querySelector('.permission-container');
+
+        addPermissionButton.addEventListener('click', function() {
+            const permissionItem = document.createElement('div');
+            permissionItem.classList.add('permission-item');
+
+            const selectHtml = `
+                <select name="permissions[]" class="form-control" required>
+                    <option value="">-- Select Permission  --</option>
+                    @foreach($permissions as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
+                    @endforeach
+                </select>
+                
+                <button type="button" class="btn btn-sm btn-danger mt-2 mb-2 remove-permission">Remove Permission</button>
+            `;
+
+            permissionItem.innerHTML = selectHtml;
+            permissionContainer.appendChild(permissionItem);
+        });
+
+        permissionContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-permission')) {
+                    const permissionItem = event.target.parentNode;
+                    permissionContainer.removeChild(permissionItem);
+                }
+            });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addDepartmentButton = document.getElementById('add-department');
+        const departmentContainer = document.querySelector('.department-container');
+
+        addDepartmentButton.addEventListener('click', function() {
+            const departmentItem = document.createElement('div');
+            departmentItem.classList.add('department-item');
+
+            const selectHtml = `
+                <select name="departments[]" class="form-control" required>
+                    <option value="">-- Select Department  --</option>
+                    @foreach($departments as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
+                    @endforeach
+                </select>
+                
+                <button type="button" class="btn btn-sm btn-danger mt-2 mb-2 remove-department">Remove Department</button>
+            `;
+
+            departmentItem.innerHTML = selectHtml;
+            departmentContainer.appendChild(departmentItem);
+        });
+
+        departmentContainer.addEventListener('click', function(event) {
+                if (event.target.classList.contains('remove-department')) {
+                    const departmentItem = event.target.parentNode;
+                    departmentContainer.removeChild(departmentItem);
+                }
+            });
+    });
+</script>
 @endpush

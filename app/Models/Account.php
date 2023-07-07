@@ -36,8 +36,18 @@ class Account extends Model
         'created_dept'
     ];
 
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function createdDept()
+    {
+        return $this->belongsTo(Department::class, 'created_dept');
     }
 }
