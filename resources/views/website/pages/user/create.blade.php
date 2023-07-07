@@ -145,7 +145,7 @@
                     @endforeach
                 </select>
                 
-                <button type="button" class="btn btn-sm btn-danger mt-2 mb-2 remove-permission">Remove Permission</button>
+                <button type="button" class="btn btn-danger mt-2 mb-2 remove-permission">Remove Permission</button>
             `;
 
             permissionItem.innerHTML = selectHtml;
@@ -178,7 +178,7 @@
                     @endforeach
                 </select>
                 
-                <button type="button" class="btn btn-sm btn-danger mt-2 mb-2 remove-department">Remove Department</button>
+                <button type="button" class="btn btn-danger mt-2 mb-2 remove-department">Remove Department</button>
             `;
 
             departmentItem.innerHTML = selectHtml;

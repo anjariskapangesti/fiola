@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
         ]);
 
         $userIds = [1];
-        $permissionIds = [1, 2, 3, 4, 5, 6]; // Daftar ID departemen
+        $permissionIds = [1, 2, 3, 4, 5, 6]; 
 
         foreach ($userIds as $userId) {
             foreach ($permissionIds as $permissionId) {

@@ -24,7 +24,7 @@ class UserController extends Controller
         $departments = Department::pluck('name', 'id');
 
         $permissions = Permission::pluck('name', 'id');
-        // dd($permissions);
+        // dd($departments);
         
         return view('website.pages.user.create', compact('departments', 'permissions'));
     }

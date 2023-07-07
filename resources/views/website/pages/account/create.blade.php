@@ -33,7 +33,7 @@
                                 <div class="col-md-6">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="budget_type" id="budgetType1"
-                                            value="budget">
+                                            value="budget" required>
                                         <label class="form-check-label" for="budgetType1">Budget</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -45,7 +45,7 @@
                                 <div class="col-md-6">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
-                                            id="inlineRadioType1" value="registration">
+                                            id="inlineRadioType1" value="registration" required>
                                         <label class="form-check-label" for="inlineRadioType1">Registration</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -127,6 +127,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">D. Approval Flow</h5>
@@ -141,7 +142,7 @@
                                 <div class="md-step active">
                                     <div class="md-step-circle"><span>2</span></div>
                                     <div class="md-step-title">Approval Manager</div>
-                                    <div class="md-step-optional">Request Approveal to your Manager</div>
+                                    <div class="md-step-optional">Request Approval to your Manager</div>
                                     <div class="md-step-bar-left"></div>
                                     <div class="md-step-bar-right"></div>
                                 </div>
