@@ -5,8 +5,8 @@
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
-                <li class="breadcrumb-item active"><a href="#">Data Tables</a></li>
+                <li class="breadcrumb-item "><a href="#">Manager Approved</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -14,6 +14,8 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+                    <a href="{{ route('website.account.show_manager_approval') }}" class="btn btn-primary">Show
+                        Waiting Approve</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
@@ -27,20 +29,20 @@
                     </table>
                 </div>
             </div>
-        </div>        
-@endsection
+        </div>
+    @endsection
 
-@push('styles')
-    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
-@endpush
+    @push('styles')
+        <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+    @endpush
 
-@push('scripts')
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script>
-        function format(d) {
-            // `d` is the original data object for the row
-            return (
-                `
+    @push('scripts')
+        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+        <script>
+            function format(d) {
+                // `d` is the original data object for the row
+                return (
+                    `
                 <table class="table table-sm">
 
                     <tr>
@@ -83,74 +85,74 @@
                 </tfoot>
                 </table>
                 `
-            );
-        }
+                );
+            }
 
-        $(document).ready(function() {
-            var table = $('#app_table').DataTable({
-                "lengthChange": false,
-                'processing': true,
-                'serverSide': true,
-                ajax: {
-                    url: "{{ route('website.account.show_data_manager_approval_ajax') }}",
-                },
-                columns: [{
-                        className: 'dt-control',
-                        orderable: false,
-                        data: null,
-                        defaultContent: '',
-                        searchable: false,
+            $(document).ready(function() {
+                var table = $('#app_table').DataTable({
+                    "lengthChange": false,
+                    'processing': true,
+                    'serverSide': true,
+                    ajax: {
+                        url: "{{ route('website.account.show_data_manager_approval_ajax') }}",
                     },
-                    {
-                        data: 'fullname',
-                        name: 'fullname',
-                    },
-                    {
-                        data: 'budget_type',
-                        name: 'budget_type',
-                        render: function(data,type,row,meta){
-                            if(data == 'budget'){
-                                return `<span class="badge bg-success">Budget</span>`;
-                            }else{
-                                return `<span class="badge bg-danger">UN-budget</span>`;
+                    columns: [{
+                            className: 'dt-control',
+                            orderable: false,
+                            data: null,
+                            defaultContent: '',
+                            searchable: false,
+                        },
+                        {
+                            data: 'fullname',
+                            name: 'fullname',
+                        },
+                        {
+                            data: 'budget_type',
+                            name: 'budget_type',
+                            render: function(data, type, row, meta) {
+                                if (data == 'budget') {
+                                    return `<span class="badge bg-success">Budget</span>`;
+                                } else {
+                                    return `<span class="badge bg-danger">UN-budget</span>`;
+                                }
                             }
-                        }
-                    },
-                    {
-                        data: 'form_type',
-                        name: 'form_type'
-                    },
-                    {
-                        data: 'manager_approval_date',
-                        name: 'manager_approval_date'
-                    },
-                ],
+                        },
+                        {
+                            data: 'form_type',
+                            name: 'form_type'
+                        },
+                        {
+                            data: 'manager_approval_date',
+                            name: 'manager_approval_date'
+                        },
+                    ],
+                });
+
+                $('#app_table tbody').on('click', 'td.dt-control', function() {
+                    var tr = $(this).closest('tr');
+                    var row = table.row(tr);
+
+                    if (row.child.isShown()) {
+                        row.child.hide();
+                        tr.removeClass('shown');
+                    } else {
+                        row.child(format(row.data())).show();
+                        tr.addClass('shown');
+                    }
+                });
+
+                $('#reject_reason').on('keyup', function() {
+                    if ($(this).val() != "")
+                        $('#btn-reject').removeAttr('disabled');
+                    else
+                        $('#btn-reject').attr('disabled', 'disabled');
+                });
+
+                $('#btn-approve').on('clcik', function() {
+
+                });
+
             });
-
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
-
-            $('#reject_reason').on('keyup', function(){
-                if($(this).val()!="")
-                    $('#btn-reject').removeAttr('disabled');
-                else
-                    $('#btn-reject').attr('disabled','disabled');
-            });
-
-            $('#btn-approve').on('clcik', function(){
-
-            });
-
-        });
-    </script>
-@endpush
+        </script>
+    @endpush

@@ -5,7 +5,7 @@
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Manager Approved</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -14,14 +14,16 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+                    <a href="{{ route('website.account.show_it_mgr_approval') }}" class="btn btn-primary">Show
+                        Waiting Approve</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
-                                <th>Date</th>
+                                <th>Date Approved</th>
                             </tr>
                         </thead>
                     </table>
@@ -71,6 +73,17 @@
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
                     </tr>
+
+                    <tfoot>
+                    <tr>
+                        <th>Created by</th>
+                        <th>${d.user_name}</th>
+                    </tr>
+                    <tr>
+                        <th>Purpose</th>
+                        <th>${d.purpose}</th>
+                    </tr>
+                    </tfoot>
                 </table>
                 `
                 );

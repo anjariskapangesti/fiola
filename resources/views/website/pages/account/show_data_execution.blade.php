@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'ITD Data Approval Account'])
+@extends('website.layouts.main', ['title' => 'Finished Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approved</a></li>
+                <li class="breadcrumb-item "><a href="#">Finished</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -14,8 +14,8 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-                    <a href="{{ route('website.account.show_it_approval') }}" class="btn btn-primary">Show
-                        Waiting Approve</a>
+                    <a href="{{ route('website.account.show_execution') }}" class="btn btn-primary">Show
+                        Execution</a>
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
@@ -95,7 +95,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.account.show_data_it_approval_ajax') }}",
+                        url: "{{ route('website.account.show_data_execution_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -124,8 +124,8 @@
                             name: 'form_type'
                         },
                         {
-                            data: 'it_approval_date',
-                            name: 'it_approval_date'
+                            data: 'finish_date',
+                            name: 'finish_date'
                         },
                     ],
                 });

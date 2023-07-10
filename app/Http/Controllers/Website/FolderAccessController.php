@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\FolderAccess;
 use App\Models\FolderAccessPath;
 use App\Models\Department;
+use App\Models\Folder;
 use App\Models\User;
 
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,10 @@ class FolderAccessController extends Controller
 {
     public function create()
     {
-        $depts = Department::all();
-        return view('website.pages.folder-access.create', compact(['depts']));
+        $departmetns = Department::all();
+        $folders = Folder::orderBy('name', 'ASC')->get();
+        
+        return view('website.pages.folder-access.create', compact(['departmetns', 'folders']));
     }
 
     public function store(Request $request)

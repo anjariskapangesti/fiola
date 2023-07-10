@@ -14,8 +14,17 @@ use Auth;
 class HomeController extends Controller
 {
     public function index()
-    {
-        $account_mgr_count = Account::where('final_status', 'LIKE', '%created%')->where('created_dept', Auth::user()->departments->pluck('id')->first())->count();
+    {       
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        $account_mgr_count = Account::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
         $account_it_count = Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $account_it_mgr_count = Account::where('final_status', 'LIKE', 'IT Approve%')->count();
         $account_execution_count = Account::where('final_status', 'LIKE', '%MGR IT Approve%')->count();

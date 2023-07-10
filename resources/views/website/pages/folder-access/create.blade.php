@@ -45,15 +45,14 @@
                                     </div>
                                     <div id="dynamic-row" class="">
                                         <div class="row border p-3">
-                                            <div class="col-sm-3">
-                                                <select name="folder[]" id="" class="form-control" required>
-                                                    <option value="">-- Choose Folder --</option>
-                                                    <option value="01_AIIA_BUSINESS">01_AIIA_BUSINESS</option>
-                                                    <option value="02_EXECUTIVES">02_EXECUTIVES</option>
-                                                    <option value="03_ADMINISTRATION">03_ADMINISTRATION</option>
-                                                    <option value="04_PRODUCTION">04_PRODUCTION</option>
-                                                    <option value="05_ENGINEERING">05_ENGINEERING</option>
-                                                    <option value="99_PUBLIC_FOLDER">99_PUBLIC_FOLDER</option>
+                                            <div class="col-md-3">
+                                                <select name="folder" class="form-control" required>
+                                                    <option selected disabled value="">-- Choose Folder --
+                                                    </option>
+                                                    @foreach ($folders as $folder)
+                                                        <option value="{{ $folder->name }}">{{ $folder->name }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-sm-3">
@@ -63,6 +62,10 @@
                                                     <option value="02_WO_Realease">02_WO_Realease</option>
                                                 </select>
                                             </div>
+                                            {{-- <div class="col-md-3">
+                                                <input type="text" class="form-control" placeholder="Subfolder"
+                                                    name="subsubfolder" maxlength="60" required>
+                                            </div> --}}
                                             <div class="col-sm-4">
                                                 <select name="permission[]" id="" class="form-control" required>
                                                     <option value="">-- Choose Permission --</option>
@@ -151,15 +154,14 @@
             $('#dynamic-row').on('click', '.btn-tambah', function() {
                 const html = `
             <div class="row border p-2">
-                <div class="col-sm-3">
-                    <select name="folder[]" id="" class="form-control">
-                        <option value="">-- Choose Folder --</option>
-                        <option value="01_AIIA_BUSINESS">01_AIIA_BUSINESS</option>
-                        <option value="02_EXECUTIVES">02_EXECUTIVES</option>
-                        <option value="03_ADMINISTRATION">03_ADMINISTRATION</option>
-                        <option value="04_PRODUCTION">04_PRODUCTION</option>
-                        <option value="05_ENGINEERING">05_ENGINEERING</option>
-                        <option value="99_PUBLIC_FOLDER">99_PUBLIC_FOLDER</option>
+                <div class="col-md-3">
+                    <select name="folder" class="form-control" required>
+                        <option selected disabled value="">-- Choose Folder --
+                        </option>
+                        @foreach ($folders as $folder)
+                            <option value="{{ $folder->name }}">{{ $folder->name }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-sm-3">

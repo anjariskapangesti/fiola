@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Execution Approval Account'])
+@extends('website.layouts.main', ['title' => 'Execution Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Approval Account Registration/Change/Deletion</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Execution Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">Execution</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>

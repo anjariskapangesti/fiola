@@ -24,10 +24,9 @@
                     <li class="dropdown-header">
                         @if (Auth())
                             <h6>{{ Auth::user()->name }}</h6>
-                            @if (auth()->user()->departments)
-                                <p>{{ auth()->user()->departments->pluck('name')->first() }}</p>
-                            @endif
+                            <p>{{ Auth::user()->departments->pluck('name')->implode(', ') }}</p>
                         @endif
+
                     </li>
                     <li>
                         <hr class="dropdown-divider">

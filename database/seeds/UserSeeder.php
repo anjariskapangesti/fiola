@@ -2,10 +2,6 @@
 
 use Illuminate\Database\Seeder;
 
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Department;
-
 class UserSeeder extends Seeder
 {
     /**
@@ -15,16 +11,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        // $department = Department::find(9);
-        // $model_type = ['model_type' => "App\Models\User"];
-
-        // Membuat pengguna Administrator
-        // $admin = User::create([
-        //     'name' => 'Administrator',
-        //     'email' => 'administaror@aiia.co.id',
-        //     'password' => Hash::make('nimda'),
-        // ]);
-
         DB::table('users')->insert([
             'name' => 'Administrator',
             'email' => 'administrator@aiia.co.id',

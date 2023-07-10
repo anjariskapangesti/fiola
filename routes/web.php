@@ -23,7 +23,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/home', 'HomeController@index')->name('auth.home');
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
-        // DEPARTMENT //
+        // MASTER //
         Route::group(['prefix' => 'department'], function(){
             Route::group(['middleware' => ['can:can_master']], function () {
                 Route::get('/create', 'DepartmentController@create')->name('department.create');
@@ -31,6 +31,26 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::delete('/destroy', 'DepartmentController@destroy')->name('department.destroy');
                 Route::get('/show_data_department', 'DepartmentController@show_data_department')->name('department.show_data_department');
                 Route::get('/show_data_department_ajax', 'DepartmentController@show_data_department_ajax')->name('department.show_data_department_ajax');
+            });
+        });
+
+        Route::group(['prefix' => 'folder'], function(){
+            Route::group(['middleware' => ['can:can_master']], function () {
+                Route::get('/create', 'FolderController@create')->name('folder.create');
+                Route::post('/store', 'FolderController@store')->name('folder.store');
+                Route::delete('/destroy', 'FolderController@destroy')->name('folder.destroy');
+                Route::get('/show_data_folder', 'FolderController@show_data_folder')->name('folder.show_data_folder');
+                Route::get('/show_data_folder_ajax', 'FolderController@show_data_folder_ajax')->name('folder.show_data_folder_ajax');
+            });
+        });
+
+        Route::group(['prefix' => 'subfolder'], function(){
+            Route::group(['middleware' => ['can:can_master']], function () {
+                Route::get('/create', 'SubFolderController@create')->name('subfolder.create');
+                Route::post('/store', 'SubFolderController@store')->name('subfolder.store');
+                Route::delete('/destroy', 'SubFolderController@destroy')->name('subfolder.destroy');
+                Route::get('/show_data_subfolder', 'SubFolderController@show_data_subfolder')->name('subfolder.show_data_subfolder');
+                Route::get('/show_data_subfolder_ajax', 'SubFolderController@show_data_subfolder_ajax')->name('subfolder.show_data_subfolder_ajax');
             });
         });
 
@@ -43,14 +63,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/show_data_user_ajax', 'UserController@show_data_user_ajax')->name('user.show_data_user_ajax');
             });
         });
-        // // DEPARTMENT //
-        // Route::group(['prefix' => 'folder-path'], function(){
-        //     Route::get('/create', 'DepartmentController@create')->name('department.create');
-        //     Route::post('/store', 'DepartmentController@store')->name('department.store');
-        //     Route::delete('/destroy', 'DepartmentController@destroy')->name('department.destroy');
-        //     Route::get('/show_data_department', 'DepartmentController@show_data_department')->name('department.show_data_department');
-        //     Route::get('/show_data_department_ajax', 'DepartmentController@show_data_department_ajax')->name('department.show_data_department_ajax');
-        // });
+
+        
         // FORM ACCOUNT //
         Route::group(['prefix' => 'account'], function(){
             Route::group(['middleware' => ['can:can_create_form']], function () {

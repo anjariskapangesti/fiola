@@ -9,43 +9,43 @@
         </li><!-- End Dashboard Nav -->
         <li class="nav-heading">Pages</li>
         @can('can_create_form')
-        <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{ route('website.account.create') }}">
-                        <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('website.folder-access.create') }}">
-                        <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Forms Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('website.account.create') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.folder-access.create') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Forms Nav -->
         @endcan
 
         @can('can_approve_mgr')
@@ -382,12 +382,12 @@
                 </a>
                 <ul id="app_folder_path_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.folder.show_data_folder') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.subfolder.show_data_subfolder') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Sub Folder</span>
                         </a>
                     </li>
