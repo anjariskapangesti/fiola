@@ -103,6 +103,10 @@ class FolderAccessController extends Controller
                 $query->where('created_dept', $firstDepartmentId)
                     ->orWhere('created_dept', $lastDepartmentId);
             })
+
+            // ->join('users', 'form_account.created_by', '=', 'users.id')
+            // ->select('form_account.*', 'users.name as user_name')
+
             ->where('final_status','created')
             ->orderBy('form_folder_access.id', 'desc')->with('form_folder_access_path')->get();
         return DataTables::of($data)->make(true);

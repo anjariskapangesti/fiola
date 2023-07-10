@@ -334,7 +334,7 @@
                 </a>
                 <ul id="finished" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.account.show_data_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
                         </a>
                     </li>

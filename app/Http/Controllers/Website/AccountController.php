@@ -35,7 +35,6 @@ class AccountController extends Controller
             'phone' => 'required' ,
             'purpose' => 'required' ,
             'ad_name' => 'required' ,
-            'is_email' => 'required' ,
         ]);
         if($request->is_email==false){
             $request->is_email = 0;

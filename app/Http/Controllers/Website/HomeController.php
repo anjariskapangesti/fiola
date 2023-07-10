@@ -29,9 +29,14 @@ class HomeController extends Controller
         $account_it_mgr_count = Account::where('final_status', 'LIKE', 'IT Approve%')->count();
         $account_execution_count = Account::where('final_status', 'LIKE', '%MGR IT Approve%')->count();
 
-        $folderaccess_mgr_count = FolderAccess::where('final_status', 'LIKE', '%created%')->where('created_dept', Auth::user()->dept_id)->count();
-        $folderaccess_it_count = FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->where('created_dept', Auth::user()->dept_id)->count();
-        $folderaccess_it_mgr_count = FolderAccess::where('final_status', 'LIKE', 'IT Approve%')->where('created_dept', Auth::user()->dept_id)->count();
+        $folderaccess_mgr_count = FolderAccess::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                    $query->where('created_dept', $firstDepartmentId)
+                                        ->orWhere('created_dept', $lastDepartmentId);
+                                })
+                                        ->where('final_status', 'LIKE', '%created%')->count();
+
+        $folderaccess_it_count = FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $folderaccess_it_mgr_count = FolderAccess::where('final_status', 'LIKE', 'IT Approve%')->count();
         $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%MGR IT Approve%')->where('created_dept', Auth::user()->dept_id)->count();
 
         return view('website.pages.home', compact('account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
