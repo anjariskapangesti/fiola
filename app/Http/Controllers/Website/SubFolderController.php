@@ -15,9 +15,9 @@ class SubFolderController extends Controller
 {
     public function create()
     {
-        $subfolders = SubFolder::orderBy('name', 'ASC')->get();
+        $folders = Folder::orderBy('name', 'ASC')->get();
         
-        return view('website.pages.subfolder.create', compact('subfolders'));
+        return view('website.pages.subfolder.create', compact('folders'));
     }
 
     public function store(Request $request)
@@ -29,7 +29,8 @@ class SubFolderController extends Controller
         try
         {
             SubFolder::create([
-                'name' => $request->name ,                
+                'name' => $request->name , 
+                'folder_id' => $request->folder_id,               
             ]);
             // return redirect()->back()->with('success', 'Success Add subfolder');
             return redirect('/subfolder/show_data_subfolder')->with('success', 'Success Add subfolder');

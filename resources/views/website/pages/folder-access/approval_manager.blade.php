@@ -185,6 +185,11 @@
                                 <th>${d.creator_purpose}</th>
                                 <th></th>
                             </tr>
+                            <tr>
+                                <th>Created by</th>
+                                <th>${d.creator_created_by}</th>
+                                <th></th>
+                            </tr>
                         </tfoot>                      
                         </table>`
 

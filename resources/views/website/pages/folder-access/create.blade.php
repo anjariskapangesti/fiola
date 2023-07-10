@@ -46,7 +46,7 @@
                                     <div id="dynamic-row" class="">
                                         <div class="row border p-3">
                                             <div class="col-md-3">
-                                                <select name="folder" class="form-control" required>
+                                                <select name="folder[]" id="folder" class="form-control" required>
                                                     <option selected disabled value="">-- Choose Folder --
                                                     </option>
                                                     @foreach ($folders as $folder)
@@ -54,12 +54,11 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div>                                            
+
                                             <div class="col-sm-3">
-                                                <select name="subfolder[]" id="" class="form-control" required>
-                                                    <option value="">-- Choose Sub Folder --</option>
-                                                    <option value="01_Official Report">01_Official Report</option>
-                                                    <option value="02_WO_Realease">02_WO_Realease</option>
+                                                <select name="subfolder[]" id="subfolder" class="form-control" required>
+                                                    <option value="">-- Choose Sub Folder --</option>                                                    
                                                 </select>
                                             </div>
                                             {{-- <div class="col-md-3">
@@ -155,7 +154,7 @@
                 const html = `
             <div class="row border p-2">
                 <div class="col-md-3">
-                    <select name="folder" class="form-control" required>
+                    <select name="folder[]" id="folder" class="form-control" required>
                         <option selected disabled value="">-- Choose Folder --
                         </option>
                         @foreach ($folders as $folder)
@@ -163,12 +162,10 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
+                </div> 
                 <div class="col-sm-3">
-                    <select name="subfolder[]" id="" class="form-control">
-                        <option value="">-- Choose Sub Folder --</option>
-                        <option value="01_Official Report">01_Official Report</option>
-                        <option value="02_WO_Realease">02_WO_Realease</option>
+                    <select name="subfolder[]" id="subfolder" class="form-control" required>
+                        <option value="">-- Choose Sub Folder --</option>                                                    
                     </select>
                 </div>
                 <div class="col-sm-4">
@@ -198,6 +195,27 @@
                 var formattedMaxDate = maxDate.toISOString().split('T')[0];
                 $(this).attr('max', formattedMaxDate);
             })
+
+            $('#folder').on('change', function () {
+                var idFolder = this.value;
+                $("#subfolder").html('');
+                $.ajax({
+                    url: "{{ route('website.folder-access.subfolder_ajax') }}",
+                    type: "GET",
+                    data: {
+                        folder_id: idFolder,
+                        _token: '{{csrf_token()}}'
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#subfolder').html('<option value="">-- Choose Sub Folder --</option>');
+                        $.each(result.subfolders    , function (key, value) {
+                            $("#subfolder").append('<option value="' + value
+                                .name + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            });
 
         })
     </script>

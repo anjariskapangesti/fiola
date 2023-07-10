@@ -108,6 +108,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::group(['prefix' => 'folder-access'], function(){
             Route::get('/create', 'FolderAccessController@create')->name('folder-access.create');
             Route::post('/store', 'FolderAccessController@store')->name('folder-access.store');
+            Route::get('/subfolder_ajax', 'FolderAccessController@subfolder_ajax')->name('folder-access.subfolder_ajax');
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'FolderAccessController@show_manager_approval')->name('folder-access.show_manager_approval');
