@@ -54,11 +54,11 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            </div>                                            
+                                            </div>
 
                                             <div class="col-sm-3">
                                                 <select name="subfolder[]" id="subfolder" class="form-control" required>
-                                                    <option value="">-- Choose Sub Folder --</option>                                                    
+                                                    <option value="">-- Choose Sub Folder --</option>
                                                 </select>
                                             </div>
                                             {{-- <div class="col-md-3">
@@ -149,12 +149,13 @@
                 toastr['success']("{{ Session('success') }}")
             @endif
 
-
             $('#dynamic-row').on('click', '.btn-tambah', function() {
+                const rowCounter = $('.row.border').length + 1;
+
                 const html = `
             <div class="row border p-2">
                 <div class="col-md-3">
-                    <select name="folder[]" id="folder" class="form-control" required>
+                    <select name="folder[]" id="folder${rowCounter}" class="form-control" required>
                         <option selected disabled value="">-- Choose Folder --
                         </option>
                         @foreach ($folders as $folder)
@@ -164,7 +165,7 @@
                     </select>
                 </div> 
                 <div class="col-sm-3">
-                    <select name="subfolder[]" id="subfolder" class="form-control" required>
+                    <select name="subfolder[]" id="subfolder${rowCounter}" class="form-control" required>
                         <option value="">-- Choose Sub Folder --</option>                                                    
                     </select>
                 </div>
@@ -196,22 +197,25 @@
                 $(this).attr('max', formattedMaxDate);
             })
 
-            $('#folder').on('change', function () {
-                var idFolder = this.value;
-                $("#subfolder").html('');
+            $('#dynamic-row').on('change', 'select[name="folder[]"]', function() {
+                var idFolder = $(this).val();
+                var subfolderSelect = $(this).closest('.row').find('select[name="subfolder[]"]');
+
+                subfolderSelect.html('');
                 $.ajax({
                     url: "{{ route('website.folder-access.subfolder_ajax') }}",
                     type: "GET",
                     data: {
                         folder_id: idFolder,
-                        _token: '{{csrf_token()}}'
+                        _token: '{{ csrf_token() }}'
                     },
                     dataType: 'json',
-                    success: function (result) {
-                        $('#subfolder').html('<option value="">-- Choose Sub Folder --</option>');
-                        $.each(result.subfolders    , function (key, value) {
-                            $("#subfolder").append('<option value="' + value
-                                .name + '">' + value.name + '</option>');
+                    success: function(result) {
+                        subfolderSelect.html(
+                            '<option value="">-- Choose Sub Folder --</option>');
+                        $.each(result.subfolders, function(key, value) {
+                            subfolderSelect.append('<option value="' + value.name +
+                                '">' + value.name + '</option>');
                         });
                     }
                 });
