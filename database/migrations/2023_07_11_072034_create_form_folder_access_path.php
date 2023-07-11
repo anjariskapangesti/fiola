@@ -16,8 +16,8 @@ class CreateFormFolderAccessPath extends Migration
         Schema::create('form_folder_access_path', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('folder_access_id');
-            $table->string('folder');
-            $table->string('subfolder');
+            $table->unsignedBigInteger('folder');
+            $table->unsignedBigInteger('subfolder');
             $table->string('permission');
             $table->timestamps();
 
@@ -25,6 +25,16 @@ class CreateFormFolderAccessPath extends Migration
                   ->references('id')
                   ->on('form_folder_access')
                   ->onDelete('cascade');
+                
+            $table->foreign('folder')
+            ->references('id')
+            ->on('folders')
+            ->onDelete('cascade');
+
+            $table->foreign('subfolder')
+            ->references('id')
+            ->on('subfolders')
+            ->onDelete('cascade');
         });
     }
 

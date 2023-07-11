@@ -38,19 +38,19 @@
                                         <div class="invalid-feedback">Please enter your email</div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="card-body">
                                     <div class="mt-1 row border bg-light">
                                         <label for="message" class="col-sm-6 col-form-label">Folder Path</label>
                                         <label for="message" class="col-sm-4 col-form-label">Permission</label>
                                     </div>
                                     <div id="dynamic-row" class="">
-                                        <div class="row border p-3">
+                                        <div class="row border p-2">
                                             <div class="col-md-3">
                                                 <select name="folder[]" id="folder" class="form-control" required>
                                                     <option selected disabled value="">-- Choose Folder --
                                                     </option>
                                                     @foreach ($folders as $folder)
-                                                        <option value="{{ $folder->name }}">{{ $folder->name }}
+                                                        <option value="{{ $folder->id }}">{{ $folder->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -72,61 +72,25 @@
                                                     <option value="Modify">Modify</option>
                                                 </select>
                                             </div>
-                                            <div class="col-sm-2">
-                                                <button type="button" class="btn btn-light border btn-sm btn-tambah">Add
-                                                    Row</button>
+                                            <div class="col-sm-1">
+                                                <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
+                                                    </button>
                                             </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-floating mb-3 mt-3">
-                                                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
-                                                    name="purpose" maxlength="100" required></textarea>
-                                                <label for="floatingTextarea">Purpose</label>
-                                            </div>
-                                        </div>
+                                        </div>                                        
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                            name="purpose" maxlength="100" required></textarea>
+                                        <label for="floatingTextarea">Purpose</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">D. Approval Flow</h5>
-                                    <div class="md-stepper-horizontal orange">
-                                        <div class="md-step active">
-                                            <div class="md-step-circle"><span>1</span></div>
-                                            <div class="md-step-title">Submit Request</div>
-                                            <div class="md-step-optional">This step</div>
-                                            <div class="md-step-bar-left"></div>
-                                            <div class="md-step-bar-right"></div>
-                                        </div>
-                                        <div class="md-step active">
-                                            <div class="md-step-circle"><span>2</span></div>
-                                            <div class="md-step-title">Approval Manager</div>
-                                            <div class="md-step-optional">Request Approveal to your Manager</div>
-                                            <div class="md-step-bar-left"></div>
-                                            <div class="md-step-bar-right"></div>
-                                        </div>
-                                        <div class="md-step active">
-                                            <div class="md-step-circle"><span>3</span></div>
-                                            <div class="md-step-title">Approval ITD</div>
-                                            <div class="md-step-bar-left"></div>
-                                            <div class="md-step-bar-right"></div>
-                                        </div>
-                                        <div class="md-step active">
-                                            <div class="md-step-circle"><span>4</span></div>
-                                            <div class="md-step-title">Approval MGR ITD</div>
-                                            <div class="md-step-bar-left"></div>
-                                            <div class="md-step-bar-right"></div>
-                                        </div>
-                                        <div class="md-step active">
-                                            <div class="md-step-circle"><span>5</span></div>
-                                            <div class="md-step-title">Execution</div>
-                                            <div class="md-step-bar-left"></div>
-                                            <div class="md-step-bar-right"></div>
-                                        </div>
-                                    </div>
-
+                                    @include('website.layouts.approval_flow')
                                 </div>
-
                             </div>
                         </div>
                         <button class="btn btn-success" type="submit">Save & Submit Request</button>
@@ -159,7 +123,7 @@
                         <option selected disabled value="">-- Choose Folder --
                         </option>
                         @foreach ($folders as $folder)
-                            <option value="{{ $folder->name }}">{{ $folder->name }}
+                            <option value="{{ $folder->id }}">{{ $folder->name }}
                             </option>
                         @endforeach
                     </select>
@@ -176,8 +140,8 @@
                         <option value="Modify">Modify</option>
                     </select>
                 </div>                                         
-                <div class="col-sm-2">
-                    <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Delete Row</button>
+                <div class="col-sm-1">
+                    <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Delete</button>
                 </div>
             </div>  
         `
@@ -214,7 +178,7 @@
                         subfolderSelect.html(
                             '<option value="">-- Choose Sub Folder --</option>');
                         $.each(result.subfolders, function(key, value) {
-                            subfolderSelect.append('<option value="' + value.name +
+                            subfolderSelect.append('<option value="' + value.id +
                                 '">' + value.name + '</option>');
                         });
                     }

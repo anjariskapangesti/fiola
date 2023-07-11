@@ -84,10 +84,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Mobile Phone" name="phone"
-                                        maxlength="12" required>
+                                        maxlength="13" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Company Name (If External)"
+                                    <input type="text" class="form-control" placeholder="Company Name (If External/Non AIIA)"
                                         name="company" maxlength="100">
                                 </div>
                                 <div class="col-md-6">
@@ -130,42 +130,7 @@
                     
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">D. Approval Flow</h5>
-                            <div class="md-stepper-horizontal orange">
-                                <div class="md-step active">
-                                    <div class="md-step-circle"><span>1</span></div>
-                                    <div class="md-step-title">Submit Request</div>
-                                    <div class="md-step-optional">This step</div>
-                                    <div class="md-step-bar-left"></div>
-                                    <div class="md-step-bar-right"></div>
-                                </div>
-                                <div class="md-step active">
-                                    <div class="md-step-circle"><span>2</span></div>
-                                    <div class="md-step-title">Approval Manager</div>
-                                    <div class="md-step-optional">Request Approval to your Manager</div>
-                                    <div class="md-step-bar-left"></div>
-                                    <div class="md-step-bar-right"></div>
-                                </div>
-                                <div class="md-step active">
-                                    <div class="md-step-circle"><span>3</span></div>
-                                    <div class="md-step-title">Approval ITD</div>
-                                    <div class="md-step-bar-left"></div>
-                                    <div class="md-step-bar-right"></div>
-                                </div>
-                                <div class="md-step active">
-                                    <div class="md-step-circle"><span>4</span></div>
-                                    <div class="md-step-title">Approval MGR ITD</div>
-                                    <div class="md-step-bar-left"></div>
-                                    <div class="md-step-bar-right"></div>
-                                </div>
-                                <div class="md-step active">
-                                    <div class="md-step-circle"><span>5</span></div>
-                                    <div class="md-step-title">Execution</div>
-                                    <div class="md-step-bar-left"></div>
-                                    <div class="md-step-bar-right"></div>
-                                </div>
-                            </div>
-
+                            @include('website.layouts.approval_flow')
                         </div>
                     </div>
                     {{-- <input type="hidden" name="created_dept" value="{{ $userDepartment->id }}"> --}}

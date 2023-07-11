@@ -17,7 +17,7 @@
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Username</th>
                                 <th>Option</th>
                             </tr>
@@ -96,13 +96,13 @@
 
             var table = $('.table').DataTable({
                 'bLengthChange': false,
-                'language': {
-                    'search': 'Cari',
-                    'lengthMenu': 'Tampilkan _MENU_ data per halaman',
-                    'info': 'Menampilkan halaman _PAGE_ dari _PAGES_'
-                },
+                // 'language': {
+                //     'search': 'Cari',
+                //     'lengthMenu': 'Tampilkan _MENU_ data per halaman',
+                //     'info': 'Menampilkan halaman _PAGE_ dari _PAGES_'
+                // },
                 processing: true,
-                ordering: false,
+                ordering: true,
                 serverSide: true,
                 ajax: {
                     'url': "{{ route('website.folder-access.show_manager_approval_ajax') }}",
