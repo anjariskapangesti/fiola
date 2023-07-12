@@ -52,12 +52,14 @@ class FolderAccessController extends Controller
             DB::transaction(function () use ($request) {
                 $final_status = 'created';
                 $user = Auth::user();
+                $folder_name = Folder::all();
+            //    dd($folder_name);
 
                 $folderaccess = FolderAccess::create([
                     'username' => $request->username,
                     'purpose' => $request->purpose,
                     'created_by' => $user->id,
-                    'created_dept' => Auth::user()->departments->pluck('id')->first(),
+                    'created_dept' => $user->departments->pluck('id')->first(),
                     'final_status' => $final_status,
                 ]);
                 $folderaccess->save();
@@ -65,7 +67,7 @@ class FolderAccessController extends Controller
                 for ($i = 0; $i < count($request->folder ); $i++) {
                     FolderAccessPath::create([
                         'folder_access_id' => $folderaccess->id,
-                        'folder' => $request->folder[$i],
+                        'folder' => Folder::all()->pluck('name')[$i],
                         'subfolder' => $request->subfolder[$i],
                         'permission' => $request->permission[$i],
                     ]);
@@ -97,28 +99,27 @@ class FolderAccessController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
+        
+        $folderName = FolderAccessPath::join('folders', 'form_folder_access_path.folder', '=', 'folders.id')
+                                        ->join('subfolders', 'form_folder_access_path.subfolder', '=', 'subfolders.id')
+                                        ->select('folders.name as folder_name', 'subfolders.name as subfolder_name')->get();
+        // dd($folderName);
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-        ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('form_folder_access.created_by as creator_created_by'))
+        
+            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
+                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'))
             
             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                 $query->where('created_dept', $firstDepartmentId)
                     ->orWhere('created_dept', $lastDepartmentId);
             })
-
-            // ->join('users', 'form_account.created_by', '=', 'users.id')
-            // ->select('form_account.*', 'users.name as user_name')
-
             ->where('final_status','created')
-            ->orderBy('form_folder_access.id', 'desc')->with('form_folder_access_path')->get();
+            ->orderBy('form_folder_access.id', 'desc')
+            ->with('form_folder_access_path')
             
+            ->get();
+            // dd($data);  
         return DataTables::of($data)->make(true);
-
-        
-        
-        
-        // return $data;
-        return DataTables::eloquent($data)->make(true);
     }
 
     // public function show_manager_approval_ajax(Request $request)

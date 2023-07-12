@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\FolderAccessPath;
+use App\Models\Folder;
 
 class FolderAccess extends Model
 {
@@ -28,13 +29,18 @@ class FolderAccess extends Model
         'created_dept'
     ];
 
-    public function FolderAccessPath()
-    {
-        return $this->hasMany(FolderAccessPath::class);
-    }
+    // public function FolderAccessPath()
+    // {
+    //     return $this->hasMany(FolderAccessPath::class);
+    // }
 
     public function form_folder_access_path()
     {
-        return $this->hasMany('App\Models\FolderAccessPath', 'folder_access_id', 'id');
+        return $this->hasMany(FolderAccessPath::class, 'folder_access_id', 'id');
+    }
+
+    public function folder_name()
+    {
+        return $this->belongsToMany(Folder::class, 'folder', 'id');
     }
 }

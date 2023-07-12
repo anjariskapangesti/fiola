@@ -169,6 +169,7 @@
                                                 <td> Permission </td>
                                                 </tr>
                                                 `
+                    console.log(d)
                 for (let i = 0; i < d.form_folder_access_path.length; i++) {
                     html += `<tr>
                                     <td>${d.form_folder_access_path[i].folder}</td>

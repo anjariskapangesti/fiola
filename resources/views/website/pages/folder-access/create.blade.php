@@ -178,7 +178,7 @@
                         subfolderSelect.html(
                             '<option value="">-- Choose Sub Folder --</option>');
                         $.each(result.subfolders, function(key, value) {
-                            subfolderSelect.append('<option value="' + value.id +
+                            subfolderSelect.append('<option value="' + value.name +
                                 '">' + value.name + '</option>');
                         });
                     }
