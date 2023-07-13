@@ -133,11 +133,155 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             });
 
             Route::group(['middleware' => ['can:can_execution']], function () {
-                Route::get('/show_execution_approval', 'FolderAccessController@show_execution_approval')->name('folder-access.show_execution_approval');
-                Route::get('/show_execution_approval_ajax', 'FolderAccessController@show_execution_approval_ajax')->name('folder-access.show_execution_approval_ajax');
+                Route::get('/show_execution', 'FolderAccessController@show_execution')->name('folder-access.show_execution');
+                Route::get('/show_execution_ajax', 'FolderAccessController@show_execution_ajax')->name('folder-access.show_execution_ajax');
                 Route::post('/approve_execution', 'FolderAccessController@approve_execution')->name('folder-access.approve_execution');
-                Route::get('/show_data_execution_approval', 'FolderAccessController@show_data_execution_approval')->name('folder-access.show_data_execution_approval');
-                Route::get('/show_data_execution_approval_ajax', 'FolderAccessController@show_data_execution_approval_ajax')->name('folder-access.show_data_execution_approval_ajax');
+                Route::get('/show_data_execution', 'FolderAccessController@show_data_execution')->name('folder-access.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'FolderAccessController@show_data_execution_ajax')->name('folder-access.show_data_execution_ajax');
+            });
+        });
+        // FORM NEW FOLDER //
+        Route::group(['prefix' => 'new-folder'], function(){
+            Route::get('/create', 'NewFolderController@create')->name('new-folder.create');
+            Route::post('/store', 'NewFolderController@store')->name('new-folder.store');
+            Route::get('/subfolder_ajax', 'NewFolderController@subfolder_ajax')->name('new-folder.subfolder_ajax');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'NewFolderController@show_manager_approval')->name('new-folder.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'NewFolderController@show_manager_approval_ajax')->name('new-folder.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'NewFolderController@approve_manager')->name('new-folder.approve_manager');
+                Route::get('/show_data_manager_approval', 'NewFolderController@show_data_manager_approval')->name('new-folder.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'NewFolderController@show_data_manager_approval_ajax')->name('new-folder.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'NewFolderController@show_it_approval')->name('new-folder.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'NewFolderController@show_it_approval_ajax')->name('new-folder.show_it_approval_ajax');
+                Route::post('/approve_it', 'NewFolderController@approve_it')->name('new-folder.approve_it');
+                Route::get('/show_data_it_approval', 'NewFolderController@show_data_it_approval')->name('new-folder.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'NewFolderController@show_data_it_approval_ajax')->name('new-folder.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'NewFolderController@show_it_mgr_approval')->name('new-folder.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'NewFolderController@show_it_mgr_approval_ajax')->name('new-folder.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'NewFolderController@approve_it_mgr')->name('new-folder.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'NewFolderController@show_data_it_mgr_approval')->name('new-folder.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'NewFolderController@show_data_it_mgr_approval_ajax')->name('new-folder.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'NewFolderController@show_execution')->name('new-folder.show_execution');
+                Route::get('/show_execution_ajax', 'NewFolderController@show_execution_ajax')->name('new-folder.show_execution_ajax');
+                Route::post('/approve_execution', 'NewFolderController@approve_execution')->name('new-folder.approve_execution');
+                Route::get('/show_data_execution', 'NewFolderController@show_data_execution')->name('new-folder.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'NewFolderController@show_data_execution_ajax')->name('new-folder.show_data_execution_ajax');
+            });
+        });
+        // FORM SOFTWARE //
+        Route::group(['prefix' => 'software'], function(){
+            Route::get('/create', 'SoftwareController@create')->name('software.create');
+            Route::post('/store', 'SoftwareController@store')->name('software.store');
+            Route::get('/subfolder_ajax', 'SoftwareController@subfolder_ajax')->name('software.subfolder_ajax');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'SoftwareController@show_manager_approval')->name('software.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'SoftwareController@show_manager_approval_ajax')->name('software.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'SoftwareController@approve_manager')->name('software.approve_manager');
+                Route::get('/show_data_manager_approval', 'SoftwareController@show_data_manager_approval')->name('software.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'SoftwareController@show_data_manager_approval_ajax')->name('software.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'SoftwareController@show_it_approval')->name('software.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'SoftwareController@show_it_approval_ajax')->name('software.show_it_approval_ajax');
+                Route::post('/approve_it', 'SoftwareController@approve_it')->name('software.approve_it');
+                Route::get('/show_data_it_approval', 'SoftwareController@show_data_it_approval')->name('software.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'SoftwareController@show_data_it_approval_ajax')->name('software.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'SoftwareController@show_it_mgr_approval')->name('software.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'SoftwareController@show_it_mgr_approval_ajax')->name('software.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'SoftwareController@approve_it_mgr')->name('software.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'SoftwareController@show_data_it_mgr_approval')->name('software.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'SoftwareController@show_data_it_mgr_approval_ajax')->name('software.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'SoftwareController@show_execution')->name('software.show_execution');
+                Route::get('/show_execution_ajax', 'SoftwareController@show_execution_ajax')->name('software.show_execution_ajax');
+                Route::post('/approve_execution', 'SoftwareController@approve_execution')->name('software.approve_execution');
+                Route::get('/show_data_execution', 'SoftwareController@show_data_execution')->name('software.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'SoftwareController@show_data_execution_ajax')->name('software.show_data_execution_ajax');
+            });
+        });
+        // FORM HARDWARE //
+        Route::group(['prefix' => 'hardware'], function(){
+            Route::get('/create', 'HardwareController@create')->name('hardware.create');
+            Route::post('/store', 'HardwareController@store')->name('hardware.store');
+            Route::get('/subfolder_ajax', 'HardwareController@subfolder_ajax')->name('hardware.subfolder_ajax');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'HardwareController@show_manager_approval')->name('hardware.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'HardwareController@show_manager_approval_ajax')->name('hardware.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'HardwareController@approve_manager')->name('hardware.approve_manager');
+                Route::get('/show_data_manager_approval', 'HardwareController@show_data_manager_approval')->name('hardware.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'HardwareController@show_data_manager_approval_ajax')->name('hardware.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'HardwareController@show_it_approval')->name('hardware.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'HardwareController@show_it_approval_ajax')->name('hardware.show_it_approval_ajax');
+                Route::post('/approve_it', 'HardwareController@approve_it')->name('hardware.approve_it');
+                Route::get('/show_data_it_approval', 'HardwareController@show_data_it_approval')->name('hardware.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'HardwareController@show_data_it_approval_ajax')->name('hardware.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'HardwareController@show_it_mgr_approval')->name('hardware.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'HardwareController@show_it_mgr_approval_ajax')->name('hardware.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'HardwareController@approve_it_mgr')->name('hardware.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'HardwareController@show_data_it_mgr_approval')->name('hardware.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'HardwareController@show_data_it_mgr_approval_ajax')->name('hardware.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'HardwareController@show_execution')->name('hardware.show_execution');
+                Route::get('/show_execution_ajax', 'HardwareController@show_execution_ajax')->name('hardware.show_execution_ajax');
+                Route::post('/approve_execution', 'HardwareController@approve_execution')->name('hardware.approve_execution');
+                Route::get('/show_data_execution', 'HardwareController@show_data_execution')->name('hardware.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'HardwareController@show_data_execution_ajax')->name('hardware.show_data_execution_ajax');
+            });
+        });
+        // FORM VPN //
+        Route::group(['prefix' => 'vpn'], function(){
+            Route::get('/create', 'VpnController@create')->name('vpn.create');
+            Route::post('/store', 'VpnController@store')->name('vpn.store');
+            Route::get('/subfolder_ajax', 'VpnController@subfolder_ajax')->name('vpn.subfolder_ajax');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'VpnController@show_manager_approval')->name('vpn.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'VpnController@show_manager_approval_ajax')->name('vpn.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'VpnController@approve_manager')->name('vpn.approve_manager');
+                Route::get('/show_data_manager_approval', 'VpnController@show_data_manager_approval')->name('vpn.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'VpnController@show_data_manager_approval_ajax')->name('vpn.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'VpnController@show_it_approval')->name('vpn.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'VpnController@show_it_approval_ajax')->name('vpn.show_it_approval_ajax');
+                Route::post('/approve_it', 'VpnController@approve_it')->name('vpn.approve_it');
+                Route::get('/show_data_it_approval', 'VpnController@show_data_it_approval')->name('vpn.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'VpnController@show_data_it_approval_ajax')->name('vpn.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'VpnController@show_it_mgr_approval')->name('vpn.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'VpnController@show_it_mgr_approval_ajax')->name('vpn.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'VpnController@approve_it_mgr')->name('vpn.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'VpnController@show_data_it_mgr_approval')->name('vpn.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'VpnController@show_data_it_mgr_approval_ajax')->name('vpn.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'VpnController@show_execution')->name('vpn.show_execution');
+                Route::get('/show_execution_ajax', 'VpnController@show_execution_ajax')->name('vpn.show_execution_ajax');
+                Route::post('/approve_execution', 'VpnController@approve_execution')->name('vpn.approve_execution');
+                Route::get('/show_data_execution', 'VpnController@show_data_execution')->name('vpn.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'VpnController@show_data_execution_ajax')->name('vpn.show_data_execution_ajax');
             });
         });
     });

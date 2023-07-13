@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Folder Access'])
+@extends('website.layouts.main', ['title' => 'Manager Approval New Folder'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Approval Change Access of Folder Share Application</h4>
+        <h4>File Server Folder Add/Change/Delete Form (FRM-ITD-S13-003-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Folder Access</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form New Folder</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->

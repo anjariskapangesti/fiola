@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\FolderAccess;
-use App\Models\FolderAccessPath;
 use App\Models\Department;
 use App\Models\Folder;
-use App\Models\SubFolder;
+use App\Models\NewFolder;
+use App\Models\NewFolderAccess;
 use App\Models\User;
 
 use Illuminate\Support\Facades\DB;
@@ -17,34 +16,25 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
-class FolderAccessController extends Controller
+class NewFolderController extends Controller
 {
     public function create()
     {
         $departments = Department::all();
         $folders = Folder::orderBy('name', 'ASC')->get();
-        $subfolders = SubFolder::orderBy('name', 'ASC')->get();
-        // dd($subfolders);
-        return view('website.pages.folder-access.create', compact(['departments', 'folders', 'subfolders']));
-    }
 
-    public function subfolder_ajax(Request $request)
-    {
-        $data['subfolders'] = SubFolder::join('folders', 'folders.id','subfolders.folder_id')
-        ->where("folders.name", $request->folder_id)
-                                ->orderBy('subfolders.name')
-                                ->get(["subfolders.name", "subfolders.id"]);
-  
-        return response()->json($data);
-    }
+        // dd($subfolders);
+        return view('website.pages.new-folder.create', compact(['departments', 'folders']));
+    }    
 
     public function store(Request $request)
     {
         try {
             $request->validate([
+                'foldername' => 'required',
+                'mainpath' => 'required',
                 'username' => 'required',
-                'folder' => 'required',
-                'subfolder' => 'required',
+                'department' => 'required',
                 'permission' => 'required',
                 'purpose' => 'required',
             ]);
@@ -52,24 +42,23 @@ class FolderAccessController extends Controller
 
             DB::transaction(function () use ($request) {
                 $final_status = 'created';
-                $user = Auth::user();
-                $folder_name = Folder::all();
-            //    dd($folder_name);
+                $user = Auth::user();                
 
-                $folderaccess = FolderAccess::create([
-                    'username' => $request->username,
+                $newfolder = NewFolder::create([
+                    'foldername' => $request->foldername,
+                    'mainpath' => $request->mainpath,
                     'purpose' => $request->purpose,
                     'created_by' => $user->id,
                     'created_dept' => $user->departments->pluck('id')->first(),
                     'final_status' => $final_status,
                 ]);
-                $folderaccess->save();
+                $newfolder->save();
 
-                for ($i = 0; $i < count($request->folder ); $i++) {
-                    FolderAccessPath::create([
-                        'folder_access_id' => $folderaccess->id,
-                        'folder' => $request->folder[$i],
-                        'subfolder' => $request->subfolder[$i],
+                for ($i = 0; $i < count($request->username ); $i++) {
+                    NewFolderAccess::create([
+                        'new_folder_id' => $newfolder->id,
+                        'username' => $request->username[$i],
+                        'department' => $request->department[$i],
                         'permission' => $request->permission[$i],
                     ]);
                 }
@@ -82,7 +71,7 @@ class FolderAccessController extends Controller
 
     public function show_manager_approval()
     {
-        return view('website.pages.folder-access.approval_manager');
+        return view('website.pages.new-folder.approval_manager');
     }
 
     public function show_manager_approval_ajax()
@@ -133,7 +122,7 @@ class FolderAccessController extends Controller
         $folders = Folder::orderBy('name', 'ASC')->get();
         $subfolders = SubFolder::orderBy('name', 'ASC')->get();
         // dd($subfolders);
-        return view('website.pages.folder-access.show_data_manager_approval', compact(['departmetns', 'folders', 'subfolders']));
+        return view('website.pages.new-folder.show_data_manager_approval', compact(['departmetns', 'folders', 'subfolders']));
     }
 
     public function show_data_manager_approval_ajax(Request $request)
@@ -162,7 +151,7 @@ class FolderAccessController extends Controller
 
     public function show_it_approval()
     {
-        return view('website.pages.folder-access.approval_it');
+        return view('website.pages.new-folder.approval_it');
     }
 
     public function show_it_approval_ajax(Request $request)
@@ -174,7 +163,7 @@ class FolderAccessController extends Controller
     public function show_data_it_approval()
     {
         $depts = Department::all();
-        return view('website.pages.folder-access.show_data_it_approval', compact(['depts']));
+        return view('website.pages.new-folder.show_data_it_approval', compact(['depts']));
     }
 
     public function show_data_it_approval_ajax(Request $request)

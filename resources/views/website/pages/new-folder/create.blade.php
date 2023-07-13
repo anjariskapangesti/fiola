@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Form Folder Access'])
+@extends('website.layouts.main', ['title' => 'Form New Folder'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h4>
+        <h4>File Server Folder Add/Change/Delete Form (FRM-ITD-S13-003-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Folder Access</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form New Folder</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -23,49 +23,61 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.folder-access.store') }}" class="needs-validation" novalidate>
+            <form method="post" action="{{ route('website.new-folder.store') }}" class="needs-validation" novalidate>
                 @csrf
                 <div class="col-lg-12">
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">A. Information Folder Access Permission</h5>
+                            <h5 class="card-title">A. Information New Folder Permission</h5>
                             <div class="row g-3">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <select name="mainpath" class="form-control" required>
+                                        <option selected disabled value="">-- Choose Main Path --
+                                        </option>
+                                        @foreach ($folders as $folder)
+                                            <option value="{{ $folder->name }}">{{ $folder->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="input-group has-validation">
-                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
-                                        <input type="text" name="username" class="form-control" placeholder="Username"
-                                            required>
-                                        <div class="invalid-feedback">Please enter your email</div>
+                                        <input type="text" name="foldername" class="form-control"
+                                            placeholder="New Folder Name" required>
+                                        <div class="invalid-feedback">Please enter your Folder Name</div>
                                     </div>
                                 </div>
+
+
+
                                 <div class="card-body">
+                                    <h5 class="card-title">B. Access Permission</h5>
                                     <div class="mt-1 row border bg-light">
-                                        <label for="message" class="col-sm-6 col-form-label">Folder Path</label>
+                                        <label for="message" class="col-sm-4 col-form-label">User Account</label>
+                                        <label for="message" class="col-sm-4 col-form-label">Department</label>
                                         <label for="message" class="col-sm-4 col-form-label">Permission</label>
                                     </div>
                                     <div id="dynamic-row" class="">
                                         <div class="row border p-2">
-                                            <div class="col-md-3">
-                                                <select name="folder[]" id="folder" class="form-control" required>
-                                                    <option selected disabled value="">-- Choose Folder --
+                                            <div class="col-md-4">
+                                                <div class="input-group has-validation">
+                                                    <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                                    <input type="text" name="username[]" class="form-control"
+                                                        placeholder="Username" required>
+                                                    <div class="invalid-feedback">Please enter your username</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select name="department[]" class="form-control" required>
+                                                    <option selected disabled value="">-- Choose Department --
                                                     </option>
-                                                    @foreach ($folders as $folder)
-                                                        <option value="{{ $folder->name }}">{{ $folder->name }}
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->name }}">{{ $department->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </div>
-
                                             <div class="col-sm-3">
-                                                <select name="subfolder[]" id="subfolder" class="form-control" required>
-                                                    <option value="">-- Choose Sub Folder --</option>
-                                                </select>
-                                            </div>
-                                            {{-- <div class="col-md-3">
-                                                <input type="text" class="form-control" placeholder="Subfolder"
-                                                    name="subsubfolder" maxlength="60" required>
-                                            </div> --}}
-                                            <div class="col-sm-4">
                                                 <select name="permission[]" id="" class="form-control" required>
                                                     <option value="">-- Choose Permission --</option>
                                                     <option value="Read-only">Read-only</option>
@@ -117,29 +129,34 @@
                 const rowCounter = $('.row.border').length + 1;
 
                 const html = `
-            <div class="row border p-2">
-                <div class="col-md-3">
-                    <select name="folder[]" id="folder${rowCounter}" class="form-control" required>
-                        <option selected disabled value="">-- Choose Folder --
-                        </option>
-                        @foreach ($folders as $folder)
-                            <option value="{{ $folder->name }}">{{ $folder->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div> 
-                <div class="col-sm-3">
-                    <select name="subfolder[]" id="subfolder${rowCounter}" class="form-control" required>
-                        <option value="">-- Choose Sub Folder --</option>                                                    
-                    </select>
-                </div>
-                <div class="col-sm-4">
-                    <select name="permission[]" id="" class="form-control" required>
-                        <option value="">-- Choose Permission --</option>
-                        <option value="Read-only">Read-only</option>
-                        <option value="Modify">Modify</option>
-                    </select>
-                </div>                                         
+                <div class="row border p-2">
+                                            <div class="col-md-4">
+                                                <div class="input-group has-validation">
+                                                    <span class="input-group-text" id="inputGroupPrepend">AIIA\\</span>
+                                                    <input type="text" name="username[]" class="form-control"
+                                                        placeholder="Username" required>
+                                                    <div class="invalid-feedback">Please enter your username</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select name="department[]" class="form-control" required>
+                                                    <option selected disabled value="">-- Choose Department --
+                                                    </option>
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->name }}">{{ $department->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <select name="permission[]" id="" class="form-control" required>
+                                                    <option value="">-- Choose Permission --</option>
+                                                    <option value="Read-only">Read-only</option>
+                                                    <option value="Modify">Modify</option>
+                                                </select>
+                                            </div>
+                                            
+                                                                              
                 <div class="col-sm-1">
                     <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Delete</button>
                 </div>

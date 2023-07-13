@@ -1321,3 +1321,8 @@ h6 {
     background: linear-gradient(to right, #f9900e, #ffba56) !important;
     color: #fff;
 }
+
+.l-bg-red {
+  background: linear-gradient(to right, #493240, #c20000) !important;
+  color: #fff;
+}

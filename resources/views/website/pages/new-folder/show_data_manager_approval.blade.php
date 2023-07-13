@@ -14,13 +14,12 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
                                 <th>Detail</th>
                                 <th>Username</th>
-                                <th>Option</th>
+                                <th>Date Approved</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -106,7 +105,7 @@
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.folder-access.show_manager_approval_ajax') }}",
+                    'url': "{{ route('website.folder-access.show_data_manager_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -122,14 +121,8 @@
                         name: 'creator_username',
                     },
                     {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-username="${data.username}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-username="${data.username}">Reject</button>`;
-                        }
+                        data: 'manager_date',
+                        name: 'manager_date',
                     },
                 ]
 

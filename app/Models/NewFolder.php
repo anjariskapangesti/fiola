@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\FolderAccessPath;
+use App\Models\NewFolderAccess;
 
-class FolderAccess extends Model
+class NewFolder extends Model
 {
-    protected $table = 'form_folder_access';
+    protected $table = 'form_new_folder';
     protected $fillable = [        
-        'username',
+        'foldername',
+        'mainpath',
         'purpose',
         'final_status',
         'is_manager_approve',
@@ -28,13 +29,8 @@ class FolderAccess extends Model
         'created_dept'
     ];
 
-    public function form_folder_access_path()
+    public function form_new_folder_access()
     {
-        return $this->hasMany(FolderAccessPath::class, 'folder_access_id', 'id');
+        return $this->hasMany(NewFolderAccess::class, 'new_folder_id', 'id');
     }
-
-    // public function folder_name()
-    // {
-    //     return $this->belongsToMany(Folder::class, 'folder', 'id');
-    // }
 }

@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'ITD Data Approval Account'])
+@extends('website.layouts.main', ['title' => 'ITD History Account'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Approval Account Registration/Change/Deletion</h4>
+        <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approved</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD History</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -14,8 +14,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-                    <a href="{{ route('website.account.show_it_approval') }}" class="btn btn-primary">Show
-                        Waiting Approve</a>
+
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
@@ -91,7 +90,7 @@
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    "lengthChange": false,
+                    "lengthChange": true,
                     'processing': true,
                     'serverSide': true,
                     ajax: {

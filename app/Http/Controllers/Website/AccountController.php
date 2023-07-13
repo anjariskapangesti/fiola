@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\Department;
 use App\Models\User;
 
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use DataTables;
 use Auth;
@@ -27,6 +28,7 @@ class AccountController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'no_reg' => 'unique',
             'budget_type' => 'required' ,
             'form_type' => 'required' ,
             'npk' => 'required' ,
@@ -43,7 +45,8 @@ class AccountController extends Controller
         }
         try
         {
-            Account::create([
+            $form_account = Account::create([
+                'no_reg' => 'ACC',
                 'budget_type' => $request->budget_type ,
                 'form_type' => $request->form_type ,
                 'npk' => $request->npk ,
@@ -60,6 +63,11 @@ class AccountController extends Controller
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => 'created'
             ]);
+
+            $year = Carbon::now()->format('Ym');
+            $form_account->no_reg = 'ACC/' . $year . '/' . $form_account->id;
+            $form_account->save();
+
             $depts = Department::all();
             return redirect()->back()->with('success', 'Success Create Form');
         }
@@ -108,7 +116,7 @@ class AccountController extends Controller
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
-        ->where('final_status', 'Manager Approve')
+        ->where('is_manager_approve','1')
         ->join('users', 'form_account.created_by', '=', 'users.id')
         ->select('form_account.*', 'users.name as user_name');
         // return $data;

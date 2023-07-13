@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h4>Approval Account Registration/Change/Deletion</h4>
+        <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Finished</a></li>
@@ -14,8 +14,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-                    <a href="{{ route('website.account.show_execution') }}" class="btn btn-primary">Show
-                        Execution</a>
+
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
@@ -91,7 +90,7 @@
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    "lengthChange": false,
+                    "lengthChange": true,
                     'processing': true,
                     'serverSide': true,
                     ajax: {

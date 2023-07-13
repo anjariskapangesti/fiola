@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFormAccountMigration extends Migration
+class CreateFormNewFolder extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,11 @@ class CreateFormAccountMigration extends Migration
      */
     public function up()
     {
-        Schema::create('form_account', function (Blueprint $table) {
+        Schema::create('form_new_folder', function (Blueprint $table) {
             $table->id();
-            $table->string('no_reg')->unique();
-            $table->string('budget_type', 10)->nullable();
-            $table->string('form_type', 15)->nullable();
-            $table->string('npk', 6)->nullable();
-            $table->string('fullname', 60)->nullable();
-            $table->string('department', 60)->nullable();
-            $table->string('phone', 12)->nullable();
-            $table->string('company', 60)->nullable();
-            $table->date('expired_date')->nullable();
+            $table->string('foldername');
+            $table->string('mainpath');
             $table->string('purpose',100)->nullable();
-            $table->string('ad_name',60)->nullable();
-            $table->boolean('is_email')->nullable();
-            $table->string('email_address',80)->nullable();
             $table->string('final_status',30)->nullable();
             $table->boolean('is_manager_approve')->nullable();
             $table->boolean('is_it_approve')->nullable();
@@ -53,6 +43,6 @@ class CreateFormAccountMigration extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('form_account');
+        Schema::dropIfExists('form_new_folder');
     }
 }

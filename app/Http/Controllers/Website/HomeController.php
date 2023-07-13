@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Department;
 use App\Models\Account;
 use App\Models\FolderAccess;
+use App\Models\NewFolder;
 use Auth;
 
 class HomeController extends Controller
@@ -37,9 +38,21 @@ class HomeController extends Controller
 
         $folderaccess_it_count = FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $folderaccess_it_mgr_count = FolderAccess::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%MGR IT Approve%')->where('created_dept', Auth::user()->dept_id)->count();
+        $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%MGR IT Approve%')->count();
 
-        return view('website.pages.home', compact('account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
-        'folderaccess_mgr_count', 'folderaccess_it_count', 'folderaccess_it_mgr_count', 'folderaccess_execution_count'));
+        $newfolder_mgr_count = NewFolder::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $newfolder_it_count = NewFolder::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%MGR IT Approve%')->count();
+
+        return view('website.pages.home', 
+        compact('account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
+                'folderaccess_mgr_count', 'folderaccess_it_count', 'folderaccess_it_mgr_count', 'folderaccess_execution_count',
+                'newfolder_mgr_count', 'newfolder_it_count', 'newfolder_it_mgr_count', 'newfolder_execution_count'));
     }    
 }

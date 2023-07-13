@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h4>Approval Account Registration/Change/Deletion</h4>
+        <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
@@ -14,8 +14,8 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-                    <a href="{{ route('website.account.show_data_manager_approval') }}" class="btn btn-primary">Show Data</a>
-                    <table class="display" width="100%" id="app_table">                        
+                    {{-- <a href="{{ route('website.account.show_data_manager_approval') }}" class="btn btn-primary">Show Data</a> --}}
+                    <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
                                 <th>Detail</th>
@@ -62,8 +62,8 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account_reject">
-                                               
-                        <textarea class="form-control" id="reject_reason"></textarea>                        
+
+                        <textarea class="form-control" id="reject_reason"></textarea>
                         <input type="hidden" id="id_form_account_reject">
                     </div>
                     <div class="modal-footer">
@@ -139,10 +139,10 @@
 
         $(document).ready(function() {
             var table = $('#app_table').DataTable({
-                "lengthChange": false,
+                "lengthChange": true,
                 'processing': true,
                 'serverSide': true,
-                "sScrollY": true,  
+                // "sScrollY": true,
                 ajax: {
                     url: "{{ route('website.account.show_manager_approval_ajax') }}",
                 },

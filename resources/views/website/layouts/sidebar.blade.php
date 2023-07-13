@@ -25,22 +25,22 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.create') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.create') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.create') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.create') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
@@ -65,22 +65,22 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
@@ -89,7 +89,7 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#approved_mgr" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>Manager Approved</span><i
+                    <i class="bi bi-clock-history"></i><span>Manager History</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="approved_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -104,22 +104,22 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_data_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_data_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_data_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_data_manager_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                         </a>
                     </li>
@@ -144,22 +144,22 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
@@ -168,8 +168,7 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#approved_it" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>ITD Approved</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-clock-history"></i><span>ITD History</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="approved_it" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -178,27 +177,27 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.folder-access.show_data_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_data_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_data_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_data_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_data_it_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                         </a>
                     </li>
@@ -225,22 +224,22 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
@@ -250,7 +249,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#approved_it_mgr" data-bs-toggle="collapse"
                     href="#">
-                    <i class="bi bi-clipboard-check"></i><span>ITD Manager Approved</span><i
+                    <i class="bi bi-clock-history"></i><span>ITD Manager History</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="approved_it_mgr" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -260,27 +259,27 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.folder-access.show_data_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_data_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_data_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_data_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_data_it_mgr_approval') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                         </a>
                     </li>
@@ -291,7 +290,7 @@
         @can('can_execution')
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#execution" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-hand-index-thumb"></i></i><span>Execution</span><i
+                    <i class="bi bi-rocket-takeoff"></i></i><span>Execution</span><i
                         class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="execution" class="nav-content collapse " data-bs-parent="#sidebar-nav">
@@ -301,27 +300,27 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.folder-access.show_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
@@ -330,7 +329,7 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#finished" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-list-check"></i><span>Finished</span><i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-clipboard-check"></i><span>Finished</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="finished" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
@@ -339,27 +338,27 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.folder-access.show_data_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.new-folder.show_data_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.software.show_data_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.hardware.show_data_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('website.vpn.show_data_execution') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                         </a>
                     </li>
