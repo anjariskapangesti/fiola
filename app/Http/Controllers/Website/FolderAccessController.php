@@ -150,10 +150,9 @@ class FolderAccessController extends Controller
                                     $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
                                     })
-                            ->where('final_status','Manager Approve')
+                            ->where('is_manager_approve','1')
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path');
-                            // ->get();
 
         return DataTables::eloquent($data)->make(true);
     }

@@ -117,8 +117,8 @@
                         },
                     },
                     {
-                        data: 'creator_username',
-                        name: 'creator_username',
+                        data: 'username',
+                        name: 'username',
                     },
                     {
                         data: 'manager_date',

@@ -80,16 +80,17 @@ class NewFolderController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'))
+        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', DB::Raw('form_new_folder.foldername as creator_foldername'), 
+                                    ('form_new_folder.mainpath as creator_mainpath'),
+                                    ('form_new_folder.purpose as creator_purpose'), ('users.name as creator_created_by'),)
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                     $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
                                     })
                             ->where('final_status','created')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')                                                
+                            ->orderBy('form_new_folder.id', 'desc')
+                            ->with('form_new_folder_access')                                                
                             ->get();
 
         return DataTables::of($data)->make(true);
@@ -101,18 +102,18 @@ class NewFolderController extends Controller
         
         $type=$request->type;
         
-        $folderaccess = FolderAccess::findOrFail($id);
+        $newfolder = NewFolder::findOrFail($id);
         
         if($type=='ok'){
-            $folderaccess->is_manager_approve=1;
-            $folderaccess->final_status='Manager Approve';
+            $newfolder->is_manager_approve=1;
+            $newfolder->final_status='Manager Approve';
         }else{
-            $folderaccess->is_manager_approve=0;
-            $folderaccess->final_status='Manager Reject';
-            $folderaccess->manager_note=$request->manager_note;
+            $newfolder->is_manager_approve=0;
+            $newfolder->final_status='Manager Reject';
+            $newfolder->manager_note=$request->manager_note;
         }
-        $folderaccess->manager_approval_date= Carbon::now();
-        $folderaccess->save();
+        $newfolder->manager_approval_date= Carbon::now();
+        $newfolder->save();
         return "Request is Saved!";        
     }
 
@@ -120,9 +121,8 @@ class NewFolderController extends Controller
     {
         $departmetns = Department::all();
         $folders = Folder::orderBy('name', 'ASC')->get();
-        $subfolders = SubFolder::orderBy('name', 'ASC')->get();
         // dd($subfolders);
-        return view('website.pages.new-folder.show_data_manager_approval', compact(['departmetns', 'folders', 'subfolders']));
+        return view('website.pages.new-folder.show_data_manager_approval', compact(['departmetns', 'folders']));
     }
 
     public function show_data_manager_approval_ajax(Request $request)
@@ -131,20 +131,20 @@ class NewFolderController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.manager_approval_date as manager_date'))
+        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', DB::Raw('form_new_folder.foldername as creator_foldername'), 
+                                    ('form_new_folder.mainpath as creator_mainpath'),
+                                    ('form_new_folder.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.manager_approval_date as manager_date'))
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                     $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
                                     })
-                            ->where('final_status','Manager Approve')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path');
-                            // ->get();
+                            ->where('is_manager_approve','1')
+                            ->orderBy('form_new_folder.id', 'desc')
+                            ->with('form_new_folder_access');                            
 
-        return DataTables::eloquent($data)->make(true);
+        return DataTables::of($data)->make(true);
     }
 
     /// ITD APPROVE ///

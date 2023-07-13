@@ -19,7 +19,8 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Username</th>
+                                <th>New Folder Name</th>
+                                <th>Main Path</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -38,8 +39,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_folder_access">
-                        <input type="hidden" id="id_folder_access">
+                        <input type="text" readonly class="form-control-plaintext" id="foldername_folder_access">
+                        <input type="hidden" id="id_new_folder">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -60,7 +61,7 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting<br /><br />
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        <input type="hidden" id="id_folder_access_reject">
+                        <input type="hidden" id="id_new_folder_reject">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -74,19 +75,6 @@
     </section>
 @endsection
 @push('styles')
-    {{-- <link href="{{ asset('vendor/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" /> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        tbody tr td.dt-control {
-            background: url("{{ asset('img/details_open.png') }}") no-repeat center center;
-            cursor: pointer;
-        }
-
-        tr.details td.dt-control {
-            background: url("{{ asset('img/details_close.png') }}") no-repeat center center;
-        }
-    </style> --}}
     <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 @endpush
 @push('scripts')
@@ -96,17 +84,12 @@
 
 
             var table = $('.table').DataTable({
-                'bLengthChange': false,
-                // 'language': {
-                //     'search': 'Cari',
-                //     'lengthMenu': 'Tampilkan _MENU_ data per halaman',
-                //     'info': 'Menampilkan halaman _PAGE_ dari _PAGES_'
-                // },
+                bLengthChange: true,
                 processing: true,
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.folder-access.show_manager_approval_ajax') }}",
+                    'url': "{{ route('website.new-folder.show_manager_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -118,8 +101,12 @@
                         },
                     },
                     {
-                        data: 'creator_username',
-                        name: 'creator_username',
+                        data: 'creator_foldername',
+                        name: 'creator_foldername',
+                    },
+                    {
+                        data: 'creator_mainpath',
+                        name: 'creator_mainpath',
                     },
                     {
                         orderable: false,
@@ -127,8 +114,8 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-username="${data.username}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-username="${data.username}">Reject</button>`;
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-foldername="${data.foldername}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-foldername="${data.foldername}">Reject</button>`;
                         }
                     },
                 ]
@@ -163,19 +150,19 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sms">
+                    <table class = "table table-sm">
                                                 <tr class = "bg-light">
-                                                <td> Folder </td>
-                                                <td> Folder Path </td>
+                                                <td> Username </td>
+                                                <td> Department </td>
                                                 <td> Permission </td>
                                                 </tr>
                                                 `
                 console.log(d)
-                for (let i = 0; i < d.form_folder_access_path.length; i++) {
+                for (let i = 0; i < d.form_new_folder_access.length; i++) {
                     html += `<tr>
-                                    <td>${d.form_folder_access_path[i].folder}</td>
-                                    <td>${d.form_folder_access_path[i].subfolder}</td>
-                                    <td>${d.form_folder_access_path[i].permission}</td>`
+                                    <td>${d.form_new_folder_access[i].username}</td>
+                                    <td>${d.form_new_folder_access[i].department}</td>
+                                    <td>${d.form_new_folder_access[i].permission}</td>`
                     html += `</tr>
                     `
                 }
@@ -206,14 +193,13 @@
             });
 
             $('#btn-approve').on('click', function() {
-                let id_folder_access = $('#id_folder_access').val();
-                console.log(id_folder_access);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                let id_new_folder = $('#id_new_folder').val();
+                console.log(id_new_folder);
                 $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
+                    url: "{{ route('website.new-folder.approve_manager') }}",
                     type: "POST",
                     data: {
-                        id: id_folder_access,
+                        id: id_new_folder,
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -230,14 +216,13 @@
             });
 
             $('#btn-reject').on('click', function() {
-                let id_folder_access_reject = $('#id_folder_access_reject').val();
-                console.log(id_folder_access_reject);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                let id_new_folder_reject = $('#id_new_folder_reject').val();
+                console.log(id_new_folder_reject);
                 $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
+                    url: "{{ route('website.new-folder.approve_manager') }}",
                     type: "POST",
                     data: {
-                        id: id_folder_access_reject,
+                        id: id_new_folder_reject,
                         type: 'reject',
                         manager_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
@@ -254,22 +239,16 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('.table').on('click', '.btn-table-approve', function() {
-                var id_folder_access = $(this).data('id');
-                var username_folder_access = $(this).data('username');
-                $('#id_folder_access').val(id_folder_access)
-                $('#username_folder_access').val(username_folder_access)
-                // console.log(id_folder_access);
+                var id_new_folder = $(this).data('id');
+                var foldername_folder_access = $(this).data('foldername');
+                $('#id_new_folder').val(id_new_folder)
+                $('#foldername_folder_access').val(foldername_folder_access)
             })
 
             $('.table').on('click', '.btn-table-reject', function() {
-                var id_folder_access_reject = $(this).data('id');
-                $('#id_folder_access_reject').val(id_folder_access_reject)
-                // console.log(id_folder_access_reject);
+                var id_new_folder_reject = $(this).data('id');
+                $('#id_new_folder_reject').val(id_new_folder_reject)
             })
 
         })
