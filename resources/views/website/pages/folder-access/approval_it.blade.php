@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h4>Approval Change Access of Folder Share Application</h4>
+        <h4>Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
@@ -14,20 +14,20 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
-                    <table class="display" width="100%" id="app_table">
+                    <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>Detail</th>
                                 <th>Username</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
+                        <tbody></tbody>
+
                     </table>
                 </div>
             </div>
         </div>
-        <!-- Approve Confirmation Modal -->
-
         <div class="modal fade" id="confirmModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -70,53 +70,46 @@
             </div>
         </div>
         <!-- End Confirmation Modal -->
-
     </section>
 @endsection
-
 @push('styles')
-    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
-@endpush
-
-@push('scripts')
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script>
-        function format(d) {
-            // `d` is the original data object for the row
-            return (
-                `
-                <table class="table table-sm">
-                    <tr>
-                        <td width="30%">Folder</td>
-                        <td>${d.username} </td>
-                    </tr>
-                    <tr>
-                        <td>Subfolder</td>
-                        <td>${d.company} </td>
-                    </tr>
-                    <tr>
-                        <td>Permission</td>
-                        <td>${d.phone} </td>
-                    </tr>                    
-                </table>
-                `
-            );
+    {{-- <link href="{{ asset('vendor/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" /> --}}
+    {{-- <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        tbody tr td.dt-control {
+            background: url("{{ asset('img/details_open.png') }}") no-repeat center center;
+            cursor: pointer;
         }
 
-        $(document).ready(function() {
-            var table = $('#app_table').DataTable({
-                "lengthChange": false,
-                'processing': true,
-                'serverSide': true,
+        tr.details td.dt-control {
+            background: url("{{ asset('img/details_close.png') }}") no-repeat center center;
+        }
+    </style> --}}
+    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+@endpush
+@push('scripts')
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script lang="text/javascript">
+        $(function() {
+
+
+            var table = $('.table').DataTable({
+                'bLengthChange': true,
+                processing: true,
+                ordering: true,
+                serverSide: true,
                 ajax: {
-                    url: "{{ route('website.folder-access.show_it_approval_ajax') }}",
+                    'url': "{{ route('website.folder-access.show_it_approval_ajax') }}",
                 },
                 columns: [{
+                        data: null,
                         className: 'dt-control',
                         orderable: false,
-                        data: null,
-                        defaultContent: '',
                         searchable: false,
+                        render: function(data, type, row, meta) {
+                            return ''
+                        },
                     },
                     {
                         data: 'username',
@@ -132,21 +125,72 @@
                             <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-username="${data.username}">Reject</button>`;
                         }
                     },
-                ],
-            });
+                ]
 
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
+            })
+
+            var detailsRow = [];
+
+            $('.table tbody').on('click', 'tr td.dt-control', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
+                var idx = $.inArray(tr.attr('id'), detailsRow);
 
                 if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
+                    tr.removeClass('details')
+                    row.child.hide()
+                    detailsRow.splice(idx, 1)
                 } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
+                    tr.addClass('details')
+                    row.child(format(row.data())).show()
+                    if (idx === -1) {
+                        detailsRow.push(tr.attr('id'))
+                    }
                 }
-            });
+            })
+
+            table.on('draw', function() {
+                $.each(detailsRow, function(i, id) {
+                    $('#' + id + ' td.dt-control').trigger('click')
+                })
+            })
+
+            function format(d) {
+                var html = `
+                    <table class = "table table-sms">
+                                                <tr class = "bg-light">
+                                                <td> Folder </td>
+                                                <td> Folder Path </td>
+                                                <td> Permission </td>
+                                                </tr>
+                                                `
+                console.log(d)
+                for (let i = 0; i < d.form_folder_access_path.length; i++) {
+                    html += `<tr>
+                                    <td>${d.form_folder_access_path[i].folder}</td>
+                                    <td>${d.form_folder_access_path[i].subfolder}</td>
+                                    <td>${d.form_folder_access_path[i].permission}</td>`
+                    html += `</tr>
+                    `
+                }
+
+                html += `
+                        <tfoot>
+                            <tr>
+                                <th>Purpose</th>
+                                <th>${d.purpose}</th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th>Created by</th>
+                                <th>${d.creator_created_by}</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>                      
+                        </table>`
+
+                return html
+            }
 
             $('#reject_reason').on('keyup', function() {
                 if ($(this).val() != "")
@@ -189,7 +233,7 @@
                     data: {
                         id: id_folder_access_reject,
                         type: 'reject',
-                        manager_note: $('#reject_reason').val(),
+                        it_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -208,7 +252,7 @@
             //     $('#nama').text('Nama Requestor')
             // });
 
-            $('#app_table').on('click', '.btn-table-approve', function() {
+            $('.table').on('click', '.btn-table-approve', function() {
                 var id_folder_access = $(this).data('id');
                 var username_folder_access = $(this).data('username');
                 $('#id_folder_access').val(id_folder_access)
@@ -216,12 +260,12 @@
                 // console.log(id_folder_access);
             })
 
-            $('#app_table').on('click', '.btn-table-reject', function() {
+            $('.table').on('click', '.btn-table-reject', function() {
                 var id_folder_access_reject = $(this).data('id');
                 $('#id_folder_access_reject').val(id_folder_access_reject)
                 // console.log(id_folder_access_reject);
             })
 
-        });
+        })
     </script>
 @endpush

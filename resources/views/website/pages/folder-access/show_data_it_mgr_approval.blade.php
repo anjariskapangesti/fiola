@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Folder Access'])
+@extends('website.layouts.main', ['title' => 'ITD Manager History Folder Access'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Manager History</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Folder Access</a></li>
             </ol>
         </nav>
@@ -19,7 +19,7 @@
                             <tr>
                                 <th>Detail</th>
                                 <th>Username</th>
-                                <th>Option</th>
+                                <th>Date Approved</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -96,11 +96,16 @@
 
             var table = $('.table').DataTable({
                 'bLengthChange': true,
+                // 'language': {
+                //     'search': 'Cari',
+                //     'lengthMenu': 'Tampilkan _MENU_ data per halaman',
+                //     'info': 'Menampilkan halaman _PAGE_ dari _PAGES_'
+                // },
                 processing: true,
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.folder-access.show_manager_approval_ajax') }}",
+                    'url': "{{ route('website.folder-access.show_data_it_mgr_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -116,14 +121,8 @@
                         name: 'username',
                     },
                     {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-username="${data.username}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-username="${data.username}">Reject</button>`;
-                        }
+                        data: 'it_mgr_approval_date',
+                        name: 'it_mgr_approval_date',
                     },
                 ]
 
@@ -178,7 +177,7 @@
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
-                                <th>${d.purpose}</th>
+                                <th>${d.creator_purpose}</th>
                                 <th></th>
                             </tr>
                             <tr>
@@ -191,80 +190,6 @@
 
                 return html
             }
-
-            $('#reject_reason').on('keyup', function() {
-                if ($(this).val() != "")
-                    $('#btn-reject').removeAttr('disabled');
-                else
-                    $('#btn-reject').attr('disabled', 'disabled');
-            });
-
-            $('#btn-approve').on('click', function() {
-                let id_folder_access = $('#id_folder_access').val();
-                console.log(id_folder_access);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
-                $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
-                    type: "POST",
-                    data: {
-                        id: id_folder_access,
-                        type: 'ok',
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#confirmModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
-
-            $('#btn-reject').on('click', function() {
-                let id_folder_access_reject = $('#id_folder_access_reject').val();
-                console.log(id_folder_access_reject);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
-                $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
-                    type: "POST",
-                    data: {
-                        id: id_folder_access_reject,
-                        type: 'reject',
-                        manager_note: $('#reject_reason').val(),
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#rejectModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
-
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
-            $('.table').on('click', '.btn-table-approve', function() {
-                var id_folder_access = $(this).data('id');
-                var username_folder_access = $(this).data('username');
-                $('#id_folder_access').val(id_folder_access)
-                $('#username_folder_access').val(username_folder_access)
-                // console.log(id_folder_access);
-            })
-
-            $('.table').on('click', '.btn-table-reject', function() {
-                var id_folder_access_reject = $(this).data('id');
-                $('#id_folder_access_reject').val(id_folder_access_reject)
-                // console.log(id_folder_access_reject);
-            })
 
         })
     </script>

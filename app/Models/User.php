@@ -53,4 +53,11 @@ class User extends Authenticatable
         return $this->hasManyThrough(Department::class, ModelHasDepartment::class, 'model_id', 'id', 'id', 'department_id')
             ->where('model_type', User::class);
     }
+
+    public function profileIncomplete()
+{
+    // Ganti dengan logika Anda untuk memeriksa kelengkapan profil pengguna.
+    // Jika profil belum lengkap, kembalikan true, jika sudah lengkap, kembalikan false.
+    return empty($this->name) || empty($this->email) || empty($this->nohp);
+}
 }

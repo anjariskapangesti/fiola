@@ -9,7 +9,8 @@ use App\Models\FolderAccessPath;
 class FolderAccess extends Model
 {
     protected $table = 'form_folder_access';
-    protected $fillable = [        
+    protected $fillable = [  
+        'no_reg',
         'username',
         'purpose',
         'final_status',

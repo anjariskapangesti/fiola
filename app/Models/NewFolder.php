@@ -9,7 +9,8 @@ use App\Models\NewFolderAccess;
 class NewFolder extends Model
 {
     protected $table = 'form_new_folder';
-    protected $fillable = [        
+    protected $fillable = [     
+        'no_reg',   
         'foldername',
         'mainpath',
         'purpose',

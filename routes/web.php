@@ -23,6 +23,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/home', 'HomeController@index')->name('auth.home');
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
+        
+        
         // MASTER //
         Route::group(['prefix' => 'department'], function(){
             Route::group(['middleware' => ['can:can_master']], function () {
@@ -55,10 +57,13 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         });
 
         Route::group(['prefix' => 'user'], function(){
+            Route::get('/edit', 'UserController@edit')->name('user.edit');
+            Route::put('/update', 'UserController@update')->name('user.update');
+
             Route::group(['middleware' => ['can:can_master']], function () {
                 Route::get('/create', 'UserController@create')->name('user.create');
                 Route::post('/store', 'UserController@store')->name('user.store');
-                Route::delete('/destroy', 'UserController@destroy')->name('user.destroy');
+                Route::delete('/user/users/{user}', 'UserController@destroy')->name('user.destroy');
                 Route::get('/show_data_user', 'UserController@show_data_user')->name('user.show_data_user');
                 Route::get('/show_data_user_ajax', 'UserController@show_data_user_ajax')->name('user.show_data_user_ajax');
             });
@@ -70,6 +75,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['middleware' => ['can:can_create_form']], function () {
             Route::get('/create', 'AccountController@create')->name('account.create');
             Route::post('/store', 'AccountController@store')->name('account.store');
+            Route::get('/show_data_form', 'AccountController@show_data_form')->name('account.show_data_form');
+            Route::get('/show_data_form_ajax', 'AccountController@show_data_form_ajax')->name('account.show_data_form_ajax');
             });
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
@@ -109,6 +116,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/create', 'FolderAccessController@create')->name('folder-access.create');
             Route::post('/store', 'FolderAccessController@store')->name('folder-access.store');
             Route::get('/subfolder_ajax', 'FolderAccessController@subfolder_ajax')->name('folder-access.subfolder_ajax');
+            Route::get('/show_data_form', 'FolderAccessController@show_data_form')->name('folder-access.show_data_form');
+            Route::get('/show_data_form_ajax', 'FolderAccessController@show_data_form_ajax')->name('folder-access.show_data_form_ajax');   
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'FolderAccessController@show_manager_approval')->name('folder-access.show_manager_approval');
@@ -145,6 +154,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/create', 'NewFolderController@create')->name('new-folder.create');
             Route::post('/store', 'NewFolderController@store')->name('new-folder.store');
             Route::get('/subfolder_ajax', 'NewFolderController@subfolder_ajax')->name('new-folder.subfolder_ajax');
+            Route::get('/show_data_form', 'NewFolderController@show_data_form')->name('new-folder.show_data_form');
+            Route::get('/show_data_form_ajax', 'NewFolderController@show_data_form_ajax')->name('new-folder.show_data_form_ajax');  
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'NewFolderController@show_manager_approval')->name('new-folder.show_manager_approval');
@@ -181,6 +192,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/create', 'SoftwareController@create')->name('software.create');
             Route::post('/store', 'SoftwareController@store')->name('software.store');
             Route::get('/subfolder_ajax', 'SoftwareController@subfolder_ajax')->name('software.subfolder_ajax');
+            Route::get('/show_data_form', 'SoftwareController@show_data_form')->name('software.show_data_form');
+            Route::get('/show_data_form_ajax', 'SoftwareController@show_data_form_ajax')->name('software.show_data_form_ajax'); 
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'SoftwareController@show_manager_approval')->name('software.show_manager_approval');
@@ -217,6 +230,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/create', 'HardwareController@create')->name('hardware.create');
             Route::post('/store', 'HardwareController@store')->name('hardware.store');
             Route::get('/subfolder_ajax', 'HardwareController@subfolder_ajax')->name('hardware.subfolder_ajax');
+            Route::get('/show_data_form', 'HardwareController@show_data_form')->name('hardware.show_data_form');
+            Route::get('/show_data_form_ajax', 'HardwareController@show_data_form_ajax')->name('hardware.show_data_form_ajax'); 
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'HardwareController@show_manager_approval')->name('hardware.show_manager_approval');
@@ -253,6 +268,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/create', 'VpnController@create')->name('vpn.create');
             Route::post('/store', 'VpnController@store')->name('vpn.store');
             Route::get('/subfolder_ajax', 'VpnController@subfolder_ajax')->name('vpn.subfolder_ajax');
+            Route::get('/show_data_form', 'VpnController@show_data_form')->name('vpn.show_data_form');
+            Route::get('/show_data_form_ajax', 'VpnController@show_data_form_ajax')->name('vpn.show_data_form_ajax');   
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'VpnController@show_manager_approval')->name('vpn.show_manager_approval');

@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'Add User'])
+@extends('website.layouts.main', ['title' => 'Update User'])
 
 @section('content')
     <div class="pagetitle">
@@ -6,12 +6,17 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">User</a></li>
-                <li class="breadcrumb-item active"><a href="#">Add User</a></li>
+                <li class="breadcrumb-item active"><a href="#">Update User</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
     <section class="section">
         <div class="row">
+            @if(session('incomplete'))
+                <div class="alert alert-warning" role="alert">
+                    {{ session('incomplete') }}
+                </div>
+            @endif
             @if ($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Ooops..</strong>
@@ -23,51 +28,75 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.user.store') }}" class="needs-validation" novalidate>
+            <form method="post" action="{{ route('website.user.update') }}" class="needs-validation" novalidate>
                 @csrf
+                @method('PUT')
+
+
                 <div class="col-lg-12">
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">A. User</h5>
+                            <h5 class="card-title">User</h5>
                             <div class="row g-3">
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control" placeholder="Name" name="name"
-                                        maxlength="100" required>
+                                <div class="col-md-6">
+                                    <label for="name">{{ __('Name') }}</label>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                                        name="name" value="{{ old('name', $user->name) }}" required autofocus>
+                                                
+                                    @error('name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <select name="departments" class="form-control" required>
-                                        <option selected disabled value="">-- Choose Department --</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->id }}">{{ $department->name }} </option>
-                                        @endforeach
-                                    </select>
-                                </div> --}}
 
-                                {{-- <div class="col-md-6">                    
-                                    <div class="department-container">
-                                        <div class="department-item">
-                                            <select name="departments[]" id="departments"  class="form-control" multiple required>
-                                                <option value="">-- Select department --</option>
-                                                @foreach($departments as $id => $name)
-                                                    <option value="{{ $id }}">{{ $name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>                                        
-                                    </div>
-                                </div> --}}
+                                <div class="col-md-6">
+                                    <label for="nohp">{{ __('Phone Number') }}</label>
+                                    <input id="nohp" type="text"
+                                        class="form-control @error('nohp') is-invalid @enderror" name="nohp"
+                                        value="{{ old('nohp', $user->nohp) }}" required>
+    
+                                    @error('nohp')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label for="email">{{ __('Email') }}</label>
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                                        name="email" value="{{ old('email', $user->email) }}" required>
+                                    
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="password">{{ __('New Password') }}</label>
+                                    <input id="password" type="password"
+                                        class="form-control @error('password') is-invalid @enderror" name="password"
+                                        autocomplete="new-password" required>
+                                    
+                                    @error('password')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="password-confirm">{{ __('Confirm New Password') }}</label>
+                                    <input id="password-confirm" type="password" class="form-control"
+                                        name="password_confirmation" autocomplete="new-password" required>
+                                </div>
 
                                 
 
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email" name="email"
-                                        maxlength="100" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="password" class="form-control" placeholder="Password" name="password"
-                                        maxlength="100" required>
-                                </div>
-
-                                <div class="col-md-6">                    
+                                {{-- <div class="col-md-6">                    
                                     <div class="department-container">
                                         <div class="department-item mb-3">
                                             <select name="departments[]" class="form-control">
@@ -99,14 +128,14 @@
 
                                 <div class="col-md-6">  
                                     <button type="button" class="btn btn-primary" id="add-permission">Add Permission</button>
-                                </div>                                    
+                                </div>                                     --}}
                                 
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">Submit</button>
-                    <a href="{{ route('website.user.show_data_user') }}" class="btn btn-primary">Data
-                        User</a>
+                    <button class="btn btn-success" type="submit">Update</button>
+                    {{-- <a href="{{ route('website.user.show_data_user') }}" class="btn btn-primary">Data
+                        User</a> --}}
                 </div>
             </form>
         </div>
@@ -119,14 +148,15 @@
 @endpush
 
 @push('scripts')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
 
-            @if (session()->has('success'))
-                toastr['success']("{{ Session('success') }}")
-            @endif
-        })
-    </script>
+        @if (session()->has('success'))
+            toastr['success']("{{ Session('success') }}")
+        @endif
+    })
+</script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

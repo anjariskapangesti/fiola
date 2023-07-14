@@ -132,10 +132,10 @@ class NewFolderController extends Controller
         $lastDepartmentId = $userDepartments->last();
 
         $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
-                            ->select('form_new_folder.id', 'foldername', DB::Raw('form_new_folder.foldername as creator_foldername'), 
-                                    ('form_new_folder.mainpath as creator_mainpath'),
+                            ->select('form_new_folder.id', 'foldername', 
+                                    ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose as creator_purpose'), ('users.name as creator_created_by'),
-                                    ('form_new_folder.manager_approval_date as manager_date'))
+                                    ('form_new_folder.manager_approval_date as manager_approval_date'))
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                     $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);

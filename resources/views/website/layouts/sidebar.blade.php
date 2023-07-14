@@ -46,6 +46,45 @@
                     </li>
                 </ul>
             </li><!-- End Forms Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#track_forms" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-search"></i><span>Track Forms</span><i
+                        class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="track_forms" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('website.account.show_data_form') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.folder-access.show_data_form') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.new-folder.show_data_form') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.software.show_data_form') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.hardware.show_data_form') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.vpn.show_data_form') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Tables Nav -->
         @endcan
 
         @can('can_approve_mgr')

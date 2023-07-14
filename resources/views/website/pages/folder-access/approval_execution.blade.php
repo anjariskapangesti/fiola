@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Folder Access'])
+@extends('website.layouts.main', ['title' => 'Execution Folder Access'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">Execution</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Folder Access</a></li>
             </ol>
         </nav>
@@ -73,19 +73,6 @@
     </section>
 @endsection
 @push('styles')
-    {{-- <link href="{{ asset('vendor/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" /> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        tbody tr td.dt-control {
-            background: url("{{ asset('img/details_open.png') }}") no-repeat center center;
-            cursor: pointer;
-        }
-
-        tr.details td.dt-control {
-            background: url("{{ asset('img/details_close.png') }}") no-repeat center center;
-        }
-    </style> --}}
     <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 @endpush
 @push('scripts')
@@ -100,7 +87,7 @@
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.folder-access.show_manager_approval_ajax') }}",
+                    'url': "{{ route('website.folder-access.show_execution_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -202,9 +189,9 @@
             $('#btn-approve').on('click', function() {
                 let id_folder_access = $('#id_folder_access').val();
                 console.log(id_folder_access);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
+                    url: "{{ route('website.folder-access.approve_execution') }}",
                     type: "POST",
                     data: {
                         id: id_folder_access,
@@ -226,14 +213,14 @@
             $('#btn-reject').on('click', function() {
                 let id_folder_access_reject = $('#id_folder_access_reject').val();
                 console.log(id_folder_access_reject);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
+                    url: "{{ route('website.folder-access.approve_execution') }}",
                     type: "POST",
                     data: {
                         id: id_folder_access_reject,
                         type: 'reject',
-                        manager_note: $('#reject_reason').val(),
+                        finish_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {

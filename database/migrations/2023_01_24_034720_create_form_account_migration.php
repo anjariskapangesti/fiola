@@ -40,6 +40,7 @@ class CreateFormAccountMigration extends Migration
             $table->string('manager_note',100)->nullable();
             $table->string('it_note',100)->nullable();
             $table->string('it_mgr_note',100)->nullable();
+            $table->string('finish_note',100)->nullable();
             $table->bigInteger('created_by')->nullable();
             $table->bigInteger('created_dept')->nullable();
             $table->timestamps();

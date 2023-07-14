@@ -15,6 +15,7 @@ class CreateFormNewFolder extends Migration
     {
         Schema::create('form_new_folder', function (Blueprint $table) {
             $table->id();
+            $table->string('no_reg')->unique();
             $table->string('foldername');
             $table->string('mainpath');
             $table->string('purpose',100)->nullable();
@@ -30,6 +31,7 @@ class CreateFormNewFolder extends Migration
             $table->string('manager_note',100)->nullable();
             $table->string('it_note',100)->nullable();
             $table->string('it_mgr_note',100)->nullable();
+            $table->string('finish_note',100)->nullable();
             $table->bigInteger('created_by')->nullable();
             $table->bigInteger('created_dept')->nullable();
             $table->timestamps();

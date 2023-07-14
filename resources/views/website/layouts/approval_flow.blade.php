@@ -32,4 +32,11 @@
         <div class="md-step-bar-left"></div>
         <div class="md-step-bar-right"></div>
     </div>
+    <div class="md-step active">
+        <div class="md-step-circle"><span>6</span></div>
+        <div class="md-step-title">Finished</div>
+        <div class="md-step-optional">Creator received notification</div>
+        <div class="md-step-bar-left"></div>
+        <div class="md-step-bar-right"></div>
+    </div>
 </div>

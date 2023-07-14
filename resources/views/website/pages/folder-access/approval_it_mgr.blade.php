@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Folder Access'])
+@extends('website.layouts.main', ['title' => 'ITD Manager Approval Folder Access'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Folder Access</a></li>
             </ol>
         </nav>
@@ -100,7 +100,7 @@
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.folder-access.show_manager_approval_ajax') }}",
+                    'url': "{{ route('website.folder-access.show_it_mgr_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -202,9 +202,9 @@
             $('#btn-approve').on('click', function() {
                 let id_folder_access = $('#id_folder_access').val();
                 console.log(id_folder_access);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
+                    url: "{{ route('website.folder-access.approve_it_mgr') }}",
                     type: "POST",
                     data: {
                         id: id_folder_access,
@@ -226,14 +226,14 @@
             $('#btn-reject').on('click', function() {
                 let id_folder_access_reject = $('#id_folder_access_reject').val();
                 console.log(id_folder_access_reject);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
+                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.folder-access.approve_manager') }}",
+                    url: "{{ route('website.folder-access.approve_it_mgr') }}",
                     type: "POST",
                     data: {
                         id: id_folder_access_reject,
                         type: 'reject',
-                        manager_note: $('#reject_reason').val(),
+                        it_mgr_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {

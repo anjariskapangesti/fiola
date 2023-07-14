@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Department;
 use Carbon\Carbon;
@@ -108,13 +109,57 @@ class UserController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
+    public function edit()
+    {
+        $user = Auth::user();
+        $departments = Department::pluck('name', 'id');
+
+        $permissions = Permission::pluck('name', 'id');
+
+        if ($user->profileIncomplete()) {
+            session()->flash('incomplete', 'Please complete your data.');
+        }
+
+        return view('website.pages.user.edit', compact('user', 'departments', 'permissions'));
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:4|confirmed',
+            'nohp' => 'nullable|string|max:20',
+        ]);
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+        $user->nohp = $request->input('nohp');
+        $user->save();
+
+        if ($user->profileIncomplete()) {
+            session()->flash('incomplete', 'Mohon lengkapi data Anda.');
+        } else {
+            session()->forget('incomplete');
+        }
+
+        return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
     public function destroy(User $user)
     {
-        $user->delete();
+        if (Auth::user()->can('can_master')) {
+            // Hapus user
+            $user->delete();
 
-        // Hapus entri dari tabel model_has_permissions
-        $user->permissions()->detach();
+            return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        }
 
-        return redirect()->back()->with('error', 'Delete Item');
+        return redirect()->route('users.index')->with('error', 'You do not have permission to delete this user.');
     }
 }

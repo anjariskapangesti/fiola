@@ -100,16 +100,16 @@
                         },
                     },
                     {
-                        data: 'creator_foldername',
-                        name: 'creator_foldername',
+                        data: 'foldername',
+                        name: 'foldername',
                     },
                     {
-                        data: 'creator_mainpath',
-                        name: 'creator_mainpath',
+                        data: 'mainpath',
+                        name: 'mainpath',
                     },
                     {
-                        data: 'manager_date',
-                        name: 'manager_date',
+                        data: 'manager_approval_date',
+                        name: 'manager_approval_date',
                     },
                 ]
 

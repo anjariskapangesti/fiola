@@ -38,6 +38,18 @@ class AccountController extends Controller
             'purpose' => 'required' ,
             'ad_name' => 'required' ,
         ]);
+
+        $year = date('y');
+        $month = date('m');
+        $lastForm = Account::orderBy('id', 'desc')->first();
+        $lastNumber = $lastForm ? intval(substr($lastForm->no_reg, -3)) : 0;
+        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 7, 2) : '00';
+        if ($lastMonth !== $month){
+            $lastNumber = '000';
+        } 
+        $newNumber = $lastNumber + 1;
+        $no_reg = 'ACC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
         if($request->is_email==false){
             $request->is_email = 0;
         }else{
@@ -46,7 +58,7 @@ class AccountController extends Controller
         try
         {
             $form_account = Account::create([
-                'no_reg' => 'ACC',
+                'no_reg' => $no_reg,
                 'budget_type' => $request->budget_type ,
                 'form_type' => $request->form_type ,
                 'npk' => $request->npk ,
@@ -64,8 +76,7 @@ class AccountController extends Controller
                 'final_status' => 'created'
             ]);
 
-            $year = Carbon::now()->format('Ym');
-            $form_account->no_reg = 'ACC/' . $year . '/' . $form_account->id;
+            
             $form_account->save();
 
             $depts = Department::all();
@@ -76,6 +87,25 @@ class AccountController extends Controller
             return $e->getMessage();
         }
     }
+
+    public function show_data_form()
+    {
+        $depts = Department::all();
+        return view('website.pages.account.show_data_form', compact(['depts']));
+    }
+
+    public function show_data_form_ajax(Request $request)
+    {
+        
+        $data = Account::
+        where('created_by', Auth::user()->id)
+        ->join('users', 'form_account.created_by', '=', 'users.id')
+        ->select('form_account.*', 'users.name as user_name');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    // MGR //
 
     public function show_manager_approval()
     {
@@ -195,7 +225,7 @@ class AccountController extends Controller
         return "Request is Saved!";
     }
 
-    /// MGR IT ///
+    /// IT MGR ///
     public function show_it_mgr_approval()
     {
         return view('website.pages.account.approval_it_mgr');
@@ -216,10 +246,10 @@ class AccountController extends Controller
         $account = Account::findOrFail($id);
         if($type=='ok'){
             $account->is_it_mgr_approve=1;
-            $account->final_status='MGR IT Approve';
+            $account->final_status='IT MGR Approve';
         }else{
             $account->is_it_mgr_approve=0;
-            $account->final_status='MGR IT Reject';
+            $account->final_status='IT MGR Reject';
             $account->it_mgr_note=$request->it_mgr_note;
         }
         $account->it_mgr_approval_date= Carbon::now();
@@ -251,7 +281,7 @@ class AccountController extends Controller
 
     public function show_execution_ajax(Request $request)
     {
-        $data = Account::where('final_status','MGR IT Approve')
+        $data = Account::where('final_status','IT MGR Approve')
                         ->join('users', 'form_account.created_by', '=', 'users.id')
                         ->select('form_account.*', 'users.name as user_name');
                         
@@ -269,6 +299,7 @@ class AccountController extends Controller
         }else{
             $account->is_finish=0;
             $account->final_status='Rejected';
+            $account->finish_note=$request->finish_note;
         }
         $account->finish_date= Carbon::now();
         $account->save();

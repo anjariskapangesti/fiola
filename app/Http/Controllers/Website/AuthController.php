@@ -27,13 +27,26 @@ class AuthController extends Controller
         public function authenticate(LoginRequest $request)
         {
             $credentials = $request->only('email', 'password');
-
+        
             if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+        
+                if ($user->profileIncomplete()) {
+                    return redirect()->route('website.user.edit');
+                }
+        
                 return redirect()->route('website.home');
             }
-
+        
             return redirect()->back()->withErrors(['unauthenticate' => 'Email atau password salah']);
         }
+
+        // protected function sendFailedLoginResponse(Request $request)
+        // {
+        //     throw ValidationException::withMessages([
+        //         $this->username() => [trans('auth.failed')],
+        //     ])->redirectTo(route('login'))->withInput();
+        // }
 
         /**
          * Logout

@@ -15,6 +15,7 @@ class CreateFormFolderAccess extends Migration
     {
         Schema::create('form_folder_access', function (Blueprint $table) {
             $table->id();
+            $table->string('no_reg')->unique();
             $table->string('username');
             $table->string('purpose',100)->nullable();
             $table->string('final_status',30)->nullable();
@@ -29,6 +30,7 @@ class CreateFormFolderAccess extends Migration
             $table->string('manager_note',100)->nullable();
             $table->string('it_note',100)->nullable();
             $table->string('it_mgr_note',100)->nullable();
+            $table->string('finish_note',100)->nullable();
             $table->bigInteger('created_by')->nullable();
             $table->bigInteger('created_dept')->nullable();
             $table->timestamps();

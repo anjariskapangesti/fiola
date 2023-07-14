@@ -235,7 +235,7 @@
                     data: {
                         id: id_form_account_reject,
                         type: 'reject',
-                        it_note: $('#reject_reason').val(),
+                        finish_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {

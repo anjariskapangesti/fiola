@@ -31,6 +31,7 @@
     <link href="{{ asset('vendor/niceadmin/vendor/simple-datatables/style.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
     <link href="{{ asset('vendor/fontawesome-6.4.0/css/all.min.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> --}}
     {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
         integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" /> --}}

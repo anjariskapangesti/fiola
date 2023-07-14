@@ -156,23 +156,22 @@
 
                 $('#btn-approve-delete').on('click', function() {
                     let id_user = $('#id_user').val();
-                    
+                                
                     console.log(id_user);
                     $.ajax({
-                        url: "{{ route('website.user.destroy') }}",
+                        url: "/user/users/" + id_user,
                         type: "DELETE",
                         data: {
                             id: id_user,
                             '_token': "{{ csrf_token() }}",
                         },
                         success: function(response) {
-
-                            toastr['success'](response)
+                            toastr['success'](response);
                             table.ajax.reload();
-                            $('#deleteModal').modal('hide')
+                            $('#deleteModal').modal('hide');
                         },
-                        error: function(xhr, status, error, response) {
-                            toastr['error']('Error')
+                        error: function(xhr, status, error) {
+                            toastr['error']('Error');
                         }
                     });
                 });

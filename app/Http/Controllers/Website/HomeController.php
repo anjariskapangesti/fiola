@@ -28,7 +28,7 @@ class HomeController extends Controller
                                     
         $account_it_count = Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $account_it_mgr_count = Account::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $account_execution_count = Account::where('final_status', 'LIKE', '%MGR IT Approve%')->count();
+        $account_execution_count = Account::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
         $folderaccess_mgr_count = FolderAccess::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                     $query->where('created_dept', $firstDepartmentId)
@@ -38,7 +38,7 @@ class HomeController extends Controller
 
         $folderaccess_it_count = FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $folderaccess_it_mgr_count = FolderAccess::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%MGR IT Approve%')->count();
+        $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
         $newfolder_mgr_count = NewFolder::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                 $query->where('created_dept', $firstDepartmentId)
@@ -48,7 +48,7 @@ class HomeController extends Controller
                                     
         $newfolder_it_count = NewFolder::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%MGR IT Approve%')->count();
+        $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
         return view('website.pages.home', 
         compact('account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
