@@ -39,12 +39,13 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    <div class="invalid-feedback">Please select the main path</div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group has-validation">
                                         <input type="text" name="foldername" class="form-control"
                                             placeholder="New Folder Name" required>
-                                        <div class="invalid-feedback">Please enter your Folder Name</div>
+                                        <div class="invalid-feedback">Please enter your new folder name</div>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +69,7 @@
                                                     <div class="input-group has-validation">
                                                         <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
                                                         <input type="text" name="username[]" class="form-control"
-                                                            placeholder="Username" required>
+                                                            placeholder="Username" required onkeyup="convertToLowercase(this)">
                                                         <div class="invalid-feedback">Please enter your username</div>
                                                     </div>
                                                 </div>
@@ -81,6 +82,7 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
+                                                    <div class="invalid-feedback">Please select username department</div>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select name="permission[]" id="" class="form-control" required>
@@ -88,6 +90,7 @@
                                                         <option value="Read-only">Read-only</option>
                                                         <option value="Modify">Modify</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Please select the permission</div>
                                                 </div>
                                                 <div class="col-sm-1">
                                                     <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
@@ -103,6 +106,7 @@
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="purpose" maxlength="100" required></textarea>
                                         <label for="floatingTextarea">Purpose</label>
+                                        <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
                                 </div>
                                 
@@ -157,6 +161,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                <div class="invalid-feedback">Please select username department</div>
                                             </div>
                                             <div class="col-sm-3">
                                                 <select name="permission[]" id="" class="form-control" required>
@@ -164,6 +169,7 @@
                                                     <option value="Read-only">Read-only</option>
                                                     <option value="Modify">Modify</option>
                                                 </select>
+                                                <div class="invalid-feedback">Please select the permission</div>
                                             </div>
                                             
                                                                               
@@ -213,5 +219,9 @@
             });
 
         })
+
+        function convertToLowercase(element) {
+            element.value = element.value.toLowerCase();
+        }
     </script>
 @endpush

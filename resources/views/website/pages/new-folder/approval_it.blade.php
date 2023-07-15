@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Manager History New Folder'])
+@extends('website.layouts.main', ['title' => 'ITD Approval New Folder'])
 
 @section('content')
     <div class="pagetitle">
         <h4>File Server Folder Add/Change/Delete Form (FRM-ITD-S13-003-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager History</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form New Folder</a></li>
             </ol>
         </nav>
@@ -14,13 +14,14 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3">
+
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
                                 <th>Detail</th>
                                 <th>New Folder Name</th>
                                 <th>Main Path</th>
-                                <th>Date Approved</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -38,7 +39,7 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_new_folder">
+                        <input type="text" readonly class="form-control-plaintext" id="foldername_folder_access">
                         <input type="hidden" id="id_new_folder">
                     </div>
                     <div class="modal-footer">
@@ -88,7 +89,7 @@
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.new-folder.show_data_manager_approval_ajax') }}",
+                    'url': "{{ route('website.new-folder.show_it_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -100,16 +101,22 @@
                         },
                     },
                     {
-                        data: 'foldername',
-                        name: 'foldername',
+                        data: 'creator_foldername',
+                        name: 'creator_foldername',
                     },
                     {
-                        data: 'mainpath',
-                        name: 'mainpath',
+                        data: 'creator_mainpath',
+                        name: 'creator_mainpath',
                     },
                     {
-                        data: 'manager_approval_date',
-                        name: 'manager_approval_date',
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            return `
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-foldername="${data.foldername}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-foldername="${data.foldername}">Reject</button>`;
+                        }
                     },
                 ]
 
@@ -143,7 +150,7 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sms">
+                    <table class = "table table-sm">
                                                 <tr class = "bg-light">
                                                 <td> Username </td>
                                                 <td> Department </td>
@@ -164,7 +171,7 @@
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
-                                <th>${d.creator_purpose}</th>
+                                <th>${d.purpose}</th>
                                 <th></th>
                             </tr>
                             <tr>
@@ -178,24 +185,70 @@
                 return html
             }
 
-            
+            $('#reject_reason').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-reject').removeAttr('disabled');
+                else
+                    $('#btn-reject').attr('disabled', 'disabled');
+            });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
+            $('#btn-approve').on('click', function() {
+                let id_new_folder = $('#id_new_folder').val();
+                console.log(id_new_folder);
+                $.ajax({
+                    url: "{{ route('website.new-folder.approve_it') }}",
+                    type: "POST",
+                    data: {
+                        id: id_new_folder,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            $('#btn-reject').on('click', function() {
+                let id_new_folder_reject = $('#id_new_folder_reject').val();
+                console.log(id_new_folder_reject);
+                $.ajax({
+                    url: "{{ route('website.new-folder.approve_it') }}",
+                    type: "POST",
+                    data: {
+                        id: id_new_folder_reject,
+                        type: 'reject',
+                        it_note: $('#reject_reason').val(),
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#rejectModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
 
             $('.table').on('click', '.btn-table-approve', function() {
                 var id_new_folder = $(this).data('id');
-                var username_new_folder = $(this).data('username');
+                var foldername_folder_access = $(this).data('foldername');
                 $('#id_new_folder').val(id_new_folder)
-                $('#username_new_folder').val(username_new_folder)
-                // console.log(id_new_folder);
+                $('#foldername_folder_access').val(foldername_folder_access)
             })
 
             $('.table').on('click', '.btn-table-reject', function() {
                 var id_new_folder_reject = $(this).data('id');
                 $('#id_new_folder_reject').val(id_new_folder_reject)
-                // console.log(id_new_folder_reject);
             })
 
         })

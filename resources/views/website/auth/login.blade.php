@@ -60,7 +60,7 @@
 
                   <div class="pt-4 pb-2">
                     <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
-                    <p class="text-center small">Enter your email & password to login</p>
+                    <p class="text-center small">Enter your user & password to login</p>
                   </div>
                   @if ($errors->any())
                   <div class="alert alert-danger">
@@ -74,11 +74,11 @@
                   <form class="row g-3 needs-validation" novalidate method="post" action="{{ route('website.auth.authenticate') }}">
                     @csrf
                     <div class="col-12">
-                      <label for="yourUsername" class="form-label">Email</label>
+                      <label for="yourUsername" class="form-label">Email / NPK</label>
                       <div class="input-group has-validation">
-                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        {{-- <span class="input-group-text" id="inputGroupPrepend">@</span> --}}
                         <input type="text" name="email" class="form-control" id="yourUsername" required>
-                        <div class="invalid-feedback">Please enter your email</div>
+                        <div class="invalid-feedback">Please enter your email or NPK</div>
                       </div>
                     </div>
 

@@ -98,6 +98,7 @@
     <!-- Template Main JS File -->
     <script src="{{ asset('vendor/niceadmin/js/main.js') }}"></script>
 
+    
     @stack('scripts')
 
 </body>

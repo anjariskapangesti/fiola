@@ -34,7 +34,7 @@
                                     <div class="input-group has-validation">
                                         <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
                                         <input type="text" name="username" class="form-control" placeholder="Username"
-                                            required>
+                                            required onkeyup="convertToLowercase(this)">
                                         <div class="invalid-feedback">Please enter your email</div>
                                     </div>
                                 </div>
@@ -63,11 +63,13 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
+                                                    <div class="invalid-feedback">Please select the folder</div>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select name="subfolder[]" id="subfolder" class="form-control" required>
                                                         <option value="">-- Choose Sub Folder --</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Please select the subfolder</div>
                                                 </div>
                                                 {{-- <div class="col-md-3">
                                                     <input type="text" class="form-control" placeholder="Subfolder"
@@ -79,6 +81,7 @@
                                                         <option value="Read-only">Read-only</option>
                                                         <option value="Modify">Modify</option>
                                                     </select>
+                                                    <div class="invalid-feedback">Please select the permission</div>
                                                 </div>
                                                 <div class="col-sm-1">
                                                     <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
@@ -94,6 +97,7 @@
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="purpose" maxlength="100" required></textarea>
                                         <label for="floatingTextarea">Purpose</label>
+                                        <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
                                 </div>
 
@@ -140,11 +144,13 @@
                             </option>
                         @endforeach
                     </select>
+                    <div class="invalid-feedback">Please select the folder</div>
                 </div> 
                 <div class="col-sm-3">
                     <select name="subfolder[]" id="subfolder${rowCounter}" class="form-control" required>
                         <option value="">-- Choose Sub Folder --</option>                                                    
                     </select>
+                    <div class="invalid-feedback">Please select the subfolder</div>
                 </div>
                 <div class="col-sm-4">
                     <select name="permission[]" id="" class="form-control" required>
@@ -152,6 +158,7 @@
                         <option value="Read-only">Read-only</option>
                         <option value="Modify">Modify</option>
                     </select>
+                    <div class="invalid-feedback">Please select the permission</div>
                 </div>                                         
                 <div class="col-sm-1">
                     <button type="button" class="btn btn-danger btn-sm btn-hapus" data-company="astra">Delete</button>
@@ -199,5 +206,10 @@
             });
 
         })
+
+        function convertToLowercase(element) {
+            element.value = element.value.toLowerCase();
+        }
+
     </script>
 @endpush

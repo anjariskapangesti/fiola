@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Manager History New Folder'])
+@extends('website.layouts.main', ['title' => 'ITD History New Folder'])
 
 @section('content')
     <div class="pagetitle">
         <h4>File Server Folder Add/Change/Delete Form (FRM-ITD-S13-003-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager History</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD History</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form New Folder</a></li>
             </ol>
         </nav>
@@ -88,7 +88,7 @@
                 ordering: true,
                 serverSide: true,
                 ajax: {
-                    'url': "{{ route('website.new-folder.show_data_manager_approval_ajax') }}",
+                    'url': "{{ route('website.new-folder.show_data_it_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -108,8 +108,8 @@
                         name: 'mainpath',
                     },
                     {
-                        data: 'manager_approval_date',
-                        name: 'manager_approval_date',
+                        data: 'it_approval_date',
+                        name: 'it_approval_date',
                     },
                 ]
 
@@ -164,7 +164,7 @@
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
-                                <th>${d.creator_purpose}</th>
+                                <th>${d.purpose}</th>
                                 <th></th>
                             </tr>
                             <tr>

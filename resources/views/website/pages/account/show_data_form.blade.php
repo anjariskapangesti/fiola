@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'Manager History Account'])
+@extends('website.layouts.main', ['title' => 'Track Forms Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager History</a></li>
+                <li class="breadcrumb-item "><a href="#">Track Forms</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>

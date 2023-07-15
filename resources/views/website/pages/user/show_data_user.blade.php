@@ -19,6 +19,7 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
+                                <th>NPK</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Option</th>
@@ -62,7 +63,10 @@
                 return (
                     `
                 <table class="table table-sm">
-
+                    <tr>
+                        <td width="30%">NPK</td>
+                        <td>${d.npk} </td>
+                    </tr>
                     <tr>
                         <td width="30%">Name</td>
                         <td>${d.name} </td>
@@ -101,6 +105,10 @@
                                 var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
                                 return rowIndex;
                             },
+                        },
+                        {
+                            data: 'npk',
+                            name: 'npk',
                         },
                         {
                             data: 'name',

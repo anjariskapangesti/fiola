@@ -59,6 +59,13 @@ class AccountController extends Controller
         }else{
             $request->is_email = 1;
         }
+
+        if (Auth::user()->can('can_approve_mgr')) {
+            $finalStatus = 'Manager Approve';
+        } else {
+            $finalStatus = 'created';
+        }
+
         try
         {
             $form_account = Account::create([
@@ -77,7 +84,7 @@ class AccountController extends Controller
                 'created_by' => Auth::user()->id,
                 // 'created_dept' => Auth::user()->dept_id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
-                'final_status' => 'created'
+                'final_status' => $finalStatus
             ]);
 
             
@@ -101,10 +108,9 @@ class AccountController extends Controller
     public function show_data_form_ajax(Request $request)
     {
         
-        $data = Account::
-        where('created_by', Auth::user()->id)
-        ->join('users', 'form_account.created_by', '=', 'users.id')
-        ->select('form_account.*', 'users.name as user_name');
+        $data = Account::where('created_by', Auth::user()->id)
+                        ->join('users', 'form_account.created_by', '=', 'users.id')
+                        ->select('form_account.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }

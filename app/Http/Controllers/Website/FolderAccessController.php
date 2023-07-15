@@ -40,6 +40,12 @@ class FolderAccessController extends Controller
 
     public function store(Request $request)
     {
+        if (Auth::user()->can('can_approve_mgr')) {
+            $finalStatus = 'Manager Approve';
+        } else {
+            $finalStatus = 'created';
+        }
+
         try {
             $request->validate([
                 'no_reg' => 'unique',
@@ -65,7 +71,7 @@ class FolderAccessController extends Controller
             $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
             $no_reg = 'FAC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
     
-            $final_status = 'created';
+            // $final_status = 'created';
             $user = Auth::user();
             // $folder_name = Folder::all();
     
@@ -75,7 +81,7 @@ class FolderAccessController extends Controller
             $folderaccess->purpose = $request->purpose;
             $folderaccess->created_by = $user->id;
             $folderaccess->created_dept = $user->departments->pluck('id')->first();
-            $folderaccess->final_status = $final_status;
+            $folderaccess->final_status = $finalStatus;
             $folderaccess->save();
     
             for ($i = 0; $i < count($request->folder ); $i++) {
@@ -93,6 +99,29 @@ class FolderAccessController extends Controller
         }
     }
 
+    public function show_data_form()
+    {
+        $departmetns = Department::all();
+        $folders = Folder::orderBy('name', 'ASC')->get();
+        $subfolders = SubFolder::orderBy('name', 'ASC')->get();
+        // dd($subfolders);
+        return view('website.pages.folder-access.show_data_form', compact(['departmetns', 'folders', 'subfolders']));
+    }
+
+    public function show_data_form_ajax(Request $request)
+    {
+        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
+                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
+                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                                    ('form_folder_access.final_status as final_status'))
+                            ->where('created_by', Auth::user()->id)
+                            ->orderBy('form_folder_access.id', 'desc')
+                            ->with('form_folder_access_path');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+    
+    // MGR //
     public function show_manager_approval()
     {
         return view('website.pages.folder-access.approval_manager');

@@ -35,11 +35,13 @@
                                         <input class="form-check-input" type="radio" name="budget_type" id="budgetType1"
                                             value="budget" required>
                                         <label class="form-check-label" for="budgetType1">Budget</label>
+                                        <div class="invalid-feedback">Please select budget type</div>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="budget_type" id="budgetType2"
                                             value="unbudget">
                                         <label class="form-check-label" for="budgetType2">Un Budget</label>
+                                        <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -47,16 +49,19 @@
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType1" value="registration" required>
                                         <label class="form-check-label" for="inlineRadioType1">Registration</label>
+                                        <div class="invalid-feedback">Please select request type</div>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType2" value="change">
                                         <label class="form-check-label" for="inlineRadioType2">Change</label>
+                                        <div class="invalid-feedback">-</div>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType3" value="deletion">
                                         <label class="form-check-label" for="inlineRadioType3">Deletion</label>
+                                        <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
                             </div>
@@ -69,10 +74,12 @@
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="NPK" name="npk"
                                         maxlength="6" required>
+                                    <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        maxlength="60" required>
+                                        maxlength="60" required onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <select name="department" class="form-control" required>
@@ -81,10 +88,12 @@
                                             <option value="{{ $department->name }}">{{ $department->name }} </option>
                                         @endforeach
                                     </select>
+                                    <div class="invalid-feedback">Please choose your department</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Mobile Phone" name="phone"
+                                    <input type="text" class="form-control" placeholder="Phone Number" name="phone"
                                         maxlength="14" required>
+                                    <div class="invalid-feedback">Please enter your phone number</div>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Company Name (If External/Non AIIA)"
@@ -102,6 +111,7 @@
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="purpose" maxlength="100" required></textarea>
                                         <label for="floatingTextarea">Purpose</label>
+                                        <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +124,8 @@
                                 <div class="col-md-5">
                                     <input type="text" class="form-control"
                                         placeholder="Login Username (FirstName.LastName)" name="ad_name" maxlength="60"
-                                        required>
+                                        required onkeyup="convertToLowercase(this)">
+                                    <div class="invalid-feedback">Please enter your username</div>
                                 </div>
                                 <div class="col-md-7 mb-3">
                                     <div class="form-check form-switch">
@@ -154,5 +165,17 @@
                 toastr['success']("{{ Session('success') }}")
             @endif
         })
+
+        function convertToLowercase(element) {
+            element.value = element.value.toLowerCase();
+        }
+
+        function formatFullName(element) {
+            let words = element.value.toLowerCase().split(" ");
+            for (let i = 0; i < words.length; i++) {
+                words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+            }
+            element.value = words.join(" ");
+        }
     </script>
 @endpush

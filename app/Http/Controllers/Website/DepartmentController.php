@@ -52,7 +52,7 @@ class DepartmentController extends Controller
     public function show_data_department_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Department::orderBy('name', 'DESC');
+        $data = Department::orderBy('name', 'ASC');
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
