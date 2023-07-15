@@ -13,8 +13,12 @@
     <section class="section">
         <div class="row">
             @if(session('incomplete'))
-                <div class="alert alert-warning" role="alert">
-                    {{ session('incomplete') }}
+            <div class="alert alert-warning" role="alert">
+                {{ session('incomplete') }}
+            </div>
+            @elseif(session('complete'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('complete') }}
                 </div>
             @endif
             @if ($errors->any())
@@ -37,8 +41,20 @@
                     <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title">User</h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
+                            <div class="row g-3">                                
+                                <div class="col-md-4">
+                                    <label for="npk">{{ __('NPK') }}</label>
+                                    <input id="npk" type="text" class="form-control @error('npk') is-invalid @enderror"
+                                        name="npk" value="{{ old('npk', $user->npk) }}" maxlength="6" required autofocus>
+                                                
+                                    @error('npk')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4">
                                     <label for="name">{{ __('Name') }}</label>
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
                                         name="name" value="{{ old('name', $user->name) }}" required autofocus>
@@ -50,11 +66,11 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label for="nohp">{{ __('Phone Number') }}</label>
                                     <input id="nohp" type="text"
                                         class="form-control @error('nohp') is-invalid @enderror" name="nohp"
-                                        value="{{ old('nohp', $user->nohp) }}" required>
+                                        value="{{ old('nohp', $user->nohp) }}" maxlength="14" required>
     
                                     @error('nohp')
                                         <span class="invalid-feedback" role="alert">

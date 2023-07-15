@@ -41,6 +41,16 @@ return [
             'provider' => 'users',
         ],
 
+        'email' => [
+            'driver' => 'session',
+            'provider' => 'email',
+        ],
+        
+        'npk' => [
+            'driver' => 'session',
+            'provider' => 'npk',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -95,6 +105,20 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'email' => [
+            'provider' => 'email',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        
+        'npk' => [
+            'provider' => 'npk',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

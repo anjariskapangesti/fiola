@@ -20,7 +20,7 @@ class NewFolderController extends Controller
 {
     public function create()
     {
-        $departments = Department::all();
+        $departments = Department::orderBy('name')->get();
         $folders = Folder::orderBy('name', 'ASC')->get();
 
         // dd($subfolders);
@@ -31,6 +31,7 @@ class NewFolderController extends Controller
     {
         try {
             $request->validate([
+                'no_reg' => 'unique',
                 'foldername' => 'required',
                 'mainpath' => 'required',
                 'username' => 'required',
@@ -39,30 +40,58 @@ class NewFolderController extends Controller
                 'purpose' => 'required',
             ]);
 
+            $year = date('y');
+            $month = date('m');
+            $lastForm = DB::table('form_new_folder')
+                          ->select('no_reg')
+                          ->orderBy('no_reg', 'desc')
+                          ->first();
+            $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
+            
+            $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
+            if ($lastMonth !== $month){
+                $lastNumber = '000';
+            }            
+            $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+            $no_reg = 'NEF/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
-            DB::transaction(function () use ($request) {
-                $final_status = 'created';
-                $user = Auth::user();                
+            // DB::transaction(function () use ($request) {
+            //     $final_status = 'created';
+            //     $user = Auth::user();                
 
-                $newfolder = NewFolder::create([
-                    'foldername' => $request->foldername,
-                    'mainpath' => $request->mainpath,
-                    'purpose' => $request->purpose,
-                    'created_by' => $user->id,
-                    'created_dept' => $user->departments->pluck('id')->first(),
-                    'final_status' => $final_status,
+            //     $newfolder = NewFolder::create([
+            //         'no_reg' => $no_reg,
+            //         'foldername' => $request->foldername,
+            //         'mainpath' => $request->mainpath,
+            //         'purpose' => $request->purpose,
+            //         'created_by' => $user->id,
+            //         'created_dept' => $user->departments->pluck('id')->first(),
+            //         'final_status' => $final_status,
+            //     ]);
+            //     $newfolder->save();
+            $final_status = 'created';
+            $user = Auth::user();
+            // $folder_name = Folder::all();
+    
+            $newfolder = new NewFolder();
+            $newfolder->no_reg = $no_reg;
+            $newfolder->foldername = $request->foldername;
+            $newfolder->mainpath = $request->mainpath;
+            $newfolder->purpose = $request->purpose;
+            $newfolder->created_by = $user->id;
+            $newfolder->created_dept = $user->departments->pluck('id')->first();
+            $newfolder->final_status = $final_status;
+            $newfolder->save();
+
+            for ($i = 0; $i < count($request->username ); $i++) {
+                NewFolderAccess::create([
+                    'new_folder_id' => $newfolder->id,
+                    'username' => $request->username[$i],
+                    'department' => $request->department[$i],
+                    'permission' => $request->permission[$i],
                 ]);
-                $newfolder->save();
-
-                for ($i = 0; $i < count($request->username ); $i++) {
-                    NewFolderAccess::create([
-                        'new_folder_id' => $newfolder->id,
-                        'username' => $request->username[$i],
-                        'department' => $request->department[$i],
-                        'permission' => $request->permission[$i],
-                    ]);
-                }
-            });
+            }
+            // });
             return redirect()->back()->with('success', 'Success Create Form');
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);

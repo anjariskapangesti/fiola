@@ -28,7 +28,7 @@
                 <div class="col-lg-12">
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">A. General</h5>
+                            <h5 class="card-title">General</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-check form-check-inline">
@@ -64,7 +64,7 @@
                     </div>
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">B. User Information</h5>
+                            <h5 class="card-title">User Information</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="NPK" name="npk"
@@ -84,7 +84,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Mobile Phone" name="phone"
-                                        maxlength="13" required>
+                                        maxlength="14" required>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Company Name (If External/Non AIIA)"
@@ -109,18 +109,18 @@
                     </div>
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">C. Email & Active Directory</h5>
+                            <h5 class="card-title">Email & Active Directory</h5>
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <input type="text" class="form-control"
                                         placeholder="Login Username (FirstName.LastName)" name="ad_name" maxlength="60"
                                         required>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-7 mb-3">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
                                             name="is_email" value="false">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Create Email (Mail
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Create Email for Outlook (Mail
                                             address will be decided by ITD)</label>
                                     </div>
                                 </div>

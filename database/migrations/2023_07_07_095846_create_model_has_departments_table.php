@@ -17,7 +17,6 @@ class CreateModelHasDepartmentsTable extends Migration
             $table->unsignedBigInteger('model_id');
             $table->string('model_type');
             $table->unsignedBigInteger('department_id');
-            $table->timestamps();
 
             $table->primary(['model_id', 'model_type', 'department_id']);
 

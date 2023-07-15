@@ -67,7 +67,7 @@ class FolderAccessController extends Controller
     
             $final_status = 'created';
             $user = Auth::user();
-            $folder_name = Folder::all();
+            // $folder_name = Folder::all();
     
             $folderaccess = new FolderAccess();
             $folderaccess->no_reg = $no_reg;

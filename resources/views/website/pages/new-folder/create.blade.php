@@ -1,5 +1,5 @@
 @extends('website.layouts.main', ['title' => 'Form New Folder'])
-
+    
 @section('content')
     <div class="pagetitle">
         <h4>File Server Folder Add/Change/Delete Form (FRM-ITD-S13-003-00)</h4>
@@ -28,7 +28,7 @@
                 <div class="col-lg-12">
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">A. Information New Folder Permission</h5>
+                            <h5 class="card-title">New Folder Information</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <select name="mainpath" class="form-control" required>
@@ -47,66 +47,76 @@
                                         <div class="invalid-feedback">Please enter your Folder Name</div>
                                     </div>
                                 </div>
-
-
-
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">New Folder Permission</h5>
+                            <div class="row g-3">
                                 <div class="card-body">
-                                    <h5 class="card-title">B. Access Permission</h5>
-                                    <div class="mt-1 row border bg-light">
-                                        <label for="message" class="col-sm-4 col-form-label">User Account</label>
-                                        <label for="message" class="col-sm-4 col-form-label">Department</label>
-                                        <label for="message" class="col-sm-4 col-form-label">Permission</label>
-                                    </div>
-                                    <div id="dynamic-row" class="">
-                                        <div class="row border p-2">
-                                            <div class="col-md-4">
-                                                <div class="input-group has-validation">
-                                                    <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
-                                                    <input type="text" name="username[]" class="form-control"
-                                                        placeholder="Username" required>
-                                                    <div class="invalid-feedback">Please enter your username</div>
+                                    <div class="col-md-12">
+                                        <div class="row border bg-light">
+                                            <label for="message" class="col-sm-4 col-form-label">User Account</label>
+                                            <label for="message" class="col-sm-4 col-form-label">Department</label>
+                                            <label for="message" class="col-sm-4 col-form-label">Permission</label>
+                                        </div>
+                                        <div id="dynamic-row" class="">
+                                            <div class="row border p-2">
+                                                <div class="col-md-4">
+                                                    <div class="input-group has-validation">
+                                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                                        <input type="text" name="username[]" class="form-control"
+                                                            placeholder="Username" required>
+                                                        <div class="invalid-feedback">Please enter your username</div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <select name="department[]" class="form-control" required>
-                                                    <option selected disabled value="">-- Choose Department --
-                                                    </option>
-                                                    @foreach ($departments as $department)
-                                                        <option value="{{ $department->name }}">{{ $department->name }}
+                                                <div class="col-md-4">
+                                                    <select name="department[]" class="form-control" required>
+                                                        <option selected disabled value="">-- Choose Department --
                                                         </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <select name="permission[]" id="" class="form-control" required>
-                                                    <option value="">-- Choose Permission --</option>
-                                                    <option value="Read-only">Read-only</option>
-                                                    <option value="Modify">Modify</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-1">
-                                                <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
-                                                </button>
+                                                        @foreach ($departments as $department)
+                                                            <option value="{{ $department->name }}">{{ $department->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <select name="permission[]" id="" class="form-control" required>
+                                                        <option value="">-- Choose Permission --</option>
+                                                        <option value="Read-only">Read-only</option>
+                                                        <option value="Modify">Modify</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+
+                                <div class="col-md-12 mt-0">
                                     <div class="form-floating mb-3">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="purpose" maxlength="100" required></textarea>
                                         <label for="floatingTextarea">Purpose</label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body">
-                                    @include('website.layouts.approval_flow')
-                                </div>
-                            </div>
+                                
+                            </div>                          
                         </div>
-                        <button class="btn btn-success" type="submit">Save & Submit Request</button>
                     </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            @include('website.layouts.approval_flow')
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Save & Submit Request</button>                    
+                </div>
             </form>
         </div>
     </section>

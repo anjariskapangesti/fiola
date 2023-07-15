@@ -10,7 +10,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{{ asset('vendor/niceadmin/img/favicon.png') }}" rel="icon">
+  <link href="{{ asset('img/aiia.png') }}" rel="icon">
   <link href="{{ asset('vendor/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
@@ -62,7 +62,15 @@
                     <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
                     <p class="text-center small">Enter your email & password to login</p>
                   </div>
-
+                  @if ($errors->any())
+                  <div class="alert alert-danger">
+                      <ul>
+                          @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+                  @endif
                   <form class="row g-3 needs-validation" novalidate method="post" action="{{ route('website.auth.authenticate') }}">
                     @csrf
                     <div class="col-12">
@@ -89,9 +97,9 @@
                     <div class="col-12">
                       <button class="btn btn-primary w-100" type="submit">Login</button>
                     </div>
-                    <div class="col-12">
+                    {{-- <div class="col-12">
                       <p class="small mb-0">Don't have account? <a href="{{ route('website.auth.register') }}">Create an account</a></p>
-                    </div>
+                    </div> --}}
                   </form>
 
                 </div>

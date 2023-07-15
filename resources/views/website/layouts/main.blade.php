@@ -12,7 +12,7 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="{{ asset('vendor/niceadmin/img/favicon.png') }}" rel="icon">
+    <link href="{{ asset('img/aiia.png') }}" rel="icon">
     <link href="{{ asset('vendor/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->

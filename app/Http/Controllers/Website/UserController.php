@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -22,10 +23,9 @@ class UserController extends Controller
     public function create()
     {
         
-        $departments = Department::pluck('name', 'id');
+        $departments = Department::all()->sortBy('name')->pluck('name', 'id');
 
         $permissions = Permission::pluck('name', 'id');
-        // dd($departments);
         
         return view('website.pages.user.create', compact('departments', 'permissions'));
     }
@@ -131,9 +131,11 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:4|confirmed',
-            'nohp' => 'nullable|string|max:20',
+            'nohp' => 'nullable|string|max:14',
+            'npk' => 'nullable|string|max:6',
         ]);
 
+        $user->npk = $request->input('npk');
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         if ($request->has('password')) {
@@ -143,9 +145,10 @@ class UserController extends Controller
         $user->save();
 
         if ($user->profileIncomplete()) {
-            session()->flash('incomplete', 'Mohon lengkapi data Anda.');
+            Session::flash('incomplete', 'Please complete your data!!!');
         } else {
-            session()->forget('incomplete');
+            Session::forget('incomplete');
+            Session::flash('complete', 'Your data is complete, enjoy using our website.');
         }
 
         return redirect()->back()->with('success', 'Profile updated successfully.');

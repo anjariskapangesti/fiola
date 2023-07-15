@@ -18,10 +18,10 @@ class AccountController extends Controller
 {
     public function create()
     {
-        $departments = Department::all();
+        $departments = Department::orderBy('name')->get();
 
         $userDepartment = Auth::user()->createdDepartments;
-        // dd($userDepartment);
+        
         return view('website.pages.account.create', compact(['departments', 'userDepartment']));
     }
 
@@ -41,13 +41,17 @@ class AccountController extends Controller
 
         $year = date('y');
         $month = date('m');
-        $lastForm = Account::orderBy('id', 'desc')->first();
-        $lastNumber = $lastForm ? intval(substr($lastForm->no_reg, -3)) : 0;
-        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 7, 2) : '00';
+        $lastForm = DB::table('form_account')
+                      ->select('no_reg')
+                      ->orderBy('no_reg', 'desc')
+                      ->first();
+        $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
+        
+        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
         if ($lastMonth !== $month){
             $lastNumber = '000';
-        } 
-        $newNumber = $lastNumber + 1;
+        }            
+        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
         $no_reg = 'ACC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         if($request->is_email==false){

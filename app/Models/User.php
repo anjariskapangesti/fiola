@@ -22,7 +22,7 @@ class User extends Authenticatable
      */
     protected $table = 'users';
     protected $fillable = [
-        'name', 'email', 'password', 'nohp'
+        'npk', 'name', 'email', 'password', 'nohp'
     ];
 
     /**
@@ -58,6 +58,6 @@ class User extends Authenticatable
 {
     // Ganti dengan logika Anda untuk memeriksa kelengkapan profil pengguna.
     // Jika profil belum lengkap, kembalikan true, jika sudah lengkap, kembalikan false.
-    return empty($this->name) || empty($this->email) || empty($this->nohp);
+    return empty($this->name) || empty($this->email) || empty($this->nohp) || empty($this->npk);
 }
 }

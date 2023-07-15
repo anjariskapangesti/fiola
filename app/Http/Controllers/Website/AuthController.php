@@ -26,8 +26,17 @@ class AuthController extends Controller
          */
         public function authenticate(LoginRequest $request)
         {
-            $credentials = $request->only('email', 'password');
-        
+            $login = $request->input('email');
+            $password = $request->input('password');
+            
+            // Periksa apakah login menggunakan NPK atau email
+            $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'npk';
+            
+            $credentials = [
+                $field => $login,
+                'password' => $password
+            ];
+            // dd($credentials);
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
         
@@ -38,7 +47,7 @@ class AuthController extends Controller
                 return redirect()->route('website.home');
             }
         
-            return redirect()->back()->withErrors(['unauthenticate' => 'Email atau password salah']);
+            return redirect()->back()->withErrors(['unauthenticate' => 'Wrong email or NPK and password']);
         }
 
         // protected function sendFailedLoginResponse(Request $request)

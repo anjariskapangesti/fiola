@@ -1,4 +1,4 @@
-<h5 class="card-title">D. Approval Flow</h5>
+<h5 class="card-title">Approval Flow</h5>
 <div class="md-stepper-horizontal orange">
     <div class="md-step active">
         <div class="md-step-circle"><span>1</span></div>
