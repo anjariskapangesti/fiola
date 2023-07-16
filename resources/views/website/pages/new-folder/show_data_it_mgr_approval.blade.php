@@ -13,7 +13,7 @@
     <section class="section">
         <div class="row">
             <div class="card">
-                <div class="card-body p-3 table table-responsive">
+                <div class="card-body p-3 table-responsive">
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
@@ -164,13 +164,11 @@
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
-                                <th>${d.purpose}</th>
-                                <th></th>
+                                <th colspan="2">${d.purpose}</th>
                             </tr>
                             <tr>
                                 <th>Created by</th>
-                                <th>${d.creator_created_by}</th>
-                                <th></th>
+                                <th colspan="2">${d.creator_created_by}</th>
                             </tr>
                         </tfoot>                      
                         </table>`
@@ -178,7 +176,7 @@
                 return html
             }
 
-            
+
 
             // $('#confirmModal').on('shown.bs.modal', function() {
             //     $('#nama').text('Nama Requestor')

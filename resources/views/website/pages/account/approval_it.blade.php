@@ -142,7 +142,7 @@
                 "lengthChange": true,
                 'processing': true,
                 'serverSide': true,
-                "sScrollY": true,
+                // "sScrollY": true,
                 ajax: {
                     url: "{{ route('website.account.show_it_approval_ajax') }}",
                 },

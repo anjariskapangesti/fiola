@@ -40,8 +40,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>        
-                    
+                    </div>
+
                     <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title mb-1">Folder Access Information</h5>
@@ -49,14 +49,14 @@
                                 <div class="card-body">
                                     <div class="col-md-12">
                                         <div class="row border bg-light">
-                                            <label for="message" class="col-sm-6 col-form-label">Folder Path</label>
-                                            <label for="message" class="col-sm-4 col-form-label">Permission</label>
+                                            <label for="message" class="col-sm-9 col-form-label">Folder Path</label>
+                                            <label for="message" class="col-sm-3 col-form-label">Permission</label>
                                         </div>
                                         <div id="dynamic-row" class="">
                                             <div class="row border p-2">
                                                 <div class="col-md-3">
                                                     <select name="folder[]" id="folder" class="form-control" required>
-                                                        <option selected disabled value="">-- Choose Folder --
+                                                        <option selected disabled value="">-- Choose Main Path --
                                                         </option>
                                                         @foreach ($folders as $folder)
                                                             <option value="{{ $folder->name }}">{{ $folder->name }}
@@ -67,16 +67,17 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select name="subfolder[]" id="subfolder" class="form-control" required>
-                                                        <option value="">-- Choose Sub Folder --</option>
+                                                        <option value="">-- Choose Folder --</option>
                                                     </select>
                                                     <div class="invalid-feedback">Please select the subfolder</div>
                                                 </div>
-                                                {{-- <div class="col-md-3">
+                                                <div class="col-md-3">
                                                     <input type="text" class="form-control" placeholder="Subfolder"
-                                                        name="subsubfolder" maxlength="60" required>
-                                                </div> --}}
-                                                <div class="col-sm-4">
-                                                    <select name="permission[]" id="" class="form-control" required>
+                                                        name="subsubfolder[]" maxlength="60">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <select name="permission[]" id="" class="form-control"
+                                                        required>
                                                         <option value="">-- Choose Permission --</option>
                                                         <option value="Read-only">Read-only</option>
                                                         <option value="Modify">Modify</option>
@@ -84,7 +85,8 @@
                                                     <div class="invalid-feedback">Please select the permission</div>
                                                 </div>
                                                 <div class="col-sm-1">
-                                                    <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
+                                                    <button type="button"
+                                                        class="btn btn-success border btn-sm btn-tambah">Add
                                                     </button>
                                                 </div>
                                             </div>
@@ -103,7 +105,7 @@
 
                             </div>
                         </div>
-                    </div>                
+                    </div>
 
                     <div class="card">
                         <div class="card-body">
@@ -148,11 +150,15 @@
                 </div> 
                 <div class="col-sm-3">
                     <select name="subfolder[]" id="subfolder${rowCounter}" class="form-control" required>
-                        <option value="">-- Choose Sub Folder --</option>                                                    
+                        <option value="">-- Choose Subfolder --</option>                                                    
                     </select>
                     <div class="invalid-feedback">Please select the subfolder</div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-md-3">
+                    <input type="text" class="form-control" placeholder="Subfolder"
+                        name="subsubfolder[]" maxlength="60">
+                </div>
+                <div class="col-sm-2">
                     <select name="permission[]" id="" class="form-control" required>
                         <option value="">-- Choose Permission --</option>
                         <option value="Read-only">Read-only</option>
@@ -210,6 +216,5 @@
         function convertToLowercase(element) {
             element.value = element.value.toLowerCase();
         }
-
     </script>
 @endpush

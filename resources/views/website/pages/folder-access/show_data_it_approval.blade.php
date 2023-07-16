@@ -13,7 +13,7 @@
     <section class="section">
         <div class="row">
             <div class="card">
-                <div class="card-body p-3 table table-responsive">
+                <div class="card-body p-3 table-responsive">
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
@@ -158,8 +158,9 @@
                 var html = `
                     <table class = "table table-sms">
                                                 <tr class = "bg-light">
+                                                <td> Main Path </td>
                                                 <td> Folder </td>
-                                                <td> Folder Path </td>
+                                                <td> Subfolder </td>
                                                 <td> Permission </td>
                                                 </tr>
                                                 `
@@ -168,6 +169,7 @@
                     html += `<tr>
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
+                                    <td>${d.form_folder_access_path[i].subsubfolder}</td>
                                     <td>${d.form_folder_access_path[i].permission}</td>`
                     html += `</tr>
                     `
@@ -177,13 +179,11 @@
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
-                                <th>${d.creator_purpose}</th>
-                                <th></th>
+                                <th colspan="3">${d.creator_purpose}</th>                                
                             </tr>
                             <tr>
                                 <th>Created by</th>
-                                <th>${d.creator_created_by}</th>
-                                <th></th>
+                                <th colspan="3">${d.creator_created_by}</th>
                             </tr>
                         </tfoot>                      
                         </table>`

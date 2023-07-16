@@ -99,6 +99,7 @@ class FolderAccessController extends Controller
                     'folder_access_id' => $folderaccess->id,
                     'folder' => $request->folder[$i],
                     'subfolder' => $request->subfolder[$i],
+                    'subsubfolder' => $request->subsubfolder[$i],
                     'permission' => $request->permission[$i],
                 ]);
             }
