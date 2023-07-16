@@ -13,7 +13,7 @@
     <section class="section">
         <div class="row">
             <div class="card">
-                <div class="card-body p-3">
+                <div class="card-body p-3 table table-responsive">
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
