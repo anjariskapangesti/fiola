@@ -18,7 +18,7 @@ class CreateFormFolderAccessPath extends Migration
             $table->unsignedBigInteger('folder_access_id');
             $table->string('folder');
             $table->string('subfolder');
-            $table->string('subsubfolder');
+            $table->string('subsubfolder')->nullable();
             $table->string('permission');
             $table->timestamps();
 
