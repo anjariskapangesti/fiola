@@ -31,7 +31,7 @@ class AccountController extends Controller
             'no_reg' => 'unique',
             'budget_type' => 'required' ,
             'form_type' => 'required' ,
-            'npk' => 'required' ,
+            'npk' => 'required|min:6' ,
             'fullname' => 'required' ,
             'department' => 'required' ,
             'phone' => 'required' ,
