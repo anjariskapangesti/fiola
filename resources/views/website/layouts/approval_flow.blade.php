@@ -22,7 +22,7 @@
     </div>
     <div class="md-step active">
         <div class="md-step-circle"><span>4</span></div>
-        <div class="md-step-title">Approval MGR ITD</div>
+        <div class="md-step-title">Approval ITD Manager</div>
         <div class="md-step-bar-left"></div>
         <div class="md-step-bar-right"></div>
     </div>
