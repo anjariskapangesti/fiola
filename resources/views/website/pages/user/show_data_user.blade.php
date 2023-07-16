@@ -164,13 +164,15 @@
 
                 $('#btn-approve-delete').on('click', function() {
                     let id_user = $('#id_user').val();
+                    // let id_user = $(this).data("id");
                                 
                     console.log(id_user);
                     $.ajax({
-                        url: "/user/users/" + id_user,
+                        url: "{{ route('website.user.destroy') }}" + "/" + id_user,
+                        // url: "/destroy/" + id_user,
                         type: "DELETE",
                         data: {
-                            id: id_user,
+                            id: id_user, 
                             '_token': "{{ csrf_token() }}",
                         },
                         success: function(response) {

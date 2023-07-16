@@ -25,7 +25,7 @@ class UserController extends Controller
         
         $departments = Department::all()->sortBy('name')->pluck('name', 'id');
 
-        $permissions = Permission::pluck('name', 'id');
+        $permissions = Permission::all()->sortBy('id')->pluck('name', 'id');
         
         return view('website.pages.user.create', compact('departments', 'permissions'));
     }
@@ -93,9 +93,8 @@ class UserController extends Controller
 
     public function show_data_user()
     {
-        // $users = User::with('departments', 'permissions')->get();
         $users = User::all();
-        // dd($users);
+        
         return view('website.pages.user.show_data_user', compact('users'));
     }
 
@@ -132,7 +131,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:4|confirmed',
             'nohp' => 'nullable|string|max:14',
-            'npk' => 'nullable|string|max:6',
+            'npk' => 'nullable|string|min:6',
         ]);
 
         $user->npk = $request->input('npk');
@@ -158,11 +157,11 @@ class UserController extends Controller
     {
         if (Auth::user()->can('can_master')) {
             // Hapus user
-            $user->delete();
-
-            return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+            $user->where('id', '3')->delete();
+            
+            return redirect()->back()->with('success', 'User deleted successfully.');
         }
 
-        return redirect()->route('users.index')->with('error', 'You do not have permission to delete this user.');
+        return redirect()->back()->with('error', 'You do not have permission to delete this user.');
     }
 }

@@ -10,7 +10,7 @@
         </nav>
     </div><!-- End Page Title -->
 
-
+    
     <section class="section">
         <div class="col-md-12">
             <div class="row ">
@@ -334,14 +334,120 @@
                         </div>
                     </div>
                 @endcan
-
+                @if (auth()->check() && (auth()->user()->can('can_master') || auth()->user()->can('can_approve_it') || auth()->user()->can('can_approve_it_mgr')))
+                <div class="">
+                    <div id="chart"></div>
+                </div>
+                @endif
             </div>
         </div>
     </section>
 @endsection
 
 @push('styles')
+{{-- <style>
+    .highcharts-figure,
+    .highcharts-data-table table {
+        min-width: 310px;
+        max-width: 800px;
+        margin: 1em auto;
+    }
+    
+    #container {
+        height: 400px;
+    }
+    
+    .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #ebebeb;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+    }
+    
+    .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+    }
+    
+    .highcharts-data-table td,
+    .highcharts-data-table th,
+    .highcharts-data-table caption {
+        padding: 0.5em;
+    }
+    
+    .highcharts-data-table thead tr,
+    .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+    }
+    
+    .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+    }
+    </style> --}}
 @endpush
 
 @push('scripts')
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script>
+Highcharts.chart('chart', {
+
+    chart: {
+        type: 'column'
+    },
+    
+    title: {
+        text: 'Total Form',
+        align: 'center'
+    },
+    
+    xAxis: {
+        categories: ['Account', 'Folder Access', 'New Folder']
+    },
+    
+    yAxis: {
+        allowDecimals: false,
+        min: 0,
+        title: {
+            text: 'Count forms'
+        }
+    },
+    
+    tooltip: {
+        format: '<b>{key}</b><br/>{series.name}: {y}<br/>' +
+            'Total: {point.stackTotal}'
+    },
+    
+    plotOptions: {
+        column: {
+            stacking: 'normal',
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    
+    series: [{
+        name: 'Finished',
+        color: '#47c363',
+        data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }}],
+    }, {
+        name: 'Rejected',
+        color: '#fc544b',
+        data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }}],
+    }]
+    });
+
+</script>
 @endpush

@@ -62,8 +62,16 @@ class AccountController extends Controller
 
         if (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_executives')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
         } else {
             $finalStatus = 'created';
+            $isManagerApprove = null;
+            $managerApprovalDate = null;
         }
 
         try
@@ -84,7 +92,9 @@ class AccountController extends Controller
                 'created_by' => Auth::user()->id,
                 // 'created_dept' => Auth::user()->dept_id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
-                'final_status' => $finalStatus
+                'final_status' => $finalStatus,
+                'is_manager_approve' => $isManagerApprove,
+                'manager_approval_date' => $managerApprovalDate,            
             ]);
 
             

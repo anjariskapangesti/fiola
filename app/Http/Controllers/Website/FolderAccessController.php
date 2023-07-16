@@ -42,8 +42,16 @@ class FolderAccessController extends Controller
     {
         if (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_executives')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
         } else {
             $finalStatus = 'created';
+            $isManagerApprove = null;
+            $managerApprovalDate = null;
         }
 
         try {
@@ -82,6 +90,8 @@ class FolderAccessController extends Controller
             $folderaccess->created_by = $user->id;
             $folderaccess->created_dept = $user->departments->pluck('id')->first();
             $folderaccess->final_status = $finalStatus;
+            $folderaccess->is_manager_approve = $isManagerApprove;
+            $folderaccess->manager_approval_date = $managerApprovalDate;
             $folderaccess->save();
     
             for ($i = 0; $i < count($request->folder ); $i++) {

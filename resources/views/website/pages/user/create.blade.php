@@ -33,6 +33,7 @@
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" placeholder="Name" name="name"
                                         maxlength="100" required>
+                                    <div class="invalid-feedback">Please enter the name</div>
                                 </div>
                                 {{-- <div class="col-md-6">
                                     <select name="departments" class="form-control" required>
@@ -61,21 +62,24 @@
                                 <div class="col-md-6">
                                     <input type="email" class="form-control" placeholder="Email" name="email"
                                         maxlength="100" required>
+                                    <div class="invalid-feedback">Please enter the email</div>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="password" class="form-control" placeholder="Password" name="password"
                                         maxlength="100" required>
+                                        <div class="invalid-feedback">Please enter the password</div>
                                 </div>
 
                                 <div class="col-md-6">                    
                                     <div class="department-container">
                                         <div class="department-item mb-3">
-                                            <select name="departments[]" class="form-control">
+                                            <select name="departments[]" class="form-control" required>
                                                 <option value="">-- Select Department --</option>
                                                 @foreach($departments as $id => $name)
                                                     <option value="{{ $id }}">{{ $name }}</option>
                                                 @endforeach
                                             </select>
+                                            <div class="invalid-feedback">Please select department</div>
                                         </div>                                        
                                     </div>
                                 </div>
@@ -87,12 +91,13 @@
                                 <div class="col-md-6">                    
                                     <div class="permission-container">
                                         <div class="permission-item mb-3">
-                                            <select name="permissions[]" class="form-control">
+                                            <select name="permissions[]" class="form-control" required>
                                                 <option value="">-- Select Permission --</option>
                                                 @foreach($permissions as $id => $name)
                                                     <option value="{{ $id }}">{{ $name }}</option>
                                                 @endforeach
                                             </select>
+                                            <div class="invalid-feedback">Please select permission</div>
                                         </div>                                        
                                     </div>
                                 </div>
@@ -144,7 +149,7 @@
                         <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
                 </select>
-                
+                <div class="invalid-feedback">Please select permission</div>
                 <button type="button" class="btn btn-danger mt-2 mb-2 remove-permission">Remove Permission</button>
             `;
 
@@ -159,9 +164,7 @@
                 }
             });
     });
-</script>
 
-<script>
     document.addEventListener('DOMContentLoaded', function() {
         const addDepartmentButton = document.getElementById('add-department');
         const departmentContainer = document.querySelector('.department-container');
@@ -177,7 +180,7 @@
                         <option value="{{ $id }}">{{ $name }}</option>
                     @endforeach
                 </select>
-                
+                <div class="invalid-feedback">Please select department</div>
                 <button type="button" class="btn btn-danger mt-2 mb-2 remove-department">Remove Department</button>
             `;
 

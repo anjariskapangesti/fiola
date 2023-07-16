@@ -57,7 +57,7 @@
                                 <div class="col-md-4">
                                     <label for="name">{{ __('Name') }}</label>
                                     <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
-                                        name="name" value="{{ old('name', $user->name) }}" required autofocus>
+                                        name="name" value="{{ old('name', $user->name) }}" required autofocus onkeyup="formatFullName(this)">
                                                 
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
@@ -82,7 +82,7 @@
                                 <div class="col-md-4">
                                     <label for="email">{{ __('Email') }}</label>
                                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                                        name="email" value="{{ old('email', $user->email) }}" required>
+                                        name="email" value="{{ old('email', $user->email) }}" required onkeyup="convertToLowercase(this)">
                                     
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -171,10 +171,7 @@
             toastr['success']("{{ Session('success') }}")
         @endif
     })
-</script>
 
-
-<script>
     document.addEventListener('DOMContentLoaded', function() {
         const addPermissionButton = document.getElementById('add-permission');
         const permissionContainer = document.querySelector('.permission-container');
@@ -205,9 +202,7 @@
                 }
             });
     });
-</script>
 
-<script>
     document.addEventListener('DOMContentLoaded', function() {
         const addDepartmentButton = document.getElementById('add-department');
         const departmentContainer = document.querySelector('.department-container');
@@ -238,5 +233,17 @@
                 }
             });
     });
+
+    function formatFullName(element) {
+            let words = element.value.toLowerCase().split(" ");
+            for (let i = 0; i < words.length; i++) {
+                words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+            }
+            element.value = words.join(" ");
+        }
+
+    function convertToLowercase(element) {
+            element.value = element.value.toLowerCase();
+        }
 </script>
 @endpush

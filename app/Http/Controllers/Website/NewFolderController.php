@@ -31,8 +31,16 @@ class NewFolderController extends Controller
     {
         if (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_executives')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
         } else {
             $finalStatus = 'created';
+            $isManagerApprove = null;
+            $managerApprovalDate = null;
         }
         
         try {
@@ -87,6 +95,8 @@ class NewFolderController extends Controller
             $newfolder->created_by = $user->id;
             $newfolder->created_dept = $user->departments->pluck('id')->first();
             $newfolder->final_status = $finalStatus;
+            $newfolder->is_manager_approve = $isManagerApprove;
+            $newfolder->manager_approval_date = $managerApprovalDate;
             $newfolder->save();
 
             for ($i = 0; $i < count($request->username ); $i++) {
@@ -264,5 +274,121 @@ class NewFolderController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    
+    /// ITD MGR APPROVE ///
+
+    public function show_it_mgr_approval()
+    {
+        return view('website.pages.new-folder.approval_it_mgr');
+    }
+
+    public function show_it_mgr_approval_ajax(Request $request)
+    {
+        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', 
+                                    ('form_new_folder.mainpath'),
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),)
+                            ->where('final_status','IT Approve')
+                            ->orderBy('form_new_folder.id', 'desc')
+                            ->with('form_new_folder_access')                                                
+                            ->get();
+
+        return DataTables::of($data)->make(true);
+    }
+
+    public function approve_it_mgr(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $newfolder = NewFolder::findOrFail($id);
+        if($type=='ok'){
+            $newfolder->is_it_mgr_approve=1;
+            $newfolder->final_status='IT MGR Approve';
+        }else{
+            $newfolder->is_it_mgr_approve=0;
+            $newfolder->final_status='IT MGR Reject';
+            $newfolder->it_mgr_note=$request->it_mgr_note;
+        }
+        $newfolder->it_mgr_approval_date= Carbon::now();
+        $newfolder->save();
+        return "Request is Saved!";
+    }
+
+    public function show_data_it_mgr_approval()
+    {
+        $departments = Department::all();
+        return view('website.pages.new-folder.show_data_it_mgr_approval', compact(['departments']));
+    }
+
+    public function show_data_it_mgr_approval_ajax(Request $request)
+    {
+        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', 
+                                    ('form_new_folder.mainpath'),
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.it_mgr_approval_date'))
+                            ->where('is_it_mgr_approve','1')
+                            ->orderBy('form_new_folder.id', 'desc')
+                            ->with('form_new_folder_access');                            
+
+        return DataTables::of($data)->make(true);
+    }
+
+    /// EXECUTION ///
+
+    public function show_execution()
+    {
+        return view('website.pages.new-folder.approval_execution');
+    }
+
+    public function show_execution_ajax(Request $request)
+    {
+        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', 
+                                    ('form_new_folder.mainpath'),
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),)
+                            ->where('final_status','IT MGR Approve')
+                            ->orderBy('form_new_folder.id', 'desc')
+                            ->with('form_new_folder_access')                                                
+                            ->get();
+
+        return DataTables::of($data)->make(true);
+    }
+
+    public function approve_execution(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $newfolder = NewFolder::findOrFail($id);
+        if($type=='ok'){
+            $newfolder->is_finish=1;
+            $newfolder->final_status='Finished';
+        }else{
+            $newfolder->is_finish=0;
+            $newfolder->final_status='Rejected';
+            $newfolder->finish_note=$request->finish_note;
+        }
+        $newfolder->finish_date= Carbon::now();
+        $newfolder->save();
+        return "Request is Saved!";
+    }
+
+    public function show_data_execution()
+    {
+        $departments = Department::all();
+        return view('website.pages.new-folder.show_data_execution', compact(['departments']));
+    }
+
+    public function show_data_execution_ajax(Request $request)
+    {
+        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', 
+                                    ('form_new_folder.mainpath'),
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.finish_date'))
+                            ->where('is_finish','1')
+                            ->orderBy('form_new_folder.id', 'desc')
+                            ->with('form_new_folder_access');                            
+
+        return DataTables::of($data)->make(true);
+    }
 }

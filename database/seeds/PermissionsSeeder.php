@@ -52,5 +52,12 @@ class PermissionsSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'can_approve_executives',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }

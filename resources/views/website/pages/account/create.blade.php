@@ -103,7 +103,7 @@
                                     <div class="input-group has-validation">
                                         <span class="input-group-text" id="inputGroupPrepend">Expired Date</span>
                                         <input type="date" name="expired_date" class="form-control">
-                                        <div class="invalid-feedback">Please enter your email</div>
+                                        <div class="invalid-feedback">Please enter your expired date</div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">

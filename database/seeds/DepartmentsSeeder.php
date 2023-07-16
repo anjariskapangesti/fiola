@@ -143,5 +143,12 @@ class DepartmentsSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        DB::table('departments')->insert([
+            'code' => 'EXC',
+            'name' => 'Executives',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }

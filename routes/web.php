@@ -63,7 +63,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['middleware' => ['can:can_master']], function () {
                 Route::get('/create', 'UserController@create')->name('user.create');
                 Route::post('/store', 'UserController@store')->name('user.store');
-                Route::delete('/user/users/{user}', 'UserController@destroy')->name('user.destroy');
+                Route::delete('/destroy', 'UserController@destroy')->name('user.destroy');
                 Route::get('/show_data_user', 'UserController@show_data_user')->name('user.show_data_user');
                 Route::get('/show_data_user_ajax', 'UserController@show_data_user_ajax')->name('user.show_data_user_ajax');
             });
