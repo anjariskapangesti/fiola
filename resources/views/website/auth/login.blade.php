@@ -77,7 +77,7 @@
                       <label for="yourUsername" class="form-label">Email / NPK</label>
                       <div class="input-group has-validation">
                         {{-- <span class="input-group-text" id="inputGroupPrepend">@</span> --}}
-                        <input type="text" name="email" class="form-control" id="yourUsername" required>
+                        <input type="text" name="email" class="form-control" id="yourUsername" required onkeyup="convertToLowercase(this)">
                         <div class="invalid-feedback">Please enter your email or NPK</div>
                       </div>
                     </div>
@@ -137,6 +137,11 @@
   <!-- Template Main JS File -->
   <script src="{{ asset('vendor/niceadmin/js/main.js') }}"></script>
 
+  <script>
+        function convertToLowercase(element) {
+            element.value = element.value.toLowerCase();
+        }
+  </script>
 </body>
 
 </html>

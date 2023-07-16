@@ -32,7 +32,7 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" placeholder="Name" name="name"
-                                        maxlength="100" required>
+                                        maxlength="100" required onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter the name</div>
                                 </div>
                                 {{-- <div class="col-md-6">
@@ -61,7 +61,7 @@
 
                                 <div class="col-md-6">
                                     <input type="email" class="form-control" placeholder="Email" name="email"
-                                        maxlength="100" required>
+                                        maxlength="100" required onkeyup="convertToLowercase(this)">
                                     <div class="invalid-feedback">Please enter the email</div>
                                 </div>
                                 <div class="col-md-6">
@@ -195,5 +195,17 @@
                 }
             });
     });
+
+    function formatFullName(element) {
+            let words = element.value.toLowerCase().split(" ");
+            for (let i = 0; i < words.length; i++) {
+                words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+            }
+            element.value = words.join(" ");
+        }
+
+    function convertToLowercase(element) {
+            element.value = element.value.toLowerCase();
+        }
 </script>
 @endpush
