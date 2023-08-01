@@ -70,7 +70,23 @@
                     </tr>
                     <tr>
                         <td>Email Address</td>
-                        <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
+                        <td>${d.email_address == null ? '<i>Will be Informed Later after approved</i>' : d.email_address}</td>
+                    </tr>
+                    <tr>
+                        <td>Manager Note</td>
+                        <td>${d.manager_note}</td>
+                    </tr>
+                    <tr>
+                        <td>ITD Note</td>
+                        <td>${d.it_note}</td>
+                    </tr>  
+                    <tr>
+                        <td>ITD Manager Note</td>
+                        <td>${d.it_mgr_note}</td>
+                    </tr>
+                    <tr>
+                        <td>Note</td>
+                        <td>${d.finish_note}</td>
                     </tr>
                     <tfoot>
                     <tr>

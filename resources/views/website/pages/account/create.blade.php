@@ -51,12 +51,12 @@
                                         <label class="form-check-label" for="inlineRadioType1">Registration</label>
                                         <div class="invalid-feedback">Please select request type</div>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    {{-- <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType2" value="change">
                                         <label class="form-check-label" for="inlineRadioType2">Change</label>
                                         <div class="invalid-feedback">-</div>
-                                    </div>
+                                    </div> --}}
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType3" value="deletion">
@@ -127,13 +127,16 @@
                                         required onkeyup="convertToLowercase(this)">
                                     <div class="invalid-feedback">Please enter your username</div>
                                 </div>
-                                <div class="col-md-7 mb-3">
+                                <div class="col-md-7">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
                                             name="is_email" value="false">
                                         <label class="form-check-label" for="flexSwitchCheckDefault">Create Email for Outlook (Mail
                                             address will be decided by ITD)</label>
                                     </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                        <label class="form-check-label text-danger" for="note_ad_name">*Username may change depending on the availability on the server</label>
                                 </div>
                             </div>
                         </div>

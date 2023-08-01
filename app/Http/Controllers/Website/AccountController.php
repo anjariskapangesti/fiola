@@ -184,6 +184,7 @@ class AccountController extends Controller
         if($type=='ok'){
             $account->is_manager_approve=1;
             $account->final_status='Manager Approve';
+            $account->manager_note=$request->manager_note;
         }else{
             $account->is_manager_approve=0;
             $account->final_status='Manager Reject';
@@ -235,6 +236,7 @@ class AccountController extends Controller
         if($type=='ok'){
             $account->is_it_approve=1;
             $account->final_status='IT Approve';
+            $account->it_note=$request->it_note;
         }else{
             $account->is_it_approve=0;
             $account->final_status='IT Reject';
@@ -267,6 +269,7 @@ class AccountController extends Controller
         if($type=='ok'){
             $account->is_it_mgr_approve=1;
             $account->final_status='IT MGR Approve';
+            $account->it_mgr_note=$request->it_mgr_note;
         }else{
             $account->is_it_mgr_approve=0;
             $account->final_status='IT MGR Reject';
@@ -313,9 +316,54 @@ class AccountController extends Controller
         $id=$request->id;
         $type=$request->type;
         $account = Account::findOrFail($id);
+        
+        $user = $account->createdBy;
+
+        $isi = "FORM ACCOUNT\n\n";
+                
+        $isi .= "Budget Type : " . $account->budget_type;
+        $isi .= "\nForm Type : " . $account->form_type;
+        
+        $isi .= "\n\nNPK : *" . $account->npk ."*";
+        $isi .= "\nName : *" . $account->fullname ."*";
+        $isi .= "\nDepartment : " . $account->department;
+        $isi .= "\nPhone : " . $account->phone;
+        $isi .= "\nEmail : *" . $request->ad_name ."@aiia.co.id*";
+        $isi .= "\nPurpose : " . $account->purpose;
+
+        $isi .= "\n\nStatus : Finished";
+
+        $isi .= "\n\nManager Note : " . $account->manager_note;
+        $isi .= "\nITD Note : " . $account->it_note;
+        $isi .= "\nITD Manager Note : " . $account->it_mgr_note;
+        $isi .= "\n\nNote : " . $request->finish_note;
+
+        $nomor = $user->nohp;;
+
+        $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
+
+        
         if($type=='ok'){
+            $account->ad_name=$request->ad_name;
+            $account->email_address=$request->ad_name . "@aiia.co.id";
             $account->is_finish=1;
             $account->final_status='Finished';
+            $account->finish_note=$request->finish_note;
         }else{
             $account->is_finish=0;
             $account->final_status='Rejected';

@@ -42,6 +42,16 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
                         <input type="hidden" id="id_form_account">
+
+                        <label for="ad_name">AD Name</label>
+                        <input type="text" class="form-control" id="ad_name">
+
+                        {{-- <label for="email_address">Email</label>
+                        <input type="text" class="form-control" id="email_address"> --}}
+
+                        <label for="note">Note :</label>
+                        <textarea class="form-control" id="note">Silahkan login pada Laptop/CPU dengan password : </textarea>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -118,6 +128,18 @@
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
                     </tr>
+                    <tr>
+                        <td>Manager Note</td>
+                        <td>${d.manager_note}</td>
+                    </tr>
+                    <tr>
+                        <td>ITD Note</td>
+                        <td>${d.it_note}</td>
+                    </tr>  
+                    <tr>
+                        <td>ITD Manager Note</td>
+                        <td>${d.it_mgr_note}</td>
+                    </tr>
 
                     <tfoot>
                     <tr>
@@ -174,7 +196,7 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Approve</button>
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Approve</button>
                             <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                         }
                     },
@@ -211,6 +233,8 @@
                     data: {
                         id: id_form_account,
                         type: 'ok',
+                        ad_name: $('#ad_name').val(),
+                        finish_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -234,7 +258,7 @@
                     type: "POST",
                     data: {
                         id: id_form_account_reject,
-                        type: 'reject',
+                        type: 'reject',                        
                         finish_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
@@ -257,8 +281,11 @@
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_form_account = $(this).data('id');
                 var fullname_form_account = $(this).data('fullname');
+                var ad_name = $(this).data('ad_name');
+
                 $('#id_form_account').val(id_form_account)
                 $('#fullname_form_account').val(fullname_form_account)
+                $('#ad_name').val(ad_name)
                 // console.log(id_form_account);
             })
 

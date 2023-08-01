@@ -42,6 +42,9 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
                         <input type="hidden" id="id_form_account">
+                        
+                        <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -62,9 +65,10 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account_reject">
+                        <input type="hidden" id="id_form_account_reject">
 
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        <input type="hidden" id="id_form_account_reject">
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -215,6 +219,7 @@
                     data: {
                         id: id_form_account,
                         type: 'ok',
+                        manager_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {

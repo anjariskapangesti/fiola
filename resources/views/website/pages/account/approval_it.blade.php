@@ -42,6 +42,9 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
                         <input type="hidden" id="id_form_account">
+
+                        <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -119,6 +122,10 @@
                     <tr>
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
+                    </tr>
+                    <tr>
+                        <td>Manager Note</td>
+                        <td>${d.manager_note}</td>
                     </tr>
 
                     <tfoot>
@@ -215,6 +222,7 @@
                     data: {
                         id: id_form_account,
                         type: 'ok',
+                        it_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {

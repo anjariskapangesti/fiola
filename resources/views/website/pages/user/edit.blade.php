@@ -45,7 +45,7 @@
                                 <div class="col-md-4">
                                     <label for="npk">{{ __('NPK') }}</label>
                                     <input id="npk" type="text" class="form-control @error('npk') is-invalid @enderror"
-                                        name="npk" value="{{ old('npk', $user->npk) }}" maxlength="6" required autofocus>
+                                        name="npk" value="{{ old('npk', $user->npk) }}" maxlength="6" placeholder="123456" required autofocus>
                                                 
                                     @error('npk')
                                         <span class="invalid-feedback" role="alert">
@@ -70,7 +70,7 @@
                                     <label for="nohp">{{ __('Phone Number') }}</label>
                                     <input id="nohp" type="text"
                                         class="form-control @error('nohp') is-invalid @enderror" name="nohp"
-                                        value="{{ old('nohp', $user->nohp) }}" maxlength="14" required>
+                                        value="{{ old('nohp', $user->nohp) }}" maxlength="14" placeholder="088888888888" required>
     
                                     @error('nohp')
                                         <span class="invalid-feedback" role="alert">
@@ -172,67 +172,67 @@
         @endif
     })
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const addPermissionButton = document.getElementById('add-permission');
-        const permissionContainer = document.querySelector('.permission-container');
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     const addPermissionButton = document.getElementById('add-permission');
+    //     const permissionContainer = document.querySelector('.permission-container');
 
-        addPermissionButton.addEventListener('click', function() {
-            const permissionItem = document.createElement('div');
-            permissionItem.classList.add('permission-item');
+    //     addPermissionButton.addEventListener('click', function() {
+    //         const permissionItem = document.createElement('div');
+    //         permissionItem.classList.add('permission-item');
 
-            const selectHtml = `
-                <select name="permissions[]" class="form-control" required>
-                    <option value="">-- Select Permission  --</option>
-                    @foreach($permissions as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </select>
+    //         const selectHtml = `
+    //             <select name="permissions[]" class="form-control" required>
+    //                 <option value="">-- Select Permission  --</option>
+    //                 @foreach($permissions as $id => $name)
+    //                     <option value="{{ $id }}">{{ $name }}</option>
+    //                 @endforeach
+    //             </select>
                 
-                <button type="button" class="btn btn-danger mt-2 mb-2 remove-permission">Remove Permission</button>
-            `;
+    //             <button type="button" class="btn btn-danger mt-2 mb-2 remove-permission">Remove Permission</button>
+    //         `;
 
-            permissionItem.innerHTML = selectHtml;
-            permissionContainer.appendChild(permissionItem);
-        });
+    //         permissionItem.innerHTML = selectHtml;
+    //         permissionContainer.appendChild(permissionItem);
+    //     });
 
-        permissionContainer.addEventListener('click', function(event) {
-                if (event.target.classList.contains('remove-permission')) {
-                    const permissionItem = event.target.parentNode;
-                    permissionContainer.removeChild(permissionItem);
-                }
-            });
-    });
+    //     permissionContainer.addEventListener('click', function(event) {
+    //             if (event.target.classList.contains('remove-permission')) {
+    //                 const permissionItem = event.target.parentNode;
+    //                 permissionContainer.removeChild(permissionItem);
+    //             }
+    //         });
+    // });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const addDepartmentButton = document.getElementById('add-department');
-        const departmentContainer = document.querySelector('.department-container');
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     const addDepartmentButton = document.getElementById('add-department');
+    //     const departmentContainer = document.querySelector('.department-container');
 
-        addDepartmentButton.addEventListener('click', function() {
-            const departmentItem = document.createElement('div');
-            departmentItem.classList.add('department-item');
+    //     addDepartmentButton.addEventListener('click', function() {
+    //         const departmentItem = document.createElement('div');
+    //         departmentItem.classList.add('department-item');
 
-            const selectHtml = `
-                <select name="departments[]" class="form-control" required>
-                    <option value="">-- Select Department  --</option>
-                    @foreach($departments as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </select>
+    //         const selectHtml = `
+    //             <select name="departments[]" class="form-control" required>
+    //                 <option value="">-- Select Department  --</option>
+    //                 @foreach($departments as $id => $name)
+    //                     <option value="{{ $id }}">{{ $name }}</option>
+    //                 @endforeach
+    //             </select>
                 
-                <button type="button" class="btn btn-danger mt-2 mb-2 remove-department">Remove Department</button>
-            `;
+    //             <button type="button" class="btn btn-danger mt-2 mb-2 remove-department">Remove Department</button>
+    //         `;
 
-            departmentItem.innerHTML = selectHtml;
-            departmentContainer.appendChild(departmentItem);
-        });
+    //         departmentItem.innerHTML = selectHtml;
+    //         departmentContainer.appendChild(departmentItem);
+    //     });
 
-        departmentContainer.addEventListener('click', function(event) {
-                if (event.target.classList.contains('remove-department')) {
-                    const departmentItem = event.target.parentNode;
-                    departmentContainer.removeChild(departmentItem);
-                }
-            });
-    });
+    //     departmentContainer.addEventListener('click', function(event) {
+    //             if (event.target.classList.contains('remove-department')) {
+    //                 const departmentItem = event.target.parentNode;
+    //                 departmentContainer.removeChild(departmentItem);
+    //             }
+    //         });
+    // });
 
     function formatFullName(element) {
             let words = element.value.toLowerCase().split(" ");

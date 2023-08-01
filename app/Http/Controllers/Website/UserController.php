@@ -101,7 +101,7 @@ class UserController extends Controller
     public function show_data_user_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = User::orderBy('name', 'DESC');
+        $data = User::orderBy('name', 'ASC');
                     // ->join('departments', 'users.dept_id', '=', 'department.id')
                     // ->select('users.*', 'department.name as dept_name');;
         // return $data;
