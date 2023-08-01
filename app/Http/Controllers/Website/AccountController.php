@@ -22,7 +22,14 @@ class AccountController extends Controller
 
         $userDepartment = Auth::user()->createdDepartments;
         
-        return view('website.pages.account.create', compact(['departments', 'userDepartment']));
+        // return view('website.pages.account.create', compact(['departments', 'userDepartment']));
+
+        $data = Account::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->whereNull('confirm')->count();
+        if($data > 0){
+            return redirect()->route('website.account.show_data_form')->with('info', 'Please confirm!');
+        }else{
+            return view('website.pages.account.create', compact(['departments', 'userDepartment']));
+        }
     }
 
     public function store(Request $request)
@@ -123,6 +130,20 @@ class AccountController extends Controller
                         ->select('form_account.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
+    }
+
+    public function approve_form(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $account = Account::findOrFail($id);
+        if($type=='ok'){
+            $account->confirm=1;         
+        }else{
+            $account->confirm=0;
+        }
+        $account->save();
+        return "Confirm is Saved!";
     }
 
     // MGR //

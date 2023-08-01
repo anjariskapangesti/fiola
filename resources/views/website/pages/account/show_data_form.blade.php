@@ -10,11 +10,17 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    <div class="row">
+        @if(Session::get('info'))
+        <div class="alert alert-info">
+          {{ Session::get('info') }}
+        </div>
+        @endif
+    </div>
     <section class="section">
         <div class="row">
             <div class="card">
                 <div class="card-body p-3 table table-responsive">
-
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
@@ -23,9 +29,31 @@
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
                                 <th>Status</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="confirmModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to confirm this request?
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
+                        <input type="hidden" id="id_form_account">                        
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" id="btn-confirm">Yes, Confirm!</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,8 +169,42 @@
                             data: 'final_status',
                             name: 'final_status'
                         },
+                        {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            return `
+                            <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Confirm</button>
+                            `;
+                        }
+                    },
                     ],
                 });
+
+                $('#btn-confirm').on('click', function() {
+                let id_form_account = $('#id_form_account').val();
+                console.log(id_form_account);
+                // window.location.href = "{{ route('website.account.approve_it') }}";
+                $.ajax({
+                    url: "{{ route('website.account.approve_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
 
                 $('#app_table tbody').on('click', 'td.dt-control', function() {
                     var tr = $(this).closest('tr');
@@ -167,6 +229,17 @@
                 $('#btn-approve').on('clcik', function() {
 
                 });
+
+                $('#app_table').on('click', '.btn-table-confirm', function() {
+                var id_form_account = $(this).data('id');
+                var fullname_form_account = $(this).data('fullname');
+                var ad_name = $(this).data('ad_name');
+
+                $('#id_form_account').val(id_form_account)
+                $('#fullname_form_account').val(fullname_form_account)
+                $('#ad_name').val(ad_name)
+                // console.log(id_form_account);
+            })
 
             });
         </script>

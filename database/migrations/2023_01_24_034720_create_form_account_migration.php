@@ -28,11 +28,12 @@ class CreateFormAccountMigration extends Migration
             $table->string('ad_name',60)->nullable();
             $table->boolean('is_email')->nullable();
             $table->string('email_address',80)->nullable();
-            $table->string('final_status',30)->nullable();
+            $table->string('final_status',30)->nullable();            
             $table->boolean('is_manager_approve')->nullable();
             $table->boolean('is_it_approve')->nullable();
             $table->boolean('is_it_mgr_approve')->nullable();
             $table->boolean('is_finish')->nullable();
+            $table->boolean('confirm')->nullable();
             $table->timestamp('manager_approval_date')->nullable();
             $table->timestamp('it_approval_date')->nullable();
             $table->timestamp('it_mgr_approval_date')->nullable();
