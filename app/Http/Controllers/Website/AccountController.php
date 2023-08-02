@@ -125,7 +125,8 @@ class AccountController extends Controller
     public function show_data_form_ajax(Request $request)
     {
         
-        $data = Account::where('created_by', Auth::user()->id)
+        $data = Account::orderBy('id', 'DESC')
+                        ->where('created_by', Auth::user()->id)
                         ->join('users', 'form_account.created_by', '=', 'users.id')
                         ->select('form_account.*', 'users.name as user_name');
 
