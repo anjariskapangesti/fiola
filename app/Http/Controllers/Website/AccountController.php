@@ -24,7 +24,7 @@ class AccountController extends Controller
         
         // return view('website.pages.account.create', compact(['departments', 'userDepartment']));
 
-        $data = Account::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->whereNull('confirm')->count();
+        $data = Account::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
         if($data > 0){
             return redirect()->route('website.account.show_data_form')->with('info', 'Please confirm!');
         }else{
@@ -138,9 +138,9 @@ class AccountController extends Controller
         $type=$request->type;
         $account = Account::findOrFail($id);
         if($type=='ok'){
-            $account->confirm=1;         
+            $account->is_confirm=1;
         }else{
-            $account->confirm=0;
+            $account->is_confirm=0;
         }
         $account->save();
         return "Confirm is Saved!";
@@ -383,6 +383,7 @@ class AccountController extends Controller
             $account->ad_name=$request->ad_name;
             $account->email_address=$request->ad_name . "@aiia.co.id";
             $account->is_finish=1;
+            $account->is_confirm=0;
             $account->final_status='Finished';
             $account->finish_note=$request->finish_note;
         }else{

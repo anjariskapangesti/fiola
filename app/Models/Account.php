@@ -26,6 +26,7 @@ class Account extends Model
         'is_it_approve',
         'is_it_mgr_approve',
         'is_finish',
+        'is_confirm',
         'manager_approval_date',
         'it_approval_date',
         'it_mgr_approval_date',

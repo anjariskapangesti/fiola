@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <td>Company</td>
-                        <td>${d.company} </td>
+                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
                     </tr>
                     <tr>
                         <td>Phone</td>
@@ -72,6 +72,19 @@
                         <td>Email Address</td>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
                     </tr>
+                    <tr>
+                        <td>Manager Note</td>
+                        <td>${d.manager_note ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>ITD Note</td>
+                        <td>${d.it_note ?? '-'}</td>
+                    </tr>  
+                    <tr>
+                        <td>ITD Manager Note</td>
+                        <td>${d.it_mgr_note ?? '-'}</td>
+                    </tr> 
+                    
 
                     <tfoot>
                     <tr>

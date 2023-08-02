@@ -353,6 +353,11 @@
                         </div>
                     </div>
                 @endcan
+                @if (auth()->check() && (auth()->user()->can('can_create_form')))
+                <div class="">
+                    <div id="piechart"></div>
+                </div>
+                @endif
                 @if (auth()->check() && (auth()->user()->can('can_master') || auth()->user()->can('can_approve_it') || auth()->user()->can('can_approve_it_mgr')))
                 <div class="">
                     <div id="chart"></div>
@@ -550,6 +555,70 @@
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script>
+    Highcharts.chart('piechart', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Total Created Form',
+        align: 'left'
+    },
+    tooltip: {
+        pointFormat: 'Total: <b>{point.y} Form</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Form',
+        colorByPoint: true,
+        data: [{
+            name: 'Finished',
+            color: '#47c363',
+            y: {{ $total_form_finished }},
+            sliced: true,
+            selected: true
+        }, {
+            name: 'Rejected',
+            color: '#fc544b',
+            y: {{ $total_form_rejected }}
+        },  {
+            name: 'Waiting Manager',
+            color: '#ffc107',
+            y: {{ $total_form_mgr }}
+        }, {
+            name: 'Waiting ITD',
+            color: '#ffc61c',
+            y: {{ $total_form_it }}
+        }, {
+            name: 'Waiting ITD Manager',
+            color: '#ffca2d',
+            y: {{ $total_form_it_mgr }}
+        },  {
+            name: 'Waiting Execution',
+            color: '#fd7e14',
+            y: {{ $total_form_execution }}
+        }]
+    }]
+});
+</script>
 
 <script>
 Highcharts.chart('chart', {

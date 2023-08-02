@@ -2,7 +2,8 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('website.auth.home') }}">
+            <a class="nav-link collapsed" href="{{ route('website.auth.home') }}"
+            class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.auth.home') ? 'active' : '') }}">
                 <i class="bi bi-speedometer"></i>
                 <span>Dashboard</span>
             </a>
@@ -61,8 +62,11 @@
 
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#track_forms" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-search"></i><span>Track Forms</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-search"></i><span>Track Forms</span>
+                        @if(App\Models\AppHelper::confirms_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::confirms_count() }}</span>
+                        @endif
+                        <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="track_forms" class="nav-content collapse 
                 {{ (Route::is('website.account.show_data_form') || 
@@ -75,18 +79,27 @@
                         <a href="{{ route('website.account.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_data_form') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
+                            @if(App\Models\AppHelper::account_confirm_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::account_confirm_count() }}</span>
+                            @endif
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.folder-access.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.folder-access.show_data_form') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
+                            @if(App\Models\AppHelper::folderaccess_confirm_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::folderaccess_confirm_count() }}</span>
+                            @endif
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.new-folder.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.new-folder.show_data_form') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
+                            @if(App\Models\AppHelper::newfolder_confirm_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::newfolder_confirm_count() }}</span>
+                            @endif
                         </a>
                     </li>
                     <li>

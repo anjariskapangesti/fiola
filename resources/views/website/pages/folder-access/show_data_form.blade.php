@@ -10,16 +10,24 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    <div class="row">
+        @if(Session::get('info'))
+        <div class="alert alert-info">
+          {{ Session::get('info') }}
+        </div>
+        @endif
+    </div>
     <section class="section">
         <div class="row">
             <div class="card">
                 <div class="card-body p-3 table-responsive">
-                    <table class="table table-striped" width="100%">
+                    <table class="table table-striped" width="100%" id="app_table">
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Username</th>
+                                <th>Email</th>
                                 <th>Status</th>
+                                <th>Confirm</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -32,17 +40,18 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Approve Confirmation</h5>
+                        <h5 class="modal-title">Confirmation</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_folder_access">
-                        <input type="hidden" id="id_folder_access">
+                        Are you sure want to confirm this request?
+                        {{-- <input type="text" readonly class="form-control-plaintext" id="fullname_form_folder_access"> --}}
+                        <input type="hidden" id="id_form_folder_access">                       
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                        <button type="button" class="btn btn-success" id="btn-approve">Yes, Confirm!</button>
                     </div>
                 </div>
             </div>
@@ -94,7 +103,7 @@
         $(function() {
 
 
-            var table = $('.table').DataTable({
+            var table = $('#app_table').DataTable({
                 'bLengthChange': true,
                 // 'language': {
                 //     'search': 'Cari',
@@ -121,12 +130,73 @@
                         name: 'username',
                     },
                     {
-                        data: 'final_status',
-                        name: 'final_status',
-                    },
+                            data: 'final_status',
+                            name: 'final_status',
+                            render: function(data, type, row, meta) {
+                                if (data == 'created') {
+                                    return `Waiting Manager Approve`;
+                                } else if (data == 'Manager Approve') {
+                                    return `Waiting ITD Approve`;
+                                } else if (data == 'IT Approve') {
+                                    return `Waiting ITD MGR Approve`;
+                                } else if (data == 'IT MGR Approve') {
+                                    return `Waiting Execution`;
+                                } else {
+                                    return `Finished`;
+                                }
+                            }
+                        },                        
+                        {                        
+                            orderable: false,
+                            searchable: false,
+                            data: null,
+                            render: function(data, type, row, meta) {
+                                if (data.is_confirm == '0') {
+                                    return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Confirm</button>
+                                `;
+                                } else if (data.is_confirm == '1') {
+                                    return `Confirmed`
+                                } else {
+                                    return `Not yet`;
+                                }
+                            }
+                        },
                 ]
 
             })
+
+            $('#btn-approve').on('click', function() {
+                let id_form_folder_access = $('#id_form_folder_access').val();
+                console.log(id_form_folder_access);
+                $.ajax({
+                    url: "{{ route('website.folder-access.approve_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_folder_access,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_form_folder_access = $(this).data('id');
+                var fullname_form_folder_access = $(this).data('fullname');
+
+                $('#id_form_folder_access').val(id_form_folder_access)
+                $('#fullname_form_folder_access').val(fullname_form_folder_access)
+                
+                console.log(id_form_folder_access);
+                })
 
             var detailsRow = [];
 
@@ -169,13 +239,30 @@
                     html += `<tr>
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
-                                    <td>${d.form_folder_access_path[i].subsubfolder}</td>
-                                    <td>${d.form_folder_access_path[i].permission}</td>`
+                                    <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
+                                    <td>${d.form_folder_access_path[i].permission}</td>
+                                    `
                     html += `</tr>
                     `
                 }
 
                 html += `
+                        <tr>
+                            <td>Manager Note</td>
+                            <td colspan="3">${d.manager_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>ITD Note</td>
+                            <td colspan="3">${d.it_note ?? '-'}</td>
+                        </tr>  
+                        <tr>
+                            <td>ITD Manager Note</td>
+                            <td colspan="3">${d.it_mgr_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>Note</td>
+                            <td colspan="3">${d.finish_note}</td>
+                        </tr>
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>

@@ -24,6 +24,7 @@ class CreateFormNewFolder extends Migration
             $table->boolean('is_it_approve')->nullable();
             $table->boolean('is_it_mgr_approve')->nullable();
             $table->boolean('is_finish')->nullable();
+            $table->boolean('is_confirm')->nullable();
             $table->timestamp('manager_approval_date')->nullable();
             $table->timestamp('it_approval_date')->nullable();
             $table->timestamp('it_mgr_approval_date')->nullable();

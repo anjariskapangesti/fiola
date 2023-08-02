@@ -106,7 +106,7 @@
                     </tr>
                     <tr>
                         <td>Company</td>
-                        <td>${d.company} </td>
+                        <td>${d.company?? 'PT. Aisin Indonesia Automotive'} </td>
                     </tr>
                     <tr>
                         <td>Phone</td>

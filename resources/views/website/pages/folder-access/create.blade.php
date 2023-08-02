@@ -32,8 +32,8 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <div class="input-group has-validation">
-                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
-                                        <input type="text" name="username" class="form-control" placeholder="Username"
+                                        {{-- <span class="input-group-text" id="inputGroupPrepend">AIIA\</span> --}}
+                                        <input type="email" name="username" class="form-control" placeholder="email@aiia.co.id"
                                             required onkeyup="convertToLowercase(this)">
                                         <div class="invalid-feedback">Please enter your email</div>
                                     </div>
@@ -72,7 +72,7 @@
                                                     <div class="invalid-feedback">Please select the subfolder</div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input type="text" class="form-control" placeholder="Subfolder"
+                                                    <input type="text" class="form-control" placeholder="Subfolder (Optional)"
                                                         name="subsubfolder[]" maxlength="60">
                                                 </div>
                                                 <div class="col-sm-2">
@@ -155,7 +155,7 @@
                     <div class="invalid-feedback">Please select the subfolder</div>
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" placeholder="Subfolder"
+                    <input type="text" class="form-control" placeholder="Subfolder (Optional)"
                         name="subsubfolder[]" maxlength="60">
                 </div>
                 <div class="col-sm-2">

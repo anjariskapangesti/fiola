@@ -18,7 +18,7 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Username</th>
+                                <th>Email</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -39,6 +39,7 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="username_folder_access">
                         <input type="hidden" id="id_folder_access">
+                        <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -157,13 +158,25 @@
                     html += `<tr>
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
-                                    <td>${d.form_folder_access_path[i].subsubfolder}</td>
+                                    <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
                                     <td>${d.form_folder_access_path[i].permission}</td>`
                     html += `</tr>
                     `
                 }
 
                 html += `
+                        <tr>
+                            <td>Manager Note</td>
+                            <td colspan="3">${d.manager_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>ITD Note</td>
+                            <td colspan="3">${d.it_note ?? '-'}</td>
+                        </tr>  
+                        <tr>
+                            <td>ITD Manager Note</td>
+                            <td colspan="3">${d.it_mgr_note ?? '-'}</td>
+                        </tr>               
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
@@ -195,6 +208,7 @@
                     type: "POST",
                     data: {
                         id: id_folder_access,
+                        finish_note: $('#note').val(),
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },

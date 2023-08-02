@@ -29,7 +29,7 @@
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
                                 <th>Status</th>
-                                <th>Option</th>
+                                <th>Confirm</th>
                             </tr>
                         </thead>
                     </table>
@@ -47,12 +47,12 @@
                     <div class="modal-body">
                         Are you sure want to confirm this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
-                        <input type="hidden" id="id_form_account">                        
+                        <input type="hidden" id="id_form_account">                       
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-success" id="btn-confirm">Yes, Confirm!</button>
+                        <button type="button" class="btn btn-success" id="btn-approve">Yes, Confirm!</button>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                     </tr>
                     <tr>
                         <td>Company</td>
-                        <td>${d.company} </td>
+                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
                     </tr>
                     <tr>
                         <td>Phone</td>
@@ -102,15 +102,15 @@
                     </tr>
                     <tr>
                         <td>Manager Note</td>
-                        <td>${d.manager_note}</td>
+                        <td>${d.manager_note ?? '-'}</td>
                     </tr>
                     <tr>
                         <td>ITD Note</td>
-                        <td>${d.it_note}</td>
+                        <td>${d.it_note ?? '-'}</td>
                     </tr>  
                     <tr>
                         <td>ITD Manager Note</td>
-                        <td>${d.it_mgr_note}</td>
+                        <td>${d.it_mgr_note ?? '-'}</td>
                     </tr>
                     <tr>
                         <td>Note</td>
@@ -167,22 +167,40 @@
                         },
                         {
                             data: 'final_status',
-                            name: 'final_status'
+                            name: 'final_status',
+                            render: function(data, type, row, meta) {
+                                if (data == 'created') {
+                                    return `Waiting Manager Approve`;
+                                } else if (data == 'Manager Approve') {
+                                    return `Waiting ITD Approve`;
+                                } else if (data == 'IT Approve') {
+                                    return `Waiting ITD MGR Approve`;
+                                } else if (data == 'IT MGR Approve') {
+                                    return `Waiting Execution`;
+                                } else {
+                                    return `Finished`;
+                                }
+                            }
+                        },                        
+                        {                        
+                            orderable: false,
+                            searchable: false,
+                            data: null,
+                            render: function(data, type, row, meta) {
+                                if (data.is_confirm == '0') {
+                                    return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Confirm</button>
+                                `;
+                                } else if (data.is_confirm == '1') {
+                                    return `Confirmed`
+                                } else {
+                                    return `Not yet`;
+                                }
+                            }
                         },
-                        {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Confirm</button>
-                            `;
-                        }
-                    },
                     ],
                 });
 
-                $('#btn-confirm').on('click', function() {
+                $('#btn-approve').on('click', function() {
                 let id_form_account = $('#id_form_account').val();
                 console.log(id_form_account);
                 // window.location.href = "{{ route('website.account.approve_it') }}";
@@ -230,7 +248,7 @@
 
                 });
 
-                $('#app_table').on('click', '.btn-table-confirm', function() {
+                $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_form_account = $(this).data('id');
                 var fullname_form_account = $(this).data('fullname');
                 var ad_name = $(this).data('ad_name');
@@ -239,7 +257,7 @@
                 $('#fullname_form_account').val(fullname_form_account)
                 $('#ad_name').val(ad_name)
                 // console.log(id_form_account);
-            })
+                })
 
             });
         </script>

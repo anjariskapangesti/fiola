@@ -37,6 +37,20 @@ class AppHelper
         return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count;
     }
 
+    public static function confirms_count()
+    {
+        $account_confirm_count = Account::where('created_by', Auth::user()->id)
+                                        ->where('is_confirm', 'LIKE', '%0%')->count();
+
+        $folderaccess_confirm_count = FolderAccess::where('created_by', Auth::user()->id)
+                                                    ->where('is_confirm', 'LIKE', '%0%')->count();
+
+        $newfolder_confirm_count = NewFolder::where('created_by', Auth::user()->id)
+                                            ->where('is_confirm', 'LIKE', '%0%')->count();
+        
+        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count;
+    }
+
     public static function it_approvals_count()
     {
         $account_it_count = Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
@@ -78,6 +92,12 @@ class AppHelper
                                     ->where('final_status', 'LIKE', '%created%')->count();
     }
 
+    public static function account_confirm_count()
+    {
+        return Account::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
     public static function account_it_count()
     {
         return Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
@@ -107,6 +127,12 @@ class AppHelper
                                     ->where('final_status', 'LIKE', '%created%')->count();
     }
 
+    public static function folderaccess_confirm_count()
+    {
+        return FolderAccess::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
     public static function folderaccess_it_count()
     {
         return FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->count();
@@ -134,6 +160,12 @@ class AppHelper
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function newfolder_confirm_count()
+    {
+        return NewFolder::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
     }
 
     public static function newfolder_it_count()
