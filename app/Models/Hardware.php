@@ -2,25 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Account extends Model
+class Hardware extends Model
 {
-    protected $table = 'form_account';
+    protected $table = 'form_hardware';
     protected $fillable = [
         'no_reg',
-        'budget_type',
-        'form_type',
+        'category',
+        'type',
         'npk',
         'fullname',
         'department',
         'phone',
-        'company',
-        'expired_date',
-        'purpose',
-        'ad_name',
-        'is_email',
-        'email_address',
+        'due_date',
+        'purpose',        
         'final_status',
         'is_manager_approve',
         'is_it_approve',
@@ -38,11 +35,6 @@ class Account extends Model
         'created_by',
         'created_dept'
     ];
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
 
     public function createdBy()
     {

@@ -33,8 +33,20 @@ class AppHelper
                                         ->orWhere('created_dept', $lastDepartmentId);
                                 })
                                         ->where('final_status', 'LIKE', '%created%')->count();
+
+        $software_mgr_count = Software::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                    $query->where('created_dept', $firstDepartmentId)
+                                        ->orWhere('created_dept', $lastDepartmentId);
+                                })
+                                        ->where('final_status', 'LIKE', '%created%')->count();
+
+        $hardware_mgr_count = Hardware::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                    $query->where('created_dept', $firstDepartmentId)
+                                        ->orWhere('created_dept', $lastDepartmentId);
+                                })
+                                        ->where('final_status', 'LIKE', '%created%')->count();
         
-        return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count;
+        return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count;
     }
 
     public static function confirms_count()
@@ -47,8 +59,14 @@ class AppHelper
 
         $newfolder_confirm_count = NewFolder::where('created_by', Auth::user()->id)
                                             ->where('is_confirm', 'LIKE', '%0%')->count();
+
+        $software_confirm_count = Software::where('created_by', Auth::user()->id)
+                                            ->where('is_confirm', 'LIKE', '%0%')->count();
         
-        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count;
+        $hardware_confirm_count = Hardware::where('created_by', Auth::user()->id)
+                                            ->where('is_confirm', 'LIKE', '%0%')->count();
+                                            
+        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count + $software_confirm_count + $hardware_confirm_count;
     }
 
     public static function it_approvals_count()
@@ -56,8 +74,10 @@ class AppHelper
         $account_it_count = Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $folderaccess_it_count = FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $newfolder_it_count = NewFolder::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $software_it_count = Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $hardware_it_count = Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
 
-        return $account_it_count + $folderaccess_it_count + $newfolder_it_count;
+        return $account_it_count + $folderaccess_it_count + $newfolder_it_count + $software_it_count + $hardware_it_count;
     }
 
     public static function it_mgr_approvals_count()
@@ -65,8 +85,10 @@ class AppHelper
         $account_it_mgr_count = Account::where('final_status', 'LIKE', 'IT Approve%')->count();
         $folderaccess_it_mgr_count = FolderAccess::where('final_status', 'LIKE', 'IT Approve%')->count();
         $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $software_it_mgr_count = Software::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
 
-        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count;
+        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count + $software_it_mgr_count + $hardware_it_mgr_count;
     }
 
     public static function execution_count()
@@ -74,8 +96,10 @@ class AppHelper
         $account_execution_count = Account::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
-        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count;
+        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count;
     }
 
     /// FORM ACCOUNT ///
@@ -181,5 +205,75 @@ class AppHelper
     public static function newfolder_execution_count()
     {
         return NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+    }
+
+    /// FORM SOFTWARE ///
+    public static function software_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Software::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function software_confirm_count()
+    {
+        return Software::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
+    public static function software_it_count()
+    {
+        return Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function software_it_mgr_count()
+    {
+        return Software::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function software_execution_count()
+    {
+        return Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+    }
+
+    /// FORM HARDWARE ///
+    public static function hardware_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Hardware::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function hardware_confirm_count()
+    {
+        return Hardware::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
+    public static function hardware_it_count()
+    {
+        return Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function hardware_it_mgr_count()
+    {
+        return Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function hardware_execution_count()
+    {
+        return Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
     }
 }

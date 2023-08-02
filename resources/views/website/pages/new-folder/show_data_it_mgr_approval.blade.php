@@ -161,6 +161,18 @@
                 }
 
                 html += `
+                        <tr>
+                            <td>Manager Note</td>
+                            <td colspan="3">${d.manager_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>ITD Note</td>
+                            <td colspan="3">${d.it_note ?? '-'}</td>
+                        </tr>  
+                        <tr>
+                            <td>ITD Manager Note</td>
+                            <td colspan="3">${d.it_mgr_note ?? '-'}</td>
+                        </tr>
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>

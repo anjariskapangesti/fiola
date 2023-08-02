@@ -39,8 +39,13 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="foldername_folder_access">
                         <input type="hidden" id="id_new_folder">
+                        <br><br>
+                        <label for="foldername_folder_access">New Folder Name :</label>
+                        <input type="text" class="form-control" id="foldername_folder_access">
+                        
+                        <label for="note">Note :</label>
+                        <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -168,6 +173,18 @@
                 }
 
                 html += `
+                        <tr>
+                            <td>Manager Note</td>
+                            <td colspan="3">${d.manager_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>ITD Note</td>
+                            <td colspan="3">${d.it_note ?? '-'}</td>
+                        </tr>  
+                        <tr>
+                            <td>ITD Manager Note</td>
+                            <td colspan="3">${d.it_mgr_note ?? '-'}</td>
+                        </tr>
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
@@ -198,6 +215,7 @@
                     type: "POST",
                     data: {
                         id: id_new_folder,
+                        finish_note: $('#note').val(),
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },

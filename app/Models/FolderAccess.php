@@ -26,6 +26,7 @@ class FolderAccess extends Model
         'manager_note',
         'it_note',
         'it_mgr_note',
+        'finish_note',
         'created_by',
         'created_dept'
     ];

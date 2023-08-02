@@ -196,6 +196,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/subfolder_ajax', 'SoftwareController@subfolder_ajax')->name('software.subfolder_ajax');
             Route::get('/show_data_form', 'SoftwareController@show_data_form')->name('software.show_data_form');
             Route::get('/show_data_form_ajax', 'SoftwareController@show_data_form_ajax')->name('software.show_data_form_ajax'); 
+            Route::post('/approve_form', 'SoftwareController@approve_form')->name('software.approve_form');
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'SoftwareController@show_manager_approval')->name('software.show_manager_approval');
@@ -234,6 +235,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/subfolder_ajax', 'HardwareController@subfolder_ajax')->name('hardware.subfolder_ajax');
             Route::get('/show_data_form', 'HardwareController@show_data_form')->name('hardware.show_data_form');
             Route::get('/show_data_form_ajax', 'HardwareController@show_data_form_ajax')->name('hardware.show_data_form_ajax'); 
+            Route::post('/approve_form', 'HardwareController@approve_form')->name('hardware.approve_form');
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'HardwareController@show_manager_approval')->name('hardware.show_manager_approval');

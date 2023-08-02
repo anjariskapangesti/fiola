@@ -67,10 +67,10 @@
                                             <div class="row border p-2">
                                                 <div class="col-md-4">
                                                     <div class="input-group has-validation">
-                                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
-                                                        <input type="text" name="username[]" class="form-control"
-                                                            placeholder="Username" required onkeyup="convertToLowercase(this)">
-                                                        <div class="invalid-feedback">Please enter your username</div>
+                                                        {{-- <span class="input-group-text" id="inputGroupPrepend">AIIA\</span> --}}
+                                                        <input type="email" name="username[]" class="form-control"
+                                                            placeholder="Email@aiia.co.id" required onkeyup="convertToLowercase(this)">
+                                                        <div class="invalid-feedback">Please enter your email</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -146,10 +146,10 @@
                 <div class="row border p-2">
                                             <div class="col-md-4">
                                                 <div class="input-group has-validation">
-                                                    <span class="input-group-text" id="inputGroupPrepend">AIIA\\</span>
-                                                    <input type="text" name="username[]" class="form-control"
-                                                        placeholder="Username" required>
-                                                    <div class="invalid-feedback">Please enter your username</div>
+                                                    
+                                                    <input type="email" name="username[]" class="form-control"
+                                                        placeholder="Email@aiia.co.id" required>
+                                                    <div class="invalid-feedback">Please enter your email</div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">

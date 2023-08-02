@@ -142,7 +142,7 @@
                                 } else if (data == 'IT MGR Approve') {
                                     return `Waiting Execution`;
                                 } else {
-                                    return `Finished`;
+                                    return data;
                                 }
                             }
                         },                        

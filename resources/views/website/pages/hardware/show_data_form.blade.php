@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Track Forms Account'])
+@extends('website.layouts.main', ['title' => 'Track Forms Hardware'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
+        <h4>Device Request/Transfer/Scrap Form (FRM-ITD-S13-002-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Track Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Hardware</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -26,8 +26,8 @@
                             <tr>
                                 <th>Detail</th>
                                 <th>Fullname</th>
-                                <th>Budget Type</th>
-                                <th>Request Type</th>
+                                <th>Category</th>
+                                <th>Type</th>
                                 <th>Status</th>
                                 <th>Confirm</th>
                             </tr>
@@ -46,8 +46,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to confirm this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
-                        <input type="hidden" id="id_form_account">                       
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_hardware">
+                        <input type="hidden" id="id_form_hardware">                       
 
                     </div>
                     <div class="modal-footer">
@@ -81,25 +81,13 @@
                         <td>${d.department} </td>
                     </tr>
                     <tr>
-                        <td>Company</td>
-                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
-                    </tr>
-                    <tr>
                         <td>Phone</td>
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Expired Date</td>
-                        <td>${d.expired_date ?? '-'} </td>
-                    </tr>
-                    <tr>
-                        <td>Login Username</td>
-                        <td>aiia\\${d.ad_name}</td>
-                    </tr>
-                    <tr>
-                        <td>Email Address</td>
-                        <td>${d.email_address == null ? '<i>Will be Informed Later after approved</i>' : d.email_address}</td>
-                    </tr>
+                        <td>Due Date</td>
+                        <td>${d.due_date ?? '-'} </td>
+                    </tr>  
                     <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
@@ -137,7 +125,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.account.show_data_form_ajax') }}",
+                        url: "{{ route('website.hardware.show_data_form_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -151,19 +139,19 @@
                             name: 'fullname',
                         },
                         {
-                            data: 'budget_type',
-                            name: 'budget_type',
+                            data: 'category',
+                            name: 'category',
                             render: function(data, type, row, meta) {
-                                if (data == 'budget') {
-                                    return `<span class="badge bg-success">Budget</span>`;
+                                if (data == 'request') {
+                                    return `<span class="badge bg-success">Request</span>`;
                                 } else {
-                                    return `<span class="badge bg-danger">UN-budget</span>`;
+                                    return `<span class="badge bg-primary">Change</span>`;
                                 }
                             }
                         },
                         {
-                            data: 'form_type',
-                            name: 'form_type'
+                            data: 'type',
+                            name: 'type'
                         },
                         {
                             data: 'final_status',
@@ -201,14 +189,14 @@
                 });
 
                 $('#btn-approve').on('click', function() {
-                let id_form_account = $('#id_form_account').val();
-                console.log(id_form_account);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
+                let id_form_hardware = $('#id_form_hardware').val();
+                console.log(id_form_hardware);
+                // window.location.href = "{{ route('website.hardware.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.account.approve_form') }}",
+                    url: "{{ route('website.hardware.approve_form') }}",
                     type: "POST",
                     data: {
-                        id: id_form_account,
+                        id: id_form_hardware,
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -249,14 +237,14 @@
                 });
 
                 $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_account = $(this).data('id');
-                var fullname_form_account = $(this).data('fullname');
+                var id_form_hardware = $(this).data('id');
+                var fullname_form_hardware = $(this).data('fullname');
                 var ad_name = $(this).data('ad_name');
 
-                $('#id_form_account').val(id_form_account)
-                $('#fullname_form_account').val(fullname_form_account)
+                $('#id_form_hardware').val(id_form_hardware)
+                $('#fullname_form_hardware').val(fullname_form_hardware)
                 $('#ad_name').val(ad_name)
-                // console.log(id_form_account);
+                // console.log(id_form_hardware);
                 })
 
             });

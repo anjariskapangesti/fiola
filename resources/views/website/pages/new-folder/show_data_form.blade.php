@@ -21,6 +21,7 @@
                                 <th>New Folder Name</th>
                                 <th>Main Path</th>
                                 <th>Status</th>
+                                <th>Confirm</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -110,6 +111,34 @@
                     {
                         data: 'final_status',
                         name: 'final_status',
+                        render: function(data, type, row, meta) {
+                            if (data == 'created') {
+                                return `Waiting Manager Approve`;
+                            } else if (data == 'Manager Approve') {
+                                return `Waiting ITD Approve`;
+                            } else if (data == 'IT Approve') {
+                                return `Waiting ITD MGR Approve`;
+                            } else if (data == 'IT MGR Approve') {
+                                return `Waiting Execution`;
+                            } else {
+                                return data;
+                            }
+                        }
+                    },                        
+                    {                        
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Confirm</button>
+                            `;
+                            } else if (data.is_confirm == '1') {
+                                return `Confirmed`
+                            } else {
+                                return `Not yet`;
+                            }
+                        }
                     },
                 ]
 
@@ -161,6 +190,22 @@
                 }
 
                 html += `
+                        <tr>
+                            <td>Manager Note</td>
+                            <td colspan="3">${d.manager_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>ITD Note</td>
+                            <td colspan="3">${d.it_note ?? '-'}</td>
+                        </tr>  
+                        <tr>
+                            <td>ITD Manager Note</td>
+                            <td colspan="3">${d.it_mgr_note ?? '-'}</td>
+                        </tr>
+                        <tr>
+                            <td>Note</td>
+                            <td colspan="3">${d.finish_note}</td>
+                        </tr>
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>

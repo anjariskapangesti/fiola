@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Track Forms Account'])
+@extends('website.layouts.main', ['title' => 'Track Forms Software'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
+        <h4>Standard Setting Change (Software Installation) Form (FRM-ITD-S13-005-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Track Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Software</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -25,9 +25,9 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Fullname</th>
-                                <th>Budget Type</th>
-                                <th>Request Type</th>
+                                <th>App Name</th>
+                                <th>Install on</th>
+                                <th>Category</th>
                                 <th>Status</th>
                                 <th>Confirm</th>
                             </tr>
@@ -46,8 +46,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to confirm this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
-                        <input type="hidden" id="id_form_account">                       
+                        <input type="text" readonly class="form-control-plaintext" id="appname_form_software">
+                        <input type="hidden" id="id_form_software">                       
 
                     </div>
                     <div class="modal-footer">
@@ -73,33 +73,13 @@
                 <table class="table table-sm">
 
                     <tr>
-                        <td width="30%">NPK / Full Name</td>
-                        <td>${d.npk} / ${d.fullname} </td>
+                        <td width="30%">App Name</td>
+                        <td>${d.appname} </td>
                     </tr>
                     <tr>
-                        <td>Dept.</td>
-                        <td>${d.department} </td>
-                    </tr>
-                    <tr>
-                        <td>Company</td>
-                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
-                    </tr>
-                    <tr>
-                        <td>Phone</td>
-                        <td>${d.phone} </td>
-                    </tr>
-                    <tr>
-                        <td>Expired Date</td>
-                        <td>${d.expired_date ?? '-'} </td>
-                    </tr>
-                    <tr>
-                        <td>Login Username</td>
-                        <td>aiia\\${d.ad_name}</td>
-                    </tr>
-                    <tr>
-                        <td>Email Address</td>
-                        <td>${d.email_address == null ? '<i>Will be Informed Later after approved</i>' : d.email_address}</td>
-                    </tr>
+                        <td>Install on</td>
+                        <td>${d.installon} </td>
+                    </tr>                    
                     <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
@@ -122,6 +102,10 @@
                         <th>${d.user_name}</th>
                     </tr>
                     <tr>
+                        <th>Detail</th>
+                        <th>${d.detail}</th>
+                    </tr>
+                    <tr>
                         <th>Purpose</th>
                         <th>${d.purpose}</th>
                     </tr>
@@ -137,7 +121,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.account.show_data_form_ajax') }}",
+                        url: "{{ route('website.software.show_data_form_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -147,23 +131,24 @@
                             searchable: false,
                         },
                         {
-                            data: 'fullname',
-                            name: 'fullname',
+                            data: 'appname',
+                            name: 'appname',
                         },
                         {
-                            data: 'budget_type',
-                            name: 'budget_type',
+                            data: 'installon',
+                            name: 'installon',
+                        },
+                        
+                        {
+                            data: 'category',
+                            name: 'category',
                             render: function(data, type, row, meta) {
-                                if (data == 'budget') {
-                                    return `<span class="badge bg-success">Budget</span>`;
+                                if (data == 'software') {
+                                    return `<span class="badge bg-success">Software</span>`;
                                 } else {
-                                    return `<span class="badge bg-danger">UN-budget</span>`;
+                                    return `<span class="badge bg-danger">OS</span>`;
                                 }
                             }
-                        },
-                        {
-                            data: 'form_type',
-                            name: 'form_type'
                         },
                         {
                             data: 'final_status',
@@ -188,7 +173,7 @@
                             data: null,
                             render: function(data, type, row, meta) {
                                 if (data.is_confirm == '0') {
-                                    return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Confirm</button>
+                                    return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-appname="${data.appname}" data-ad_name="${data.ad_name}">Confirm</button>
                                 `;
                                 } else if (data.is_confirm == '1') {
                                     return `Confirmed`
@@ -201,14 +186,14 @@
                 });
 
                 $('#btn-approve').on('click', function() {
-                let id_form_account = $('#id_form_account').val();
-                console.log(id_form_account);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
+                let id_form_software = $('#id_form_software').val();
+                console.log(id_form_software);
+                // window.location.href = "{{ route('website.software.approve_it') }}";
                 $.ajax({
-                    url: "{{ route('website.account.approve_form') }}",
+                    url: "{{ route('website.software.approve_form') }}",
                     type: "POST",
                     data: {
-                        id: id_form_account,
+                        id: id_form_software,
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -249,14 +234,14 @@
                 });
 
                 $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_account = $(this).data('id');
-                var fullname_form_account = $(this).data('fullname');
+                var id_form_software = $(this).data('id');
+                var appname_form_software = $(this).data('appname');
                 var ad_name = $(this).data('ad_name');
 
-                $('#id_form_account').val(id_form_account)
-                $('#fullname_form_account').val(fullname_form_account)
+                $('#id_form_software').val(id_form_software)
+                $('#appname_form_software').val(appname_form_software)
                 $('#ad_name').val(ad_name)
-                // console.log(id_form_account);
+                // console.log(id_form_software);
                 })
 
             });

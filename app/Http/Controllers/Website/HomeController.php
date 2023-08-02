@@ -10,6 +10,8 @@ use App\Models\Department;
 use App\Models\Account;
 use App\Models\FolderAccess;
 use App\Models\NewFolder;
+use App\Models\Software;
+use App\Models\Hardware;
 use Auth;
 
 class HomeController extends Controller
@@ -19,7 +21,7 @@ class HomeController extends Controller
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-
+        /// FINISHED ///
         $account_create_finished = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'Finished')
                                         ->count();
@@ -32,8 +34,16 @@ class HomeController extends Controller
                                         ->where('final_status', 'Finished')
                                         ->count();
 
-        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished;
+        $software_create_finished = Software::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Finished')
+                                        ->count();
 
+        $hardware_create_finished = Hardware::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Finished')
+                                        ->count();
+
+        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished + $software_create_finished + $hardware_create_finished;
+        /// REJECTED ///
         $account_create_rejected = Account::where('created_by', Auth::user()->id)
                                           ->where(function ($query) {
                                               $query->where('final_status', 'LIKE', '%Rejected%')
@@ -61,8 +71,26 @@ class HomeController extends Controller
                                               })
                                               ->count();
 
-        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected;
-        
+        $software_create_rejected = Software::where('created_by', Auth::user()->id)
+                                              ->where(function ($query) {
+                                                  $query->where('final_status', 'LIKE', '%Rejected%')
+                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
+                                              })
+                                              ->count();
+                                              
+        $hardware_create_rejected = Hardware::where('created_by', Auth::user()->id)
+                                              ->where(function ($query) {
+                                                  $query->where('final_status', 'LIKE', '%Rejected%')
+                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
+                                              })
+                                              ->count();
+
+        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected;
+        /// MGR ///
         $account_create_mgr = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'created')
                                         ->count();
@@ -75,8 +103,16 @@ class HomeController extends Controller
                                         ->where('final_status', 'created')
                                         ->count();
 
-        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr;
+        $software_create_mgr = Software::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'created')
+                                        ->count();
+                                        
+        $hardware_create_mgr = Hardware::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'created')
+                                        ->count();
 
+        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr + $software_create_mgr + $hardware_create_mgr;
+        /// IT ///
         $account_create_it = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'Manager Approve')
                                         ->count();
@@ -89,8 +125,16 @@ class HomeController extends Controller
                                         ->where('final_status', 'Manager Approve')
                                         ->count();
 
-        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it;
+        $software_create_it = Software::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Manager Approve')
+                                        ->count();
 
+        $hardware_create_it = Hardware::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Manager Approve')
+                                        ->count();
+
+        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it + $software_create_it + $hardware_create_it;
+        /// IT MGR ///
         $account_create_it_mgr = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'IT Approve')
                                         ->count();
@@ -103,8 +147,16 @@ class HomeController extends Controller
                                         ->where('final_status', 'IT Approve')
                                         ->count();
 
-        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr;
+        $software_create_it_mgr = Software::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT Approve')
+                                        ->count();
 
+        $hardware_create_it_mgr = Hardware::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT Approve')
+                                        ->count();
+
+        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr;
+        /// EXECUTION ///
         $account_create_execution = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'IT MGR Approve')
                                         ->count();
@@ -117,7 +169,15 @@ class HomeController extends Controller
                                         ->where('final_status', 'IT MGR Approve')
                                         ->count();
 
-        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution;
+        $software_create_execution = Software::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT MGR Approve')
+                                        ->count();
+
+        $hardware_create_execution = Hardware::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT MGR Approve')
+                                        ->count();
+
+        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution;
 
 
         /// untuk master ///
@@ -151,6 +211,27 @@ class HomeController extends Controller
         $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
         $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
+        $software_mgr_count = Software::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $software_it_count = Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $software_it_mgr_count = Software::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
+        $hardware_mgr_count = Hardware::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $hardware_it_count = Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
+        ///
         $account_total = Account::count();
         $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->count();
         $account_rejected = Account::where('final_status', 'LIKE', '%Rejected%')
@@ -173,7 +254,23 @@ class HomeController extends Controller
                                 ->orWhere('final_status', 'LIKE', '%Manager Reject%')
                                 ->orWhere('final_status', 'LIKE', '%IT Reject%')
                                 ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count();                                
+                                ->count();   
+                                
+        $software_total = Software::count();
+        $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->count();
+        $software_rejected = Software::where('final_status', 'LIKE', '%Rejected%')
+                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
+                                ->count(); 
+
+        $hardware_total = Hardware::count();
+        $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->count();
+        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Rejected%')
+                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
+                                ->count(); 
 
         // dd($account_total);
         
@@ -184,6 +281,10 @@ class HomeController extends Controller
                 'folderaccess_mgr_count', 'folderaccess_it_count', 'folderaccess_it_mgr_count', 'folderaccess_execution_count',
                 'folderaccess_total', 'folderaccess_finished', 'folderaccess_rejected',
                 'newfolder_mgr_count', 'newfolder_it_count', 'newfolder_it_mgr_count', 'newfolder_execution_count',
-                'newfolder_total', 'newfolder_finished', 'newfolder_rejected',));
+                'newfolder_total', 'newfolder_finished', 'newfolder_rejected',
+                'software_mgr_count', 'software_it_count', 'software_it_mgr_count', 'software_execution_count',
+                'software_total', 'software_finished', 'software_rejected',
+                'hardware_mgr_count', 'hardware_it_count', 'hardware_it_mgr_count', 'hardware_execution_count',
+                'hardware_total', 'hardware_finished', 'hardware_rejected'));
     }    
 }

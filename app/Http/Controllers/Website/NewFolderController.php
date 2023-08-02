@@ -128,7 +128,12 @@ class NewFolderController extends Controller
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose'), ('users.name as creator_created_by'),
-                                    ('form_new_folder.final_status'))
+                                    ('form_new_folder.final_status'),
+                                    ('form_new_folder.manager_note'),
+                                    ('form_new_folder.it_note'),
+                                    ('form_new_folder.it_mgr_note'),
+                                    ('form_new_folder.finish_note'),
+                                    ('form_new_folder.is_confirm'))
                             ->where('created_by', Auth::user()->id)
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access');                            
@@ -175,6 +180,7 @@ class NewFolderController extends Controller
         if($type=='ok'){
             $newfolder->is_manager_approve=1;
             $newfolder->final_status='Manager Approve';
+            $newfolder->manager_note=$request->manager_note;
         }else{
             $newfolder->is_manager_approve=0;
             $newfolder->final_status='Manager Reject';
@@ -203,7 +209,8 @@ class NewFolderController extends Controller
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose as creator_purpose'), ('users.name as creator_created_by'),
-                                    ('form_new_folder.manager_approval_date as manager_approval_date'))
+                                    ('form_new_folder.manager_approval_date as manager_approval_date'),
+                                    ('form_new_folder.manager_note'))
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                     $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
@@ -227,7 +234,8 @@ class NewFolderController extends Controller
         $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
                             ->select('form_new_folder.id', 'foldername', DB::Raw('form_new_folder.foldername as creator_foldername'), 
                                     ('form_new_folder.mainpath as creator_mainpath'),
-                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),)
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.manager_note'))
                             ->where('final_status','Manager Approve')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access')                                                
@@ -244,6 +252,7 @@ class NewFolderController extends Controller
         if($type=='ok'){
             $newfolder->is_it_approve=1;
             $newfolder->final_status='IT Approve';
+            $newfolder->it_note=$request->it_note;
         }else{
             $newfolder->is_it_approve=0;
             $newfolder->final_status='IT Reject';
@@ -266,7 +275,9 @@ class NewFolderController extends Controller
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose'), ('users.name as creator_created_by'),
-                                    ('form_new_folder.it_approval_date as it_approval_date'))
+                                    ('form_new_folder.it_approval_date as it_approval_date'),
+                                    ('form_new_folder.manager_note'),
+                                    ('form_new_folder.it_note'))
                             ->where('is_it_approve','1')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access');                            
@@ -286,7 +297,9 @@ class NewFolderController extends Controller
         $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
-                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),)
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.manager_note'),
+                                    ('form_new_folder.it_note'))
                             ->where('final_status','IT Approve')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access')                                                
@@ -303,6 +316,7 @@ class NewFolderController extends Controller
         if($type=='ok'){
             $newfolder->is_it_mgr_approve=1;
             $newfolder->final_status='IT MGR Approve';
+            $newfolder->it_mgr_note=$request->it_mgr_note;
         }else{
             $newfolder->is_it_mgr_approve=0;
             $newfolder->final_status='IT MGR Reject';
@@ -325,7 +339,10 @@ class NewFolderController extends Controller
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose'), ('users.name as creator_created_by'),
-                                    ('form_new_folder.it_mgr_approval_date'))
+                                    ('form_new_folder.it_mgr_approval_date'),
+                                    ('form_new_folder.manager_note'),
+                                    ('form_new_folder.it_note'),
+                                    ('form_new_folder.it_mgr_note'))
                             ->where('is_it_mgr_approve','1')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access');                            
@@ -345,7 +362,10 @@ class NewFolderController extends Controller
         $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
-                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),)
+                                    ('form_new_folder.purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.manager_note'),
+                                    ('form_new_folder.it_note'),
+                                    ('form_new_folder.it_mgr_note'))
                             ->where('final_status','IT MGR Approve')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access')                                                
@@ -359,9 +379,52 @@ class NewFolderController extends Controller
         $id=$request->id;
         $type=$request->type;
         $newfolder = NewFolder::findOrFail($id);
+        $newfolderaccesss = NewFolderAccess::where('new_folder_id', $id)->get();
+
+        $user = $newfolder->createdBy;
+
+        $isi = "FORM NEW FOLDER\n\n";                
+        
+        $isi .= "\nNew Folder Name : *" . $newfolder->foldername ."*";   
+        $isi .= "\nMain Path : *" . $newfolder->mainpath ."*";      
+
+        foreach ($newfolderaccesss as $newfolderaccess) {
+            $isi .= "\n\nUsername : " . $newfolderaccess->username;
+            $isi .= "\nDepartment : " . $newfolderaccess->department;
+            $isi .= "\nPermission : " . $newfolderaccess->permission;
+        }
+        $isi .= "\n\nPurpose : " . $newfolder->purpose;
+
+        $isi .= "\n\nStatus : Finished";
+
+        $isi .= "\n\nManager Note : " . $newfolder->manager_note;
+        $isi .= "\nITD Note : " . $newfolder->it_note;
+        $isi .= "\nITD Manager Note : " . $newfolder->it_mgr_note;
+        $isi .= "\n\nNote : " . $request->finish_note;
+
+        $nomor = $user->nohp;;
+
+        $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
+
         if($type=='ok'){
             $newfolder->is_finish=1;
             $newfolder->final_status='Finished';
+            $newfolder->finish_note=$request->finish_note;
         }else{
             $newfolder->is_finish=0;
             $newfolder->final_status='Rejected';
@@ -384,7 +447,11 @@ class NewFolderController extends Controller
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose'), ('users.name as creator_created_by'),
-                                    ('form_new_folder.finish_date'))
+                                    ('form_new_folder.finish_date'),
+                                    ('form_new_folder.manager_note'),
+                                    ('form_new_folder.it_note'),
+                                    ('form_new_folder.it_mgr_note'),
+                                    ('form_new_folder.finish_note'))
                             ->where('is_finish','1')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access');                            

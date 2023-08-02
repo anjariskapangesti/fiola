@@ -41,6 +41,7 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="foldername_folder_access">
                         <input type="hidden" id="id_new_folder">
+                        <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -198,6 +199,7 @@
                     type: "POST",
                     data: {
                         id: id_new_folder,
+                        manager_note: $('#note').val(),
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
                     },
