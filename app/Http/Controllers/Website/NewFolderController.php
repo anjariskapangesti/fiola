@@ -23,8 +23,22 @@ class NewFolderController extends Controller
         $departments = Department::orderBy('name')->get();
         $folders = Folder::orderBy('name', 'ASC')->get();
 
-        // dd($subfolders);
-        return view('website.pages.new-folder.create', compact(['departments', 'folders']));
+        $auth = User::where('id', Auth::user()->id)
+                                    ->whereNull('nohp')
+                                    ->count(); 
+
+                                    $auth = User::where('id', Auth::user()->id)
+                                    ->whereNull('nohp')
+                                    ->count(); 
+        
+        $data = NewFolder::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+        if ($auth > 0) {
+            return redirect()->route('website.user.edit');
+        } else if($data > 0){
+            return redirect()->route('website.new-folder.show_data_form')->with('info', 'Please confirm!');
+        }else{
+            return view('website.pages.new-folder.create', compact(['departments', 'folders']));
+        }        
     }    
 
     public function store(Request $request)
@@ -141,6 +155,20 @@ class NewFolderController extends Controller
         return DataTables::of($data)->make(true);
     }
 
+    public function approve_form(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+        $newfolder = NewFolder::findOrFail($id);
+        if($type=='ok'){
+            $newfolder->is_confirm=1;
+        }else{
+            $newfolder->is_confirm=0;
+        }
+        $newfolder->save();
+        return "Confirm is Saved!";
+    }
+
     // MGR //
     public function show_manager_approval()
     {
@@ -185,6 +213,7 @@ class NewFolderController extends Controller
             $newfolder->is_manager_approve=0;
             $newfolder->final_status='Manager Reject';
             $newfolder->manager_note=$request->manager_note;
+            $newfolder->is_finish=0;
         }
         $newfolder->manager_approval_date= Carbon::now();
         $newfolder->save();
@@ -257,6 +286,7 @@ class NewFolderController extends Controller
             $newfolder->is_it_approve=0;
             $newfolder->final_status='IT Reject';
             $newfolder->it_note=$request->it_note;
+            $newfolder->is_finish=0;
         }
         $newfolder->it_approval_date= Carbon::now();
         $newfolder->save();
@@ -321,6 +351,7 @@ class NewFolderController extends Controller
             $newfolder->is_it_mgr_approve=0;
             $newfolder->final_status='IT MGR Reject';
             $newfolder->it_mgr_note=$request->it_mgr_note;
+            $newfolder->is_finish=0;
         }
         $newfolder->it_mgr_approval_date= Carbon::now();
         $newfolder->save();
@@ -383,45 +414,46 @@ class NewFolderController extends Controller
 
         $user = $newfolder->createdBy;
 
-        $isi = "FORM NEW FOLDER\n\n";                
-        
-        $isi .= "\nNew Folder Name : *" . $newfolder->foldername ."*";   
-        $isi .= "\nMain Path : *" . $newfolder->mainpath ."*";      
-
-        foreach ($newfolderaccesss as $newfolderaccess) {
-            $isi .= "\n\nUsername : " . $newfolderaccess->username;
-            $isi .= "\nDepartment : " . $newfolderaccess->department;
-            $isi .= "\nPermission : " . $newfolderaccess->permission;
-        }
-        $isi .= "\n\nPurpose : " . $newfolder->purpose;
-
-        $isi .= "\n\nStatus : Finished";
-
-        $isi .= "\n\nManager Note : " . $newfolder->manager_note;
-        $isi .= "\nITD Note : " . $newfolder->it_note;
-        $isi .= "\nITD Manager Note : " . $newfolder->it_mgr_note;
-        $isi .= "\n\nNote : " . $request->finish_note;
-
-        $nomor = $user->nohp;;
-
-        $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-            ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-
         if($type=='ok'){
+            $isi = "FORM NEW FOLDER\n\n";                
+        
+            $isi .= "\nNew Folder Name : *" . $request->foldername ."*";   
+            $isi .= "\nMain Path : *" . $newfolder->mainpath ."*";      
+    
+            foreach ($newfolderaccesss as $newfolderaccess) {
+                $isi .= "\n\nUsername : " . $newfolderaccess->username;
+                $isi .= "\nDepartment : " . $newfolderaccess->department;
+                $isi .= "\nPermission : " . $newfolderaccess->permission;
+            }
+            $isi .= "\n\nPurpose : " . $newfolder->purpose;
+    
+            $isi .= "\n\nStatus : Finished";
+    
+            $isi .= "\n\nManager Note : " . $newfolder->manager_note;
+            $isi .= "\nITD Note : " . $newfolder->it_note;
+            $isi .= "\nITD Manager Note : " . $newfolder->it_mgr_note;
+            $isi .= "\n\nNote : " . $request->finish_note;
+    
+            $nomor = $user->nohp;;
+    
+            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+                ));
+                $response = curl_exec($curl);
+                curl_close($curl);
+            $newfolder->foldername=$request->foldername;
+            $newfolder->is_confirm=0;
             $newfolder->is_finish=1;
             $newfolder->final_status='Finished';
             $newfolder->finish_note=$request->finish_note;
@@ -447,12 +479,13 @@ class NewFolderController extends Controller
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose'), ('users.name as creator_created_by'),
+                                    ('form_new_folder.final_status'),
                                     ('form_new_folder.finish_date'),
                                     ('form_new_folder.manager_note'),
                                     ('form_new_folder.it_note'),
                                     ('form_new_folder.it_mgr_note'),
                                     ('form_new_folder.finish_note'))
-                            ->where('is_finish','1')
+                            ->where('is_finish','1')->orWhere('is_finish','0')
                             ->orderBy('form_new_folder.id', 'desc')
                             ->with('form_new_folder_access');                            
 

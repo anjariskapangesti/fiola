@@ -22,7 +22,8 @@
                                 <th>App Name</th>
                                 <th>Install on</th>
                                 <th>Category</th>
-                                <th>Date Approved</th>
+                                <th>Final Status</th>
+                                <th>Date Execution</th>
                             </tr>
                         </thead>
                     </table>
@@ -122,6 +123,10 @@
                                 }
                             }
                         },
+                        {
+                            data: 'final_status',
+                            name: 'final_status'
+                        }, 
                         {
                             data: 'finish_date',
                             name: 'finish_date'

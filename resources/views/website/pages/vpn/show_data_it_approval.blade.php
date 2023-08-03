@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Finished Hardware'])
+@extends('website.layouts.main', ['title' => 'ITD History VPN'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Device Request/Transfer/Scrap Form (FRM-ITD-S13-002-00)</h4>
+        <h4>PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Finished</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Hardware</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD History</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form VPN</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -20,10 +20,8 @@
                             <tr>
                                 <th>Detail</th>
                                 <th>Fullname</th>
-                                <th>Category</th>
-                                <th>Type</th>
-                                <th>Final Status</th>
-                                <th>Date Execution</th>
+                                <th>Username</th>
+                                <th>Date Approved</th>
                             </tr>
                         </thead>
                     </table>
@@ -58,8 +56,12 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Due Date</td>
-                        <td>${d.due_date ?? '-'} </td>
+                        <td>Email</td>
+                        <td>${d.email ?? '-'} </td>
+                    </tr>  
+                    <tr>
+                        <td>Username</td>
+                        <td>${d.username ?? '-'} </td>
                     </tr>  
                     <tr>
                         <td>Manager Note</td>
@@ -69,14 +71,8 @@
                         <td>ITD Note</td>
                         <td>${d.it_note ?? '-'}</td>
                     </tr>  
-                    <tr>
-                        <td>ITD Manager Note</td>
-                        <td>${d.it_mgr_note ?? '-'}</td>
-                    </tr>
-                    <tr>
-                        <td>Note</td>
-                        <td>${d.finish_note}</td>
-                    </tr>
+                    
+                    
 
                     <tfoot>
                     <tr>
@@ -99,7 +95,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.hardware.show_data_execution_ajax') }}",
+                        url: "{{ route('website.vpn.show_data_it_approval_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -113,27 +109,12 @@
                             name: 'fullname',
                         },
                         {
-                            data: 'category',
-                            name: 'category',
-                            render: function(data, type, row, meta) {
-                                if (data == 'request') {
-                                    return `<span class="badge bg-success">Request</span>`;
-                                } else {
-                                    return `<span class="badge bg-primary">Change</span>`;
-                                }
-                            }
+                            data: 'username',
+                            name: 'username'
                         },
                         {
-                            data: 'type',
-                            name: 'type'
-                        },
-                        {
-                            data: 'final_status',
-                            name: 'final_status'
-                        }, 
-                        {
-                            data: 'finish_date',
-                            name: 'finish_date'
+                            data: 'it_approval_date',
+                            name: 'it_approval_date'
                         },
                     ],
                 });

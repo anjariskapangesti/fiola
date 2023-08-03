@@ -138,15 +138,71 @@ class DepartmentsSeeder extends Seeder
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'OTHER',
-            'name' => 'Other',
+            'code' => 'ENG',
+            'name' => 'DIV Engineering',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'EXC',
-            'name' => 'Executives',
+            'code' => 'PRD',
+            'name' => 'DIV Production',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'ENGPRDE',
+            'name' => 'DIV Engineering & Production Electric',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'HRIRLGA',
+            'name' => 'DIV HRD IRL & GA',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'FACPUR',
+            'name' => 'DIV FAC & Purchasing',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'PDIR',
+            'name' => 'Plant Director',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'DDIR',
+            'name' => 'Deputy Director',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'VPD',
+            'name' => 'Vice President Director',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'PD',
+            'name' => 'President Director',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('departments')->insert([
+            'code' => 'ADV',
+            'name' => 'Advisor',
             'created_at' => now(),
             'updated_at' => now()
         ]);

@@ -105,6 +105,91 @@ class UserSeeder extends Seeder
                 ]);
             }
         }
+
+        /// ITD INFRA ///
+
+        $usersITD = [
+            [
+                'name' => 'Alliq Nur Imanin Aji',
+                'email' => 'alliq@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+            [
+                'name' => 'Rohmat Maulana Ishaq',
+                'email' => 'rohmat@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+            [
+                'name' => 'Muhammad Diki Dwi Nugraha',
+                'email' => 'diki@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+            
+        ];
+    
+        foreach ($usersITD as $userITD) {
+            $userITDdept = DB::table('users')->insertGetId($userITD);
+    
+            // Menetapkan departemen untuk pengguna
+            
+            DB::table('model_has_departments')->insert([
+                'model_type' => "App\Models\User",
+                'model_id' => $userITDdept,
+                'department_id' => $departmentITD,
+            ]);
+    
+            foreach ($permissionsITD as $perminissionITD) {
+                DB::table('model_has_permissions')->insert([
+                    'model_type' => "App\Models\User",
+                    'model_id' => $userITDdept,
+                    'permission_id' => $perminissionITD,
+                ]);
+            }
+        }
+
+        /// USER ITD ///
+        $usersITD = [
+            [
+                'name' => 'Imam Mahfud',
+                'email' => 'imam@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+            [
+                'name' => 'Rafie Afif Andika',
+                'email' => 'rafie@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],            
+            [
+                'name' => 'Mitsal Fabian Nadhiem',
+                'email' => 'fabian@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+            [
+                'name' => 'Handika',
+                'email' => 'handika@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+        ];
+
+        foreach ($usersITD as $userITD) {
+            $userITDdept = DB::table('users')->insertGetId($userITD);
+    
+            // Menetapkan departemen untuk pengguna
+            
+            DB::table('model_has_departments')->insert([
+                'model_type' => "App\Models\User",
+                'model_id' => $userITDdept,
+                'department_id' => $departmentITD,
+            ]);
+    
+            foreach ($permissionsUser as $permissionUser) {
+                DB::table('model_has_permissions')->insert([
+                    'model_type' => "App\Models\User",
+                    'model_id' => $userITDdept,
+                    'permission_id' => $permissionUser,
+                ]);
+            }
+        }
         
         /// USER HRD ///
         $usersHRD = [
@@ -219,44 +304,73 @@ class UserSeeder extends Seeder
             }
         }
 
-        /// ITD INFRA ///
-
-        $usersITD = [
+        /// USER ENGB ///
+        $usersENGB = [
             [
-                'name' => 'Muhammad Diki Dwi Nugraha',
-                'email' => 'diki@aiia.co.id',
+                'name' => 'Corel Harnowo',
+                'email' => 'corel@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
             [
-                'name' => 'Rohmat Maulana Ishaq',
-                'email' => 'rohmat@aiia.co.id',
+                'name' => 'Valentsyach Rizqi Alfani',
+                'email' => 'valent.alfani@aiia.co.id',
                 'password' => Hash::make('aiia'),
-            ],
+            ],            
             [
-                'name' => 'Alliq Nur Imanin Aji',
-                'email' => 'alliq@aiia.co.id',
+                'name' => 'Thoif Zara',
+                'email' => 'thoif.zara@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
         ];
+
+        foreach ($usersENGB as $userENGB) {
+            $userENGBdept = DB::table('users')->insertGetId($userENGB);
+            
+            DB::table('model_has_departments')->insert([
+                'model_type' => "App\Models\User",
+                'model_id' => $userENGBdept,
+                'department_id' => $departmentENGB,
+            ]);
     
-        foreach ($usersITD as $userITD) {
-            $userITDdept = DB::table('users')->insertGetId($userITD);
+            foreach ($permissionsUser as $permissionUser) {
+                DB::table('model_has_permissions')->insert([
+                    'model_type' => "App\Models\User",
+                    'model_id' => $userENGBdept,
+                    'permission_id' => $permissionUser,
+                ]);
+            }
+        }
+
+        /// MGR ENGB ///
+        $mgrsENGB = [
+            [
+                'name' => 'Lutfi Dahlan',
+                'email' => 'lutfi@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+        ];
+
+        foreach ($mgrsENGB as $mgrENGB) {
+            $mgrENGBdept = DB::table('users')->insertGetId($mgrENGB);
     
             // Menetapkan departemen untuk pengguna
             
             DB::table('model_has_departments')->insert([
                 'model_type' => "App\Models\User",
-                'model_id' => $userITDdept,
-                'department_id' => $departmentITD,
+                'model_id' => $mgrENGBdept,
+                'department_id' => $departmentENGB,
             ]);
+        
     
-            foreach ($permissionsITD as $perminissionITD) {
+            foreach ($permissionsMGR as $permissionMGR) {
                 DB::table('model_has_permissions')->insert([
                     'model_type' => "App\Models\User",
-                    'model_id' => $userITDdept,
-                    'permission_id' => $perminissionITD,
+                    'model_id' => $mgrENGBdept,
+                    'permission_id' => $permissionMGR,
                 ]);
             }
         }
+
+        
     }
 }

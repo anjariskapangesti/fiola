@@ -20,7 +20,8 @@
                                 <th>Detail</th>
                                 <th>New Folder Name</th>
                                 <th>Main Path</th>
-                                <th>Date Approved</th>
+                                <th>Final Status</th>
+                                <th>Date Execution</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -107,6 +108,10 @@
                         data: 'mainpath',
                         name: 'mainpath',
                     },
+                    {
+                        data: 'final_status',
+                        name: 'final_status',
+                    }, 
                     {
                         data: 'finish_date',
                         name: 'finish_date',

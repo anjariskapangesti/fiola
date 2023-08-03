@@ -22,7 +22,8 @@
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
-                                <th>Date Approved</th>
+                                <th>Final Status</th>
+                                <th>Date Execution</th>
                             </tr>
                         </thead>
                     </table>
@@ -137,6 +138,10 @@
                         {
                             data: 'form_type',
                             name: 'form_type'
+                        },
+                        {
+                            data: 'final_status',
+                            name: 'final_status'
                         },
                         {
                             data: 'finish_date',

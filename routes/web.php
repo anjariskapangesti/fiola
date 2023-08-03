@@ -158,6 +158,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/subfolder_ajax', 'NewFolderController@subfolder_ajax')->name('new-folder.subfolder_ajax');
             Route::get('/show_data_form', 'NewFolderController@show_data_form')->name('new-folder.show_data_form');
             Route::get('/show_data_form_ajax', 'NewFolderController@show_data_form_ajax')->name('new-folder.show_data_form_ajax');  
+            Route::post('/approve_form', 'NewFolderController@approve_form')->name('new-folder.approve_form');
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'NewFolderController@show_manager_approval')->name('new-folder.show_manager_approval');
@@ -274,6 +275,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/subfolder_ajax', 'VpnController@subfolder_ajax')->name('vpn.subfolder_ajax');
             Route::get('/show_data_form', 'VpnController@show_data_form')->name('vpn.show_data_form');
             Route::get('/show_data_form_ajax', 'VpnController@show_data_form_ajax')->name('vpn.show_data_form_ajax');   
+            Route::post('/approve_form', 'VpnController@approve_form')->name('vpn.approve_form');
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'VpnController@show_manager_approval')->name('vpn.show_manager_approval');

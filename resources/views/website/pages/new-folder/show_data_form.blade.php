@@ -10,6 +10,13 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    <div class="row">
+        @if(Session::get('info'))
+        <div class="alert alert-info">
+          {{ Session::get('info') }}
+        </div>
+        @endif
+    </div>
     <section class="section">
         <div class="row">
             <div class="card">
@@ -39,7 +46,7 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_new_folder">
+                        <input type="text" readonly class="form-control-plaintext" id="foldername_new_folder">
                         <input type="hidden" id="id_new_folder">
                     </div>
                     <div class="modal-footer">
@@ -131,7 +138,7 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             if (data.is_confirm == '0') {
-                                return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Confirm</button>
+                                return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-foldername="${data.foldername}"">Confirm</button>
                             `;
                             } else if (data.is_confirm == '1') {
                                 return `Confirmed`
@@ -174,7 +181,7 @@
                 var html = `
                     <table class = "table table-sms">
                                                 <tr class = "bg-light">
-                                                <td> Username </td>
+                                                <td> foldername </td>
                                                 <td> Department </td>
                                                 <td> Permission </td>
                                                 </tr>
@@ -182,7 +189,7 @@
                 console.log(d)
                 for (let i = 0; i < d.form_new_folder_access.length; i++) {
                     html += `<tr>
-                                    <td>${d.form_new_folder_access[i].username}</td>
+                                    <td>${d.form_new_folder_access[i].foldername}</td>
                                     <td>${d.form_new_folder_access[i].department}</td>
                                     <td>${d.form_new_folder_access[i].permission}</td>`
                     html += `</tr>
@@ -221,7 +228,28 @@
                 return html
             }
 
+            $('#btn-approve').on('click', function() {
+                let id_new_folder = $('#id_new_folder').val();
+                console.log(id_new_folder);
+                $.ajax({
+                    url: "{{ route('website.new-folder.approve_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_new_folder,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
 
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
 
             // $('#confirmModal').on('shown.bs.modal', function() {
             //     $('#nama').text('Nama Requestor')
@@ -229,9 +257,9 @@
 
             $('.table').on('click', '.btn-table-approve', function() {
                 var id_new_folder = $(this).data('id');
-                var username_new_folder = $(this).data('username');
+                var foldername_new_folder = $(this).data('foldername');
                 $('#id_new_folder').val(id_new_folder)
-                $('#username_new_folder').val(username_new_folder)
+                $('#foldername_new_folder').val(foldername_new_folder)
                 // console.log(id_new_folder);
             })
 

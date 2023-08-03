@@ -21,9 +21,15 @@ class HardwareController extends Controller
         $departments = Department::orderBy('name')->get();
 
         $userDepartment = Auth::user()->createdDepartments;
+
+        $auth = User::where('id', Auth::user()->id)
+                                    ->whereNull('nohp')
+                                    ->count(); 
         
         $data = Hardware::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
-        if($data > 0){
+        if ($auth > 0) {
+            return redirect()->route('website.user.edit');
+        } else if($data > 0){
             return redirect()->route('website.hardware.show_data_form')->with('info', 'Please confirm!');
         }else{
             return view('website.pages.hardware.create', compact(['departments', 'userDepartment']));
@@ -57,7 +63,7 @@ class HardwareController extends Controller
             $lastNumber = '000';
         }            
         $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
-        $no_reg = 'SWR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+        $no_reg = 'HWR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         if (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
@@ -198,6 +204,7 @@ class HardwareController extends Controller
             $hardware->is_manager_approve=0;
             $hardware->final_status='Manager Reject';
             $hardware->manager_note=$request->manager_note;
+            $hardware->is_finish=0;
         }
         $hardware->manager_approval_date= Carbon::now();
         $hardware->save();
@@ -250,6 +257,7 @@ class HardwareController extends Controller
             $hardware->is_it_approve=0;
             $hardware->final_status='IT Reject';
             $hardware->it_note=$request->it_note;
+            $hardware->is_finish=0;
         }
         $hardware->it_approval_date= Carbon::now();
         $hardware->save();
@@ -283,6 +291,7 @@ class HardwareController extends Controller
             $hardware->is_it_mgr_approve=0;
             $hardware->final_status='IT MGR Reject';
             $hardware->it_mgr_note=$request->it_mgr_note;
+            $hardware->is_finish=0;
         }
         $hardware->it_mgr_approval_date= Carbon::now();
         $hardware->save();
@@ -328,46 +337,45 @@ class HardwareController extends Controller
         
         $user = $hardware->createdBy;
 
-        $isi = "FORM HARDWARE\n\n";
-                
-        $isi .= "Category : " . $hardware->category;
-        $isi .= "\nType : " . $hardware->type;
-        
-        $isi .= "\n\nNPK : *" . $hardware->npk ."*";
-        $isi .= "\nName : *" . $hardware->fullname ."*";
-        $isi .= "\nDepartment : " . $hardware->department;
-        $isi .= "\nPhone : " . $hardware->phone;
-        $isi .= "\nDue date : " . $hardware->due_date;
-        $isi .= "\nPurpose : " . $hardware->purpose;
-
-        $isi .= "\n\nStatus : Finished";
-
-        $isi .= "\n\nManager Note : " . $hardware->manager_note;
-        $isi .= "\nITD Note : " . $hardware->it_note;
-        $isi .= "\nITD Manager Note : " . $hardware->it_mgr_note;
-        $isi .= "\n\nNote : " . $request->finish_note;
-
-        $nomor = $user->nohp;;
-
-        $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-            ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-
-        
         if($type=='ok'){
+            $isi = "FORM HARDWARE\n\n";
+                
+            $isi .= "Category : " . $hardware->category;
+            $isi .= "\nType : " . $hardware->type;
+            
+            $isi .= "\n\nNPK : *" . $hardware->npk ."*";
+            $isi .= "\nName : *" . $hardware->fullname ."*";
+            $isi .= "\nDepartment : " . $hardware->department;
+            $isi .= "\nPhone : " . $hardware->phone;
+            $isi .= "\nDue date : " . $hardware->due_date;
+            $isi .= "\nPurpose : " . $hardware->purpose;
+    
+            $isi .= "\n\nStatus : Finished";
+    
+            $isi .= "\n\nManager Note : " . $hardware->manager_note;
+            $isi .= "\nITD Note : " . $hardware->it_note;
+            $isi .= "\nITD Manager Note : " . $hardware->it_mgr_note;
+            $isi .= "\n\nNote : " . $request->finish_note;
+    
+            $nomor = $user->nohp;;
+    
+            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+                ));
+                $response = curl_exec($curl);
+                curl_close($curl);
+
             $hardware->is_finish=1;
             $hardware->is_confirm=0;
             $hardware->final_status='Finished';
@@ -392,7 +400,7 @@ class HardwareController extends Controller
     public function show_data_execution_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Hardware::where('is_finish','1')
+        $data = Hardware::where('is_finish','1')->orWhere('is_finish','0')
                         ->join('users', 'form_hardware.created_by', '=', 'users.id')
                         ->select('form_hardware.*', 'users.name as user_name');
         // return $data;

@@ -21,9 +21,15 @@ class SoftwareController extends Controller
         $departments = Department::orderBy('name')->get();
 
         $userDepartment = Auth::user()->createdDepartments;
+
+        $auth = User::where('id', Auth::user()->id)
+                                    ->whereNull('nohp')
+                                    ->count(); 
         
         $data = Software::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
-        if($data > 0){
+        if ($auth > 0) {
+            return redirect()->route('website.user.edit');
+        } else if($data > 0){
             return redirect()->route('website.software.show_data_form')->with('info', 'Please confirm!');
         }else{
             return view('website.pages.software.create', compact(['departments', 'userDepartment']));
@@ -192,6 +198,7 @@ class SoftwareController extends Controller
             $software->is_manager_approve=0;
             $software->final_status='Manager Reject';
             $software->manager_note=$request->manager_note;
+            $software->is_finish=0;
         }
         $software->manager_approval_date= Carbon::now();
         $software->save();
@@ -244,6 +251,7 @@ class SoftwareController extends Controller
             $software->is_it_approve=0;
             $software->final_status='IT Reject';
             $software->it_note=$request->it_note;
+            $software->is_finish=0;
         }
         $software->it_approval_date= Carbon::now();
         $software->save();
@@ -277,6 +285,7 @@ class SoftwareController extends Controller
             $software->is_it_mgr_approve=0;
             $software->final_status='IT MGR Reject';
             $software->it_mgr_note=$request->it_mgr_note;
+            $software->is_finish=0;
         }
         $software->it_mgr_approval_date= Carbon::now();
         $software->save();
@@ -321,44 +330,42 @@ class SoftwareController extends Controller
         $software = Software::findOrFail($id);
         
         $user = $software->createdBy;
-
-        $isi = "FORM SOFTWARE\n\n";
-                
-        $isi .= "Category : " . $software->category;
-        
-        $isi .= "\n\nApp Name : *" . $software->appname ."*";
-        $isi .= "\nInstall on : " . $software->installon;
-        $isi .= "\nDetail : " . $software->detail;
-        $isi .= "\nPurpose : " . $software->purpose;
-
-        $isi .= "\n\nStatus : Finished";
-
-        $isi .= "\n\nManager Note : " . $software->manager_note;
-        $isi .= "\nITD Note : " . $software->it_note;
-        $isi .= "\nITD Manager Note : " . $software->it_mgr_note;
-        $isi .= "\n\nNote : " . $request->finish_note;
-
-        $nomor = $user->nohp;;
-
-        $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-            ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-
         
         if($type=='ok'){
+            $isi = "FORM SOFTWARE\n\n";
+                
+            $isi .= "Category : " . $software->category;
+            
+            $isi .= "\n\nApp Name : *" . $software->appname ."*";
+            $isi .= "\nInstall on : " . $software->installon;
+            $isi .= "\nDetail : " . $software->detail;
+            $isi .= "\nPurpose : " . $software->purpose;
+    
+            $isi .= "\n\nStatus : Finished";
+    
+            $isi .= "\n\nManager Note : " . $software->manager_note;
+            $isi .= "\nITD Note : " . $software->it_note;
+            $isi .= "\nITD Manager Note : " . $software->it_mgr_note;
+            $isi .= "\n\nNote : " . $request->finish_note;
+    
+            $nomor = $user->nohp;;
+    
+            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+                ));
+                $response = curl_exec($curl);
+                curl_close($curl);
             $software->is_finish=1;
             $software->is_confirm=0;
             $software->final_status='Finished';
@@ -383,7 +390,7 @@ class SoftwareController extends Controller
     public function show_data_execution_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Software::where('is_finish','1')
+        $data = Software::where('is_finish','1')->orWhere('is_finish','0')
                         ->join('users', 'form_software.created_by', '=', 'users.id')
                         ->select('form_software.*', 'users.name as user_name');
         // return $data;

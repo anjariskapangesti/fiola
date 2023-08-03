@@ -35,12 +35,12 @@
             <div class="row ">
                 {{-- @include('website.pages.dashboard') --}}
                 @if (auth()->check() && (auth()->user()->can('can_create_form')))
-                <div class="">
+                <div class="card">
                     <div id="piechart"></div>
                 </div>
                 @endif
                 @if (auth()->check() && (auth()->user()->can('can_master') || auth()->user()->can('can_approve_it') || auth()->user()->can('can_approve_it_mgr')))
-                <div class="">
+                <div class="card">
                     <div id="chart"></div>
                 </div>
                 @endif
@@ -310,11 +310,11 @@ Highcharts.chart('chart', {
     
     title: {
         text: 'Total Form',
-        align: 'center'
+        align: 'left'
     },
     
     xAxis: {
-        categories: ['Account', 'Folder Access', 'New Folder', 'Software']
+        categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN']
     },
     
     yAxis: {
@@ -341,11 +341,11 @@ Highcharts.chart('chart', {
     series: [{
         name: 'Finished',
         color: '#47c363',
-        data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }}, {{ $software_finished }}],
+        data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }}, {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }}],
     }, {
         name: 'Rejected',
         color: '#fc544b',
-        data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }}, {{ $software_rejected }}],
+        data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }}, {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }}],
     }]
     });
 

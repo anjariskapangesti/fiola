@@ -12,6 +12,7 @@ use App\Models\FolderAccess;
 use App\Models\NewFolder;
 use App\Models\Software;
 use App\Models\Hardware;
+use App\Models\Vpn;
 use Auth;
 
 class HomeController extends Controller
@@ -42,7 +43,11 @@ class HomeController extends Controller
                                         ->where('final_status', 'Finished')
                                         ->count();
 
-        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished + $software_create_finished + $hardware_create_finished;
+        $vpn_create_finished = Vpn::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Finished')
+                                        ->count();
+
+        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished + $software_create_finished + $hardware_create_finished + $vpn_create_finished;
         /// REJECTED ///
         $account_create_rejected = Account::where('created_by', Auth::user()->id)
                                           ->where(function ($query) {
@@ -89,7 +94,16 @@ class HomeController extends Controller
                                               })
                                               ->count();
 
-        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected;
+        $vpn_create_rejected = Vpn::where('created_by', Auth::user()->id)
+                                              ->where(function ($query) {
+                                                  $query->where('final_status', 'LIKE', '%Rejected%')
+                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
+                                              })
+                                              ->count();
+
+        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected + $vpn_create_rejected;
         /// MGR ///
         $account_create_mgr = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'created')
@@ -110,8 +124,12 @@ class HomeController extends Controller
         $hardware_create_mgr = Hardware::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'created')
                                         ->count();
+                                        
+        $vpn_create_mgr = Vpn::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'created')
+                                        ->count();
 
-        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr + $software_create_mgr + $hardware_create_mgr;
+        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr + $software_create_mgr + $hardware_create_mgr + $vpn_create_mgr;
         /// IT ///
         $account_create_it = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'Manager Approve')
@@ -133,7 +151,11 @@ class HomeController extends Controller
                                         ->where('final_status', 'Manager Approve')
                                         ->count();
 
-        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it + $software_create_it + $hardware_create_it;
+        $vpn_create_it = Vpn::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Manager Approve')
+                                        ->count();
+
+        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it + $software_create_it + $hardware_create_it + $vpn_create_it;
         /// IT MGR ///
         $account_create_it_mgr = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'IT Approve')
@@ -155,7 +177,11 @@ class HomeController extends Controller
                                         ->where('final_status', 'IT Approve')
                                         ->count();
 
-        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr;
+        $vpn_create_it_mgr = Vpn::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT Approve')
+                                        ->count();
+
+        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr + $vpn_create_it_mgr;
         /// EXECUTION ///
         $account_create_execution = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'IT MGR Approve')
@@ -177,10 +203,14 @@ class HomeController extends Controller
                                         ->where('final_status', 'IT MGR Approve')
                                         ->count();
 
-        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution;
+        $vpn_create_execution = Vpn::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT MGR Approve')
+                                        ->count();
+
+        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution + $vpn_create_execution;
 
 
-        /// untuk master ///
+        /// MASTER ///
         $account_mgr_count = Account::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                 $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
@@ -231,6 +261,16 @@ class HomeController extends Controller
         $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
         $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
+        $vpn_mgr_count = Vpn::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $vpn_it_count = Vpn::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $vpn_it_mgr_count = Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $vpn_execution_count = Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
         ///
         $account_total = Account::count();
         $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->count();
@@ -272,19 +312,37 @@ class HomeController extends Controller
                                 ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
                                 ->count(); 
 
-        // dd($account_total);
+        $vpn_total = Vpn::count();
+        $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->count();
+        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Rejected%')
+                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
+                                ->count(); 
+
+        $auth = User::where('id', Auth::user()->id)
+                                    ->whereNull('nohp')
+                                    ->count();   
+
+        if ($auth > 0) {
+            return redirect()->route('website.user.edit');
+        } else{
+            return view('website.pages.home', 
+            compact('total_form_finished', 'total_form_rejected', 'total_form_mgr', 'total_form_it', 'total_form_it_mgr', 'total_form_execution',
+                    'account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
+                    'account_total', 'account_finished', 'account_rejected',
+                    'folderaccess_mgr_count', 'folderaccess_it_count', 'folderaccess_it_mgr_count', 'folderaccess_execution_count',
+                    'folderaccess_total', 'folderaccess_finished', 'folderaccess_rejected',
+                    'newfolder_mgr_count', 'newfolder_it_count', 'newfolder_it_mgr_count', 'newfolder_execution_count',
+                    'newfolder_total', 'newfolder_finished', 'newfolder_rejected',
+                    'software_mgr_count', 'software_it_count', 'software_it_mgr_count', 'software_execution_count',
+                    'software_total', 'software_finished', 'software_rejected',
+                    'hardware_mgr_count', 'hardware_it_count', 'hardware_it_mgr_count', 'hardware_execution_count',
+                    'hardware_total', 'hardware_finished', 'hardware_rejected',
+                    'vpn_mgr_count', 'vpn_it_count', 'vpn_it_mgr_count', 'vpn_execution_count',
+                    'vpn_total', 'vpn_finished', 'vpn_rejected'));
+        }
+                                    
         
-        return view('website.pages.home', 
-        compact('total_form_finished', 'total_form_rejected', 'total_form_mgr', 'total_form_it', 'total_form_it_mgr', 'total_form_execution',
-                'account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
-                'account_total', 'account_finished', 'account_rejected',
-                'folderaccess_mgr_count', 'folderaccess_it_count', 'folderaccess_it_mgr_count', 'folderaccess_execution_count',
-                'folderaccess_total', 'folderaccess_finished', 'folderaccess_rejected',
-                'newfolder_mgr_count', 'newfolder_it_count', 'newfolder_it_mgr_count', 'newfolder_execution_count',
-                'newfolder_total', 'newfolder_finished', 'newfolder_rejected',
-                'software_mgr_count', 'software_it_count', 'software_it_mgr_count', 'software_execution_count',
-                'software_total', 'software_finished', 'software_rejected',
-                'hardware_mgr_count', 'hardware_it_count', 'hardware_it_mgr_count', 'hardware_execution_count',
-                'hardware_total', 'hardware_finished', 'hardware_rejected'));
     }    
 }

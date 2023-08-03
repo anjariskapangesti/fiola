@@ -215,6 +215,7 @@
                     type: "POST",
                     data: {
                         id: id_new_folder,
+                        foldername: $('#foldername_folder_access').val(),
                         finish_note: $('#note').val(),
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",

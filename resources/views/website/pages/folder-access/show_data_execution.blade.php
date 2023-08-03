@@ -19,7 +19,8 @@
                             <tr>
                                 <th>Detail</th>
                                 <th>Email</th>
-                                <th>Date Approved</th>
+                                <th>Final Status</th>
+                                <th>Date Execution</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -120,6 +121,10 @@
                         data: 'username',
                         name: 'username',
                     },
+                    {
+                        data: 'final_status',
+                        name: 'final_status'
+                    },                    
                     {
                         data: 'finish_date',
                         name: 'finish_date',

@@ -45,8 +45,14 @@ class AppHelper
                                         ->orWhere('created_dept', $lastDepartmentId);
                                 })
                                         ->where('final_status', 'LIKE', '%created%')->count();
+
+        $vpn_mgr_count = Vpn::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                    $query->where('created_dept', $firstDepartmentId)
+                                        ->orWhere('created_dept', $lastDepartmentId);
+                                })
+                                        ->where('final_status', 'LIKE', '%created%')->count();
         
-        return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count;
+        return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count;
     }
 
     public static function confirms_count()
@@ -65,8 +71,11 @@ class AppHelper
         
         $hardware_confirm_count = Hardware::where('created_by', Auth::user()->id)
                                             ->where('is_confirm', 'LIKE', '%0%')->count();
+
+        $vpn_confirm_count = Vpn::where('created_by', Auth::user()->id)
+                                            ->where('is_confirm', 'LIKE', '%0%')->count();
                                             
-        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count + $software_confirm_count + $hardware_confirm_count;
+        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count + $software_confirm_count + $hardware_confirm_count + $vpn_confirm_count;
     }
 
     public static function it_approvals_count()
@@ -76,8 +85,9 @@ class AppHelper
         $newfolder_it_count = NewFolder::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $software_it_count = Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $hardware_it_count = Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $vpn_it_count = Vpn::where('final_status', 'LIKE', '%Manager Approve%')->count();
 
-        return $account_it_count + $folderaccess_it_count + $newfolder_it_count + $software_it_count + $hardware_it_count;
+        return $account_it_count + $folderaccess_it_count + $newfolder_it_count + $software_it_count + $hardware_it_count + $vpn_it_count;
     }
 
     public static function it_mgr_approvals_count()
@@ -87,8 +97,9 @@ class AppHelper
         $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
         $software_it_mgr_count = Software::where('final_status', 'LIKE', 'IT Approve%')->count();
         $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $vpn_it_mgr_count = Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
 
-        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count + $software_it_mgr_count + $hardware_it_mgr_count;
+        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count + $software_it_mgr_count + $hardware_it_mgr_count + $vpn_it_mgr_count;
     }
 
     public static function execution_count()
@@ -98,8 +109,9 @@ class AppHelper
         $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $vpn_execution_count = Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
-        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count;
+        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count + $vpn_execution_count;
     }
 
     /// FORM ACCOUNT ///
@@ -275,5 +287,40 @@ class AppHelper
     public static function hardware_execution_count()
     {
         return Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+    }
+
+    /// FORM VPN ///
+    public static function vpn_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Vpn::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function vpn_confirm_count()
+    {
+        return Vpn::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
+    public static function vpn_it_count()
+    {
+        return Vpn::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function vpn_it_mgr_count()
+    {
+        return Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function vpn_execution_count()
+    {
+        return Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
     }
 }

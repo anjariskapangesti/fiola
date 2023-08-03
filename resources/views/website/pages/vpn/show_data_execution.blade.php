@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Finished Hardware'])
+@extends('website.layouts.main', ['title' => 'Finished VPN'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Device Request/Transfer/Scrap Form (FRM-ITD-S13-002-00)</h4>
+        <h4>PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Finished</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Hardware</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form VPN</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -20,8 +20,7 @@
                             <tr>
                                 <th>Detail</th>
                                 <th>Fullname</th>
-                                <th>Category</th>
-                                <th>Type</th>
+                                <th>Username</th>
                                 <th>Final Status</th>
                                 <th>Date Execution</th>
                             </tr>
@@ -58,8 +57,12 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Due Date</td>
-                        <td>${d.due_date ?? '-'} </td>
+                        <td>Email</td>
+                        <td>${d.email ?? '-'} </td>
+                    </tr>  
+                    <tr>
+                        <td>Username</td>
+                        <td>${d.username ?? '-'} </td>
                     </tr>  
                     <tr>
                         <td>Manager Note</td>
@@ -99,7 +102,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.hardware.show_data_execution_ajax') }}",
+                        url: "{{ route('website.vpn.show_data_execution_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -113,19 +116,8 @@
                             name: 'fullname',
                         },
                         {
-                            data: 'category',
-                            name: 'category',
-                            render: function(data, type, row, meta) {
-                                if (data == 'request') {
-                                    return `<span class="badge bg-success">Request</span>`;
-                                } else {
-                                    return `<span class="badge bg-primary">Change</span>`;
-                                }
-                            }
-                        },
-                        {
-                            data: 'type',
-                            name: 'type'
+                            data: 'username',
+                            name: 'username'
                         },
                         {
                             data: 'final_status',

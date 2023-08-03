@@ -124,6 +124,9 @@
                         <a href="{{ route('website.vpn.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_data_form') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                            @if(App\Models\AppHelper::vpn_confirm_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_confirm_count() }}</span>
+                            @endif
                         </a>
                     </li>
                 </ul>
@@ -195,6 +198,9 @@
                         <a href="{{ route('website.vpn.show_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_manager_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                            @if(App\Models\AppHelper::vpn_mgr_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_mgr_count() }}</span>
+                            @endif
                         </a>
                     </li>
                 </ul>
@@ -317,6 +323,9 @@
                         <a href="{{ route('website.vpn.show_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_it_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                            @if(App\Models\AppHelper::vpn_it_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_it_count() }}</span>
+                            @endif
                         </a>
                     </li>
                 </ul>
@@ -439,6 +448,9 @@
                         <a href="{{ route('website.vpn.show_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_it_mgr_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                            @if(App\Models\AppHelper::vpn_it_mgr_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_it_mgr_count() }}</span>
+                            @endif
                         </a>
                     </li>
                 </ul>
@@ -562,6 +574,9 @@
                         <a href="{{ route('website.vpn.show_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_execution') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
+                            @if(App\Models\AppHelper::vpn_execution_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_execution_count() }}</span>
+                            @endif
                         </a>
                     </li>
                 </ul>

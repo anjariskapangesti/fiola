@@ -24,11 +24,15 @@ class FolderAccessController extends Controller
         $departments = Department::all();
         $folders = Folder::orderBy('name', 'ASC')->get();
         $subfolders = SubFolder::orderBy('name', 'ASC')->get();
-        // dd($subfolders);
         
+        $auth = User::where('id', Auth::user()->id)
+                                    ->whereNull('nohp')
+                                    ->count(); 
 
         $data = FolderAccess::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
-        if($data > 0){
+        if ($auth > 0) {
+            return redirect()->route('website.user.edit');
+        } else if($data > 0){
             return redirect()->route('website.folder-access.show_data_form')->with('info', 'Please confirm!');
         }else{
             return view('website.pages.folder-access.create', compact(['departments', 'folders', 'subfolders']));
@@ -201,6 +205,7 @@ class FolderAccessController extends Controller
             $folderaccess->is_manager_approve=0;
             $folderaccess->final_status='Manager Reject';
             $folderaccess->manager_note=$request->manager_note;
+            $folderaccess->is_finish=0;
         }
         $folderaccess->manager_approval_date= Carbon::now();
         $folderaccess->save();
@@ -272,6 +277,7 @@ class FolderAccessController extends Controller
             $folderaccess->is_it_approve=0;
             $folderaccess->final_status='IT Reject';
             $folderaccess->it_note=$request->it_note;
+            $folderaccess->is_finish=0;
         }
         $folderaccess->it_approval_date= Carbon::now();
         $folderaccess->save();
@@ -334,6 +340,7 @@ class FolderAccessController extends Controller
             $folderaccess->is_it_mgr_approve=0;
             $folderaccess->final_status='IT MGR Reject';
             $folderaccess->it_mgr_note=$request->it_mgr_note;
+            $folderaccess->is_finish=0;
         }
         $folderaccess->it_mgr_approval_date= Carbon::now();
         $folderaccess->save();
@@ -394,45 +401,45 @@ class FolderAccessController extends Controller
 
         $user = $folderaccess->createdBy;
 
-        $isi = "FORM FOLDER ACCESS\n\n";                
-        
-        $isi .= "\nEmail : *" . $folderaccess->username ."*";        
-
-        foreach ($folderaccesspaths as $folderaccesspath) {
-            $isi .= "\n\nMain Path : " . $folderaccesspath->folder;
-            $isi .= "\nFolder : " . $folderaccesspath->subfolder;
-            $isi .= "\nSubfolder : " . $folderaccesspath->subsubfolder;
-            $isi .= "\nPermission : " . $folderaccesspath->permission;
-        }
-        $isi .= "\n\nPurpose : " . $folderaccess->purpose;
-
-        $isi .= "\n\nStatus : Finished";
-
-        $isi .= "\n\nManager Note : " . $folderaccess->manager_note;
-        $isi .= "\nITD Note : " . $folderaccess->it_note;
-        $isi .= "\nITD Manager Note : " . $folderaccess->it_mgr_note;
-        $isi .= "\n\nNote : " . $request->finish_note;
-
-        $nomor = $user->nohp;;
-
-        $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-            ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-
         if($type=='ok'){
+            $isi = "FORM FOLDER ACCESS\n\n";                
+        
+            $isi .= "\nEmail : *" . $folderaccess->username ."*";        
+    
+            foreach ($folderaccesspaths as $folderaccesspath) {
+                $isi .= "\n\nMain Path : " . $folderaccesspath->folder;
+                $isi .= "\nFolder : " . $folderaccesspath->subfolder;
+                $isi .= "\nSubfolder : " . $folderaccesspath->subsubfolder;
+                $isi .= "\nPermission : " . $folderaccesspath->permission;
+            }
+            $isi .= "\n\nPurpose : " . $folderaccess->purpose;
+    
+            $isi .= "\n\nStatus : Finished";
+    
+            $isi .= "\n\nManager Note : " . $folderaccess->manager_note;
+            $isi .= "\nITD Note : " . $folderaccess->it_note;
+            $isi .= "\nITD Manager Note : " . $folderaccess->it_mgr_note;
+            $isi .= "\n\nNote : " . $request->finish_note;
+    
+            $nomor = $user->nohp;;
+    
+            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+                ));
+                $response = curl_exec($curl);
+                curl_close($curl);
+                
             $folderaccess->is_finish=1;
             $folderaccess->is_confirm=0;
             $folderaccess->final_status='Finished';
@@ -458,12 +465,13 @@ class FolderAccessController extends Controller
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
                             ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
                                     ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.finish_date as finish_date'),
+                                    ('form_folder_access.final_status'),
+                                    ('form_folder_access.finish_date'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'),
                                     ('form_folder_access.it_mgr_note'),
                                     ('form_folder_access.finish_note'))
-                            ->where('is_finish','1')
+                            ->where('is_finish','1')->orWhere('is_finish','0')
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path');
 
