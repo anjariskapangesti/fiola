@@ -17,6 +17,8 @@ class Hardware extends Model
         'department',
         'phone',
         'due_date',
+        'device_before',
+        'device_after',
         'purpose',        
         'final_status',
         'is_manager_approve',

@@ -180,7 +180,7 @@
                         </tr>
                         <tr>
                             <td>Note</td>
-                            <td colspan="3">${d.finish_note}</td>
+                            <td colspan="3">${d.finish_note ?? '-'}</td>
                         </tr>
                         <tfoot>
                             <tr>

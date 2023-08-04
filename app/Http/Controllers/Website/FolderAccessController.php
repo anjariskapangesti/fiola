@@ -115,7 +115,7 @@ class FolderAccessController extends Controller
                 ]);
             }
     
-            return redirect()->back()->with('success', 'Success Create Form');
+            return redirect()->route('website.folder-access.show_data_form')->with('success', 'Success Create Form');
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }

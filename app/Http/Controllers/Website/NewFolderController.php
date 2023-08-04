@@ -122,7 +122,7 @@ class NewFolderController extends Controller
                 ]);
             }
             // });
-            return redirect()->back()->with('success', 'Success Create Form');
+            return redirect()->route('website.new-folder.show_data_form')->with('success', 'Success Create Form');
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }

@@ -90,6 +90,7 @@ class HardwareController extends Controller
                 'department' => $request->department ,
                 'phone' => $request->phone ,
                 'due_date' => $request->due_date ,
+                'device_before' => $request->device_before ,
                 'purpose' => $request->purpose ,                
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
@@ -101,7 +102,7 @@ class HardwareController extends Controller
             $form_hardware->save();
 
             $depts = Department::all();
-            return redirect()->back()->with('success', 'Success Create Form');
+            return redirect()->route('website.hardware.show_data_form')->with('success', 'Success Create Form');
         }
         catch(\Exception $e)
         {
@@ -331,6 +332,10 @@ class HardwareController extends Controller
 
     public function approve_execution(Request $request)
     {
+        $request->validate([
+            'device_after' => 'required' ,
+        ]);
+
         $id=$request->id;
         $type=$request->type;
         $hardware = Hardware::findOrFail($id);
@@ -348,6 +353,8 @@ class HardwareController extends Controller
             $isi .= "\nDepartment : " . $hardware->department;
             $isi .= "\nPhone : " . $hardware->phone;
             $isi .= "\nDue date : " . $hardware->due_date;
+            $isi .= "\nDevice Before : " . ($hardware->device_before ? $hardware->device_before : '-');
+            $isi .= "\nDevice After : " . $request->device_after;
             $isi .= "\nPurpose : " . $hardware->purpose;
     
             $isi .= "\n\nStatus : Finished";
@@ -376,6 +383,7 @@ class HardwareController extends Controller
                 $response = curl_exec($curl);
                 curl_close($curl);
 
+            $hardware->device_after=$request->device_after;
             $hardware->is_finish=1;
             $hardware->is_confirm=0;
             $hardware->final_status='Finished';

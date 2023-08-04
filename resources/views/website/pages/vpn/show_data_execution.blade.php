@@ -78,7 +78,7 @@
                     </tr>
                     <tr>
                         <td>Note</td>
-                        <td>${d.finish_note}</td>
+                        <td>${d.finish_note ?? '-'}</td>
                     </tr>
 
                     <tfoot>

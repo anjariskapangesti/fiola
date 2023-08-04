@@ -110,6 +110,15 @@
                         <td>${d.due_date ?? '-'} </td>
                     </tr>   
                     <tr>
+                        <td>Device Before</td>
+                        <td>${d.device_before ?? '-'} </td>
+                    </tr> 
+                    <tr>
+                        <td>Device After</td>
+                        <td>${d.device_after ?? '-'} </td>
+                    </tr> 
+                      
+                    <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
                     </tr>

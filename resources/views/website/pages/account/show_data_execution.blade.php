@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <td>Note</td>
-                        <td>${d.finish_note}</td>
+                        <td>${d.finish_note ?? '-'}</td>
                     </tr>
 
                     <tfoot>
@@ -127,13 +127,6 @@
                         {
                             data: 'budget_type',
                             name: 'budget_type',
-                            render: function(data, type, row, meta) {
-                                if (data == 'budget') {
-                                    return `<span class="badge bg-success">Budget</span>`;
-                                } else {
-                                    return `<span class="badge bg-danger">UN-budget</span>`;
-                                }
-                            }
                         },
                         {
                             data: 'form_type',

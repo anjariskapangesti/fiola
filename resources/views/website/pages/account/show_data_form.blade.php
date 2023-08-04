@@ -66,6 +66,13 @@
     @push('scripts')
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
         <script>
+
+            $(document).ready(function() {
+            @if (session()->has('success'))
+                toastr['success']("{{ Session('success') }}")
+            @endif
+            })
+
             function format(d) {
                 // `d` is the original data object for the row
                 return (
@@ -114,7 +121,7 @@
                     </tr>
                     <tr>
                         <td>Note</td>
-                        <td>${d.finish_note}</td>
+                        <td>${d.finish_note ?? '-'}</td>
                     </tr>
                     <tfoot>
                     <tr>
@@ -153,13 +160,6 @@
                         {
                             data: 'budget_type',
                             name: 'budget_type',
-                            render: function(data, type, row, meta) {
-                                if (data == 'budget') {
-                                    return `<span class="badge bg-success">Budget</span>`;
-                                } else {
-                                    return `<span class="badge bg-danger">UN-budget</span>`;
-                                }
-                            }
                         },
                         {
                             data: 'form_type',
@@ -170,15 +170,17 @@
                             name: 'final_status',
                             render: function(data, type, row, meta) {
                                 if (data == 'created') {
-                                    return `Waiting Manager Approve`;
+                                    return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
                                 } else if (data == 'Manager Approve') {
-                                    return `Waiting ITD Approve`;
+                                    return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
                                 } else if (data == 'IT Approve') {
-                                    return `Waiting ITD MGR Approve`;
+                                    return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
                                 } else if (data == 'IT MGR Approve') {
-                                    return `Waiting Execution`;
+                                    return `<span class="badge bg-warning">Waiting Execution</span>`;
+                                } else if (data == 'Finished') {
+                                    return `<span class="badge bg-success">Finished</span>`;
                                 } else {
-                                    return data;
+                                    return `<span class="badge bg-danger">${data}</span>`;
                                 }
                             }
                         },                        

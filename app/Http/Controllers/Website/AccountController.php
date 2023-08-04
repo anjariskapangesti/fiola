@@ -112,7 +112,7 @@ class AccountController extends Controller
             $form_account->save();
 
             $depts = Department::all();
-            return redirect()->back()->with('success', 'Success Create Form');
+            return redirect()->route('website.account.show_data_form')->with('success', 'Success Create Form');
         }
         catch(\Exception $e)
         {

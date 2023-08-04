@@ -31,29 +31,35 @@
         </div>
         <!-- Approve Confirmation Modal -->
 
-        <div class="modal fade" id="confirmModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Approve Confirmation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_hardware">
-                        <input type="hidden" id="id_form_hardware">
+            <div class="modal fade" id="confirmModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Approve Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure want to approve this request?
+                            <input type="text" readonly class="form-control-plaintext" id="fullname_form_hardware">
+                            <input type="hidden" id="id_form_hardware">
 
-                        <label for="note">Note :</label>
-                        <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
+                            <label for="device_before">Device Before :</label>
+                            <input type="text" readonly class="form-control" id="device_before">
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                            <label for="device_after">Device After :</label>
+                            <input type="text" class="form-control" id="device_after" required>
+
+                            <label for="note">Note :</label>
+                            <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         <!-- End Confirmation Modal -->
         <!-- Confirmation Modal -->
         <div class="modal fade" id="rejectModal" tabindex="-1">
@@ -109,7 +115,16 @@
                     <tr>
                         <td>Due Date</td>
                         <td>${d.due_date ?? '-'} </td>
-                    </tr>  
+                    </tr>   
+                    <tr>
+                        <td>Device Before</td>
+                        <td>${d.device_before ?? '-'} </td>
+                    </tr> 
+                    <tr>
+                        <td>Device After</td>
+                        <td>${d.device_after ?? '-'} </td>
+                    </tr> 
+                     
                     <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
@@ -178,7 +193,7 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Approve</button>
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-device_before="${data.device_before}">Approve</button>
                             <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                         }
                     },
@@ -215,7 +230,7 @@
                     data: {
                         id: id_form_hardware,
                         type: 'ok',
-                        ad_name: $('#ad_name').val(),
+                        device_after: $('#device_after').val(),
                         finish_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
@@ -226,7 +241,9 @@
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
-                        alert(error);
+                        const errorMessage = xhr.responseJSON?.message || xhr.responseText || 'Unknown Error';
+
+                        toastr['error'](errorMessage);
                     }
                 });
             });
@@ -263,12 +280,15 @@
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_form_hardware = $(this).data('id');
                 var fullname_form_hardware = $(this).data('fullname');
-                var ad_name = $(this).data('ad_name');
+                var device_before = $(this).data('device_before');
+                var device_after = $(this).data('device_after');
+
+                device_before = device_before ? device_before : "-";
 
                 $('#id_form_hardware').val(id_form_hardware)
                 $('#fullname_form_hardware').val(fullname_form_hardware)
-                $('#ad_name').val(ad_name)
-                // console.log(id_form_hardware);
+                $('#device_before').val(device_before)
+                $('#device_after').val(device_after)
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {

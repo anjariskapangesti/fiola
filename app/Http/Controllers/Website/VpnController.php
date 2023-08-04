@@ -99,7 +99,7 @@ class VpnController extends Controller
             $form_vpn->save();
 
             $depts = Department::all();
-            return redirect()->back()->with('success', 'Success Create Form');
+            return redirect()->route('website.vpn.show_data_form')->with('success', 'Success Create Form');
         }
         catch(\Exception $e)
         {

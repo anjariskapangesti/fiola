@@ -87,8 +87,14 @@
 @push('scripts')
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script lang="text/javascript">
-        $(function() {
 
+        $(document).ready(function() {
+        @if (session()->has('success'))
+            toastr['success']("{{ Session('success') }}")
+        @endif
+        })
+
+        $(function() {
 
             var table = $('.table').DataTable({
                 bLengthChange: true,
@@ -116,21 +122,23 @@
                         name: 'mainpath',
                     },
                     {
-                        data: 'final_status',
-                        name: 'final_status',
-                        render: function(data, type, row, meta) {
-                            if (data == 'created') {
-                                return `Waiting Manager Approve`;
-                            } else if (data == 'Manager Approve') {
-                                return `Waiting ITD Approve`;
-                            } else if (data == 'IT Approve') {
-                                return `Waiting ITD MGR Approve`;
-                            } else if (data == 'IT MGR Approve') {
-                                return `Waiting Execution`;
-                            } else {
-                                return data;
+                            data: 'final_status',
+                            name: 'final_status',
+                            render: function(data, type, row, meta) {
+                                if (data == 'created') {
+                                    return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
+                                } else if (data == 'Manager Approve') {
+                                    return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
+                                } else if (data == 'IT Approve') {
+                                    return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
+                                } else if (data == 'IT MGR Approve') {
+                                    return `<span class="badge bg-warning">Waiting Execution</span>`;
+                                } else if (data == 'Finished') {
+                                    return `<span class="badge bg-success">Finished</span>`;
+                                } else {
+                                    return `<span class="badge bg-danger">${data}</span>`;
+                                }
                             }
-                        }
                     },                        
                     {                        
                         orderable: false,
@@ -211,7 +219,7 @@
                         </tr>
                         <tr>
                             <td>Note</td>
-                            <td colspan="3">${d.finish_note}</td>
+                            <td colspan="3">${d.finish_note ?? '-'}</td>
                         </tr>
                         <tfoot>
                             <tr>

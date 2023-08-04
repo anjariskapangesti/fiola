@@ -34,14 +34,12 @@
                                     <label for="category">Category : </label>
                                     <br>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="category" id="categoryType1"
-                                            value="request" required>
+                                        <input class="form-check-input" type="radio" name="category" id="categoryType1" value="request" required>
                                         <label class="form-check-label" for="categoryType1">Request</label>
                                         <div class="invalid-feedback">Please select category</div>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="category" id="categoryType2"
-                                            value="change">
+                                        <input class="form-check-input" type="radio" name="category" id="categoryType2" value="change">
                                         <label class="form-check-label" for="categoryType2">Change</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
@@ -110,6 +108,11 @@
                                         <div class="invalid-feedback">Please enter your due date</div>
                                     </div>
                                 </div>
+                                <div class="col-md-6" id="divDeviceBefore" style="display:none;">
+                                    <input type="text" class="form-control" placeholder="ID Device Before (NTB-001 or CPU-001)" name="device_before"
+                                        maxlength="60" onkeyup="convertToUppercase(this)">
+                                    <div class="invalid-feedback">Please enter your ID Device Before</div>
+                                </div>
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
@@ -160,5 +163,29 @@
             }
             element.value = words.join(" ");
         }
+
+        function convertToUppercase(inputElement) {
+            let inputValue = inputElement.value;
+            inputElement.value = inputValue.toUpperCase();
+        }
+
+        const categoryType1 = document.getElementById("categoryType1");
+        const categoryType2 = document.getElementById("categoryType2");
+        const divDeviceBefore = document.getElementById("divDeviceBefore");
+
+        // Add event listener to the radio buttons
+        categoryType1.addEventListener("change", toggleDivDeviceBefore);
+        categoryType2.addEventListener("change", toggleDivDeviceBefore);
+
+        function toggleDivDeviceBefore() {
+            if (categoryType2.checked) {
+                divDeviceBefore.style.display = "block";
+            } else {
+                divDeviceBefore.style.display = "none";
+            }
+        }
+
+        // Trigger the initial state when the page loads
+        toggleDivDeviceBefore();
     </script>
 @endpush

@@ -95,7 +95,7 @@ class SoftwareController extends Controller
             $form_software->save();
 
             $depts = Department::all();
-            return redirect()->back()->with('success', 'Success Create Form');
+            return redirect()->route('website.software.show_data_form')->with('success', 'Success Create Form');
         }
         catch(\Exception $e)
         {

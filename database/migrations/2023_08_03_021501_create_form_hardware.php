@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('department', 100)->nullable();
             $table->string('phone',14)->nullable();
             $table->string('due_date',100)->nullable(); 
+            $table->string('device_before',14)->nullable();
+            $table->string('device_after',14)->nullable();
             $table->string('purpose',100)->nullable();            
             $table->string('final_status',30)->nullable();            
             $table->boolean('is_manager_approve')->nullable();
