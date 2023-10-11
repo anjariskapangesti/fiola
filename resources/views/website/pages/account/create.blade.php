@@ -32,15 +32,13 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="budget_type" id="budgetType1"
-                                            value="budget" required>
-                                        <label class="form-check-label" for="budgetType1">Budget</label>
+                                        <input class="form-check-input" type="radio" name="budget_type" id="budgetType1" value="budget" required>
+                                        <label class="form-check-label" for="budgetType1" data-toggle="tooltip" data-placement="top" title="Dengan Lisensi Office365">Budget</label>
                                         <div class="invalid-feedback">Please select budget type</div>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="budget_type" id="budgetType2"
-                                            value="unbudget">
-                                        <label class="form-check-label" for="budgetType2">Un Budget</label>
+                                        <input class="form-check-input" type="radio" name="budget_type" id="budgetType2" value="unbudget">
+                                        <label class="form-check-label" for="budgetType2" data-toggle="tooltip" data-placement="top" title="Tanpa Lisensi Office365">Un Budget</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
@@ -72,8 +70,8 @@
                             <h5 class="card-title">User Information</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
-                                        maxlength="6" required>
+                                    <input type="text" class="form-control" placeholder="NPK (000000)" name="npk"
+                                        maxlength="6" required data-toggle="tooltip" data-placement="top" title="6 Digit NPK">
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
@@ -92,24 +90,24 @@
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Phone Number" name="phone"
-                                        maxlength="14" required>
+                                        maxlength="14" required data-toggle="tooltip" data-placement="top" title="088888888888">
                                     <div class="invalid-feedback">Please enter your phone number</div>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Company Name (If External/Non AIIA)"
-                                        name="company" maxlength="100">
+                                        name="company" maxlength="100" data-toggle="tooltip" data-placement="top" title="Jika anda AIIA kosongkan saja">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group has-validation">
                                         <span class="input-group-text" id="inputGroupPrepend">Expired Date</span>
-                                        <input type="date" name="expired_date" class="form-control">
+                                        <input type="date" name="expired_date" class="form-control" data-toggle="tooltip" data-placement="top" title="Tanggal expired untuk akunnya">
                                         <div class="invalid-feedback">Please enter your expired date</div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
-                                            name="purpose" maxlength="100" required></textarea>
+                                            name="purpose" maxlength="100" required data-toggle="tooltip" data-placement="top" title="Alasan membuat akun"></textarea>
                                         <label for="floatingTextarea">Purpose</label>
                                         <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
@@ -124,14 +122,14 @@
                                 <div class="col-md-5">
                                     <input type="text" class="form-control"
                                         placeholder="Login Username (FirstName.LastName)" name="ad_name" maxlength="60"
-                                        required onkeyup="convertToLowercase(this)">
+                                        required onkeyup="convertToLowercase(this)" data-toggle="tooltip" data-placement="top" title="2 Kata (depan.belakang)">
                                     <div class="invalid-feedback">Please enter your username</div>
                                 </div>
                                 <div class="col-md-7">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
                                             name="is_email" value="false">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Create Email for Outlook (Mail
+                                        <label class="form-check-label" for="flexSwitchCheckDefault" data-toggle="tooltip" data-placement="top" title="Buatkan Email Outlook">Create Email for Outlook (Mail
                                             address will be decided by ITD)</label>
                                     </div>
                                 </div>
@@ -161,6 +159,7 @@
 @endpush
 
 @push('scripts')
+
     <script>
         $(document).ready(function() {
 
@@ -181,4 +180,11 @@
             element.value = words.join(" ");
         }
     </script>
+
+<script>
+    // Aktifkan tooltip Bootstrap
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 @endpush
