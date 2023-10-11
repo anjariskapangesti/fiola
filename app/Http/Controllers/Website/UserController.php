@@ -34,7 +34,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required' ,
-            'email' => 'required|unique:users,email',
+            'email' => 'unique:users,email',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
             'departments' => 'nullable|array',
@@ -50,7 +50,7 @@ class UserController extends Controller
             $user = User::create([
                 'name' => $request->name ,
                 'password' => bcrypt($request->password) ,
-                'email' => $request->email ,
+                'npk' => $request->npk ,
             ]);
             foreach ($request->input('departments') as $departmentId) {
                 $user->departments()->attach($departmentId, ['model_type' => 'App\Models\User']);
@@ -105,6 +105,7 @@ class UserController extends Controller
                     // ->join('departments', 'users.dept_id', '=', 'department.id')
                     // ->select('users.*', 'department.name as dept_name');;
         // return $data;
+        
         return DataTables::eloquent($data)->make(true);
     }
 

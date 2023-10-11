@@ -82,7 +82,7 @@
                                 <div class="col-md-4">
                                     <label for="email">{{ __('Email') }}</label>
                                     <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                                        name="email" value="{{ old('email', $user->email) }}" required onkeyup="convertToLowercase(this)">
+                                        name="email" value="{{ old('email', $user->email) }}" required onkeyup="convertToLowercase(this)" placeholder="example@aiia.co.id" data-toggle="tooltip" data-placement="top" title="Boleh gunakan email external (example@gmail.com)">
                                     
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -245,5 +245,12 @@
     function convertToLowercase(element) {
             element.value = element.value.toLowerCase();
         }
+</script>
+
+<script>
+    // Aktifkan tooltip Bootstrap
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>
 @endpush

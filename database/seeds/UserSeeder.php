@@ -76,11 +76,13 @@ class UserSeeder extends Seeder
         $admins = [
             [
                 'name' => 'Administrator',
+                'npk' => '000000',
                 'email' => 'administrator@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
             [
                 'name' => 'Ferry Avianto',
+                'npk' => '000017',
                 'email' => 'ferry@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],            
@@ -195,22 +197,32 @@ class UserSeeder extends Seeder
         $usersHRD = [
             [
                 'name' => 'Irfan Anshori',
+                'npk' => '002530',
                 'email' => 'irfan.anshori@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
             [
                 'name' => 'Khusni Setyawan',
+                'npk' => '001084',
                 'email' => 'khusni@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],            
             [
                 'name' => 'Indra Pasurya',
+                'npk' => '000106',
                 'email' => 'indra@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
             [
                 'name' => 'Ziyan Awaliyah Ritonga',
+                'npk' => '002168',
                 'email' => 'ziyan@aiia.co.id',
+                'password' => Hash::make('aiia'),
+            ],
+            [
+                'name' => 'Ahmad Rizky Rifai',
+                'npk' => '000567',
+                'email' => 'ahmad.rifai@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
         ];
@@ -239,12 +251,8 @@ class UserSeeder extends Seeder
         $usersIRLGA = [            
             [
                 'name' => 'Nikmatul Maulita',
+                'npk' => '002304',
                 'email' => 'n.maulita@aiia.co.id',
-                'password' => Hash::make('aiia'),
-            ],
-            [
-                'name' => 'Ahmad Rizky Rifai',
-                'email' => 'ahmad.rifai@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
         ];
@@ -308,17 +316,19 @@ class UserSeeder extends Seeder
         $usersENGB = [
             [
                 'name' => 'Corel Harnowo',
+                'npk' => '002404',
                 'email' => 'corel@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
             [
                 'name' => 'Valentsyach Rizqi Alfani',
+                'npk' => '002417',
                 'email' => 'valent.alfani@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],            
             [
-                'name' => 'Thoif Zara',
-                'email' => 'thoif.zara@aiia.co.id',
+                'name' => 'Muhammad Naza Syaifullah',
+                'npk' => '002651',
                 'password' => Hash::make('aiia'),
             ],
         ];
@@ -345,6 +355,7 @@ class UserSeeder extends Seeder
         $mgrsENGB = [
             [
                 'name' => 'Lutfi Dahlan',
+                'npk' => '000023',
                 'email' => 'lutfi@aiia.co.id',
                 'password' => Hash::make('aiia'),
             ],
@@ -369,7 +380,7 @@ class UserSeeder extends Seeder
                     'permission_id' => $permissionMGR,
                 ]);
             }
-        }
+        }        
 
         
     }

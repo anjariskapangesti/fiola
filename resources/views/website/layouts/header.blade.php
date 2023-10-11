@@ -24,7 +24,7 @@
                     <li class="dropdown-header">
                         @if (Auth())
                             <h6>{{ Auth::user()->name }}</h6>
-                            <p>{{ Auth::user()->departments->pluck('name')->implode(', ') }}</p>
+                            <p>{{ Auth::user()->departments->pluck('code')->implode(', ') }}</p>
                         @endif
 
                     </li>

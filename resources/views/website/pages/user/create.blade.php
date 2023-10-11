@@ -30,43 +30,32 @@
                         <div class="card-body">
                             <h5 class="card-title">A. User</h5>
                             <div class="row g-3">
+                                
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" placeholder="Name" name="name"
                                         maxlength="100" required onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter the name</div>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <select name="departments" class="form-control" required>
-                                        <option selected disabled value="">-- Choose Department --</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->id }}">{{ $department->name }} </option>
-                                        @endforeach
-                                    </select>
-                                </div> --}}
 
-                                {{-- <div class="col-md-6">                    
-                                    <div class="department-container">
-                                        <div class="department-item">
-                                            <select name="departments[]" id="departments"  class="form-control" multiple required>
-                                                <option value="">-- Select department --</option>
-                                                @foreach($departments as $id => $name)
-                                                    <option value="{{ $id }}">{{ $name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>                                        
-                                    </div>
+                                <div class="col-md-6">
+                                    <input type="npk" class="form-control" placeholder="NPK" name="npk"
+                                        maxlength="6" required>
+                                    <div class="invalid-feedback">Please enter the npk</div>
+                                </div>
+
+                                
+
+                                {{-- <div class="col-md-6">
+                                    <input type="email" class="form-control" placeholder="Email" name="email"
+                                        maxlength="100" required onkeyup="convertToLowercase(this)">
+                                    <div class="invalid-feedback">Please enter the email</div>
                                 </div> --}}
 
                                 
 
                                 <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email" name="email"
-                                        maxlength="100" required onkeyup="convertToLowercase(this)">
-                                    <div class="invalid-feedback">Please enter the email</div>
-                                </div>
-                                <div class="col-md-6">
                                     <input type="password" class="form-control" placeholder="Password" name="password"
-                                        maxlength="100" required>
+                                        maxlength="100" required value="aiia">
                                         <div class="invalid-feedback">Please enter the password</div>
                                 </div>
 

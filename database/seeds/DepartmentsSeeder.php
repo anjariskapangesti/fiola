@@ -12,28 +12,28 @@ class DepartmentsSeeder extends Seeder
     public function run()
     {
         DB::table('departments')->insert([
-            'code' => 'HRD',
-            'name' => 'Human Resources Development',
+            'code' => 'HRD&GA',
+            'name' => 'Human Resources Development & General Affairs',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'IRLGA',
-            'name' => 'IRL & GA',
+            'code' => 'IRL',
+            'name' => 'Industrial Relation & Legal',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'ENGB',
+            'code' => 'ENB',
             'name' => 'Engineering Body',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'ENGU',
+            'code' => 'ENU',
             'name' => 'Engineering Unit',
             'created_at' => now(),
             'updated_at' => now()
@@ -48,13 +48,13 @@ class DepartmentsSeeder extends Seeder
 
         DB::table('departments')->insert([
             'code' => 'QAB',
-            'name' => 'QA Body',
+            'name' => 'Quality Body',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'MS',
+            'code' => 'MSY',
             'name' => 'Management System',
             'created_at' => now(),
             'updated_at' => now()
@@ -62,34 +62,34 @@ class DepartmentsSeeder extends Seeder
 
         DB::table('departments')->insert([
             'code' => 'QAU',
-            'name' => 'QA Engine Component',
+            'name' => 'Quality Unit',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
             'code' => 'ITD',
-            'name' => 'IT Development',
+            'name' => 'Information Technology Development',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'PRDUDC',
-            'name' => 'Production Engine Component (DC)',
+            'code' => 'PRO UNIT DC',
+            'name' => 'Production Unit DC',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'PRDUMA',
-            'name' => 'Production Engine Component (MA)',
+            'code' => 'PRO UNIT MA',
+            'name' => 'Production Unit (MA)',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'PRDB',
+            'code' => 'PRO BODY',
             'name' => 'Production Body',
             'created_at' => now(),
             'updated_at' => now()
@@ -104,35 +104,35 @@ class DepartmentsSeeder extends Seeder
 
         DB::table('departments')->insert([
             'code' => 'PPIC',
-            'name' => 'PPIC',
+            'name' => 'Production Planning and Inventory Control',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'ENGQAE',
-            'name' => 'ENG & QA Electic',
+            'code' => 'EQEC',
+            'name' => 'ENG & QA Electic Components',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'MTEE',
-            'name' => 'Maintenance Electric',
+            'code' => 'MMA',
+            'name' => 'Machine Maintenance',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'PRDE',
-            'name' => 'Production Electric',
+            'code' => 'PRO EC',
+            'name' => 'Production Electric Components',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         DB::table('departments')->insert([
-            'code' => 'PPICE',
-            'name' => 'PPIC Electric',
+            'code' => 'PPIC EC',
+            'name' => 'Production Planning and Inventory Control Electric Components',
             'created_at' => now(),
             'updated_at' => now()
         ]);
