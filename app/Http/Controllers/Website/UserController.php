@@ -100,14 +100,18 @@ class UserController extends Controller
 
     public function show_data_user_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
         $data = User::orderBy('name', 'ASC');
-                    // ->join('departments', 'users.dept_id', '=', 'department.id')
-                    // ->select('users.*', 'department.name as dept_name');;
-        // return $data;
+                    
         
         return DataTables::eloquent($data)->make(true);
     }
+
+    //  $data = Account::orderBy('id', 'DESC')
+    //                     ->where('created_by', Auth::user()->id)
+    //                     ->join('users', 'form_account.created_by', '=', 'users.id')
+    //                     ->select('form_account.*', 'users.name as user_name');
+
+    //     return DataTables::eloquent($data)->make(true);
 
     public function edit()
     {
@@ -154,15 +158,16 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
+        $user = User::find($id);
         if (Auth::user()->can('can_master')) {
-            // Hapus user
-            $user->where('id', '3')->delete();
+            $user->delete();
             
-            return redirect()->back()->with('success', 'User deleted successfully.');
+            return "User deleted successfully";
         }
 
-        return redirect()->back()->with('error', 'You do not have permission to delete this user.');
+        return "Error";
     }
 }

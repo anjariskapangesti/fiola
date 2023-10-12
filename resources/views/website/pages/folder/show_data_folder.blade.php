@@ -77,18 +77,18 @@
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    "lengthChange": false,
+                    'lengthChange' : true,
                     'processing': true,
-                    'serverSide': true,
+                    'serverSide': false,
+                    'orderable': true,
                     ajax: {
                         url: "{{ route('website.folder.show_data_folder_ajax') }}",
                     },
                     columns: [{
                             data: null,
-                            orderable: false,
+                            orderable: true,
                             searchable: true,
                             render: function(data, type, row, meta) {
-                                // Calculate the row number using the meta object
                                 var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
                                 return rowIndex;
                             },
@@ -146,7 +146,7 @@
                     console.log(id_folder);
                     $.ajax({
                         url: "{{ route('website.folder.destroy') }}",
-                        type: "DELETE",
+                        type: "POST",
                         data: {
                             id: id_folder,
                             '_token': "{{ csrf_token() }}",

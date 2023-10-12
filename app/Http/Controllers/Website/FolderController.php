@@ -52,10 +52,16 @@ class FolderController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        Folder::findOrFail($id)->delete();
+        $id = $request->id;
+        $folder = Folder::find($id);
+        if (Auth::user()->can('can_master')) {
+            $folder->delete();
+            
+            return "Folder deleted successfully";
+        }
 
-        return redirect()->back()->with('error', 'Delete Item');
+        return "Error";
     }
 }

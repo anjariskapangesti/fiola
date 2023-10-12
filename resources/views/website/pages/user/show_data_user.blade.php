@@ -58,41 +58,41 @@
     @push('scripts')
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
         <script>
-            function format(d) {
-                // `d` is the original data object for the row
-                return (
-                    `
-                <table class="table table-sm">
-                    <tr>
-                        <td width="30%">NPK</td>
-                        <td>${d.npk} </td>
-                    </tr>
-                    <tr>
-                        <td width="30%">Name</td>
-                        <td>${d.name} </td>
-                    </tr>
-                    <tr>
-                        <td>Email</td>
-                        <td>${d.email} </td>
-                    </tr>
-                    <tr>
-                        <td>user</td>
-                        <td>${d.dept_id} </td>
-                    </tr>    
-                    <tr>
-                        <td>No. Handphone</td>
-                        <td>${d.nohp} </td>
-                    </tr>               
-                </table>
-                `
-                );
-            }
+            // function format(d) {
+            //     return (
+            //         `
+            //     <table class="table table-sm">
+            //         <tr>
+            //             <td width="30%">NPK</td>
+            //             <td>${d.npk} </td>
+            //         </tr>
+            //         <tr>
+            //             <td width="30%">Name</td>
+            //             <td>${d.name} </td>
+            //         </tr>
+            //         <tr>
+            //             <td>Email</td>
+            //             <td>${d.email} </td>
+            //         </tr>
+            //         <tr>
+            //             <td>user</td>
+            //             <td>${d.dept_id} </td>
+            //         </tr>    
+            //         <tr>
+            //             <td>No. Handphone</td>
+            //             <td>${d.nohp} </td>
+            //         </tr>               
+            //     </table>
+            //     `
+            //     );
+            // }
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    "lengthChange": false,
+                    'lengthChange' : true,
                     'processing': true,
-                    'serverSide': true,
+                    'serverSide': false,
+                    'orderable': true,
                     ajax: {
                         url: "{{ route('website.user.show_data_user_ajax') }}",
                     },
@@ -101,7 +101,6 @@
                             orderable: false,
                             searchable: true,
                             render: function(data, type, row, meta) {
-                                // Calculate the row number using the meta object
                                 var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
                                 return rowIndex;
                             },
@@ -129,7 +128,6 @@
                         },
                     ],
                 });
-
                 // $('#app_table tbody').on('click', 'td.dt-control', function() {
                 //     var tr = $(this).closest('tr');
                 //     var row = table.row(tr);
@@ -159,18 +157,13 @@
                     var name_user = $(this).data('name');
                     $('#id_user').val(id_user)
                     $('#name_user').val(name_user)
-                    // console.log(id_form_account);
                 })
 
                 $('#btn-approve-delete').on('click', function() {
                     let id_user = $('#id_user').val();
-                    // let id_user = $(this).data("id");
-                                
-                    console.log(id_user);
                     $.ajax({
-                        url: "{{ route('website.user.destroy') }}" + "/" + id_user,
-                        // url: "/destroy/" + id_user,
-                        type: "DELETE",
+                        url: "{{ route('website.user.destroy') }}",
+                        type: "POST",
                         data: {
                             id: id_user, 
                             '_token': "{{ csrf_token() }}",
