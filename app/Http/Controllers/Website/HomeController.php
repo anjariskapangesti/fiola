@@ -13,6 +13,7 @@ use App\Models\NewFolder;
 use App\Models\Software;
 use App\Models\Hardware;
 use App\Models\Vpn;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class HomeController extends Controller
@@ -345,4 +346,47 @@ class HomeController extends Controller
                                     
         
     }    
+
+    public function home_ajax()
+    {
+        $formAccountData = DB::table('form_account')
+                            ->select('form_account.no_reg', 'form_account.final_status', 'form_account.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                            ->join('users', 'form_account.created_by', 'users.id')
+                            ->join('departments', 'form_account.created_dept', 'departments.id')
+                            ->get();
+    
+        $formFolderAccessData = DB::table('form_folder_access')
+                                    ->select('form_folder_access.no_reg', 'form_folder_access.final_status', 'form_folder_access.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_folder_access.created_by', 'users.id')
+                                    ->join('departments', 'form_folder_access.created_dept', 'departments.id')
+                                    ->get();
+
+         $formNewFolderData = DB::table('form_new_folder')
+                                    ->select('form_new_folder.no_reg', 'form_new_folder.final_status', 'form_new_folder.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_new_folder.created_by', 'users.id')
+                                    ->join('departments', 'form_new_folder.created_dept', 'departments.id')
+                                    ->get();
+
+        $formSoftwareData = DB::table('form_software')
+                                    ->select('form_software.no_reg', 'form_software.final_status', 'form_software.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_software.created_by', 'users.id')
+                                    ->join('departments', 'form_software.created_dept', 'departments.id')
+                                    ->get();
+
+        $formHardwareData = DB::table('form_hardware')
+                                    ->select('form_hardware.no_reg', 'form_hardware.final_status', 'form_hardware.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_hardware.created_by', 'users.id')
+                                    ->join('departments', 'form_hardware.created_dept', 'departments.id')
+                                    ->get();
+
+        $formVpnData = DB::table('form_vpn')
+                                    ->select('form_vpn.no_reg', 'form_vpn.final_status', 'form_vpn.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_vpn.created_by', 'users.id')
+                                    ->join('departments', 'form_vpn.created_dept', 'departments.id')
+                                    ->get();
+    
+        $mergedData = $formAccountData->concat($formFolderAccessData)->concat($formNewFolderData)->concat($formSoftwareData)->concat($formHardwareData)->concat($formVpnData);
+    
+        return response()->json(['data' => $mergedData]);
+    }
 }

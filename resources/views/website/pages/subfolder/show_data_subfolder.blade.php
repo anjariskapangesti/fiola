@@ -78,9 +78,10 @@
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    "lengthChange": false,
+                    'lengthChange' : true,
                     'processing': true,
-                    'serverSide': true,
+                    'serverSide': false,
+                    'orderable': true,
                     ajax: {
                         url: "{{ route('website.subfolder.show_data_subfolder_ajax') }}",
                     },

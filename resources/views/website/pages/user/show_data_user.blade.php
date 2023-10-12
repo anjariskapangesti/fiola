@@ -22,6 +22,7 @@
                                 <th>NPK</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>No HP</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -98,7 +99,7 @@
                     },
                     columns: [{
                             data: null,
-                            orderable: false,
+                            orderable: true,
                             searchable: true,
                             render: function(data, type, row, meta) {
                                 var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
@@ -116,6 +117,10 @@
                         {
                             data: 'email',
                             name: 'email',
+                        },
+                        {
+                            data: 'nohp',
+                            name: 'nohp',
                         },
                         {
                             orderable: false,

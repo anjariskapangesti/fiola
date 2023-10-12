@@ -46,11 +46,11 @@
                         <label for="ad_name">AD Name</label>
                         <input type="text" class="form-control" id="ad_name">
 
-                        {{-- <label for="email_address">Email</label>
-                        <input type="text" class="form-control" id="email_address"> --}}
+                        <label for="email_address">Email</label>
+                        <input type="text" class="form-control" id="email_address">
 
                         <label for="note">Note :</label>
-                        <textarea class="form-control" id="note">Silahkan login pada Laptop/CPU dengan password : </textarea>
+                        <textarea class="form-control" id="note" rows="20" cols="50"></textarea>
 
                     </div>
                     <div class="modal-footer">
@@ -189,7 +189,7 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Approve</button>
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Approve</button>
                             <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                         }
                     },
@@ -218,8 +218,7 @@
 
             $('#btn-approve').on('click', function() {
                 let id_form_account = $('#id_form_account').val();
-                console.log(id_form_account);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
+
                 $.ajax({
                     url: "{{ route('website.account.approve_execution') }}",
                     type: "POST",
@@ -227,6 +226,7 @@
                         id: id_form_account,
                         type: 'ok',
                         ad_name: $('#ad_name').val(),
+                        email_address: $('#email_address').val(),
                         finish_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
@@ -244,14 +244,13 @@
 
             $('#btn-reject').on('click', function() {
                 let id_form_account_reject = $('#id_form_account_reject').val();
-                console.log(id_form_account_reject);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
+
                 $.ajax({
                     url: "{{ route('website.account.approve_execution') }}",
                     type: "POST",
                     data: {
                         id: id_form_account_reject,
-                        type: 'reject',                        
+                        type: 'reject',
                         finish_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
@@ -267,25 +266,50 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_form_account = $(this).data('id');
                 var fullname_form_account = $(this).data('fullname');
                 var ad_name = $(this).data('ad_name');
+                var npk = $(this).data('npk');
+                // var email_address = $(this).data('email_address');
+                var is_email = $(this).data('is_email');
+                var budget_type = $(this).data('budget_type');
+
+                var digitNpk = npk.match(/\d{4}$/);
+
+                var noteText =
+                    'Form Account telah selesai dibuat Silahkan login windows pada Device dengan memilih Other user, dengan user : \n\nLogin Windows\nUser name : ' +
+                    ad_name + '@aiia.co.id\nPassword : Kiic2023\n\n';
+
+                if (budget_type === 'budget') {
+                    noteText += 'Lisensi Microsoft Office\nUser name : ' + ad_name +
+                    '@Aisinaiia.onmicrosoft.com\nPassword : Kiic2023\n\n';
+                }
+
+                if (is_email === 1) {
+                    noteText += 'Akun Email\nEmail address : ' + digitNpk +
+                        '-aiia@ap01.aisingroup.com\nPassword : P@55w0rd!' + digitNpk + '\n\n';
+                }
+
+                noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
+
+                $('#note').val(noteText);
+
+                if (is_email === 1) {
+                    $('#email_address').val(function(_, currentValue) {
+                        return currentValue + digitNpk + '-aiia@ap01.aisingroup.com';
+                    });
+                }
 
                 $('#id_form_account').val(id_form_account)
                 $('#fullname_form_account').val(fullname_form_account)
                 $('#ad_name').val(ad_name)
-                // console.log(id_form_account);
+                // $('#email_address').val(email_address)
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {
                 var id_form_account_reject = $(this).data('id');
                 $('#id_form_account_reject').val(id_form_account_reject)
-                // console.log(id_form_account_reject);
             })
 
         });

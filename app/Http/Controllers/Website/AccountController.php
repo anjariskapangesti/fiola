@@ -120,6 +120,79 @@ class AccountController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        $account = Account::findOrFail($id);    
+        $departments = Department::orderBy('name')->get();
+    
+        return view('website.pages.account.edit', compact('account', 'departments'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'budget_type' => 'required' ,
+            'form_type' => 'required' ,
+            'npk' => 'required|min:6' ,
+            'fullname' => 'required' ,
+            'department' => 'required' ,
+            'phone' => 'required' ,
+            'purpose' => 'required' ,
+            'ad_name' => 'required' ,
+        ]);
+
+        $form_account = Account::findOrFail($id);        
+
+        if($request->is_email==false){
+            $request->is_email = 0;
+        }else{
+            $request->is_email = 1;
+        }
+
+        if (Auth::user()->can('can_approve_mgr')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_executives')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } else {
+            $finalStatus = 'created';
+            $isManagerApprove = null;
+            $managerApprovalDate = null;
+        }
+
+        try
+        {
+            $form_account->update([
+                'budget_type' => $request->budget_type ,
+                'form_type' => $request->form_type ,
+                'npk' => $request->npk ,
+                'fullname' => $request->fullname ,
+                'department' => $request->department ,
+                'phone' => $request->phone ,
+                'company' => $request->company ,
+                'expired_date' => $request->expired_date ,
+                'purpose' => $request->purpose ,
+                'ad_name' => $request->ad_name ,
+                'is_email' => $request->is_email ,
+                'created_by' => Auth::user()->id,
+                'created_dept' => Auth::user()->departments->pluck('id')->first(),
+                'final_status' => $finalStatus,
+                'is_manager_approve' => $isManagerApprove,
+                'manager_approval_date' => $managerApprovalDate,            
+            ]);
+
+            $depts = Department::all();
+            return redirect()->route('website.account.show_data_form')->with('success', 'Success Edit Form');
+        }
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
     public function show_data_form()
     {
         $depts = Department::all();
@@ -358,7 +431,7 @@ class AccountController extends Controller
             $isi .= "\nName : *" . $account->fullname ."*";
             $isi .= "\nDepartment : " . $account->department;
             $isi .= "\nPhone : " . $account->phone;
-            $isi .= "\nEmail : *" . $request->ad_name ."@aiia.co.id*";
+            $isi .= "\nEmail : " . $request->email_address;
             $isi .= "\nPurpose : " . $account->purpose;
 
             $isi .= "\n\nStatus : Finished";
@@ -388,11 +461,11 @@ class AccountController extends Controller
                 curl_close($curl);
 
             $account->ad_name=$request->ad_name;
-            $account->email_address=$request->ad_name . "@aiia.co.id";
+            $account->email_address=$request->email_address;
             $account->is_finish=1;
             $account->is_confirm=0;
             $account->final_status='Finished';
-            $account->finish_note=$request->finish_note;
+            $account->finish_note='Done';
         }else{
             $account->is_finish=0;
             $account->final_status='Rejected';

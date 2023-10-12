@@ -29,7 +29,7 @@
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
                                 <th>Status</th>
-                                <th>Confirm</th>
+                                <th>Option</th>
                             </tr>
                         </thead>
                     </table>
@@ -194,6 +194,10 @@
                                 `;
                                 } else if (data.is_confirm == '1') {
                                     return `Confirmed`
+                                } else if (data.final_status == 'created') {
+                                    return `<a href="/account/edit/${row.id}" class="btn btn-primary btn-sm">
+                                                Edit
+                                            </a>`;
                                 } else {
                                     return `Not yet`;
                                 }

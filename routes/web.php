@@ -21,6 +21,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
 
     Route::middleware('auth.web')->group(function () {
         Route::get('/', 'HomeController@index')->name('home');
+        Route::get('/home_ajax', 'HomeController@home_ajax')->name('home_ajax');
         Route::get('/home', 'HomeController@index')->name('auth.home');
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
         
@@ -75,6 +76,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['middleware' => ['can:can_create_form']], function () {
             Route::get('/create', 'AccountController@create')->name('account.create');
             Route::post('/store', 'AccountController@store')->name('account.store');
+            Route::get('/edit/{id}', 'AccountController@edit')->name('account.edit');
+            Route::post('/update/{id}', 'AccountController@update')->name('account.update');
             Route::get('/show_data_form', 'AccountController@show_data_form')->name('account.show_data_form');
             Route::get('/show_data_form_ajax', 'AccountController@show_data_form_ajax')->name('account.show_data_form_ajax');
             Route::post('/approve_form', 'AccountController@approve_form')->name('account.approve_form');
