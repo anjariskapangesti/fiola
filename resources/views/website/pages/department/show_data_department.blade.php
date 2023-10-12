@@ -80,7 +80,7 @@
                 var table = $('#app_table').DataTable({
                     "lengthChange": false,
                     'processing': true,
-                    'serverSide': true,
+                    'serverSide': false,
                     ajax: {
                         url: "{{ route('website.department.show_data_department_ajax') }}",
                     },
