@@ -11,10 +11,10 @@
         </nav>
     </div><!-- End Page Title -->
     <div class="row">
-        @if(Session::get('info'))
-        <div class="alert alert-info">
-          {{ Session::get('info') }}
-        </div>
+        @if (Session::get('info'))
+            <div class="alert alert-info">
+                {{ Session::get('info') }}
+            </div>
         @endif
     </div>
     <section class="section">
@@ -47,12 +47,33 @@
                     <div class="modal-body">
                         Are you sure want to confirm this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_hardware">
-                        <input type="hidden" id="id_form_hardware">                       
+                        <input type="hidden" id="id_form_hardware">
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn btn-success" id="btn-approve">Yes, Confirm!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Deletion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to delete this request?
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_delete">
+                        <input type="hidden" id="id_delete">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="btn-delete">Yes, Delete!</button>
                     </div>
                 </div>
             </div>
@@ -66,11 +87,10 @@
     @push('scripts')
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
         <script>
-
             $(document).ready(function() {
-            @if (session()->has('success'))
-                toastr['success']("{{ Session('success') }}")
-            @endif
+                @if (session()->has('success'))
+                    toastr['success']("{{ Session('success') }}")
+                @endif
             })
 
             function format(d) {
@@ -186,8 +206,8 @@
                                     return `<span class="badge bg-danger">${data}</span>`;
                                 }
                             }
-                        },                        
-                        {                        
+                        },
+                        {
                             orderable: false,
                             searchable: false,
                             data: null,
@@ -197,6 +217,11 @@
                                 `;
                                 } else if (data.is_confirm == '1') {
                                     return `Confirmed`
+                                } else if (data.final_status == 'created') {
+                                    return `<a href="/hardware/edit/${row.id}" class="btn btn-primary btn-sm">
+                                                Edit
+                                            </a>
+                                            <button class="btn btn-danger btn-sm btn-table-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-fullname="${data.fullname}">Delete</button>`;
                                 } else {
                                     return `Not yet`;
                                 }
@@ -206,28 +231,48 @@
                 });
 
                 $('#btn-approve').on('click', function() {
-                let id_form_hardware = $('#id_form_hardware').val();
-                console.log(id_form_hardware);
-                // window.location.href = "{{ route('website.hardware.approve_it') }}";
-                $.ajax({
-                    url: "{{ route('website.hardware.approve_form') }}",
-                    type: "POST",
-                    data: {
-                        id: id_form_hardware,
-                        type: 'ok',
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
+                    let id_form_hardware = $('#id_form_hardware').val();
+                    $.ajax({
+                        url: "{{ route('website.hardware.approve_form') }}",
+                        type: "POST",
+                        data: {
+                            id: id_form_hardware,
+                            type: 'ok',
+                            '_token': "{{ csrf_token() }}",
+                        },
+                        success: function(response) {
 
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#confirmModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
+                            toastr['success'](response)
+                            table.ajax.reload();
+                            $('#confirmModal').modal('hide')
+                        },
+                        error: function(xhr, status, error) {
+                            alert(error);
+                        }
+                    });
                 });
-            });
+
+                $('#btn-delete').on('click', function() {
+                    let id_delete = $('#id_delete').val();
+                    $.ajax({
+                        url: "{{ route('website.hardware.delete_form') }}",
+                        type: "POST",
+                        data: {
+                            id: id_delete,
+                            type: 'ok',
+                            '_token': "{{ csrf_token() }}",
+                        },
+                        success: function(response) {
+
+                            toastr['success'](response)
+                            table.ajax.reload();
+                            $('#deleteModal').modal('hide')
+                        },
+                        error: function(xhr, status, error) {
+                            alert(error);
+                        }
+                    });
+                });
 
                 $('#app_table tbody').on('click', 'td.dt-control', function() {
                     var tr = $(this).closest('tr');
@@ -254,14 +299,21 @@
                 });
 
                 $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_hardware = $(this).data('id');
-                var fullname_form_hardware = $(this).data('fullname');
-                var ad_name = $(this).data('ad_name');
+                    var id_form_hardware = $(this).data('id');
+                    var fullname_form_hardware = $(this).data('fullname');
+                    var ad_name = $(this).data('ad_name');
 
-                $('#id_form_hardware').val(id_form_hardware)
-                $('#fullname_form_hardware').val(fullname_form_hardware)
-                $('#ad_name').val(ad_name)
-                // console.log(id_form_hardware);
+                    $('#id_form_hardware').val(id_form_hardware)
+                    $('#fullname_form_hardware').val(fullname_form_hardware)
+                    $('#ad_name').val(ad_name)
+                })
+
+                $('#app_table').on('click', '.btn-table-delete', function() {
+                    var id_delete = $(this).data('id');
+                    var fullname_delete = $(this).data('fullname');
+
+                    $('#id_delete').val(id_delete)
+                    $('#fullname_delete').val(fullname_delete)
                 })
 
             });

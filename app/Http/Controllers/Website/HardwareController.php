@@ -110,6 +110,71 @@ class HardwareController extends Controller
         }
     }
 
+    public function edit($id)
+    {
+        $hardware = Hardware::findOrFail($id);    
+        $departments = Department::orderBy('name')->get();
+    
+        return view('website.pages.hardware.edit', compact('hardware', 'departments'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'category' => 'required' ,
+            'type' => 'required' ,  
+            'npk' => 'required' ,          
+            'fullname' => 'required' ,
+            'department' => 'required' ,
+            'phone' => 'required' ,
+            'due_date' => 'required' ,
+            'purpose' => 'required' ,
+        ]);
+
+        $form_hardware = Hardware::findOrFail($id);
+
+        if (Auth::user()->can('can_approve_mgr')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_executives')) {
+            $finalStatus = 'Manager Approve';
+            $isManagerApprove = 1;
+            $managerApprovalDate = Carbon::now();
+        } else {
+            $finalStatus = 'created';
+            $isManagerApprove = null;
+            $managerApprovalDate = null;
+        }
+
+        try
+        {
+            $form_hardware->update([
+                'category' => $request->category ,
+                'type' => $request->type ,
+                'npk' => $request->npk ,
+                'fullname' => $request->fullname ,
+                'department' => $request->department ,
+                'phone' => $request->phone ,
+                'due_date' => $request->due_date ,
+                'device_before' => $request->device_before ,
+                'purpose' => $request->purpose ,                
+                'created_by' => Auth::user()->id,
+                'created_dept' => Auth::user()->departments->pluck('id')->first(),
+                'final_status' => $finalStatus,
+                'is_manager_approve' => $isManagerApprove,
+                'manager_approval_date' => $managerApprovalDate,              
+            ]);
+
+            $depts = Department::all();
+            return redirect()->route('website.hardware.show_data_form')->with('success', 'Success Edit Form');
+        }
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
     public function show_data_form()
     {
         $depts = Department::all();
@@ -139,6 +204,18 @@ class HardwareController extends Controller
         }
         $hardware->save();
         return "Confirm is Saved!";
+    }
+
+    public function delete_form(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+
+        $hardware = Hardware::findOrFail($id);
+        if($type=='ok'){
+            $hardware->delete();
+        }
+        return "Form deleted!";
     }
 
     // MGR //

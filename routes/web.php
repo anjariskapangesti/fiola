@@ -237,10 +237,13 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::group(['prefix' => 'hardware'], function(){
             Route::get('/create', 'HardwareController@create')->name('hardware.create');
             Route::post('/store', 'HardwareController@store')->name('hardware.store');
+            Route::get('/edit/{id}', 'HardwareController@edit')->name('hardware.edit');
+            Route::post('/update/{id}', 'HardwareController@update')->name('hardware.update');
             Route::get('/subfolder_ajax', 'HardwareController@subfolder_ajax')->name('hardware.subfolder_ajax');
             Route::get('/show_data_form', 'HardwareController@show_data_form')->name('hardware.show_data_form');
             Route::get('/show_data_form_ajax', 'HardwareController@show_data_form_ajax')->name('hardware.show_data_form_ajax'); 
             Route::post('/approve_form', 'HardwareController@approve_form')->name('hardware.approve_form');
+            Route::post('/delete_form', 'HardwareController@delete_form')->name('hardware.delete_form');
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'HardwareController@show_manager_approval')->name('hardware.show_manager_approval');
