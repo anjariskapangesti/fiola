@@ -224,6 +224,18 @@ class AccountController extends Controller
         return "Confirm is Saved!";
     }
 
+    public function delete_form(Request $request)
+    {
+        $id=$request->id;
+        $type=$request->type;
+
+        $account = Account::findOrFail($id);
+        if($type=='ok'){
+            $account->delete();
+        }
+        return "Form deleted!";
+    }
+
     // MGR //
 
     public function show_manager_approval()

@@ -81,6 +81,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/show_data_form', 'AccountController@show_data_form')->name('account.show_data_form');
             Route::get('/show_data_form_ajax', 'AccountController@show_data_form_ajax')->name('account.show_data_form_ajax');
             Route::post('/approve_form', 'AccountController@approve_form')->name('account.approve_form');
+            Route::post('/delete_form', 'AccountController@delete_form')->name('account.delete_form');
             });
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
