@@ -146,7 +146,7 @@ class AppHelper
 
     public static function account_execution_count()
     {
-        return Account::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        return Account::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
     }
 
     /// FORM FOLDER ACCESS ///

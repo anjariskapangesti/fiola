@@ -42,13 +42,13 @@
                     <li>
                         <a href="{{ route('website.software.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.create') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.hardware.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.create') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
                         </a>
                     </li>
                     <li>
@@ -105,7 +105,7 @@
                     <li>
                         <a href="{{ route('website.software.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_data_form') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
                             @if(App\Models\AppHelper::software_confirm_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_confirm_count() }}</span>
                             @endif
@@ -114,7 +114,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_form') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
                             @if(App\Models\AppHelper::hardware_confirm_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_confirm_count() }}</span>
                             @endif
@@ -179,7 +179,7 @@
                     <li>
                         <a href="{{ route('website.software.show_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_manager_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if(App\Models\AppHelper::software_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_mgr_count() }}</span>
                             @endif
@@ -188,7 +188,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_manager_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
                             @if(App\Models\AppHelper::hardware_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_mgr_count() }}</span>
                             @endif
@@ -239,13 +239,13 @@
                     <li>
                         <a href="{{ route('website.software.show_data_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_data_manager_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.hardware.show_data_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_manager_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
                         </a>
                     </li>
                     <li>
@@ -304,7 +304,7 @@
                     <li>
                         <a href="{{ route('website.software.show_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_it_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if(App\Models\AppHelper::software_it_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_it_count() }}</span>
                             @endif
@@ -313,7 +313,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_it_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
                             @if(App\Models\AppHelper::hardware_it_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_it_count() }}</span>
                             @endif
@@ -363,13 +363,13 @@
                     <li>
                         <a href="{{ route('website.software.show_data_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_data_it_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.hardware.show_data_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_it_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
                         </a>
                     </li>
                     <li>
@@ -429,7 +429,7 @@
                     <li>
                         <a href="{{ route('website.software.show_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_it_mgr_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if(App\Models\AppHelper::software_it_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_it_mgr_count() }}</span>
                             @endif
@@ -438,7 +438,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_it_mgr_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
                             @if(App\Models\AppHelper::hardware_it_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_it_mgr_count() }}</span>
                             @endif
@@ -490,13 +490,13 @@
                     <li>
                         <a href="{{ route('website.software.show_data_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_data_it_mgr_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.hardware.show_data_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_it_mgr_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
                         </a>
                     </li>
                     <li>
@@ -555,7 +555,7 @@
                     <li>
                         <a href="{{ route('website.software.show_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_execution') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if(App\Models\AppHelper::software_execution_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_execution_count() }}</span>
                             @endif
@@ -564,7 +564,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_execution') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
                             @if(App\Models\AppHelper::hardware_execution_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_execution_count() }}</span>
                             @endif
@@ -614,13 +614,13 @@
                     <li>
                         <a href="{{ route('website.software.show_data_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.software.show_data_execution') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form S/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.hardware.show_data_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_execution') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form H/W Installation</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
                         </a>
                     </li>
                     <li>

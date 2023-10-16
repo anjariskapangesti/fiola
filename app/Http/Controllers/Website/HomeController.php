@@ -185,27 +185,27 @@ class HomeController extends Controller
         $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr + $vpn_create_it_mgr;
         /// EXECUTION ///
         $account_create_execution = Account::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT MGR Approve')
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                         ->count();
 
         $folderaccess_create_execution = FolderAccess::where('created_by', Auth::user()->id)
-                                                ->where('final_status', 'IT MGR Approve')
+                                                ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                                 ->count();
 
         $newfolder_create_execution = NewFolder::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT MGR Approve')
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                         ->count();
 
         $software_create_execution = Software::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT MGR Approve')
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                         ->count();
 
         $hardware_create_execution = Hardware::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT MGR Approve')
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                         ->count();
 
         $vpn_create_execution = Vpn::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT MGR Approve')
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                         ->count();
 
         $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution + $vpn_create_execution;

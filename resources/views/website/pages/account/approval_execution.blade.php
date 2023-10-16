@@ -22,6 +22,7 @@
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
+                                <th>Status</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -61,6 +62,26 @@
             </div>
         </div>
         <!-- End Confirmation Modal -->
+        <div class="modal fade" id="delayModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delay Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Please share the reason why delay?<br /><br />
+                        <textarea class="form-control" id="delay_reason"></textarea>
+                        <input type="hidden" id="id_form_account_delay">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="btn-delay" class="btn btn-warning" disabled
+                            id="btn-delay">Delay!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Confirmation Modal -->
         <div class="modal fade" id="rejectModal" tabindex="-1">
             <div class="modal-dialog">
@@ -78,6 +99,25 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" id="btn-reject" class="btn btn-danger" disabled
                             id="btn-reject">Reject!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Delay Information<br /><br />
+                        <textarea class="form-control-plaintext" id="delay_note" readonly></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        
                     </div>
                 </div>
             </div>
@@ -126,7 +166,7 @@
                     </tr>
                     <tr>
                         <td>Email Address</td>
-                        <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
+                        <td>${ d.is_email == 1 ? '<i>Need Email for Outlook</i>' : 'User did not Request'}</td>
                     </tr>
                     <tr>
                         <td>Manager Note</td>
@@ -188,9 +228,34 @@
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+
+                            if (data.final_status == 'Delay') {
+                                return `
+                                <button class="btn btn-primary btn-sm btn-table-info" data-bs-toggle="modal" data-bs-target="#infoModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-delay_note="${data.delay_note}">Delay</button>                                    
+                                `;
+                            } else {
+                                return `
+                                    Wait
+                                `;
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+
+                            if (data.final_status == 'Delay') {
+                                return `
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Approve</button>
+                                <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            } else {
+                                return `
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Approve</button>
+                                <button class="btn btn-warning btn-sm btn-table-delay" data-bs-toggle="modal" data-bs-target="#delayModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Delay</button>
+                                <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            }
                         }
                     },
                 ],
@@ -216,6 +281,13 @@
                     $('#btn-reject').attr('disabled', 'disabled');
             });
 
+            $('#delay_reason').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-delay').removeAttr('disabled');
+                else
+                    $('#btn-delay').attr('disabled', 'disabled');
+            });
+
             $('#btn-approve').on('click', function() {
                 let id_form_account = $('#id_form_account').val();
 
@@ -235,6 +307,30 @@
                         toastr['success'](response)
                         table.ajax.reload();
                         $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            $('#btn-delay').on('click', function() {
+                let id_form_account_delay = $('#id_form_account_delay').val();
+
+                $.ajax({
+                    url: "{{ route('website.account.approve_execution') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account_delay,
+                        type: 'delay',
+                        delay_note: $('#delay_reason').val(),
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#delayModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
                         alert(error);
@@ -283,7 +379,7 @@
 
                 if (budget_type === 'budget') {
                     noteText += 'Lisensi Microsoft Office\nUser name : ' + ad_name +
-                    '@Aisinaiia.onmicrosoft.com\nPassword : Kiic2023\n\n';
+                        '@Aisinaiia.onmicrosoft.com\nPassword : Kiic2023\n\n';
                 }
 
                 if (is_email === 1) {
@@ -310,6 +406,18 @@
             $('#app_table').on('click', '.btn-table-reject', function() {
                 var id_form_account_reject = $(this).data('id');
                 $('#id_form_account_reject').val(id_form_account_reject)
+            })
+
+            $('#app_table').on('click', '.btn-table-delay', function() {
+                var id_form_account_delay = $(this).data('id');
+                $('#id_form_account_delay').val(id_form_account_delay)
+            })
+
+            $('#app_table').on('click', '.btn-table-info', function() {
+                var id_form_account_info = $(this).data('id');
+                var delay_note = $(this).data('delay_note');
+                $('#id_form_account_info').val(id_form_account_info)
+                $('#delay_note').val(delay_note)
             })
 
         });

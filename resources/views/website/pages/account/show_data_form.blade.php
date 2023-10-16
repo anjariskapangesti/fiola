@@ -197,6 +197,8 @@
                                     return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
                                 } else if (data == 'IT MGR Approve') {
                                     return `<span class="badge bg-warning">Waiting Execution</span>`;
+                                } else if (data == 'Delay') {
+                                    return `<span class="badge bg-warning">Delay</span>`;                                    
                                 } else if (data == 'Finished') {
                                     return `<span class="badge bg-success">Finished</span>`;
                                 } else {

@@ -349,6 +349,7 @@ class AccountController extends Controller
             $account->is_it_approve=1;
             $account->final_status='IT Approve';
             $account->it_note=$request->it_note;
+            $account->it_approve_by=Auth::user()->id;
         }else{
             $account->is_it_approve=0;
             $account->final_status='IT Reject';
@@ -418,10 +419,10 @@ class AccountController extends Controller
 
     public function show_execution_ajax(Request $request)
     {
-        $data = Account::where('final_status','IT MGR Approve')
+        $data = Account::whereIn('final_status', ['IT MGR Approve', 'Delay'])
                         ->join('users', 'form_account.created_by', '=', 'users.id')
                         ->select('form_account.*', 'users.name as user_name');
-                        
+    
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -453,6 +454,8 @@ class AccountController extends Controller
             $isi .= "\nITD Manager Note : " . $account->it_mgr_note;
             $isi .= "\n\nNote : " . $request->finish_note;
 
+            $isi .= "\n\nExecution by : " . Auth::user()->name;
+            
             $nomor = $user->nohp;;
 
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
@@ -476,9 +479,14 @@ class AccountController extends Controller
             $account->email_address=$request->email_address;
             $account->is_finish=1;
             $account->is_confirm=0;
+            $account->finish_by=Auth::user()->id;
             $account->final_status='Finished';
             $account->finish_note='Done';
-        }else{
+        } else if($type=='delay'){
+            $account->is_delay=1;
+            $account->final_status='Delay';
+            $account->delay_note=$request->delay_note;            
+        } else {
             $account->is_finish=0;
             $account->final_status='Rejected';
             $account->finish_note=$request->finish_note;

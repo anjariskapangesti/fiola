@@ -49,20 +49,20 @@
                                     <br>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="type"
-                                            id="inlineRadioType1" value="cpu" required>
-                                        <label class="form-check-label" for="inlineRadioType1">CPU</label>
+                                            id="radio01" value="cpu" required>
+                                        <label class="form-check-label" for="radio01">CPU</label>
                                         <div class="invalid-feedback">Please select type</div>
                                     </div>
-                                    {{-- <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="inlineRadioType2" value="change">
-                                        <label class="form-check-label" for="inlineRadioType2">Change</label>
-                                        <div class="invalid-feedback">-</div>
-                                    </div> --}}
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="type"
-                                            id="inlineRadioType3" value="laptop">
-                                        <label class="form-check-label" for="inlineRadioType3">Laptop</label>
+                                            id="radio02" value="laptop">
+                                        <label class="form-check-label" for="radio02">Laptop</label>
+                                        <div class="invalid-feedback">-</div>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="type"
+                                            id="radio03" value="laptop">
+                                        <label class="form-check-label" for="radio03">Flashdisk</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
