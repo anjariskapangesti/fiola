@@ -97,70 +97,74 @@
                 // `d` is the original data object for the row
                 return (
                     `
-                <table class="table table-sm">
+        <table class="table table-sm">
 
-                    <tr>
-                        <td width="30%">NPK / Full Name</td>
-                        <td>${d.npk} / ${d.fullname} </td>
-                    </tr>
-                    <tr>
-                        <td>Dept.</td>
-                        <td>${d.department} </td>
-                    </tr>
-                    <tr>
-                        <td>Company</td>
-                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
-                    </tr>
-                    <tr>
-                        <td>Phone</td>
-                        <td>${d.phone} </td>
-                    </tr>
-                    <tr>
-                        <td>Expired Date</td>
-                        <td>${d.expired_date ?? '-'} </td>
-                    </tr>
-                    <tr>
-                        <td>Login Username</td>
-                        <td>aiia\\${d.ad_name}</td>
-                    </tr>
-                    <tr>
-                        <td>Email Address</td>
-                        <td>${d.email_address == null ? '<i>Will be Informed Later after approved</i>' : d.email_address}</td>
-                    </tr>
-                    <tr>
-                        <td>Manager Note</td>
-                        <td>${d.manager_note ?? '-'}</td>
-                    </tr>
-                    <tr>
-                        <td>ITD Note</td>
-                        <td>${d.it_note ?? '-'}</td>
-                    </tr>  
-                    <tr>
-                        <td>ITD Manager Note</td>
-                        <td>${d.it_mgr_note ?? '-'}</td>
-                    </tr>
-                    <tr>
-                        <td>Note</td>
-                        <td>${d.finish_note ?? '-'}</td>
-                    </tr>
-                    <tfoot>
-                    <tr>
-                        <th>Created by</th>
-                        <th>${d.user_name}</th>
-                    </tr>
-                    <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
-                    </tr>
-                </tfoot>
-                </table>
-                `
+            <tr>
+                <td width="30%">NPK / Full Name</td>
+                <td>${d.npk} / ${d.fullname} </td>
+            </tr>
+            <tr>
+                <td>Department</td>
+                <td>${d.department} </td>
+            </tr>
+            <tr>
+                <td>Company</td>
+                <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
+            </tr>
+            <tr>
+                <td>Phone Number</td>
+                <td>${d.phone} </td>
+            </tr>
+            <tr>
+                <td>Login Username</td>
+                <td>${d.ad_name}@aiia.co.id</td>
+            </tr>
+            <tr>
+                <td>User Lisensi Microsoft Office</td>
+                <td>
+                    ${d.is_email === 0 ? 'Tidak butuh lisensi' : (d.is_email === 1 ? (d.email_address == null ? 'Akan diinformasikan nanti setelah disetujui' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
+                </td>
+            </tr>
+            <tr>
+                <td>Email Address</td>
+                <td>
+                    ${d.is_email === 0 ? 'Tidak butuh email' : (d.is_email === 1 ? (d.email_address == null ? 'Akan diinformasikan nanti setelah disetujui' : d.email_address) : '')}
+                </td>
+            </tr>
+            <tr>
+                <td>Manager Note</td>
+                <td>${d.manager_note ?? '-'}</td>
+            </tr>
+            <tr>
+                <td>ITD Note</td>
+                <td>${d.it_note ?? '-'}</td>
+            </tr>  
+            <tr>
+                <td>ITD Manager Note</td>
+                <td>${d.it_mgr_note ?? '-'}</td>
+            </tr>
+            <tr>
+                <td>Note</td>
+                <td>${d.finish_note ?? '-'}</td>
+            </tr>
+            <tfoot>
+                <tr>
+                    <th>Created by</th>
+                    <th>${d.user_name}</th>
+                </tr>
+                <tr>
+                    <th>Purpose</th>
+                    <th>${d.purpose}</th>
+                </tr>
+            </tfoot>
+        </table>
+        `
                 );
             }
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    "lengthChange": true,
+                    'lengthChange': true,
                     'processing': true,
                     'serverSide': true,
                     ajax: {
@@ -198,7 +202,7 @@
                                 } else if (data == 'IT MGR Approve') {
                                     return `<span class="badge bg-warning">Waiting Execution</span>`;
                                 } else if (data == 'Delay') {
-                                    return `<span class="badge bg-warning">Delay</span>`;                                    
+                                    return `<span class="badge bg-primary">Progress Create by ITD</span>`;
                                 } else if (data == 'Finished') {
                                     return `<span class="badge bg-success">Finished</span>`;
                                 } else {

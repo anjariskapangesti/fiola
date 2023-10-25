@@ -100,7 +100,7 @@
                         <td>${d.npk} / ${d.fullname} </td>
                     </tr>
                     <tr>
-                        <td>Dept.</td>
+                        <td>Department</td>
                         <td>${d.department} </td>
                     </tr>
                     <tr>
@@ -108,16 +108,12 @@
                         <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
                     </tr>
                     <tr>
-                        <td>Phone</td>
+                        <td>Phone Number</td>
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Expired Date</td>
-                        <td>${d.expired_date ?? '-'} </td>
-                    </tr>
-                    <tr>
                         <td>Login Username</td>
-                        <td>aiia\\${d.ad_name}</td>
+                        <td>${d.ad_name}@aiia.co.id</td>
                     </tr>
                     <tr>
                         <td>Email Address</td>

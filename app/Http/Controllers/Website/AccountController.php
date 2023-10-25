@@ -14,6 +14,9 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TaskReminder;
+
 class AccountController extends Controller
 {
     public function create()

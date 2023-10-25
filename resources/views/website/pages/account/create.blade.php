@@ -33,12 +33,12 @@
                                 <div class="col-md-6">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="budget_type" id="budgetType1" value="budget" required>
-                                        <label class="form-check-label" for="budgetType1" data-toggle="tooltip" data-placement="top" title="Dengan Lisensi Office365">Budget</label>
+                                        <label class="form-check-label" for="budgetType1" data-toggle="tooltip" data-placement="top" >Budget</label>
                                         <div class="invalid-feedback">Please select budget type</div>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="budget_type" id="budgetType2" value="unbudget">
-                                        <label class="form-check-label" for="budgetType2" data-toggle="tooltip" data-placement="top" title="Tanpa Lisensi Office365">Un Budget</label>
+                                        <label class="form-check-label" for="budgetType2" data-toggle="tooltip" data-placement="top" >Un Budget</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
@@ -46,7 +46,7 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType1" value="registration" required>
-                                        <label class="form-check-label" for="inlineRadioType1">Registration</label>
+                                        <label class="form-check-label" for="inlineRadioType1" data-toggle="tooltip" data-placement="top" title="Baru">Registration</label>
                                         <div class="invalid-feedback">Please select request type</div>
                                     </div>
                                     {{-- <div class="form-check form-check-inline">
@@ -58,7 +58,7 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type"
                                             id="inlineRadioType3" value="deletion">
-                                        <label class="form-check-label" for="inlineRadioType3">Deletion</label>
+                                        <label class="form-check-label" for="inlineRadioType3" data-toggle="tooltip" data-placement="top" title="Hapus">Deletion</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
@@ -76,34 +76,36 @@
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        maxlength="60" required onkeyup="formatFullName(this)">
+                                        maxlength="60" required onkeyup="formatFullName(this)" data-toggle="tooltip" data-placement="top" title="Nama Lengkap">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <select name="department" class="form-control" required>
-                                        <option selected disabled value="">-- Choose Department --</option>
+                                    <select name="department" class="form-control" required data-toggle="tooltip" data-placement="top" title="Pilih department">
+                                        <option selected disabled value="" >-- Choose Department --</option>
                                         @foreach ($departments as $department)
-                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
+                                            @if ($department->id < 19 || $department->id > 27)
+                                                <option value="{{ $department->name }}">{{ $department->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">Please choose your department</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Phone Number" name="phone"
-                                        maxlength="14" required data-toggle="tooltip" data-placement="top" title="088888888888">
+                                    <input type="text" class="form-control" placeholder="Phone Number (0812345678910)" name="phone"
+                                        maxlength="14" required data-toggle="tooltip" data-placement="top" title="No. HP">
                                     <div class="invalid-feedback">Please enter your phone number</div>
                                 </div>
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Company Name (If External/Non AIIA)"
                                         name="company" maxlength="100" data-toggle="tooltip" data-placement="top" title="Jika anda AIIA kosongkan saja">
-                                </div>
-                                <div class="col-md-6">
+                                </div> --}}
+                                {{-- <div class="col-md-6">
                                     <div class="input-group has-validation">
                                         <span class="input-group-text" id="inputGroupPrepend">Expired Date</span>
                                         <input type="date" name="expired_date" class="form-control" data-toggle="tooltip" data-placement="top" title="Tanggal expired untuk akunnya">
                                         <div class="invalid-feedback">Please enter your expired date</div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"

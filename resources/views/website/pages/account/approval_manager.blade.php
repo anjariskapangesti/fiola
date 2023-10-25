@@ -42,7 +42,7 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_account">
                         <input type="hidden" id="id_form_account">
-                        
+
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
 
                     </div>
@@ -68,7 +68,7 @@
                         <input type="hidden" id="id_form_account_reject">
 
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -101,7 +101,7 @@
                         <td>${d.npk} / ${d.fullname} </td>
                     </tr>
                     <tr>
-                        <td>Dept.</td>
+                        <td>Department</td>
                         <td>${d.department} </td>
                     </tr>
                     <tr>
@@ -109,16 +109,12 @@
                         <td>${d.company?? 'PT. Aisin Indonesia Automotive'} </td>
                     </tr>
                     <tr>
-                        <td>Phone</td>
+                        <td>Phone Number</td>
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Expired Date</td>
-                        <td>${d.expired_date ?? '-'} </td>
-                    </tr>
-                    <tr>
                         <td>Login Username</td>
-                        <td>aiia\\${d.ad_name}</td>
+                        <td>${d.ad_name}@aiia.co.id</td>
                     </tr>
                     <tr>
                         <td>Email Address</td>
@@ -204,8 +200,6 @@
 
             $('#btn-approve').on('click', function() {
                 let id_form_account = $('#id_form_account').val();
-                console.log(id_form_account);
-                // window.location.href = "{{ route('website.account.approve_manager') }}";
                 $.ajax({
                     url: "{{ route('website.account.approve_manager') }}",
                     type: "POST",
@@ -219,6 +213,21 @@
 
                         toastr['success'](response)
                         table.ajax.reload();
+
+                        $.ajax({
+                            url: "{{ route('website.get-account-mgr-count') }}", // Menggunakan route baru
+                            type: "GET",
+                            success: function(data) {
+                                $('#manager-approvals-badge').text(data
+                                    .manager_approvals_count);
+                                $('#account-mgr-badge').text(data
+                                    .account_mgr_count);
+
+                            },
+                            error: function(xhr, status, error) {
+                                alert(error);
+                            }
+                        });
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

@@ -24,7 +24,12 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/home_ajax', 'HomeController@home_ajax')->name('home_ajax');
         Route::get('/home', 'HomeController@index')->name('auth.home');
         Route::get('logout', 'AuthController@logout')->name('auth.logout');
-        
+        Route::get('/mail', function () {
+            \Illuminate\Support\Facades\Mail::send(new \App\Mail\TaskReminder());
+
+            return view ('website.pages.home');
+        });
+        Route::get('/get-account-mgr-count', 'AppHelperController@getAccountManagerCount')->name('get-account-mgr-count');
         
         // MASTER //
         Route::group(['prefix' => 'department'], function(){

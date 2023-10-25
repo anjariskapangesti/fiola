@@ -138,7 +138,7 @@
                 <a class="nav-link collapsed" data-bs-target="#approval_mgr" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-hourglass"></i><span>Manager Approvals</span>
                         @if(App\Models\AppHelper::manager_approvals_count() > 0)
-                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill" id="manager-approvals-badge">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
                         @endif
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
@@ -154,7 +154,7 @@
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_manager_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
                             @if(App\Models\AppHelper::account_mgr_count() > 0)
-                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::account_mgr_count() }}</span>
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill" id="account-mgr-badge">{{ App\Models\AppHelper::account_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>

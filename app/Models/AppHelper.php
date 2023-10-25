@@ -51,6 +51,8 @@ class AppHelper
                                         ->orWhere('created_dept', $lastDepartmentId);
                                 })
                                         ->where('final_status', 'LIKE', '%created%')->count();
+
+        $account_count = $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count;
         
         return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count;
     }
@@ -104,7 +106,10 @@ class AppHelper
 
     public static function execution_count()
     {
-        $account_execution_count = Account::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $account_execution_count = Account::where(function($query) {
+            $query->where('final_status', 'LIKE', '%IT MGR Approve%')
+                  ->orWhere('final_status', 'LIKE', '%Delay%');
+        })->count();
         $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
