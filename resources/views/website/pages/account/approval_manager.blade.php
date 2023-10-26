@@ -215,19 +215,26 @@
                         table.ajax.reload();
 
                         $.ajax({
-                            url: "{{ route('website.get-account-mgr-count') }}", // Menggunakan route baru
+                            url: "{{ route('website.get_approval_count') }}",
                             type: "GET",
                             success: function(data) {
-                                $('#manager-approvals-badge').text(data
-                                    .manager_approvals_count);
-                                $('#account-mgr-badge').text(data
-                                    .account_mgr_count);
+                                $('#manager_approvals_count').text(data.manager_approvals_count);
+                                $('#confirms_count').text(data.confirms_count);
+                                $('#it_approvals_count').text(data.it_approvals_count);
+                                $('#it_mgr_approvals_count').text(data.it_mgr_approvals_count);
+                                $('#execution_count').text(data.execution_count);
 
+                                $('#account_mgr_count').text(data.account_mgr_count);
+                                $('#account_confirm_count').text(data.account_confirm_count);
+                                $('#account_it_count').text(data.account_it_count);
+                                $('#account_it_mgr_count').text(data.account_it_mgr_count);
+                                $('#account_execution_count').text(data.account_execution_count);
                             },
                             error: function(xhr, status, error) {
                                 alert(error);
                             }
                         });
+
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

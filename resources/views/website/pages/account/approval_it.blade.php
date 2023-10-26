@@ -203,8 +203,6 @@
 
             $('#btn-approve').on('click', function() {
                 let id_form_account = $('#id_form_account').val();
-                console.log(id_form_account);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.account.approve_it') }}",
                     type: "POST",
@@ -218,6 +216,19 @@
 
                         toastr['success'](response)
                         table.ajax.reload();
+                        
+                        $.ajax({
+                            url: "{{ route('website.get_approval_count') }}",
+                            type: "GET",
+                            success: function(data) {
+                                $('#account_it_count').text(data.account_it_count);
+                                $('#it_approvals_count').text(data.it_approvals_count);
+                            },
+                            error: function(xhr, status, error) {
+                                alert(error);
+                            }
+                        });
+
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

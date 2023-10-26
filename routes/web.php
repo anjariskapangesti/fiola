@@ -29,7 +29,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
 
             return view ('website.pages.home');
         });
-        Route::get('/get-account-mgr-count', 'AppHelperController@getAccountManagerCount')->name('get-account-mgr-count');
+        Route::get('/get_approval_count', 'AppHelperController@getApprovalCount')->name('get_approval_count');
         
         // MASTER //
         Route::group(['prefix' => 'department'], function(){

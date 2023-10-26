@@ -9,11 +9,20 @@ use App\Models\AppHelper;
 
 class AppHelperController extends Controller
 {
-    public function getAccountManagerCount()
+    public function getApprovalCount()
     {
-        $accountMgrCount = AppHelper::account_mgr_count();
-        // $accountCount = AppHelper::account_it_count();
-        // dd($accountCount);
-        return response()->json(['account_mgr_count' => $accountMgrCount]);
+        $account_mgr_count = AppHelper::account_mgr_count();
+        $account_it_count = AppHelper::account_it_count();
+
+        $manager_approvals_count = AppHelper::manager_approvals_count();
+        $it_approvals_count = AppHelper::it_approvals_count();
+        
+
+        return response()->json([
+        'account_mgr_count' => $account_mgr_count,
+        'account_it_count' => $account_it_count,
+        'manager_approvals_count' => $manager_approvals_count,
+        'it_approvals_count' => $it_approvals_count,
+    ]);
     }
 }
