@@ -19,6 +19,9 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
     Route::get('register', 'RegisterController@showRegisterForm')->name('auth.register');
     Route::post('register', 'RegisterController@register')->name('auth.create');
 
+    Route::get('alert', 'AlertController@alert')->name('alert');
+    Route::get('alert_view', 'AlertController@alert_view')->name('alert_view');
+
     Route::middleware('auth.web')->group(function () {
         Route::get('/', 'HomeController@index')->name('home');
         Route::get('/home_ajax', 'HomeController@home_ajax')->name('home_ajax');
@@ -317,6 +320,84 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::post('/approve_execution', 'VpnController@approve_execution')->name('vpn.approve_execution');
                 Route::get('/show_data_execution', 'VpnController@show_data_execution')->name('vpn.show_data_execution');
                 Route::get('/show_data_execution_ajax', 'VpnController@show_data_execution_ajax')->name('vpn.show_data_execution_ajax');
+            });
+        });
+        // FORM NETWORK //
+        Route::group(['prefix' => 'network'], function(){
+            Route::get('/create', 'NetworkController@create')->name('network.create');
+            Route::post('/store', 'NetworkController@store')->name('network.store');
+            Route::get('/subfolder_ajax', 'NetworkController@subfolder_ajax')->name('network.subfolder_ajax');
+            Route::get('/show_data_form', 'NetworkController@show_data_form')->name('network.show_data_form');
+            Route::get('/show_data_form_ajax', 'NetworkController@show_data_form_ajax')->name('network.show_data_form_ajax');   
+            Route::post('/approve_form', 'NetworkController@approve_form')->name('network.approve_form');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'NetworkController@show_manager_approval')->name('network.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'NetworkController@show_manager_approval_ajax')->name('network.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'NetworkController@approve_manager')->name('network.approve_manager');
+                Route::get('/show_data_manager_approval', 'NetworkController@show_data_manager_approval')->name('network.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'NetworkController@show_data_manager_approval_ajax')->name('network.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'NetworkController@show_it_approval')->name('network.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'NetworkController@show_it_approval_ajax')->name('network.show_it_approval_ajax');
+                Route::post('/approve_it', 'NetworkController@approve_it')->name('network.approve_it');
+                Route::get('/show_data_it_approval', 'NetworkController@show_data_it_approval')->name('network.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'NetworkController@show_data_it_approval_ajax')->name('network.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'NetworkController@show_it_mgr_approval')->name('network.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'NetworkController@show_it_mgr_approval_ajax')->name('network.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'NetworkController@approve_it_mgr')->name('network.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'NetworkController@show_data_it_mgr_approval')->name('network.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'NetworkController@show_data_it_mgr_approval_ajax')->name('network.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'NetworkController@show_execution')->name('network.show_execution');
+                Route::get('/show_execution_ajax', 'NetworkController@show_execution_ajax')->name('network.show_execution_ajax');
+                Route::post('/approve_execution', 'NetworkController@approve_execution')->name('network.approve_execution');
+                Route::get('/show_data_execution', 'NetworkController@show_data_execution')->name('network.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'NetworkController@show_data_execution_ajax')->name('network.show_data_execution_ajax');
+            });
+        });
+        // FORM FITUR //
+        Route::group(['prefix' => 'fitur'], function(){
+            Route::get('/create', 'FiturController@create')->name('fitur.create');
+            Route::post('/store', 'FiturController@store')->name('fitur.store');
+            Route::get('/subfolder_ajax', 'FiturController@subfolder_ajax')->name('fitur.subfolder_ajax');
+            Route::get('/show_data_form', 'FiturController@show_data_form')->name('fitur.show_data_form');
+            Route::get('/show_data_form_ajax', 'FiturController@show_data_form_ajax')->name('fitur.show_data_form_ajax');   
+            Route::post('/approve_form', 'FiturController@approve_form')->name('fitur.approve_form');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'FiturController@show_manager_approval')->name('fitur.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'FiturController@show_manager_approval_ajax')->name('fitur.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'FiturController@approve_manager')->name('fitur.approve_manager');
+                Route::get('/show_data_manager_approval', 'FiturController@show_data_manager_approval')->name('fitur.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'FiturController@show_data_manager_approval_ajax')->name('fitur.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'FiturController@show_it_approval')->name('fitur.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'FiturController@show_it_approval_ajax')->name('fitur.show_it_approval_ajax');
+                Route::post('/approve_it', 'FiturController@approve_it')->name('fitur.approve_it');
+                Route::get('/show_data_it_approval', 'FiturController@show_data_it_approval')->name('fitur.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'FiturController@show_data_it_approval_ajax')->name('fitur.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'FiturController@show_it_mgr_approval')->name('fitur.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'FiturController@show_it_mgr_approval_ajax')->name('fitur.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'FiturController@approve_it_mgr')->name('fitur.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'FiturController@show_data_it_mgr_approval')->name('fitur.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'FiturController@show_data_it_mgr_approval_ajax')->name('fitur.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'FiturController@show_execution')->name('fitur.show_execution');
+                Route::get('/show_execution_ajax', 'FiturController@show_execution_ajax')->name('fitur.show_execution_ajax');
+                Route::post('/approve_execution', 'FiturController@approve_execution')->name('fitur.approve_execution');
+                Route::get('/show_data_execution', 'FiturController@show_data_execution')->name('fitur.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'FiturController@show_data_execution_ajax')->name('fitur.show_data_execution_ajax');
             });
         });
     });

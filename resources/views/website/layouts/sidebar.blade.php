@@ -57,6 +57,20 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
+                    @can('can_approve_it')
+                    <li>
+                        <a href="{{ route('website.network.create') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.network.create') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Network Change</span>
+                        </a>
+                    </li>
+                    @endcan
+                    <li>
+                        <a href="{{ route('website.fitur.create') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.create') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                        </a>
+                    </li>
                 </ul>
             </li><!-- End Forms Nav -->
 

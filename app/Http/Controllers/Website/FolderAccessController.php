@@ -286,7 +286,7 @@ class FolderAccessController extends Controller
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
             
-            $nomors = ['082260050066'];
+            $nomors = ['082125008160'];
 
             foreach ($nomors as $nomor) {
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
