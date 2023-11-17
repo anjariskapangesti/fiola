@@ -20,7 +20,9 @@
                     Route::is('website.new-folder.create') || 
                     Route::is('website.software.create') || 
                     Route::is('website.hardware.create') || 
-                    Route::is('website.vpn.create') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.create') || 
+                    Route::is('website.fitur.create') || 
+                    Route::is('website.relayout.create') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.create') ? 'active' : '') }}">
@@ -69,6 +71,12 @@
                         <a href="{{ route('website.fitur.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.create') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.relayout.create') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.relayout.create') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Relayout</span>
                         </a>
                     </li>
                 </ul>

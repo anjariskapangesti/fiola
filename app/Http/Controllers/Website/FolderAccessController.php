@@ -11,6 +11,7 @@ use App\Models\Department;
 use App\Models\Folder;
 use App\Models\SubFolder;
 use App\Models\User;
+use App\Models\Alert;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -270,9 +271,10 @@ class FolderAccessController extends Controller
         $type=$request->type;
         $folderaccess = FolderAccess::findOrFail($id);
         $folderaccesspaths = FolderAccessPath::where('folder_access_id', $id)->get();
+
         if($type=='ok'){
             $isi = "FORM FOLDER ACCESS\n";
-            $isi .= "*TUNGGU APPROVE*";
+            $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nREQUESTOR";
             $isi .= "\nEmail : *" . $folderaccess->username ."*";        
     
@@ -286,9 +288,9 @@ class FolderAccessController extends Controller
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
             
-            $nomors = ['082125008160'];
+            $nomorhpModel = new Alert();
+            $nomorhp = $nomorhpModel->getNoHpItMgr();
 
-            foreach ($nomors as $nomor) {
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
@@ -301,11 +303,11 @@ class FolderAccessController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
                 ));
                 $response = curl_exec($curl);
                 curl_close($curl);
-            }  
+
             $folderaccess->is_it_approve=1;
             $folderaccess->final_status='IT Approve';
             $folderaccess->it_note=$request->it_note;

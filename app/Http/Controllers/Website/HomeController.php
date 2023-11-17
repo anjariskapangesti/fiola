@@ -13,13 +13,14 @@ use App\Models\NewFolder;
 use App\Models\Software;
 use App\Models\Hardware;
 use App\Models\Vpn;
+use App\Models\Alert;
 use Illuminate\Support\Facades\DB;
 use Auth;
 
 class HomeController extends Controller
 {
     public function index()
-    {       
+    {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();

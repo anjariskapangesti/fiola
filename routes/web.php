@@ -400,6 +400,45 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/show_data_execution_ajax', 'FiturController@show_data_execution_ajax')->name('fitur.show_data_execution_ajax');
             });
         });
+        // FORM RELAYOUT //
+        Route::group(['prefix' => 'relayout'], function(){
+            Route::get('/create', 'RelayoutController@create')->name('relayout.create');
+            Route::post('/store', 'RelayoutController@store')->name('relayout.store');
+            Route::get('/subfolder_ajax', 'RelayoutController@subfolder_ajax')->name('relayout.subfolder_ajax');
+            Route::get('/show_data_form', 'RelayoutController@show_data_form')->name('relayout.show_data_form');
+            Route::get('/show_data_form_ajax', 'RelayoutController@show_data_form_ajax')->name('relayout.show_data_form_ajax');   
+            Route::post('/approve_form', 'RelayoutController@approve_form')->name('relayout.approve_form');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'RelayoutController@show_manager_approval')->name('relayout.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'RelayoutController@show_manager_approval_ajax')->name('relayout.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'RelayoutController@approve_manager')->name('relayout.approve_manager');
+                Route::get('/show_data_manager_approval', 'RelayoutController@show_data_manager_approval')->name('relayout.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'RelayoutController@show_data_manager_approval_ajax')->name('relayout.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'RelayoutController@show_it_approval')->name('relayout.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'RelayoutController@show_it_approval_ajax')->name('relayout.show_it_approval_ajax');
+                Route::post('/approve_it', 'RelayoutController@approve_it')->name('relayout.approve_it');
+                Route::get('/show_data_it_approval', 'RelayoutController@show_data_it_approval')->name('relayout.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'RelayoutController@show_data_it_approval_ajax')->name('relayout.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'RelayoutController@show_it_mgr_approval')->name('relayout.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'RelayoutController@show_it_mgr_approval_ajax')->name('relayout.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'RelayoutController@approve_it_mgr')->name('relayout.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'RelayoutController@show_data_it_mgr_approval')->name('relayout.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'RelayoutController@show_data_it_mgr_approval_ajax')->name('relayout.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'RelayoutController@show_execution')->name('relayout.show_execution');
+                Route::get('/show_execution_ajax', 'RelayoutController@show_execution_ajax')->name('relayout.show_execution_ajax');
+                Route::post('/approve_execution', 'RelayoutController@approve_execution')->name('relayout.approve_execution');
+                Route::get('/show_data_execution', 'RelayoutController@show_data_execution')->name('relayout.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'RelayoutController@show_data_execution_ajax')->name('relayout.show_data_execution_ajax');
+            });
+        });
     });
 });
 

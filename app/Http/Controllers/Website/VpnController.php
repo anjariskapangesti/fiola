@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Vpn;
 use App\Models\Department;
 use App\Models\User;
+use App\Models\Alert;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -248,6 +249,37 @@ class VpnController extends Controller
         $type=$request->type;
         $vpn = Vpn::findOrFail($id);
         if($type=='ok'){
+            $isi = "FORM VPN\n";
+            $isi .= "*TUNGGU APPROVE IT MANAGER*";
+            $isi .= "\n\nREQUESTOR";
+            $isi .= "\nNama : *" . $vpn->fullname ."*";        
+            
+            $isi .= "\n\nDepartment : " . $vpn->department;
+            $isi .= "\nEmail : " . $vpn->email;
+            $isi .= "\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
+
+            $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
+            
+            $nomorhpModel = new Alert();
+            $nomorhp = $nomorhpModel->getNoHpItMgr();
+
+            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
+                ));
+                $response = curl_exec($curl);
+                curl_close($curl);
+
             $vpn->is_it_approve=1;
             $vpn->final_status='IT Approve';
             $vpn->it_note=$request->it_note;
