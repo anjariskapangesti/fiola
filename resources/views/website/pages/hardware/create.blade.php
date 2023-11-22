@@ -84,10 +84,14 @@
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <select name="department" class="form-control" required>
+                                    <select name="department" class="form-control" required data-toggle="tooltip"
+                                        data-placement="top" title="Pilih department">
                                         <option selected disabled value="">-- Choose Department --</option>
                                         @foreach ($departments as $department)
-                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
+                                            @if ($department->id < 19 || $department->id > 27)
+                                                <option value="{{ $department->name }}">{{ $department->name }}
+                                                </option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">Please choose your department</div>

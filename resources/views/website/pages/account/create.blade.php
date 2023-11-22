@@ -151,29 +151,85 @@
                         </div>
                     </div>
                     <div class="card mb-2 change-section form-section" style="display: none;">
+                    {{-- <div class="card mb-2 change-section form-section"> --}}
                         <div class="card-body">
                             <h5 class="card-title">Change Account Information</h5>
                             <div class="row g-3">
-                                <div class="col-md-5">
-                                    <input type="text" class="form-control"
-                                        placeholder="Login Username (FirstName.LastName)" name="ad_name" maxlength="60"
-                                        required onkeyup="convertToLowercase(this)" data-toggle="tooltip"
-                                        data-placement="top" title="2 Kata (depan.belakang)">
-                                    <div class="invalid-feedback">Please enter your username</div>
+                                <h6 class="text-black">
+                                    <b>Target Perubahan Informasi Akun</b>
+                                </h6>
+                                <div class="col-md-6">
+                                    <input type="email" class="form-control" placeholder="Email@aiia.co.id"
+                                        name="email" maxlength="60" required onkeyup="updateUsername(this)">
+                                    <div class="invalid-feedback">Please enter your email</div>
                                 </div>
-                                <div class="col-md-7">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                                            name="is_email" value="false">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault"
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="Buatkan Email Outlook">Create Email for Outlook (Mail
-                                            address will be decided by ITD)</label>
+                                <div class="col-md-6">
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                        <input type="text" name="username" class="form-control"
+                                            placeholder="username (automatically when typing email)" required readonly>
+                                        <div class="invalid-feedback">Please enter your username</div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mb-3">
-                                    <label class="form-check-label text-danger" for="note_ad_name">*Username may change
-                                        depending on the availability on the server</label>
+                                <table class="table table-responsive table-bordered display">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50%; text-align: center;">Before</th>
+                                            <th style="width: 50%; text-align: center;">After</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="col-md-12">
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Display Name Before" name="display_name_before"
+                                                        maxlength="100" required onkeyup="convertToLowercase(this)"
+                                                        data-toggle="tooltip" data-placement="top" title="Nama Lengkap">
+                                                    <div class="invalid-feedback">Please enter your username</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-md-12">
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Display Name After" name="display_name_after"
+                                                        maxlength="100" required onkeyup="convertToLowercase(this)"
+                                                        data-toggle="tooltip" data-placement="top" title="Nama Lengkap">
+                                                    <div class="invalid-feedback">Please enter your username</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="col-md-12">
+                                                    <div class="input-group has-validation">
+                                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                                        <input type="text" name="username_before" class="form-control"
+                                                            placeholder="Username Before" required>
+                                                        <div class="invalid-feedback">Please enter your Username Before</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-md-12">
+                                                    <div class="input-group has-validation">
+                                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                                        <input type="text" name="username_after" class="form-control"
+                                                            placeholder="Username After" required>
+                                                        <div class="invalid-feedback">Please enter your Username After</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                            name="purpose" maxlength="100" required data-toggle="tooltip" data-placement="top" title="Alasan membuat akun"></textarea>
+                                        <label for="floatingTextarea">Purpose</label>
+                                        <div class="invalid-feedback">Please fill your purpose</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -306,5 +362,21 @@
                 });
             }
         });
-    </script>    
+    </script>
+
+    <script>
+        function updateUsername(emailInput) {
+            const emailValue = emailInput.value.toLowerCase();
+            emailInput.value = emailValue;
+            const atIndex = emailValue.indexOf('@');
+            const usernameInput = document.getElementsByName('username')[0];
+
+            if (atIndex !== -1) {
+                const username = emailValue.substring(0, atIndex);
+                usernameInput.value = username;
+            } else {
+                usernameInput.value = '';
+            }
+        }
+    </script>
 @endpush
