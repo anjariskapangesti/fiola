@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Form Request Fitur'])
+@extends('website.layouts.main', ['title' => 'Form Request Project'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Request Fitur for Application</h4>
+        <h4>Request Project for Application</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Project</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -23,7 +23,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" enctype="multipart/form-data" action="{{ route('website.fitur.store') }}" class="needs-validation" novalidate>
+            <form method="post" enctype="multipart/form-data" action="{{ route('website.project.store') }}" class="needs-validation" novalidate>
                 @csrf
                 <div class="col-lg-12">                                        
                     
@@ -64,22 +64,12 @@
                                         maxlength="14" value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly required>
                                     <div class="invalid-feedback">Please enter your Department</div>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email@aiia.co.id" name="email" maxlength="60" value="{{ Auth::user()->email }}" readonly required onkeyup="updateUsername(this)">
-                                    <div class="invalid-feedback">Please enter your email</div>
-                                </div> --}}
                                 <hr style="margin-bottom: 0rem; opacity: 100%;">
-                                <div class="col-md-6">
-                                    <label for="aplikasi"><b>Nama Aplikasi</b></label>
-                                    <input type="text" class="form-control" placeholder="Nama Aplikasi" name="aplikasi"
-                                        value="{{ old('aplikasi') }}" required>
-                                    <div class="invalid-feedback">Please enter your Nama Aplikasi</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="nama_fitur"><b>Nama Fitur</b></label>
-                                    <input type="text" class="form-control" placeholder="Nama Fitur" name="nama_fitur"
-                                        value="{{ old('nama_fitur') }}" required>
-                                    <div class="invalid-feedback">Please enter your Nama Fitur</div>
+                                <div class="col-md-12">
+                                    <label for="nama_project"><b>Nama Project</b></label>
+                                    <input type="text" class="form-control" placeholder="Nama Project" name="nama_project"
+                                        value="{{ old('nama_project') }}" required>
+                                    <div class="invalid-feedback">Please enter your Nama Project</div>
                                 </div>
                                 <div class="col-md-12">
                                     <label for="lampiran"><b>Lampiran</b></label>
@@ -106,11 +96,20 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                    <div class="form-floating mb-3">
+                                    <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="benefit" required>{{ old('benefit') }}</textarea>
                                         <label for="floatingTextarea">Benefit</label>
                                         <div class="invalid-feedback">Please fill your Benefit</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                            name="alat">{{ old('alat') }}</textarea>
+                                        <label for="floatingTextarea">Additional Support Alat-alat</label>
+                                        <div class="invalid-feedback">Please fill your alat</div>
                                     </div>
                                 </div>
                             </div>

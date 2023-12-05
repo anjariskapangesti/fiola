@@ -150,8 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card mb-2 change-section form-section" style="display: none;">
-                    {{-- <div class="card mb-2 change-section form-section"> --}}
+                    {{-- <div class="card mb-2 change-section form-section" style="display: none;">
                         <div class="card-body">
                             <h5 class="card-title">Change Account Information</h5>
                             <div class="row g-3">
@@ -262,7 +261,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="card">
                         <div class="card-body">

@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'ITD Manager History VPN'])
+@extends('website.layouts.main', ['title' => 'ITD Manager History Request Fitur'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
+        <h4>Request Fitur for Application</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">ITD Manager History</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form VPN</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -19,8 +19,9 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Fullname</th>
-                                <th>Username</th>
+                                <th>Nama Aplikasi</th>
+                                <th>Nama Fitur</th>
+                                <th>Nama Requestor</th>
                                 <th>Date Approved</th>
                             </tr>
                         </thead>
@@ -41,8 +42,7 @@
                 // `d` is the original data object for the row
                 return (
                     `
-                <table class="table table-sm">
-
+                    <table class="table table-sm">
                     <tr>
                         <td width="30%">NPK / Full Name</td>
                         <td>${d.npk} / ${d.fullname} </td>
@@ -56,13 +56,31 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Email</td>
-                        <td>${d.email ?? '-'} </td>
+                        <td>Nama Aplikasi</td>
+                        <td>${d.aplikasi ?? '-'} </td>
                     </tr>  
                     <tr>
-                        <td>Username</td>
-                        <td>${d.username ?? '-'} </td>
+                        <td>Nama Fitur</td>
+                        <td>${d.nama_fitur ?? '-'} </td>
                     </tr>  
+                    <tr>
+                        <td>Lampiran</td>
+                        <td>
+                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi Sebelum Improvement</td>
+                        <td>${d.kondisi_sebelum ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi yang diharapkan</td>
+                        <td>${d.kondisi_target ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Benefit yang didapat</td>
+                        <td>${d.benefit ?? '-'}</td>
+                    </tr>
                     <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
@@ -74,17 +92,11 @@
                     <tr>
                         <td>ITD Manager Note</td>
                         <td>${d.it_mgr_note ?? '-'}</td>
-                    </tr> 
-                    
-
+                    </tr>
                     <tfoot>
                     <tr>
-                        <th>Created by</th>
+                        <th>Dibuat oleh</th>
                         <th>${d.user_name}</th>
-                    </tr>
-                    <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
                     </tr>
                     </tfoot>
                 </table>
@@ -98,7 +110,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.vpn.show_data_it_mgr_approval_ajax') }}",
+                        url: "{{ route('website.fitur.show_data_it_mgr_approval_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -108,12 +120,16 @@
                             searchable: false,
                         },
                         {
-                            data: 'fullname',
-                            name: 'fullname',
+                            data: 'aplikasi',
+                            name: 'aplikasi',
                         },
                         {
-                            data: 'username',
-                            name: 'username'
+                            data: 'nama_fitur',
+                            name: 'nama_fitur'
+                        },
+                        {
+                            data: 'fullname',
+                            name: 'fullname'
                         },
                         {
                             data: 'it_mgr_approval_date',

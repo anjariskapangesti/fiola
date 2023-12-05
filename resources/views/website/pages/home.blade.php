@@ -8,31 +8,29 @@
                 <li class="breadcrumb-item active"><a href="#">Dashboard</a></li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
-    {{-- <div class="row">
-        @if (Session::get('info'))
-        <div class="alert alert-info">
-          {{ Session::get('info') }}
-        </div>
-        @endif
     </div>
-
-    <div class="card-body p-3 table table-responsive">
-        <table class="display" width="100%" id="app_table">
-            <thead>
-                <tr>
-                    <th>Fullname</th>
-                    <th>Budget Type</th>
-                    <th>Request Type</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-        </table>
-    </div> --}}
 
     <section class="section">
         <div class="col-md-12">
             <div class="row ">
+                @can('can_master')
+                    <div class="card">
+                        <div class="card-body table table-responsive">
+                            <h5 class="card-title">Form Queue</h5>
+                            <table class="display " width="100%" id="app_table">
+                                <thead>
+                                    <tr>
+                                        <th style="max-width: 100px;">Created at</th>
+                                        <th style="max-width: 100px;">No Reg</th>
+                                        <th>Creator</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                @endcan
                 {{-- @include('website.pages.dashboard') --}}
                 @if (auth()->check() &&
                         auth()->user()->can('can_create_form'))
@@ -49,31 +47,14 @@
                     </div>
                 @endif
 
-                @can('can_master')
-                    <div class="card">
-                        <div class="card-body table table-responsive">
-                        <h5 class="card-title">Form Queue</h5>
-                            <table class="display" width="100%" id="app_table">
-                                <thead>
-                                    <tr>
-                                        <th style="max-width: 100px;">Created at</th>
-                                        <th style="max-width: 100px;">No Reg</th>
-                                        <th>Creator</th>
-                                        <th>Department</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                @endcan
+
             </div>
         </div>
     </section>
 @endsection
 
 @push('styles')
-<link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 @endpush
 
 @push('scripts')
@@ -94,15 +75,6 @@
                     url: "{{ route('website.home_ajax') }}",
                 },
                 columns: [
-                    // {
-                    //     data: null,
-                    //     orderable: true,
-                    //     searchable: true,
-                    //     render: function(data, type, row, meta) {
-                    //         var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
-                    //         return rowIndex;
-                    //     },
-                    // },
                     {
                         data: 'created_at',
                         name: 'created_at',
@@ -122,6 +94,21 @@
                     {
                         data: 'final_status',
                         name: 'final_status',
+                        render: function(data, type, row, meta) {
+                            if (data == 'created') {
+                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Manager Approve</span>`;
+                            } else if (data == 'Manager Approve') {
+                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD Approve</span>`;
+                            } else if (data == 'IT Approve') {
+                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD MGR Approve</span>`;
+                            } else if (data == 'IT MGR Approve') {
+                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Execution</span>`;
+                            } else if (data == 'Finished') {
+                                return `<span class="badge bg-success" style="font-size: 15px;">Finished</span>`;
+                            } else {
+                                return `<span class="badge bg-danger" style="font-size: 15px;">${data}</span>`;
+                            }
+                        }
                     },
                 ],
                 "order": [0, 'desc'],
@@ -208,14 +195,16 @@
             },
 
             xAxis: {
-                categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN']
+                categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN', 'Project',
+                    'Fitur'
+                ]
             },
 
             yAxis: {
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: 'Count forms'
+                    text: 'Total Forms'
                 }
             },
 
@@ -236,13 +225,15 @@
                 name: 'Finished',
                 color: '#47c363',
                 data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }},
-                    {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }}
+                    {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }},
+                    {{ $project_finished }}, {{ $fitur_finished }}
                 ],
             }, {
                 name: 'Rejected',
                 color: '#fc544b',
                 data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }},
-                    {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }}
+                    {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }},
+                    {{ $project_rejected }}, {{ $fitur_rejected }}
                 ],
             }]
         });

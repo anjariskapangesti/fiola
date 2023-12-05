@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval VPN'])
+@extends('website.layouts.main', ['title' => 'Manager Approval Request Fitur'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
+        <h4>Request Fitur for Application</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form VPN</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -18,8 +18,9 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Fullname</th>
-                                <th>Username</th>
+                                <th>Nama Aplikasi</th>
+                                <th>Nama Fitur</th>
+                                <th>Nama Requestor</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -38,9 +39,9 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_vpn">
-                        <input type="hidden" id="id_form_vpn">
-                        
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur">
+                        <input type="hidden" id="id_form_fitur">
+
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
 
                     </div>
@@ -62,11 +63,11 @@
                     </div>
                     <div class="modal-body">
                         Please share the reason why you're rejecting
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_vpn_reject">
-                        <input type="hidden" id="id_form_vpn_reject">
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur_reject">
+                        <input type="hidden" id="id_form_fitur_reject">
 
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -93,7 +94,6 @@
             return (
                 `
                 <table class="table table-sm">
-
                     <tr>
                         <td width="30%">NPK / Full Name</td>
                         <td>${d.npk} / ${d.fullname} </td>
@@ -107,25 +107,37 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Email</td>
-                        <td>${d.email ?? '-'} </td>
-                    </tr>    
+                        <td>Nama Aplikasi</td>
+                        <td>${d.aplikasi ?? '-'} </td>
+                    </tr>  
                     <tr>
-                        <td>Username</td>
-                        <td>AIIA\\${d.username ?? '-'} </td>
-                    </tr>                   
-
-                <tfoot>
+                        <td>Nama Fitur</td>
+                        <td>${d.nama_fitur ?? '-'} </td>
+                    </tr>  
                     <tr>
-                        <th>Created by</th>
+                        <td>Lampiran</td>
+                        <td>
+                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi Sebelum Improvement</td>
+                        <td>${d.kondisi_sebelum ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi yang diharapkan</td>
+                        <td>${d.kondisi_target ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Benefit yang didapat</td>
+                        <td>${d.benefit ?? '-'}</td>
+                    </tr>               
+                    <tfoot>
+                    <tr>
+                        <th>Dibuat oleh</th>
                         <th>${d.user_name}</th>
                     </tr>
-                    <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
-                    </tr>
-                </tfoot>
-                
+                    </tfoot>
                 </table>
                 `
             );
@@ -138,7 +150,7 @@
                 'serverSide': true,
                 // "sScrollY": true,
                 ajax: {
-                    url: "{{ route('website.vpn.show_manager_approval_ajax') }}",
+                    url: "{{ route('website.fitur.show_manager_approval_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -148,12 +160,16 @@
                         searchable: false,
                     },
                     {
-                        data: 'fullname',
-                        name: 'fullname',
+                        data: 'aplikasi',
+                        name: 'aplikasi',
                     },
                     {
-                        data: 'username',
-                        name: 'username'
+                        data: 'nama_fitur',
+                        name: 'nama_fitur'
+                    },
+                    {
+                        data: 'fullname',
+                        name: 'fullname'
                     },
                     {
                         orderable: false,
@@ -189,14 +205,12 @@
             });
 
             $('#btn-approve').on('click', function() {
-                let id_form_vpn = $('#id_form_vpn').val();
-                console.log(id_form_vpn);
-                // window.location.href = "{{ route('website.vpn.approve_manager') }}";
+                let id_form_fitur = $('#id_form_fitur').val();
                 $.ajax({
-                    url: "{{ route('website.vpn.approve_manager') }}",
+                    url: "{{ route('website.fitur.approve_manager') }}",
                     type: "POST",
                     data: {
-                        id: id_form_vpn,
+                        id: id_form_fitur,
                         type: 'ok',
                         manager_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
@@ -214,14 +228,12 @@
             });
 
             $('#btn-reject').on('click', function() {
-                let id_form_vpn_reject = $('#id_form_vpn_reject').val();
-                console.log(id_form_vpn_reject);
-                // window.location.href = "{{ route('website.vpn.approve_manager') }}";
+                let id_form_fitur_reject = $('#id_form_fitur_reject').val();
                 $.ajax({
-                    url: "{{ route('website.vpn.approve_manager') }}",
+                    url: "{{ route('website.fitur.approve_manager') }}",
                     type: "POST",
                     data: {
-                        id: id_form_vpn_reject,
+                        id: id_form_fitur_reject,
                         type: 'reject',
                         manager_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
@@ -238,24 +250,18 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_vpn = $(this).data('id');
-                var fullname_form_vpn = $(this).data('fullname');
-                $('#id_form_vpn').val(id_form_vpn)
-                $('#fullname_form_vpn').val(fullname_form_vpn)
-                // console.log(id_form_vpn);
+                var id_form_fitur = $(this).data('id');
+                var fullname_form_fitur = $(this).data('fullname');
+                $('#id_form_fitur').val(id_form_fitur)
+                $('#fullname_form_fitur').val(fullname_form_fitur)
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {
-                var id_form_vpn_reject = $(this).data('id');
-                var fullname_form_vpn_reject = $(this).data('fullname');
-                $('#id_form_vpn_reject').val(id_form_vpn_reject)
-                $('#fullname_form_vpn_reject').val(fullname_form_vpn_reject)
-                // console.log(id_form_vpn_reject);
+                var id_form_fitur_reject = $(this).data('id');
+                var fullname_form_fitur_reject = $(this).data('fullname');
+                $('#id_form_fitur_reject').val(id_form_fitur_reject)
+                $('#fullname_form_fitur_reject').val(fullname_form_fitur_reject)
             })
 
         });

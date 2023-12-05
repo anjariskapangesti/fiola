@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Form Request Fitur'])
+@extends('website.layouts.main', ['title' => 'Form Request Project'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Request Fitur for Application</h4>
+        <h4>Request Project for Application</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Track Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Project</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -24,9 +24,8 @@
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th>Detail</th>
-                                <th>Nama Aplikasi</th>
-                                <th>Nama Fitur</th>
+                                <th style="max-width: 50px;">Detail</th>
+                                <th>Nama Project</th>
                                 <th>Status</th>
                                 <th>Confirm</th>
                             </tr>
@@ -45,7 +44,7 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to confirm this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur">
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_project">
                         <input type="hidden" id="id_form_fiutr">                       
 
                     </div>
@@ -89,13 +88,9 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Nama Aplikasi</td>
-                        <td>${d.aplikasi ?? '-'} </td>
-                    </tr>  
-                    <tr>
-                        <td>Nama Fitur</td>
-                        <td>${d.nama_fitur ?? '-'} </td>
-                    </tr>  
+                        <td>Nama Project</td>
+                        <td>${d.nama_project ?? '-'} </td>
+                    </tr>
                     <tr>
                         <td>Lampiran</td>
                         <td>
@@ -147,7 +142,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.fitur.show_data_form_ajax') }}",
+                        url: "{{ route('website.project.show_data_form_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -157,12 +152,8 @@
                             searchable: false,
                         },
                         {
-                            data: 'aplikasi',
-                            name: 'aplikasi',
-                        },
-                        {
-                            data: 'nama_fitur',
-                            name: 'nama_fitur'
+                            data: 'nama_project',
+                            name: 'nama_project'
                         },
                         {
                             data: 'final_status',
@@ -204,7 +195,7 @@
                 $('#btn-approve').on('click', function() {
                 let id_form_fiutr = $('#id_form_fiutr').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.approve_form') }}",
+                    url: "{{ route('website.project.approve_form') }}",
                     type: "POST",
                     data: {
                         id: id_form_fiutr,
@@ -249,11 +240,11 @@
 
                 $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_form_fiutr = $(this).data('id');
-                var fullname_form_fitur = $(this).data('fullname');
+                var fullname_form_project = $(this).data('fullname');
                 var ad_name = $(this).data('ad_name');
 
                 $('#id_form_fiutr').val(id_form_fiutr)
-                $('#fullname_form_fitur').val(fullname_form_fitur)
+                $('#fullname_form_project').val(fullname_form_project)
                 $('#ad_name').val(ad_name)
                 })
 

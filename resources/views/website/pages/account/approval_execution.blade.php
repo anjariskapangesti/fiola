@@ -244,11 +244,11 @@
 
                             if (data.final_status == 'Delay') {
                                 return `
-                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Approve</button>
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Finish</button>
                                 <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                             } else {
                                 return `
-                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Approve</button>
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Finish</button>
                                 <button class="btn btn-warning btn-sm btn-table-delay" data-bs-toggle="modal" data-bs-target="#delayModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-budget_type="${data.budget_type}">Delay</button>
                                 <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
                             }

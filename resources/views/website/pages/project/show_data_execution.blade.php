@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'ITD History Request Fitur'])
+@extends('website.layouts.main', ['title' => 'Finished Request Project'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Request Fitur for Application</h4>
+        <h4>Request Project for Application</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD History</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
+                <li class="breadcrumb-item "><a href="#">Finished</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Project</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -19,10 +19,10 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Nama Aplikasi</th>
-                                <th>Nama Fitur</th>
+                                <th>Nama Project</th>
                                 <th>Nama Requestor</th>
-                                <th>Date Approved</th>
+                                <th>Final Status</th>
+                                <th>Date Execution</th>
                             </tr>
                         </thead>
                     </table>
@@ -56,13 +56,9 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Nama Aplikasi</td>
-                        <td>${d.aplikasi ?? '-'} </td>
-                    </tr>  
-                    <tr>
-                        <td>Nama Fitur</td>
-                        <td>${d.nama_fitur ?? '-'} </td>
-                    </tr>  
+                        <td>Nama Project</td>
+                        <td>${d.nama_project ?? '-'} </td>
+                    </tr>
                     <tr>
                         <td>Lampiran</td>
                         <td>
@@ -88,6 +84,14 @@
                     <tr>
                         <td>ITD Note</td>
                         <td>${d.it_note ?? '-'}</td>
+                    </tr>  
+                    <tr>
+                        <td>ITD Manager Note</td>
+                        <td>${d.it_mgr_note ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Finish Note</td>
+                        <td>${d.finish_note ?? '-'}</td>
                     </tr>
                     <tfoot>
                     <tr>
@@ -106,7 +110,7 @@
                     'processing': true,
                     'serverSide': true,
                     ajax: {
-                        url: "{{ route('website.fitur.show_data_it_approval_ajax') }}",
+                        url: "{{ route('website.project.show_data_execution_ajax') }}",
                     },
                     columns: [{
                             className: 'dt-control',
@@ -116,20 +120,20 @@
                             searchable: false,
                         },
                         {
-                            data: 'aplikasi',
-                            name: 'aplikasi',
-                        },
-                        {
-                            data: 'nama_fitur',
-                            name: 'nama_fitur'
+                            data: 'nama_project',
+                            name: 'nama_project'
                         },
                         {
                             data: 'fullname',
                             name: 'fullname'
                         },
                         {
-                            data: 'it_approval_date',
-                            name: 'it_approval_date'
+                            data: 'final_status',
+                            name: 'final_status'
+                        },
+                        {
+                            data: 'finish_date',
+                            name: 'finish_date'
                         },
                     ],
                 });

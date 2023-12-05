@@ -13,6 +13,8 @@ use App\Models\NewFolder;
 use App\Models\Software;
 use App\Models\Hardware;
 use App\Models\Vpn;
+use App\Models\Project;
+use App\Models\Fitur;
 use App\Models\Alert;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -49,7 +51,15 @@ class HomeController extends Controller
                                         ->where('final_status', 'Finished')
                                         ->count();
 
-        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished + $software_create_finished + $hardware_create_finished + $vpn_create_finished;
+        $project_create_finished = Project::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Finished')
+                                        ->count();
+                                    
+        $fitur_create_finished = Fitur::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Finished')
+                                        ->count();
+
+        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished + $software_create_finished + $hardware_create_finished + $vpn_create_finished + $project_create_finished + $fitur_create_finished;
         /// REJECTED ///
         $account_create_rejected = Account::where('created_by', Auth::user()->id)
                                           ->where(function ($query) {
@@ -105,7 +115,25 @@ class HomeController extends Controller
                                               })
                                               ->count();
 
-        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected + $vpn_create_rejected;
+        $project_create_rejected = Project::where('created_by', Auth::user()->id)
+                                              ->where(function ($query) {
+                                                  $query->where('final_status', 'LIKE', '%Rejected%')
+                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
+                                              })
+                                              ->count();
+
+        $fitur_create_rejected = Fitur::where('created_by', Auth::user()->id)
+                                              ->where(function ($query) {
+                                                  $query->where('final_status', 'LIKE', '%Rejected%')
+                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
+                                              })
+                                              ->count();
+
+        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected + $vpn_create_rejected + $project_create_rejected + $fitur_create_rejected;
         /// MGR ///
         $account_create_mgr = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'created')
@@ -131,7 +159,15 @@ class HomeController extends Controller
                                         ->where('final_status', 'created')
                                         ->count();
 
-        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr + $software_create_mgr + $hardware_create_mgr + $vpn_create_mgr;
+        $project_create_mgr = Project::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'created')
+                                        ->count();
+                                        
+        $fitur_create_mgr = Fitur::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'created')
+                                        ->count();
+
+        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr + $software_create_mgr + $hardware_create_mgr + $vpn_create_mgr + $project_create_mgr + $fitur_create_mgr;
         /// IT ///
         $account_create_it = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'Manager Approve')
@@ -157,7 +193,15 @@ class HomeController extends Controller
                                         ->where('final_status', 'Manager Approve')
                                         ->count();
 
-        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it + $software_create_it + $hardware_create_it + $vpn_create_it;
+        $project_create_it = Project::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Manager Approve')
+                                        ->count();
+
+        $fitur_create_it = Fitur::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'Manager Approve')
+                                        ->count();
+
+        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it + $software_create_it + $hardware_create_it + $vpn_create_it + $project_create_it + $fitur_create_it;
         /// IT MGR ///
         $account_create_it_mgr = Account::where('created_by', Auth::user()->id)
                                         ->where('final_status', 'IT Approve')
@@ -183,7 +227,15 @@ class HomeController extends Controller
                                         ->where('final_status', 'IT Approve')
                                         ->count();
 
-        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr + $vpn_create_it_mgr;
+        $project_create_it_mgr = Project::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT Approve')
+                                        ->count();
+
+        $fitur_create_it_mgr = Fitur::where('created_by', Auth::user()->id)
+                                        ->where('final_status', 'IT Approve')
+                                        ->count();
+
+        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr + $vpn_create_it_mgr + $project_create_it_mgr + $fitur_create_it_mgr;
         /// EXECUTION ///
         $account_create_execution = Account::where('created_by', Auth::user()->id)
                                         ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
@@ -209,7 +261,15 @@ class HomeController extends Controller
                                         ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
                                         ->count();
 
-        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution + $vpn_create_execution;
+        $project_create_execution = Project::where('created_by', Auth::user()->id)
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
+                                        ->count();
+
+        $fitur_create_execution = Fitur::where('created_by', Auth::user()->id)
+                                        ->whereIn('final_status', ['IT MGR Approve', 'Delay'])
+                                        ->count();
+
+        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution + $vpn_create_execution + $project_create_execution + $fitur_create_execution;
 
 
         /// MASTER ///
@@ -273,6 +333,26 @@ class HomeController extends Controller
         $vpn_it_mgr_count = Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
         $vpn_execution_count = Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
+        $project_mgr_count = Project::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $project_it_count = Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $project_it_mgr_count = Project::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $project_execution_count = Project::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
+        $fitur_mgr_count = Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $fitur_it_count = Fitur::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $fitur_it_mgr_count = Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $fitur_execution_count = Fitur::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
         ///
         $account_total = Account::count();
         $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->count();
@@ -322,6 +402,22 @@ class HomeController extends Controller
                                 ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
                                 ->count(); 
 
+        $project_total = Project::count();
+        $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->count();
+        $project_rejected = Project::where('final_status', 'LIKE', '%Rejected%')
+                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
+                                ->count();
+
+        $fitur_total = Fitur::count();
+        $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->count();
+        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Rejected%')
+                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
+                                ->count();
+
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
                                     ->count();   
@@ -342,7 +438,11 @@ class HomeController extends Controller
                     'hardware_mgr_count', 'hardware_it_count', 'hardware_it_mgr_count', 'hardware_execution_count',
                     'hardware_total', 'hardware_finished', 'hardware_rejected',
                     'vpn_mgr_count', 'vpn_it_count', 'vpn_it_mgr_count', 'vpn_execution_count',
-                    'vpn_total', 'vpn_finished', 'vpn_rejected'));
+                    'vpn_total', 'vpn_finished', 'vpn_rejected',
+                    'project_mgr_count', 'project_it_count', 'project_it_mgr_count', 'project_execution_count',
+                    'project_total', 'project_finished', 'project_rejected',
+                    'fitur_mgr_count', 'fitur_it_count', 'fitur_it_mgr_count', 'fitur_execution_count',
+                    'fitur_total', 'fitur_finished', 'fitur_rejected',));
         }
                                     
         
@@ -385,8 +485,20 @@ class HomeController extends Controller
                                     ->join('users', 'form_vpn.created_by', 'users.id')
                                     ->join('departments', 'form_vpn.created_dept', 'departments.id')
                                     ->get();
+
+        $formProjectData = DB::table('form_project')
+                                    ->select('form_project.no_reg', 'form_project.final_status', 'form_project.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_project.created_by', 'users.id')
+                                    ->join('departments', 'form_project.created_dept', 'departments.id')
+                                    ->get();
+
+        $formFiturData = DB::table('form_fitur')
+                                    ->select('form_fitur.no_reg', 'form_fitur.final_status', 'form_fitur.created_at', 'users.name as created_by', 'departments.code as created_dept')
+                                    ->join('users', 'form_fitur.created_by', 'users.id')
+                                    ->join('departments', 'form_fitur.created_dept', 'departments.id')
+                                    ->get();
     
-        $mergedData = $formAccountData->concat($formFolderAccessData)->concat($formNewFolderData)->concat($formSoftwareData)->concat($formHardwareData)->concat($formVpnData);
+        $mergedData = $formAccountData->concat($formFolderAccessData)->concat($formNewFolderData)->concat($formSoftwareData)->concat($formHardwareData)->concat($formVpnData)->concat($formFiturData)->concat($formProjectData);
     
         return response()->json(['data' => $mergedData]);
     }

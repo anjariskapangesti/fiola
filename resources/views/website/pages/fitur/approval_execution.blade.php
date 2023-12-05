@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'Execution VPN'])
+@extends('website.layouts.main', ['title' => 'Execution Request Fitur'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
+        <h4>Request Fitur for Application</h4>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Execution</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form VPN</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -14,13 +14,15 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3 table table-responsive">
-                    {{-- <a href="{{ route('website.vpn.show_data_execution') }}" class="btn btn-primary">Show Data</a> --}}
+                    {{-- <a href="{{ route('website.fitur.show_data_execution') }}" class="btn btn-primary">Show Data</a> --}}
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Fullname</th>
-                                <th>Username</th>
+                                <th>Nama Aplikasi</th>
+                                <th>Nama Fitur</th>
+                                <th>Nama Requestor</th>
+                                <th>Status</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -29,7 +31,6 @@
             </div>
         </div>
         <!-- Approve Confirmation Modal -->
-
         <div class="modal fade" id="confirmModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -39,8 +40,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_vpn">
-                        <input type="hidden" id="id_form_vpn">
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur">
+                        <input type="hidden" id="id_form_fitur">
 
                         <label for="note">Note :</label>
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
@@ -53,7 +54,7 @@
                 </div>
             </div>
         </div>
-        <!-- End Confirmation Modal -->
+        <!-- End Confirmation Modal -->        
         <!-- Confirmation Modal -->
         <div class="modal fade" id="rejectModal" tabindex="-1">
             <div class="modal-dialog">
@@ -65,7 +66,7 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting<br /><br />
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        <input type="hidden" id="id_form_vpn_reject">
+                        <input type="hidden" id="id_form_fitur_reject">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -76,6 +77,45 @@
             </div>
         </div>
         <!-- End Confirmation Modal -->
+
+        <div class="modal fade" id="delayModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Progress Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Please share the reason the progress?<br /><br />
+                        <textarea class="form-control" id="delay_reason"></textarea>
+                        <input type="hidden" id="id_form_fitur_delay">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="btn-delay" class="btn btn-primary" disabled>Accept!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Progress Information<br /><br />
+                        <textarea class="form-control" id="delay_note" disabled></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </section>
 @endsection
@@ -92,7 +132,6 @@
             return (
                 `
                 <table class="table table-sm">
-
                     <tr>
                         <td width="30%">NPK / Full Name</td>
                         <td>${d.npk} / ${d.fullname} </td>
@@ -106,13 +145,31 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Email</td>
-                        <td>${d.email ?? '-'} </td>
+                        <td>Nama Aplikasi</td>
+                        <td>${d.aplikasi ?? '-'} </td>
+                    </tr>  
+                    <tr>
+                        <td>Nama Fitur</td>
+                        <td>${d.nama_fitur ?? '-'} </td>
+                    </tr>  
+                    <tr>
+                        <td>Lampiran</td>
+                        <td>
+                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
+                        </td>
                     </tr>
                     <tr>
-                        <td>Username</td>
-                        <td>${d.username ?? '-'} </td>
-                    </tr>  
+                        <td>Kondisi Sebelum Improvement</td>
+                        <td>${d.kondisi_sebelum ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Kondisi yang diharapkan</td>
+                        <td>${d.kondisi_target ?? '-'}</td>
+                    </tr>
+                    <tr>
+                        <td>Benefit yang didapat</td>
+                        <td>${d.benefit ?? '-'}</td>
+                    </tr>
                     <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
@@ -125,17 +182,12 @@
                         <td>ITD Manager Note</td>
                         <td>${d.it_mgr_note ?? '-'}</td>
                     </tr>
-
                     <tfoot>
                     <tr>
-                        <th>Created by</th>
+                        <th>Dibuat oleh</th>
                         <th>${d.user_name}</th>
                     </tr>
-                    <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
-                    </tr>
-                </tfoot>
+                    </tfoot>
                 </table>
                 `
             );
@@ -147,7 +199,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.vpn.show_execution_ajax') }}",
+                    url: "{{ route('website.fitur.show_execution_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -157,21 +209,49 @@
                         searchable: false,
                     },
                     {
-                        data: 'fullname',
-                        name: 'fullname',
+                        data: 'aplikasi',
+                        name: 'aplikasi',
                     },
                     {
-                        data: 'username',
-                        name: 'username'
+                        data: 'nama_fitur',
+                        name: 'nama_fitur'
+                    },
+                    {
+                        data: 'fullname',
+                        name: 'fullname'
                     },
                     {
                         orderable: false,
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+
+                            if (data.final_status == 'Delay') {
+                                return `
+                                <button class="btn btn-primary btn-sm btn-table-info" data-bs-toggle="modal" data-bs-target="#infoModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-delay_note="${data.delay_note}">Progress</button>                                    
+                                `;
+                            } else {
+                                return `
+                                    Wait
+                                `;
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.final_status == 'Delay') {
+                                return `
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Finish</button>
+                                <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            } else {
+                                return `
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Finish</button>
+                                <button class="btn btn-primary btn-sm btn-table-delay" data-bs-toggle="modal" data-bs-target="#delayModal" data-id="${data.id}" data-fullname="${data.fullname}">Accept</button>
+                                <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            }
                         }
                     },
                 ],
@@ -198,14 +278,12 @@
             });
 
             $('#btn-approve').on('click', function() {
-                let id_form_vpn = $('#id_form_vpn').val();
-                console.log(id_form_vpn);
-                // window.location.href = "{{ route('website.vpn.approve_it') }}";
+                let id_form_fitur = $('#id_form_fitur').val();
                 $.ajax({
-                    url: "{{ route('website.vpn.approve_execution') }}",
+                    url: "{{ route('website.fitur.approve_execution') }}",
                     type: "POST",
                     data: {
-                        id: id_form_vpn,
+                        id: id_form_fitur,
                         type: 'ok',
                         ad_name: $('#ad_name').val(),
                         finish_note: $('#note').val(),
@@ -224,14 +302,12 @@
             });
 
             $('#btn-reject').on('click', function() {
-                let id_form_vpn_reject = $('#id_form_vpn_reject').val();
-                console.log(id_form_vpn_reject);
-                // window.location.href = "{{ route('website.vpn.approve_it') }}";
+                let id_form_fitur_reject = $('#id_form_fitur_reject').val();
                 $.ajax({
-                    url: "{{ route('website.vpn.approve_execution') }}",
+                    url: "{{ route('website.fitur.approve_execution') }}",
                     type: "POST",
                     data: {
-                        id: id_form_vpn_reject,
+                        id: id_form_fitur_reject,
                         type: 'reject',                        
                         finish_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
@@ -248,27 +324,65 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_vpn = $(this).data('id');
-                var fullname_form_vpn = $(this).data('fullname');
+                var id_form_fitur = $(this).data('id');
+                var fullname_form_fitur = $(this).data('fullname');
                 var ad_name = $(this).data('ad_name');
 
-                $('#id_form_vpn').val(id_form_vpn)
-                $('#fullname_form_vpn').val(fullname_form_vpn)
+                $('#id_form_fitur').val(id_form_fitur)
+                $('#fullname_form_fitur').val(fullname_form_fitur)
                 $('#ad_name').val(ad_name)
-                // console.log(id_form_vpn);
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {
-                var id_form_vpn_reject = $(this).data('id');
-                $('#id_form_vpn_reject').val(id_form_vpn_reject)
-                // console.log(id_form_vpn_reject);
+                var id_form_fitur_reject = $(this).data('id');
+                $('#id_form_fitur_reject').val(id_form_fitur_reject)
+            })
+
+            $('#delay_reason').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-delay').removeAttr('disabled');
+                else
+                    $('#btn-delay').attr('disabled', 'disabled');
+            });
+
+            $('#app_table').on('click', '.btn-table-delay', function() {
+                var id_form_fitur_delay = $(this).data('id');
+                $('#id_form_fitur_delay').val(id_form_fitur_delay)
+            })
+
+            $('#btn-delay').on('click', function() {
+                let id_form_fitur_delay = $('#id_form_fitur_delay').val();
+
+                $.ajax({
+                    url: "{{ route('website.fitur.approve_execution') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_fitur_delay,
+                        type: 'delay',
+                        delay_note: $('#delay_reason').val(),
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#delayModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            $('#app_table').on('click', '.btn-table-info', function() {
+                var id_form_account_info = $(this).data('id');
+                var delay_note = $(this).data('delay_note');
+                $('#id_form_account_info').val(id_form_account_info)
+                $('#delay_note').val(delay_note)
             })
 
         });
+        
     </script>
 @endpush

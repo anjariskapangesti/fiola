@@ -51,16 +51,39 @@ class DepartmentController extends Controller
 
     public function show_data_department_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
         $data = Department::orderBy('name', 'ASC');
-        // return $data;
+        
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function destroy($id)
+    public function edit(Request $request)
     {
-        Department::findOrFail($id)->delete();
+        $id = $request->id;
 
-        return redirect()->back()->with('error', 'Delete Item');
+        $departments = Department::find($id);
+        if (Auth::user()->can('can_master')) {
+            $departments->update([
+                'name' => $request->name,
+                'code' => $request->code,
+            ]);
+            
+            return "Department deleted successfully";
+        }
+
+        return "Error";
+    }
+
+    public function destroy(Request $request)
+    {
+        $id = $request->id;
+
+        $departments = Department::find($id);
+        if (Auth::user()->can('can_master')) {
+            $departments->delete();
+            
+            return "Department deleted successfully";
+        }
+
+        return "Error";
     }
 }

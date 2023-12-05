@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Account;
 use App\Models\Department;
 use App\Models\User;
+use App\Models\Alert;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -349,30 +350,19 @@ class AccountController extends Controller
         $type=$request->type;
         $account = Account::findOrFail($id);
         if($type=='ok'){
+            $isi = "FORM ACCOUNT\n";
+            $isi .= "*TUNGGU APPROVE IT MANAGER*";
+            $isi .= "\n\nType : " . $account->form_type;
+            $isi .= "\n\nREQUESTOR";
+            $isi .= "\nNama : *" . $account->createdBy->name ."*";        
+            $isi .= "\nDepartment : *" . $account->department ."*";        
+            $isi .= "\nPurpose : " . $account->purpose;
+            $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
-            $isi = "FORM ACCOUNT\n\n";
-                
-            // $isi .= "Budget Type : " . $account->budget_type;
-            // $isi .= "\nForm Type : " . $account->form_type;
+            $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
             
-            // $isi .= "\n\nNPK : *" . $account->npk ."*";
-            // $isi .= "\nName : *" . $account->fullname ."*";
-            // $isi .= "\nDepartment : " . $account->department;
-            // $isi .= "\nPhone : " . $account->phone;
-            // $isi .= "\nEmail : " . $request->email_address;
-            // $isi .= "\nPurpose : " . $account->purpose;
-
-            // $isi .= "\n\nStatus : Finished";
-
-            // $isi .= "\n\nManager Note : " . $account->manager_note;
-            // $isi .= "\nITD Note : " . $account->it_note;
-            // $isi .= "\nITD Manager Note : " . $account->it_mgr_note;
-            // $isi .= "\n\nNote : " . $request->finish_note;
-
-            $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
-            // $nomor = $user->nohp;
-            $nomor = ['082125008160'];
+            $nomorhpModel = new Alert();
+            $nomorhp = $nomorhpModel->getNoHpItMgr();
 
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
@@ -386,7 +376,7 @@ class AccountController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
+                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
                 ));
                 $response = curl_exec($curl);
                 curl_close($curl);
@@ -448,11 +438,10 @@ class AccountController extends Controller
 
     public function show_data_it_mgr_approval_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
         $data = Account::where('is_it_mgr_approve','1')
                         ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');;
-        // return $data;
+                        ->select('form_account.*', 'users.name as user_name');
+                        
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -550,11 +539,10 @@ class AccountController extends Controller
 
     public function show_data_execution_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
         $data = Account::where('is_finish','1')->orWhere('is_finish','0')
                         ->join('users', 'form_account.created_by', '=', 'users.id')
                         ->select('form_account.*', 'users.name as user_name');
-        // return $data;
+
         return DataTables::eloquent($data)->make(true);
     }
 

@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'ITD Manager Approval Request Fitur'])
+@extends('website.layouts.main', ['title' => 'Execution Request Project'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Request Fitur for Application</h4>
+        <h4>Request Project for Application</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
+                <li class="breadcrumb-item "><a href="#">Execution</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Project</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -14,14 +14,14 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3 table table-responsive">
-                    {{-- <a href="{{ route('website.fitur.show_data_it_mgr_approval') }}" class="btn btn-primary">Show Data</a> --}}
+                    {{-- <a href="{{ route('website.project.show_data_execution') }}" class="btn btn-primary">Show Data</a> --}}
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Nama Aplikasi</th>
-                                <th>Nama Fitur</th>
+                                <th>Nama Project</th>
                                 <th>Nama Requestor</th>
+                                <th>Status</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -30,7 +30,6 @@
             </div>
         </div>
         <!-- Approve Confirmation Modal -->
-
         <div class="modal fade" id="confirmModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -40,9 +39,10 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur">
-                        <input type="hidden" id="id_form_fitur">
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_project">
+                        <input type="hidden" id="id_form_project">
 
+                        <label for="note">Note :</label>
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
 
                     </div>
@@ -65,7 +65,7 @@
                     <div class="modal-body">
                         Please share the reason why you're rejecting<br /><br />
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        <input type="hidden" id="id_form_fitur_reject">
+                        <input type="hidden" id="id_form_project_reject">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -76,6 +76,45 @@
             </div>
         </div>
         <!-- End Confirmation Modal -->
+
+        <div class="modal fade" id="delayModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Progress Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Please share the reason the progress?<br /><br />
+                        <textarea class="form-control" id="delay_reason"></textarea>
+                        <input type="hidden" id="id_form_project_delay">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="btn-delay" class="btn btn-primary" disabled>Accept!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Progress Information<br /><br />
+                        <textarea class="form-control" id="delay_note" disabled></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </section>
 @endsection
@@ -105,13 +144,9 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Nama Aplikasi</td>
-                        <td>${d.aplikasi ?? '-'} </td>
-                    </tr>  
-                    <tr>
-                        <td>Nama Fitur</td>
-                        <td>${d.nama_fitur ?? '-'} </td>
-                    </tr>  
+                        <td>Nama Project</td>
+                        <td>${d.nama_project ?? '-'} </td>
+                    </tr> 
                     <tr>
                         <td>Lampiran</td>
                         <td>
@@ -137,6 +172,10 @@
                     <tr>
                         <td>ITD Note</td>
                         <td>${d.it_note ?? '-'}</td>
+                    </tr>  
+                    <tr>
+                        <td>ITD Manager Note</td>
+                        <td>${d.it_mgr_note ?? '-'}</td>
                     </tr>
                     <tfoot>
                     <tr>
@@ -155,7 +194,7 @@
                 'processing': true,
                 'serverSide': true,
                 ajax: {
-                    url: "{{ route('website.fitur.show_it_mgr_approval_ajax') }}",
+                    url: "{{ route('website.project.show_execution_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -165,12 +204,8 @@
                         searchable: false,
                     },
                     {
-                        data: 'aplikasi',
-                        name: 'aplikasi',
-                    },
-                    {
-                        data: 'nama_fitur',
-                        name: 'nama_fitur'
+                        data: 'nama_project',
+                        name: 'nama_project'
                     },
                     {
                         data: 'fullname',
@@ -181,9 +216,33 @@
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+
+                            if (data.final_status == 'Delay') {
+                                return `
+                                <button class="btn btn-primary btn-sm btn-table-info" data-bs-toggle="modal" data-bs-target="#infoModal" data-id="${data.id}" data-fullname="${data.fullname}" data-ad_name="${data.ad_name}" data-npk="${data.npk}" data-is_email="${data.is_email}" data-delay_note="${data.delay_note}">Progress</button>                                    
+                                `;
+                            } else {
+                                return `
+                                    Wait
+                                `;
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.final_status == 'Delay') {
+                                return `
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Finish</button>
+                                <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            } else {
+                                return `
+                                <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Finish</button>
+                                <button class="btn btn-primary btn-sm btn-table-delay" data-bs-toggle="modal" data-bs-target="#delayModal" data-id="${data.id}" data-fullname="${data.fullname}">Accept</button>
+                                <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            }
                         }
                     },
                 ],
@@ -210,14 +269,15 @@
             });
 
             $('#btn-approve').on('click', function() {
-                let id_form_fitur = $('#id_form_fitur').val();
+                let id_form_project = $('#id_form_project').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.approve_it_mgr') }}",
+                    url: "{{ route('website.project.approve_execution') }}",
                     type: "POST",
                     data: {
-                        id: id_form_fitur,
+                        id: id_form_project,
                         type: 'ok',
-                        it_mgr_note: $('#note').val(),
+                        ad_name: $('#ad_name').val(),
+                        finish_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -233,14 +293,14 @@
             });
 
             $('#btn-reject').on('click', function() {
-                let id_form_fitur_reject = $('#id_form_fitur_reject').val();
+                let id_form_project_reject = $('#id_form_project_reject').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.approve_it_mgr') }}",
+                    url: "{{ route('website.project.approve_execution') }}",
                     type: "POST",
                     data: {
-                        id: id_form_fitur_reject,
+                        id: id_form_project_reject,
                         type: 'reject',
-                        it_mgr_note: $('#reject_reason').val(),
+                        finish_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -256,15 +316,61 @@
             });
 
             $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_fitur = $(this).data('id');
-                var fullname_form_fitur = $(this).data('fullname');
-                $('#id_form_fitur').val(id_form_fitur)
-                $('#fullname_form_fitur').val(fullname_form_fitur)
+                var id_form_project = $(this).data('id');
+                var fullname_form_project = $(this).data('fullname');
+                var ad_name = $(this).data('ad_name');
+
+                $('#id_form_project').val(id_form_project)
+                $('#fullname_form_project').val(fullname_form_project)
+                $('#ad_name').val(ad_name)
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {
-                var id_form_fitur_reject = $(this).data('id');
-                $('#id_form_fitur_reject').val(id_form_fitur_reject)
+                var id_form_project_reject = $(this).data('id');
+                $('#id_form_project_reject').val(id_form_project_reject)
+            })
+
+            $('#delay_reason').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-delay').removeAttr('disabled');
+                else
+                    $('#btn-delay').attr('disabled', 'disabled');
+            });
+
+            $('#app_table').on('click', '.btn-table-delay', function() {
+                var id_form_project_delay = $(this).data('id');
+                $('#id_form_project_delay').val(id_form_project_delay)
+            })
+
+            $('#btn-delay').on('click', function() {
+                let id_form_project_delay = $('#id_form_project_delay').val();
+
+                $.ajax({
+                    url: "{{ route('website.project.approve_execution') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_project_delay,
+                        type: 'delay',
+                        delay_note: $('#delay_reason').val(),
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#delayModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
+            $('#app_table').on('click', '.btn-table-info', function() {
+                var id_form_account_info = $(this).data('id');
+                var delay_note = $(this).data('delay_note');
+                $('#id_form_account_info').val(id_form_account_info)
+                $('#delay_note').val(delay_note)
             })
 
         });

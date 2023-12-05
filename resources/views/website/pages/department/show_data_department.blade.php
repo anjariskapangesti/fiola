@@ -29,11 +29,35 @@
             </div>
         </div>
 
-        <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal fade" id="editModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Delete Confirmation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="id_edit">
+
+                        <label for="name"><b>Nama Department</b></label>
+                        <input type="text" class="form-control" name="name" id="name_edit">
+
+                        <label for="code"><b>Code Department</b></label>
+                        <input type="text" class="form-control" name="code" id="code_edit">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" id="btn-approve-edit">Yes, Edit!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Data</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -78,7 +102,7 @@
 
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({
-                    'lengthChange' : true,
+                    'lengthChange': true,
                     'processing': true,
                     'serverSide': false,
                     'orderable': true,
@@ -108,25 +132,13 @@
                             searchable: false,
                             data: null,
                             render: function(data, type, row, meta) {
-                                return `                            
-                            <button class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-name="${data.name}">Delete</button>`;
+                                return `                        
+                                <button class="btn btn-success btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#editModal" data-id="${data.id}" data-name="${data.name}" data-code="${data.code}">Edit</button>    
+                                <button class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-name="${data.name}">Delete</button>`;
                             }
                         },
                     ],
                 });
-
-                // $('#app_table tbody').on('click', 'td.dt-control', function() {
-                //     var tr = $(this).closest('tr');
-                //     var row = table.row(tr);
-
-                //     if (row.child.isShown()) {
-                //         row.child.hide();
-                //         tr.removeClass('shown');
-                //     } else {
-                //         row.child(format(row.data())).show();
-                //         tr.addClass('shown');
-                //     }
-                // });
 
                 $('#reject_reason').on('keyup', function() {
                     if ($(this).val() != "")
@@ -142,17 +154,16 @@
                 $('#app_table').on('click', '.btn-delete', function() {
                     var id_department = $(this).data('id');
                     var name_department = $(this).data('name');
+                    
                     $('#id_department').val(id_department)
                     $('#name_department').val(name_department)
-                    // console.log(id_form_account);
                 })
 
                 $('#btn-approve-delete').on('click', function() {
                     let id_department = $('#id_department').val();
-                    console.log(id_department);
                     $.ajax({
                         url: "{{ route('website.department.destroy') }}",
-                        type: "DELETE",
+                        type: "post",
                         data: {
                             id: id_department,
                             '_token': "{{ csrf_token() }}",
@@ -162,6 +173,41 @@
                             toastr['success'](response)
                             table.ajax.reload();
                             $('#deleteModal').modal('hide')
+                        },
+                        error: function(xhr, status, error, response) {
+                            toastr['error']('Error')
+                        }
+                    });
+                });
+
+                $('#app_table').on('click', '.btn-edit', function() {
+                    var id_edit = $(this).data('id');
+                    var name_edit = $(this).data('name');
+                    var code_edit = $(this).data('code');
+                    
+                    $('#id_edit').val(id_edit)
+                    $('#name_edit').val(name_edit)
+                    $('#code_edit').val(code_edit)
+                })
+
+                $('#btn-approve-edit').on('click', function() {
+                    let id_edit = $('#id_edit').val();
+                    let name_edit = $('#name_edit').val();
+                    let code_edit = $('#code_edit').val();
+                    $.ajax({
+                        url: "{{ route('website.department.edit') }}",
+                        type: "post",
+                        data: {
+                            id: id_edit,
+                            name: name_edit,
+                            code: code_edit,
+                            '_token': "{{ csrf_token() }}",
+                        },
+                        success: function(response) {
+
+                            toastr['success'](response)
+                            table.ajax.reload();
+                            $('#editModal').modal('hide')
                         },
                         error: function(xhr, status, error, response) {
                             toastr['error']('Error')

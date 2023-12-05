@@ -5,21 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Fitur extends Model
+class Project extends Model
 {
-    protected $table = 'form_fitur';
+    protected $table = 'form_project';
     protected $fillable = [  
         'no_reg',
         'npk',
         'fullname',
         'department',
         'phone',
-        'aplikasi',
-        'nama_fitur',
+        'nama_project',
         'lampiran',
         'kondisi_sebelum',
         'kondisi_target',
         'benefit',
+        'alat',
         'final_status',
         'is_manager_approve',
         'is_it_approve',

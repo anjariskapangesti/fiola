@@ -21,6 +21,7 @@
                     Route::is('website.software.create') || 
                     Route::is('website.hardware.create') || 
                     Route::is('website.vpn.create') || 
+                    Route::is('website.project.create') || 
                     Route::is('website.fitur.create') || 
                     Route::is('website.relayout.create') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
@@ -50,7 +51,7 @@
                     <li>
                         <a href="{{ route('website.hardware.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.create') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                         </a>
                     </li>
                     <li>
@@ -59,7 +60,19 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                         </a>
                     </li>
-                    @can('can_approve_it')
+                    <li>
+                        <a href="{{ route('website.project.create') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.create') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.create') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.create') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                        </a>
+                    </li>
+                    {{-- @can('can_approve_it')
                     <li>
                         <a href="{{ route('website.network.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.network.create') ? 'active' : '') }}">
@@ -68,17 +81,11 @@
                     </li>
                     @endcan
                     <li>
-                        <a href="{{ route('website.fitur.create') }}"
-                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.create') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{ route('website.relayout.create') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.relayout.create') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Relayout</span>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
             </li><!-- End Forms Nav -->
 
@@ -96,7 +103,9 @@
                     Route::is('website.new-folder.show_data_form') || 
                     Route::is('website.software.show_data_form') || 
                     Route::is('website.hardware.show_data_form') || 
-                    Route::is('website.vpn.show_data_form') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_data_form') || 
+                    Route::is('website.project.show_data_form') || 
+                    Route::is('website.fitur.show_data_form') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_data_form') ? 'active' : '') }}">
@@ -136,7 +145,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_data_form') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_form') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
                             @if(App\Models\AppHelper::hardware_confirm_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_confirm_count() }}</span>
                             @endif
@@ -148,6 +157,24 @@
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
                             @if(App\Models\AppHelper::vpn_confirm_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_confirm_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_data_form') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_data_form') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
+                            @if(App\Models\AppHelper::project_confirm_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_confirm_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_data_form') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_data_form') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
+                            @if(App\Models\AppHelper::fitur_confirm_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_confirm_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -170,7 +197,9 @@
                     Route::is('website.new-folder.show_manager_approval') || 
                     Route::is('website.software.show_manager_approval') || 
                     Route::is('website.hardware.show_manager_approval') || 
-                    Route::is('website.vpn.show_manager_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_manager_approval') || 
+                    Route::is('website.project.show_manager_approval') || 
+                    Route::is('website.fitur.show_manager_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_manager_approval') ? 'active' : '') }}">
@@ -210,7 +239,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_manager_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if(App\Models\AppHelper::hardware_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_mgr_count() }}</span>
                             @endif
@@ -222,6 +251,24 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if(App\Models\AppHelper::vpn_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_mgr_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_manager_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_manager_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
+                            @if(App\Models\AppHelper::project_mgr_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_mgr_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_manager_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_manager_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                            @if(App\Models\AppHelper::fitur_mgr_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -239,7 +286,9 @@
                     Route::is('website.new-folder.show_data_manager_approval') || 
                     Route::is('website.software.show_data_manager_approval') || 
                     Route::is('website.hardware.show_data_manager_approval') || 
-                    Route::is('website.vpn.show_data_manager_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_data_manager_approval') || 
+                    Route::is('website.project.show_data_manager_approval') || 
+                    Route::is('website.fitur.show_data_manager_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_data_manager_approval') ? 'active' : '') }}">
@@ -267,13 +316,25 @@
                     <li>
                         <a href="{{ route('website.hardware.show_data_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_manager_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.vpn.show_data_manager_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_data_manager_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_data_manager_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_data_manager_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_data_manager_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_data_manager_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
                         </a>
                     </li>
                 </ul>
@@ -295,7 +356,9 @@
                     Route::is('website.new-folder.show_it_approval') || 
                     Route::is('website.software.show_it_approval') || 
                     Route::is('website.hardware.show_it_approval') || 
-                    Route::is('website.vpn.show_it_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_it_approval') || 
+                    Route::is('website.project.show_it_approval') || 
+                    Route::is('website.fitur.show_it_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_it_approval') ? 'active' : '') }}">
@@ -335,7 +398,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_it_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if(App\Models\AppHelper::hardware_it_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_it_count() }}</span>
                             @endif
@@ -347,6 +410,24 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if(App\Models\AppHelper::vpn_it_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_it_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_it_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_it_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
+                            @if(App\Models\AppHelper::project_it_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_it_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_it_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_it_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                            @if(App\Models\AppHelper::fitur_it_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -363,7 +444,9 @@
                     Route::is('website.new-folder.show_data_it_approval') || 
                     Route::is('website.software.show_data_it_approval') || 
                     Route::is('website.hardware.show_data_it_approval') || 
-                    Route::is('website.vpn.show_data_it_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_data_it_approval') || 
+                    Route::is('website.project.show_data_it_approval') || 
+                    Route::is('website.fitur.show_data_it_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_data_it_approval') ? 'active' : '') }}">
@@ -391,13 +474,25 @@
                     <li>
                         <a href="{{ route('website.hardware.show_data_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_it_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.vpn.show_data_it_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_data_it_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_data_it_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_data_it_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_data_it_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_data_it_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
                         </a>
                     </li>
                 </ul>
@@ -420,7 +515,9 @@
                     Route::is('website.new-folder.show_it_mgr_approval') || 
                     Route::is('website.software.show_it_mgr_approval') || 
                     Route::is('website.hardware.show_it_mgr_approval') || 
-                    Route::is('website.vpn.show_it_mgr_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_it_mgr_approval') || 
+                    Route::is('website.project.show_it_mgr_approval') || 
+                    Route::is('website.fitur.show_it_mgr_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_it_mgr_approval') ? 'active' : '') }}">
@@ -460,7 +557,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_it_mgr_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if(App\Models\AppHelper::hardware_it_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_it_mgr_count() }}</span>
                             @endif
@@ -472,6 +569,24 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if(App\Models\AppHelper::vpn_it_mgr_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_it_mgr_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_it_mgr_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_it_mgr_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
+                            @if(App\Models\AppHelper::project_it_mgr_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_it_mgr_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_it_mgr_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_it_mgr_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                            @if(App\Models\AppHelper::fitur_it_mgr_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -490,7 +605,9 @@
                     Route::is('website.new-folder.show_data_it_mgr_approval') || 
                     Route::is('website.software.show_data_it_mgr_approval') || 
                     Route::is('website.hardware.show_data_it_mgr_approval') || 
-                    Route::is('website.vpn.show_data_it_mgr_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_data_it_mgr_approval') || 
+                    Route::is('website.project.show_data_it_mgr_approval') || 
+                    Route::is('website.fitur.show_data_it_mgr_approval') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_data_it_mgr_approval') ? 'active' : '') }}">
@@ -518,13 +635,25 @@
                     <li>
                         <a href="{{ route('website.hardware.show_data_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_it_mgr_approval') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.vpn.show_data_it_mgr_approval') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_data_it_mgr_approval') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_data_it_mgr_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_data_it_mgr_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_data_it_mgr_approval') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_data_it_mgr_approval') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
                         </a>
                     </li>
                 </ul>
@@ -546,7 +675,9 @@
                     Route::is('website.new-folder.show_execution') || 
                     Route::is('website.software.show_execution') || 
                     Route::is('website.hardware.show_execution') || 
-                    Route::is('website.vpn.show_execution') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_execution') || 
+                    Route::is('website.project.show_execution') || 
+                    Route::is('website.fitur.show_execution') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_execution') ? 'active' : '') }}">
@@ -586,7 +717,7 @@
                     <li>
                         <a href="{{ route('website.hardware.show_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_execution') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if(App\Models\AppHelper::hardware_execution_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_execution_count() }}</span>
                             @endif
@@ -598,6 +729,24 @@
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if(App\Models\AppHelper::vpn_execution_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_execution_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_execution') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_execution') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
+                            @if(App\Models\AppHelper::project_execution_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_execution_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_execution') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_execution') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
+                            @if(App\Models\AppHelper::fitur_execution_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -614,7 +763,9 @@
                     Route::is('website.new-folder.show_data_execution') || 
                     Route::is('website.software.show_data_execution') || 
                     Route::is('website.hardware.show_data_execution') || 
-                    Route::is('website.vpn.show_data_execution') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
+                    Route::is('website.vpn.show_data_execution') || 
+                    Route::is('website.project.show_data_execution') || 
+                    Route::is('website.fitur.show_data_execution') ? 'show' : '') }}" data-bs-parent="#sidebar-nav">
                     <li>
                         <a href="{{ route('website.account.show_data_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.account.show_data_execution') ? 'active' : '') }}">
@@ -642,13 +793,25 @@
                     <li>
                         <a href="{{ route('website.hardware.show_data_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.hardware.show_data_execution') ? 'active' : '') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Device Request</span>
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('website.vpn.show_data_execution') }}"
                         class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.vpn.show_data_execution') ? 'active' : '') }}">
                             <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.project.show_data_execution') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.project.show_data_execution') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('website.fitur.show_data_execution') }}"
+                        class="list-group-item list-group-item-action py-2 ripple {{ (Route::is('website.fitur.show_data_execution') ? 'active' : '') }}">
+                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
                         </a>
                     </li>
                 </ul>
@@ -687,8 +850,6 @@
                 </a>
             </li><!-- End Tables Nav -->
         @endcan
-
-
 
         <li class="nav-heading">ACTION</li>
 

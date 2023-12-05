@@ -39,6 +39,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['middleware' => ['can:can_master']], function () {
                 Route::get('/create', 'DepartmentController@create')->name('department.create');
                 Route::post('/store', 'DepartmentController@store')->name('department.store');
+                Route::post('/edit', 'DepartmentController@edit')->name('department.edit');
                 Route::post('/destroy', 'DepartmentController@destroy')->name('department.destroy');
                 Route::get('/show_data_department', 'DepartmentController@show_data_department')->name('department.show_data_department');
                 Route::get('/show_data_department_ajax', 'DepartmentController@show_data_department_ajax')->name('department.show_data_department_ajax');
@@ -359,6 +360,45 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::post('/approve_execution', 'NetworkController@approve_execution')->name('network.approve_execution');
                 Route::get('/show_data_execution', 'NetworkController@show_data_execution')->name('network.show_data_execution');
                 Route::get('/show_data_execution_ajax', 'NetworkController@show_data_execution_ajax')->name('network.show_data_execution_ajax');
+            });
+        });
+        // FORM PROJECT //
+        Route::group(['prefix' => 'project'], function(){
+            Route::get('/create', 'ProjectController@create')->name('project.create');
+            Route::post('/store', 'ProjectController@store')->name('project.store');
+            Route::get('/subfolder_ajax', 'ProjectController@subfolder_ajax')->name('project.subfolder_ajax');
+            Route::get('/show_data_form', 'ProjectController@show_data_form')->name('project.show_data_form');
+            Route::get('/show_data_form_ajax', 'ProjectController@show_data_form_ajax')->name('project.show_data_form_ajax');   
+            Route::post('/approve_form', 'ProjectController@approve_form')->name('project.approve_form');
+
+            Route::group(['middleware' => ['can:can_approve_mgr']], function () {
+                Route::get('/show_manager_approval', 'ProjectController@show_manager_approval')->name('project.show_manager_approval');
+                Route::get('/show_manager_approval_ajax', 'ProjectController@show_manager_approval_ajax')->name('project.show_manager_approval_ajax');
+                Route::post('/approve_manager', 'ProjectController@approve_manager')->name('project.approve_manager');
+                Route::get('/show_data_manager_approval', 'ProjectController@show_data_manager_approval')->name('project.show_data_manager_approval');
+                Route::get('/show_data_manager_approval_ajax', 'ProjectController@show_data_manager_approval_ajax')->name('project.show_data_manager_approval_ajax');                
+            });
+            Route::group(['middleware' => ['can:can_approve_it']], function () {
+                Route::get('/show_it_approval', 'ProjectController@show_it_approval')->name('project.show_it_approval');
+                Route::get('/show_it_approval_ajax', 'ProjectController@show_it_approval_ajax')->name('project.show_it_approval_ajax');
+                Route::post('/approve_it', 'ProjectController@approve_it')->name('project.approve_it');
+                Route::get('/show_data_it_approval', 'ProjectController@show_data_it_approval')->name('project.show_data_it_approval');
+                Route::get('/show_data_it_approval_ajax', 'ProjectController@show_data_it_approval_ajax')->name('project.show_data_it_approval_ajax');
+            });
+            Route::group(['middleware' => ['can:can_approve_it_mgr']], function () {
+                Route::get('/show_it_mgr_approval', 'ProjectController@show_it_mgr_approval')->name('project.show_it_mgr_approval');
+                Route::get('/show_it_mgr_approval_ajax', 'ProjectController@show_it_mgr_approval_ajax')->name('project.show_it_mgr_approval_ajax');
+                Route::post('/approve_it_mgr', 'ProjectController@approve_it_mgr')->name('project.approve_it_mgr');
+                Route::get('/show_data_it_mgr_approval', 'ProjectController@show_data_it_mgr_approval')->name('project.show_data_it_mgr_approval');
+                Route::get('/show_data_it_mgr_approval_ajax', 'ProjectController@show_data_it_mgr_approval_ajax')->name('project.show_data_it_mgr_approval_ajax');
+            });
+
+            Route::group(['middleware' => ['can:can_execution']], function () {
+                Route::get('/show_execution', 'ProjectController@show_execution')->name('project.show_execution');
+                Route::get('/show_execution_ajax', 'ProjectController@show_execution_ajax')->name('project.show_execution_ajax');
+                Route::post('/approve_execution', 'ProjectController@approve_execution')->name('project.approve_execution');
+                Route::get('/show_data_execution', 'ProjectController@show_data_execution')->name('project.show_data_execution');
+                Route::get('/show_data_execution_ajax', 'ProjectController@show_data_execution_ajax')->name('project.show_data_execution_ajax');
             });
         });
         // FORM FITUR //

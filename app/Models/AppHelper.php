@@ -7,7 +7,6 @@ use App\Models\FolderAccess;
 use App\Models\NewFolder;
 use Auth;
 
-
 class AppHelper
 {                 
     public static function manager_approvals_count()
@@ -52,9 +51,21 @@ class AppHelper
                                 })
                                         ->where('final_status', 'LIKE', '%created%')->count();
 
-        $account_count = $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count;
+        $project_mgr_count = Project::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                    $query->where('created_dept', $firstDepartmentId)
+                                        ->orWhere('created_dept', $lastDepartmentId);
+                                })
+                                        ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $fitur_mgr_count = Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                    $query->where('created_dept', $firstDepartmentId)
+                                        ->orWhere('created_dept', $lastDepartmentId);
+                                })
+                                        ->where('final_status', 'LIKE', '%created%')->count();
+
+        $account_count = $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count + $project_mgr_count + $fitur_mgr_count;
         
-        return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count;
+        return $account_mgr_count + $folderaccess_mgr_count + $newfolder_mgr_count + $software_mgr_count + $hardware_mgr_count + $vpn_mgr_count + $project_mgr_count + $fitur_mgr_count;
     }
 
     public static function confirms_count()
@@ -76,8 +87,14 @@ class AppHelper
 
         $vpn_confirm_count = Vpn::where('created_by', Auth::user()->id)
                                             ->where('is_confirm', 'LIKE', '%0%')->count();
+
+        $project_confirm_count = Project::where('created_by', Auth::user()->id)
+                                            ->where('is_confirm', 'LIKE', '%0%')->count();
+
+        $fitur_confirm_count = Fitur::where('created_by', Auth::user()->id)
+                                            ->where('is_confirm', 'LIKE', '%0%')->count();
                                             
-        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count + $software_confirm_count + $hardware_confirm_count + $vpn_confirm_count;
+        return $account_confirm_count + $folderaccess_confirm_count + $newfolder_confirm_count + $software_confirm_count + $hardware_confirm_count + $vpn_confirm_count + $project_confirm_count + $fitur_confirm_count;
     }
 
     public static function it_approvals_count()
@@ -88,8 +105,10 @@ class AppHelper
         $software_it_count = Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $hardware_it_count = Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $vpn_it_count = Vpn::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $project_it_count = Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $fitur_it_count = Fitur::where('final_status', 'LIKE', '%Manager Approve%')->count();
 
-        return $account_it_count + $folderaccess_it_count + $newfolder_it_count + $software_it_count + $hardware_it_count + $vpn_it_count;
+        return $account_it_count + $folderaccess_it_count + $newfolder_it_count + $software_it_count + $hardware_it_count + $vpn_it_count + $project_it_count + $fitur_it_count;
     }
 
     public static function it_mgr_approvals_count()
@@ -100,8 +119,10 @@ class AppHelper
         $software_it_mgr_count = Software::where('final_status', 'LIKE', 'IT Approve%')->count();
         $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
         $vpn_it_mgr_count = Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $project_it_mgr_count = Project::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $fitur_it_mgr_count = Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
 
-        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count + $software_it_mgr_count + $hardware_it_mgr_count + $vpn_it_mgr_count;
+        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count + $software_it_mgr_count + $hardware_it_mgr_count + $vpn_it_mgr_count + $project_it_mgr_count + $fitur_it_mgr_count;
     }
 
     public static function execution_count()
@@ -115,8 +136,18 @@ class AppHelper
         $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
         $vpn_execution_count = Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $project_execution_count = Project::where(function($query) {
+            $query->where('final_status', 'LIKE', '%IT MGR Approve%')
+                  ->orWhere('final_status', 'LIKE', '%Delay%')
+                  ->orWhere('final_status', 'LIKE', '%On Progress%');
+        })->count();
+        $fitur_execution_count = Fitur::where(function($query) {
+            $query->where('final_status', 'LIKE', '%IT MGR Approve%')
+                  ->orWhere('final_status', 'LIKE', '%Delay%')
+                  ->orWhere('final_status', 'LIKE', '%On Progress%');
+        })->count();
 
-        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count + $vpn_execution_count;
+        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count + $vpn_execution_count + $project_execution_count + $fitur_execution_count;
     }
 
     /// FORM ACCOUNT ///
@@ -186,7 +217,7 @@ class AppHelper
 
     public static function folderaccess_execution_count()
     {
-        return FolderAccess::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        return FolderAccess::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
     }
 
     /// FORM NEW FOLDER ///
@@ -221,7 +252,7 @@ class AppHelper
 
     public static function newfolder_execution_count()
     {
-        return NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        return NewFolder::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
     }
 
     /// FORM SOFTWARE ///
@@ -256,7 +287,7 @@ class AppHelper
 
     public static function software_execution_count()
     {
-        return Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        return Software::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
     }
 
     /// FORM HARDWARE ///
@@ -291,7 +322,7 @@ class AppHelper
 
     public static function hardware_execution_count()
     {
-        return Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        return Hardware::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
     }
 
     /// FORM VPN ///
@@ -326,6 +357,76 @@ class AppHelper
 
     public static function vpn_execution_count()
     {
-        return Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        return Vpn::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
+    }
+
+    /// FORM PROJECT ///
+    public static function project_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Project::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function project_confirm_count()
+    {
+        return Project::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
+    public static function project_it_count()
+    {
+        return Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function project_it_mgr_count()
+    {
+        return Project::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function project_execution_count()
+    {
+        return Project::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
+    }
+
+    /// FORM FITUR ///
+    public static function fitur_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function fitur_confirm_count()
+    {
+        return Fitur::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', '%0%')->count();
+    }
+
+    public static function fitur_it_count()
+    {
+        return Fitur::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function fitur_it_mgr_count()
+    {
+        return Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function fitur_execution_count()
+    {
+        return Fitur::whereIn('final_status', ['IT MGR Approve', 'Delay'])->count();
     }
 }

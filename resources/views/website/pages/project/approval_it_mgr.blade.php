@@ -1,12 +1,12 @@
-@extends('website.layouts.main', ['title' => 'ITD Approval Request Fitur'])
+@extends('website.layouts.main', ['title' => 'ITD Manager Approval Request Project'])
 
 @section('content')
     <div class="pagetitle">
-        <h4>Request Fitur for Application</h4>
+        <h4>Request Project for Application</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Approval</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
+                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Request Project</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -14,13 +14,12 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3 table table-responsive">
-                    {{-- <a href="{{ route('website.fitur.show_data_it_approval') }}" class="btn btn-primary">Show Data</a> --}}
+                    {{-- <a href="{{ route('website.project.show_data_it_mgr_approval') }}" class="btn btn-primary">Show Data</a> --}}
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Nama Aplikasi</th>
-                                <th>Nama Fitur</th>
+                                <th>Nama Project</th>
                                 <th>Nama Requestor</th>
                                 <th>Option</th>
                             </tr>
@@ -40,8 +39,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur">
-                        <input type="hidden" id="id_form_fitur">
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_project">
+                        <input type="hidden" id="id_form_project">
 
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
 
@@ -63,11 +62,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Please share the reason why you're rejecting
-                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_fitur_reject">
-
+                        Please share the reason why you're rejecting<br /><br />
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        <input type="hidden" id="id_form_fitur_reject">
+                        <input type="hidden" id="id_form_project_reject">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -107,13 +104,9 @@
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Nama Aplikasi</td>
-                        <td>${d.aplikasi ?? '-'} </td>
-                    </tr>  
-                    <tr>
-                        <td>Nama Fitur</td>
-                        <td>${d.nama_fitur ?? '-'} </td>
-                    </tr>  
+                        <td>Nama Project</td>
+                        <td>${d.nama_project ?? '-'} </td>
+                    </tr>
                     <tr>
                         <td>Lampiran</td>
                         <td>
@@ -136,6 +129,10 @@
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
                     </tr>
+                    <tr>
+                        <td>ITD Note</td>
+                        <td>${d.it_note ?? '-'}</td>
+                    </tr>
                     <tfoot>
                     <tr>
                         <th>Dibuat oleh</th>
@@ -152,9 +149,8 @@
                 "lengthChange": true,
                 'processing': true,
                 'serverSide': true,
-                // "sScrollY": true,
                 ajax: {
-                    url: "{{ route('website.fitur.show_it_approval_ajax') }}",
+                    url: "{{ route('website.project.show_it_mgr_approval_ajax') }}",
                 },
                 columns: [{
                         className: 'dt-control',
@@ -164,12 +160,8 @@
                         searchable: false,
                     },
                     {
-                        data: 'aplikasi',
-                        name: 'aplikasi',
-                    },
-                    {
-                        data: 'nama_fitur',
-                        name: 'nama_fitur'
+                        data: 'nama_project',
+                        name: 'nama_project'
                     },
                     {
                         data: 'fullname',
@@ -209,14 +201,14 @@
             });
 
             $('#btn-approve').on('click', function() {
-                let id_form_fitur = $('#id_form_fitur').val();
+                let id_form_project = $('#id_form_project').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.approve_it') }}",
+                    url: "{{ route('website.project.approve_it_mgr') }}",
                     type: "POST",
                     data: {
-                        id: id_form_fitur,
+                        id: id_form_project,
                         type: 'ok',
-                        it_note: $('#note').val(),
+                        it_mgr_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -232,14 +224,14 @@
             });
 
             $('#btn-reject').on('click', function() {
-                let id_form_fitur_reject = $('#id_form_fitur_reject').val();
+                let id_form_project_reject = $('#id_form_project_reject').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.approve_it') }}",
+                    url: "{{ route('website.project.approve_it_mgr') }}",
                     type: "POST",
                     data: {
-                        id: id_form_fitur_reject,
+                        id: id_form_project_reject,
                         type: 'reject',
-                        it_note: $('#reject_reason').val(),
+                        it_mgr_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -254,22 +246,16 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_fitur = $(this).data('id');
-                var fullname_form_fitur = $(this).data('fullname');
-                $('#id_form_fitur').val(id_form_fitur)
-                $('#fullname_form_fitur').val(fullname_form_fitur)
+                var id_form_project = $(this).data('id');
+                var fullname_form_project = $(this).data('fullname');
+                $('#id_form_project').val(id_form_project)
+                $('#fullname_form_project').val(fullname_form_project)
             })
 
             $('#app_table').on('click', '.btn-table-reject', function() {
-                var id_form_fitur_reject = $(this).data('id');
-                var fullname_form_fitur_reject = $(this).data('fullname');
-                $('#id_form_fitur_reject').val(id_form_fitur_reject)
-                $('#fullname_form_fitur_reject').val(fullname_form_fitur_reject)
+                var id_form_project_reject = $(this).data('id');
+                $('#id_form_project_reject').val(id_form_project_reject)
             })
 
         });

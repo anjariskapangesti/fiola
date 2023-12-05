@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Fitur;
+use App\Models\Project;
 use App\Models\User;
 use App\Models\Alert;
 
@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
-class FiturController extends Controller
+class ProjectController extends Controller
 {
     public function create()
     {
@@ -22,13 +22,13 @@ class FiturController extends Controller
                                     ->whereNull('nohp')
                                     ->count();        
 
-        $data = Fitur::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+        $data = Project::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else if($data > 0){
-            return redirect()->route('website.fitur.show_data_form')->with('info', 'Please confirm!');
+            return redirect()->route('website.project.show_data_form')->with('info', 'Please confirm!');
         }else{
-            return view('website.pages.fitur.create');
+            return view('website.pages.project.create');
         }
     }
 
@@ -40,13 +40,12 @@ class FiturController extends Controller
             'fullname' => 'required' ,
             'department' => 'required' ,
             'phone' => 'required' ,
-            'aplikasi' => 'required' ,
-            'nama_fitur' => 'required' ,
+            'nama_project' => 'required' ,
         ]);
 
         $year = date('y');
         $month = date('m');
-        $lastForm = DB::table('form_fitur')
+        $lastForm = DB::table('form_project')
                       ->select('no_reg')
                       ->orderBy('no_reg', 'desc')
                       ->first();
@@ -57,7 +56,7 @@ class FiturController extends Controller
             $lastNumber = '000';
         }            
         $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
-        $no_reg = 'FTR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+        $no_reg = 'PRJ/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         if (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
@@ -77,31 +76,32 @@ class FiturController extends Controller
         {
             if ($request->hasFile('lampiran')) {
                     $photoExtension = $request->lampiran->getClientOriginalExtension();
-                    $photoFileName = 'FTR_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $photoExtension;
+                    $photoFileName = 'PRJ_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $photoExtension;
                     $photoPath = $request->lampiran->storeAs('lampiran', $photoFileName, 'public');
             }  
             
-            $form_fitur = Fitur::create([
+            $form_project = Project::create([
                 'no_reg' => $no_reg,
                 'npk' => $request->npk ,
                 'fullname' => $request->fullname ,
                 'department' => $request->department ,
                 'phone' => $request->phone ,
                 'aplikasi' => $request->aplikasi ,
-                'nama_fitur' => $request->nama_fitur ,
+                'nama_project' => $request->nama_project ,
                 'lampiran' => $photoFileName,
                 'kondisi_sebelum' => $request->kondisi_sebelum ,
                 'kondisi_target' => $request->kondisi_target ,
                 'benefit' => $request->benefit ,
+                'alat' => $request->alat ,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
                 'is_manager_approve' => $isManagerApprove,
                 'manager_approval_date' => $managerApprovalDate,            
             ]);
-            $form_fitur->save();
+            $form_project->save();
 
-            return redirect()->route('website.fitur.show_data_form')->with('success', 'Success Create Form');
+            return redirect()->route('website.project.show_data_form')->with('success', 'Success Create Form');
         }
         catch(\Exception $e)
         {
@@ -111,15 +111,15 @@ class FiturController extends Controller
 
     public function show_data_form()
     {
-        return view('website.pages.fitur.show_data_form');
+        return view('website.pages.project.show_data_form');
     }
 
     public function show_data_form_ajax(Request $request)
     {
-        $data = Fitur::orderBy('id', 'DESC')
+        $data = Project::orderBy('id', 'DESC')
                         ->where('created_by', Auth::user()->id)
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -128,20 +128,20 @@ class FiturController extends Controller
     {
         $id=$request->id;
         $type=$request->type;
-        $fitur = Fitur::findOrFail($id);
+        $project = Project::findOrFail($id);
         if($type=='ok'){
-            $fitur->is_confirm=1;
+            $project->is_confirm=1;
         }else{
-            $fitur->is_confirm=0;
+            $project->is_confirm=0;
         }
-        $fitur->save();
+        $project->save();
         return "Confirm is Saved!";
     }
 
     // MGR //
     public function show_manager_approval()
     {
-        return view('website.pages.fitur.approval_manager');
+        return view('website.pages.project.approval_manager');
     }
 
     public function show_manager_approval_ajax(Request $request)
@@ -150,20 +150,20 @@ class FiturController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
         
-        $data = Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+        $data = Project::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                             $query->where('created_dept', $firstDepartmentId)
                                 ->orWhere('created_dept', $lastDepartmentId);
                         })
                         ->where('final_status', 'created')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     public function show_data_manager_approval()
     {
-        return view('website.pages.fitur.show_data_manager_approval');
+        return view('website.pages.project.show_data_manager_approval');
     }
 
     public function show_data_manager_approval_ajax(Request $request)
@@ -172,13 +172,13 @@ class FiturController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
         
-        $data = Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+        $data = Project::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                             $query->where('created_dept', $firstDepartmentId)
                                 ->orWhere('created_dept', $lastDepartmentId);
                         })
                         ->where('is_manager_approve','1')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -189,48 +189,48 @@ class FiturController extends Controller
         
         $type=$request->type;
         
-        $fitur = Fitur::findOrFail($id);
+        $project = Project::findOrFail($id);
         
         if($type=='ok'){
-            $fitur->is_manager_approve=1;
-            $fitur->final_status='Manager Approve';
-            $fitur->manager_note=$request->manager_note;
+            $project->is_manager_approve=1;
+            $project->final_status='Manager Approve';
+            $project->manager_note=$request->manager_note;
         }else{
-            $fitur->is_manager_approve=0;
-            $fitur->final_status='Manager Reject';
-            $fitur->manager_note=$request->manager_note;
-            $fitur->is_finish=0;
+            $project->is_manager_approve=0;
+            $project->final_status='Manager Reject';
+            $project->manager_note=$request->manager_note;
+            $project->is_finish=0;
         }
-        $fitur->manager_approval_date= Carbon::now();
-        $fitur->save();
+        $project->manager_approval_date= Carbon::now();
+        $project->save();
         return "Request is Saved!";        
     }
 
     /// ITD APPROVE ///
     public function show_it_approval()
     {
-        return view('website.pages.fitur.approval_it');
+        return view('website.pages.project.approval_it');
     }
 
     public function show_it_approval_ajax(Request $request)
     {
-        $data = Fitur::where('final_status','Manager Approve')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Project::where('final_status','Manager Approve')
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     public function show_data_it_approval()
     {
-        return view('website.pages.fitur.show_data_it_approval');
+        return view('website.pages.project.show_data_it_approval');
     }
 
     public function show_data_it_approval_ajax(Request $request)
     {
-        $data = Fitur::where('is_it_approve','1')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Project::where('is_it_approve','1')
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
         
         return DataTables::eloquent($data)->make(true);
     }
@@ -239,19 +239,19 @@ class FiturController extends Controller
     {
         $id=$request->id;
         $type=$request->type;
-        $fitur = Fitur::findOrFail($id);
+        $project = Project::findOrFail($id);
         if($type=='ok'){
-            $isi = "FORM Request Fitur\n";
+            $isi = "FORM Request project\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNama : *" . $fitur->fullname ."*";        
+            $isi .= "\nNama : *" . $project->fullname ."*";        
             
-            $isi .= "\nDepartment : " . $fitur->department;
-            $isi .= "\n\nNama Aplikasi : " . $fitur->aplikasi;
-            $isi .= "\nNama Fitur : " . $fitur->nama_fitur;
-            $isi .= "\nKondisi Sebelum Improvement : " . $fitur->kondisi_sebelum;
-            $isi .= "\nKondisi yang diharapkan : " . $fitur->kondisi_target;
-            $isi .= "\nBenefit yang didapat : " . $fitur->benefit;
+            $isi .= "\nDepartment : " . $project->department;
+            $isi .= "\n\nNama Aplikasi : " . $project->aplikasi;
+            $isi .= "\nNama project : " . $project->nama_project;
+            $isi .= "\nKondisi Sebelum Improvement : " . $project->kondisi_sebelum;
+            $isi .= "\nKondisi yang diharapkan : " . $project->kondisi_target;
+            $isi .= "\nBenefit yang didapat : " . $project->benefit;
             $isi .= "\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
@@ -276,31 +276,31 @@ class FiturController extends Controller
                 $response = curl_exec($curl);
                 curl_close($curl);
 
-            $fitur->is_it_approve=1;
-            $fitur->final_status='IT Approve';
-            $fitur->it_note=$request->it_note;
+            $project->is_it_approve=1;
+            $project->final_status='IT Approve';
+            $project->it_note=$request->it_note;
         }else{
-            $fitur->is_it_approve=0;
-            $fitur->final_status='IT Reject';
-            $fitur->it_note=$request->it_note;
-            $fitur->is_finish=0;
+            $project->is_it_approve=0;
+            $project->final_status='IT Reject';
+            $project->it_note=$request->it_note;
+            $project->is_finish=0;
         }
-        $fitur->it_approval_date= Carbon::now();
-        $fitur->save();
+        $project->it_approval_date= Carbon::now();
+        $project->save();
         return "Request is Saved!";
     }
 
     /// IT MGR ///
     public function show_it_mgr_approval()
     {
-        return view('website.pages.fitur.approval_it_mgr');
+        return view('website.pages.project.approval_it_mgr');
     }
 
     public function show_it_mgr_approval_ajax(Request $request)
     {
-        $data = Fitur::where('final_status','IT Approve')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Project::where('final_status','IT Approve')
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -308,33 +308,33 @@ class FiturController extends Controller
     {
         $id=$request->id;
         $type=$request->type;
-        $fitur = Fitur::findOrFail($id);
+        $project = Project::findOrFail($id);
         if($type=='ok'){
-            $fitur->is_it_mgr_approve=1;
-            $fitur->final_status='IT MGR Approve';
-            $fitur->it_mgr_note=$request->it_mgr_note;
+            $project->is_it_mgr_approve=1;
+            $project->final_status='IT MGR Approve';
+            $project->it_mgr_note=$request->it_mgr_note;
         }else{
-            $fitur->is_it_mgr_approve=0;
-            $fitur->final_status='IT MGR Reject';
-            $fitur->it_mgr_note=$request->it_mgr_note;
-            $fitur->is_finish=0;
+            $project->is_it_mgr_approve=0;
+            $project->final_status='IT MGR Reject';
+            $project->it_mgr_note=$request->it_mgr_note;
+            $project->is_finish=0;
         }
-        $fitur->it_mgr_approval_date= Carbon::now();
-        $fitur->save();
+        $project->it_mgr_approval_date= Carbon::now();
+        $project->save();
         return "Request is Saved!";
     }
 
     public function show_data_it_mgr_approval()
     {
-        return view('website.pages.fitur.show_data_it_mgr_approval');
+        return view('website.pages.project.show_data_it_mgr_approval');
     }
 
     public function show_data_it_mgr_approval_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Fitur::where('is_it_mgr_approve','1')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');;
+        $data = Project::where('is_it_mgr_approve','1')
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');;
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
@@ -342,14 +342,14 @@ class FiturController extends Controller
     /// EXECUTION ///
     public function show_execution()
     {
-        return view('website.pages.fitur.approval_execution');
+        return view('website.pages.project.approval_execution');
     }
 
     public function show_execution_ajax(Request $request)
     {
-        $data = Fitur::whereIn('final_status', ['IT MGR Approve', 'Delay'])
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Project::whereIn('final_status', ['IT MGR Approve', 'Delay'])
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
                         
         return DataTables::eloquent($data)->make(true);
     }
@@ -358,23 +358,23 @@ class FiturController extends Controller
     {
         $id=$request->id;
         $type=$request->type;
-        $fitur = Fitur::findOrFail($id);
+        $project = Project::findOrFail($id);
         
-        $user = $fitur->createdBy;
-
+        $user = $project->createdBy;
+        
         if($type=='ok'){
-            $isi = "FORM Request Fitur\n";
+            $isi = "FORM Request project\n";
         
-            $isi .= "\nNPK : *" . $fitur->npk ."*";
-            $isi .= "\nName : *" . $fitur->fullname ."*";
-            $isi .= "\nDepartment : " . $fitur->department;
-            $isi .= "\nPhone : " . $fitur->phone;            
+            $isi .= "\nNPK : *" . $project->npk ."*";
+            $isi .= "\nName : *" . $project->fullname ."*";
+            $isi .= "\nDepartment : " . $project->department;
+            $isi .= "\nPhone : " . $project->phone;            
     
             $isi .= "\n\nStatus : Finished";
     
-            $isi .= "\n\nManager Note : " . $fitur->manager_note;
-            $isi .= "\nITD Note : " . $fitur->it_note;
-            $isi .= "\nITD Manager Note : " . $fitur->it_mgr_note;
+            $isi .= "\n\nManager Note : " . $project->manager_note;
+            $isi .= "\nITD Note : " . $project->it_note;
+            $isi .= "\nITD Manager Note : " . $project->it_mgr_note;
             $isi .= "\n\nNote : " . $request->finish_note;
     
             $nomor = $user->nohp;
@@ -396,36 +396,36 @@ class FiturController extends Controller
                 $response = curl_exec($curl);
                 curl_close($curl);
                 
-            $fitur->is_finish=1;
-            $fitur->is_confirm=0;
-            $fitur->final_status='Finished';
-            $fitur->finish_note=$request->finish_note;
+            $project->is_finish=1;
+            $project->is_confirm=0;
+            $project->final_status='Finished';
+            $project->finish_note=$request->finish_note;
         } else if($type=='delay'){
-            $fitur->is_delay=1;
-            $fitur->final_status='Delay';
-            $fitur->delay_note=$request->delay_note;            
+            $project->is_delay=1;
+            $project->final_status='Delay';
+            $project->delay_note=$request->delay_note;            
         } else {
-            $fitur->is_finish=0;
-            $fitur->final_status='Rejected';
-            $fitur->finish_note=$request->finish_note;
+            $project->is_finish=0;
+            $project->final_status='Rejected';
+            $project->finish_note=$request->finish_note;
         }
-        $fitur->finish_date= Carbon::now();
-        $fitur->save();
+        $project->finish_date= Carbon::now();
+        $project->save();
 
         return "Request is Saved!";
     }
 
     public function show_data_execution()
     {
-        return view('website.pages.fitur.show_data_execution');
+        return view('website.pages.project.show_data_execution');
     }
 
     public function show_data_execution_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Fitur::where('is_finish','1')->orWhere('is_finish','0')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Project::where('is_finish','1')->orWhere('is_finish','0')
+                        ->join('users', 'form_project.created_by', '=', 'users.id')
+                        ->select('form_project.*', 'users.name as user_name');
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
