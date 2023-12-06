@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Alert extends Model
 {
-    protected $nohpitmgr = '082125008160';
-    // protected $nohpitmgr = '082260050066';
+    // protected $nohpitmgr = '082125008160';
+    protected $nohpitmgr = '082260050066';
 
     public function getNoHpItMgr()
     {
