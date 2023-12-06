@@ -23,10 +23,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" enctype="multipart/form-data" action="{{ route('website.project.store') }}" class="needs-validation" novalidate>
+            <form method="post" enctype="multipart/form-data" action="{{ route('website.project.store') }}"
+                class="needs-validation" novalidate>
                 @csrf
-                <div class="col-lg-12">                                        
-                    
+                <div class="col-lg-12">
+
                     <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title">Applicant Information</h5>
@@ -40,13 +41,15 @@
                                 <div class="col-md-6">
                                     <label for="fullname"><b>Nama</b></label>
                                     <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        maxlength="60" value="{{ Auth::user()->name }}" readonly required onkeyup="formatFullName(this)">
+                                        maxlength="60" value="{{ Auth::user()->name }}" readonly required
+                                        onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone"><b>No. Handphone</b></label>
                                     <input type="text" class="form-control" placeholder="No Handphone" name="phone"
-                                        maxlength="60" value="{{ Auth::user()->nohp }}" readonly required onkeyup="formatFullName(this)">
+                                        maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
+                                        onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 {{-- <div class="col-md-6">
@@ -61,27 +64,30 @@
                                 <div class="col-md-6">
                                     <label for="department"><b>Department</b></label>
                                     <input type="text" class="form-control" placeholder="Department" name="department"
-                                        maxlength="14" value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly required>
+                                        maxlength="14" value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}"
+                                        readonly required>
                                     <div class="invalid-feedback">Please enter your Department</div>
                                 </div>
                                 <hr style="margin-bottom: 0rem; opacity: 100%;">
                                 <div class="col-md-12">
                                     <label for="nama_project"><b>Nama Project</b></label>
-                                    <input type="text" class="form-control" placeholder="Nama Project" name="nama_project"
-                                        value="{{ old('nama_project') }}" required>
+                                    <input type="text" class="form-control" placeholder="Nama Project"
+                                        name="nama_project" value="{{ old('nama_project') }}" required>
                                     <div class="invalid-feedback">Please enter your Nama Project</div>
                                 </div>
+
                                 <div class="col-md-12">
-                                    <label for="lampiran"><b>Lampiran</b></label>
-                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran" accept=".xlsx, .xls, .pdf">
-                                    <div class="invalid-feedback">Please enter your Lampiran</div>
+                                    <label for="lampiran"><b>File PDF Konsep</b></label>
+                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran"
+                                        accept=".pdf">
+                                    <div class="invalid-feedback">Please enter your File PDF Konsep</div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="kondisi_sebelum" required>{{ old('kondisi_sebelum') }}</textarea>
-                                        <label for="floatingTextarea">Kondisi Sebelum Improvement</label>
+                                        <label for="floatingTextarea"><b>Kondisi Sebelum Improvement</b></label>
                                         <div class="invalid-feedback">Please fill your Kondisi Sebelum Improvement</div>
                                     </div>
                                 </div>
@@ -90,7 +96,7 @@
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="kondisi_target" required>{{ old('kondisi_target') }}</textarea>
-                                        <label for="floatingTextarea">Kondisi yang diharapkan</label>
+                                        <label for="floatingTextarea"><b>Kondisi yang diharapkan</b></label>
                                         <div class="invalid-feedback">Please fill your Kondisi yang diharapkan</div>
                                     </div>
                                 </div>
@@ -99,23 +105,45 @@
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="benefit" required>{{ old('benefit') }}</textarea>
-                                        <label for="floatingTextarea">Benefit</label>
+                                        <label for="floatingTextarea"><b>Benefit yang didapat</b></label>
                                         <div class="invalid-feedback">Please fill your Benefit</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
-                                    <div class="form-floating mb-3">
+                                    <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="alat">{{ old('alat') }}</textarea>
-                                        <label for="floatingTextarea">Additional Support Alat-alat</label>
+                                        <label for="floatingTextarea"><b>Additional Support Alat-alat</b></label>
                                         <div class="invalid-feedback">Please fill your alat</div>
                                     </div>
+                                </div>
+
+                                {{-- <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                            name="cost">{{ old('cost') }}</textarea>
+                                        <label for="floatingTextarea">Estimasi Cost</label>
+                                        <div class="invalid-feedback">Please fill your Estimasi Cost</div>
+                                    </div>
+                                </div> --}}
+                                <div class="col-md-12">
+                                    <label for="cost1"><b>Estimasi Cost</b></label>
+                                    <div class="d-flex justify-content-center">
+                                        <input type="text" class="form-control" name="cost1" id="cost1">
+                                        <h3><b>-</b></h3>
+                                        <input type="text" class="form-control" name="cost2" id="cost2">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#alatModal">List Alat dan Harga</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="card">
                         <div class="card-body">
                             @include('website.layouts.approval_flow')
@@ -127,6 +155,44 @@
         </div>
     </section>
 
+    <div class="modal fade" id="alatModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>List Alat dan Harga</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="text-center">
+                                <th>No</th>
+                                <th>Alat</th>
+                                <th>Harga</th>
+                                <th>Spesifikasi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($devices as $device)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $device->name }}</td>
+                                    <td>{{ $device->cost }}</td>
+                                    <td>{{ $device->spesifikasi }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -168,5 +234,33 @@
                 usernameInput.value = '';
             }
         }
+    </script>
+    <script>
+        const cost1 = document.getElementById('cost1');
+
+        cost1.addEventListener('input', function(e) {
+            // Menghapus semua karakter selain angka
+            let formatCost1 = this.value.replace(/\D/g, '');
+
+            // Menerapkan pemisah ribuan dengan menambahkan titik setiap 3 digit dari belakang
+            formatCost1 = formatCost1.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+            // Mengupdate nilai input dengan format yang telah dimodifikasi
+            this.value = formatCost1;
+        });
+    </script>
+    <script>
+        const cost2 = document.getElementById('cost2');
+
+        cost2.addEventListener('input', function(e) {
+            // Menghapus semua karakter selain angka
+            let formatCost2 = this.value.replace(/\D/g, '');
+
+            // Menerapkan pemisah ribuan dengan menambahkan titik setiap 3 digit dari belakang
+            formatCost2 = formatCost2.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+            // Mengupdate nilai input dengan format yang telah dimodifikasi
+            this.value = formatCost2;
+        });
     </script>
 @endpush

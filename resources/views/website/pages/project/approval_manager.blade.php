@@ -126,7 +126,11 @@
                     <tr>
                         <td>Benefit yang didapat</td>
                         <td>${d.benefit ?? '-'}</td>
-                    </tr>               
+                    </tr>  
+                    <tr>
+                        <td>Estimasi Cost</td>
+                        <td>${d.cost ?? '-'}</td>
+                    </tr>             
                     <tfoot>
                     <tr>
                         <th>Dibuat oleh</th>

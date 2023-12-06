@@ -821,6 +821,12 @@
         @can('can_master')
             <li class="nav-heading">Master</li>
             <li class="nav-item">
+                <a class="nav-link collapsed" href="{{ route('website.device.show_data_device') }}">
+                    <i class="bi bi-device-hdd"></i><span>Device</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="{{ route('website.department.show_data_department') }}">
                     <i class="bi bi-bank"></i><span>Department</span>
                 </a>

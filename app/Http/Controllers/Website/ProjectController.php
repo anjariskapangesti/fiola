@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Alert;
+use App\Models\Device;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -18,6 +19,8 @@ class ProjectController extends Controller
 {
     public function create()
     {
+        $devices = Device::all();
+
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
                                     ->count();        
@@ -28,7 +31,7 @@ class ProjectController extends Controller
         } else if($data > 0){
             return redirect()->route('website.project.show_data_form')->with('info', 'Please confirm!');
         }else{
-            return view('website.pages.project.create');
+            return view('website.pages.project.create', compact('devices'));
         }
     }
 
@@ -93,6 +96,7 @@ class ProjectController extends Controller
                 'kondisi_target' => $request->kondisi_target ,
                 'benefit' => $request->benefit ,
                 'alat' => $request->alat ,
+                'cost' => $request->cost1 . ' - ' . $request->cost2 ,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
@@ -252,6 +256,7 @@ class ProjectController extends Controller
             $isi .= "\nKondisi Sebelum Improvement : " . $project->kondisi_sebelum;
             $isi .= "\nKondisi yang diharapkan : " . $project->kondisi_target;
             $isi .= "\nBenefit yang didapat : " . $project->benefit;
+            $isi .= "\nEstimasi Cost : " . $project->cost;
             $isi .= "\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;

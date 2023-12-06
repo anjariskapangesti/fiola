@@ -20,6 +20,7 @@ class Project extends Model
         'kondisi_target',
         'benefit',
         'alat',
+        'cost',
         'final_status',
         'is_manager_approve',
         'is_it_approve',

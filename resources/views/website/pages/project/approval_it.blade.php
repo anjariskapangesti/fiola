@@ -128,6 +128,10 @@
                         <td>${d.benefit ?? '-'}</td>
                     </tr>
                     <tr>
+                        <td>Estimasi Cost</td>
+                        <td>${d.cost ?? '-'}</td>
+                    </tr>
+                    <tr>
                         <td>Manager Note</td>
                         <td>${d.manager_note ?? '-'}</td>
                     </tr>

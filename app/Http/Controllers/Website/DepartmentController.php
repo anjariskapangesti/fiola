@@ -67,7 +67,7 @@ class DepartmentController extends Controller
                 'code' => $request->code,
             ]);
             
-            return "Department deleted successfully";
+            return "Department updated successfully";
         }
 
         return "Error";

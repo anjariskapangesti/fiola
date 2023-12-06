@@ -35,6 +35,17 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/get_approval_count', 'AppHelperController@getApprovalCount')->name('get_approval_count');
         
         // MASTER //
+        Route::group(['prefix' => 'device'], function(){
+            Route::group(['middleware' => ['can:can_master']], function () {
+                Route::get('/create', 'DeviceController@create')->name('device.create');
+                Route::post('/store', 'DeviceController@store')->name('device.store');
+                Route::post('/edit', 'DeviceController@edit')->name('device.edit');
+                Route::post('/destroy', 'DeviceController@destroy')->name('device.destroy');
+                Route::get('/show_data_device', 'DeviceController@show_data_device')->name('device.show_data_device');
+                Route::get('/show_data_device_ajax', 'DeviceController@show_data_device_ajax')->name('device.show_data_device_ajax');
+            });
+        });
+
         Route::group(['prefix' => 'department'], function(){
             Route::group(['middleware' => ['can:can_master']], function () {
                 Route::get('/create', 'DepartmentController@create')->name('department.create');
