@@ -34,20 +34,20 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="npk"><b>NPK</b></label>
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk" id="npk"
                                         maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="fullname"><b>Nama</b></label>
-                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname" id="fullname"
                                         maxlength="60" value="{{ Auth::user()->name }}" readonly required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone"><b>No. Handphone</b></label>
-                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone" id="phone"
                                         maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
@@ -63,7 +63,7 @@
                                 </div> --}}
                                 <div class="col-md-6">
                                     <label for="department"><b>Department</b></label>
-                                    <input type="text" class="form-control" placeholder="Department" name="department"
+                                    <input type="text" class="form-control" placeholder="Department" name="department" id="department"
                                         maxlength="14" value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}"
                                         readonly required>
                                     <div class="invalid-feedback">Please enter your Department</div>
@@ -72,45 +72,45 @@
                                 <div class="col-md-12">
                                     <label for="nama_project"><b>Nama Project</b></label>
                                     <input type="text" class="form-control" placeholder="Nama Project"
-                                        name="nama_project" value="{{ old('nama_project') }}" required>
+                                        name="nama_project" id="nama_project" value="{{ old('nama_project') }}" required>
                                     <div class="invalid-feedback">Please enter your Nama Project</div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <label for="lampiran"><b>File PDF Konsep</b></label>
-                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran"
+                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran" id="lampiran"
                                         accept=".pdf">
                                     <div class="invalid-feedback">Please enter your File PDF Konsep</div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="kondisi_sebelum" style="height: 100px;"
                                             name="kondisi_sebelum" required>{{ old('kondisi_sebelum') }}</textarea>
-                                        <label for="floatingTextarea"><b>Kondisi Sebelum Improvement</b></label>
+                                        <label for="kondisi_sebelum"><b>Kondisi Sebelum Improvement</b></label>
                                         <div class="invalid-feedback">Please fill your Kondisi Sebelum Improvement</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="kondisi_target" style="height: 100px;"
                                             name="kondisi_target" required>{{ old('kondisi_target') }}</textarea>
-                                        <label for="floatingTextarea"><b>Kondisi yang diharapkan</b></label>
+                                        <label for="kondisi_target"><b>Kondisi yang diharapkan</b></label>
                                         <div class="invalid-feedback">Please fill your Kondisi yang diharapkan</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="benefit" style="height: 100px;"
                                             name="benefit" required>{{ old('benefit') }}</textarea>
-                                        <label for="floatingTextarea"><b>Benefit yang didapat</b></label>
+                                        <label for="benefit"><b>Benefit yang didapat</b></label>
                                         <div class="invalid-feedback">Please fill your Benefit</div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+                                {{-- <div class="col-md-12">
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                             name="alat">{{ old('alat') }}</textarea>
@@ -119,20 +119,30 @@
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-md-12">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
-                                            name="cost">{{ old('cost') }}</textarea>
-                                        <label for="floatingTextarea">Estimasi Cost</label>
-                                        <div class="invalid-feedback">Please fill your Estimasi Cost</div>
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-12">
                                     <label for="cost1"><b>Estimasi Cost</b></label>
                                     <div class="d-flex justify-content-center">
                                         <input type="text" class="form-control" name="cost1" id="cost1">
                                         <h3><b>-</b></h3>
                                         <input type="text" class="form-control" name="cost2" id="cost2">
+                                    </div>
+                                </div> --}}
+
+                                <div class="col-md-12">
+                                    <label for="alat"><b>Additional Support Device</b></label>
+                                    <div class="device-container">
+                                        <div class="d-flex justify-content-center mb-3" id="div-alat">
+                                            <select class="form-control alat" name="alat[]">
+                                                <option value=""></option>
+                                                @foreach ($devices as $device)
+                                                    <option value="{{ $device->name }} | {{ $device->cost }}">
+                                                        {{ $device->name }} |
+                                                        {{ $device->cost }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" class="btn btn-success btn-tambah"
+                                                onclick="tambahDevice(this)"><i class="fa fa-plus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -262,5 +272,25 @@
             // Mengupdate nilai input dengan format yang telah dimodifikasi
             this.value = formatCost2;
         });
+    </script>
+    <script>
+        let deviceCount = 1;
+
+        function tambahDevice(button) {
+            deviceCount++;
+            const divAlat = button.parentNode.cloneNode(true);
+            divAlat.querySelector('.btn-tambah').setAttribute('onclick', 'tambahDevice(this)');
+            divAlat.querySelector('.btn-tambah').classList.remove('btn-success');
+            divAlat.querySelector('.btn-tambah').classList.add('btn-kurang');
+            divAlat.querySelector('.btn-tambah').classList.add('btn-danger');
+            divAlat.querySelector('.btn-tambah').innerHTML = '<i class="fa fa-minus"></i>';
+            divAlat.querySelector('.btn-tambah').setAttribute('onclick', 'hapusDevice(this)');
+            divAlat.id = `div-alat-${deviceCount}`;
+            document.querySelector('.device-container').appendChild(divAlat);
+        }
+
+        function hapusDevice(button) {
+            button.parentNode.remove();
+        }
     </script>
 @endpush

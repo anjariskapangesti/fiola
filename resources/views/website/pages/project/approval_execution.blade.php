@@ -166,8 +166,8 @@
                         <td>${d.benefit ?? '-'}</td>
                     </tr>
                     <tr>
-                        <td>Estimasi Cost</td>
-                        <td>${d.cost ?? '-'}</td>
+                        <td>Additional Support Device</td>
+                        <td><textarea class="form-control-plaintext" style="height: 150px;" disabled>${d.alat ?? '-'}</textarea></td>
                     </tr>
                     <tr>
                         <td>Manager Note</td>

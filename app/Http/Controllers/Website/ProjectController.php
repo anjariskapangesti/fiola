@@ -82,6 +82,8 @@ class ProjectController extends Controller
                     $photoFileName = 'PRJ_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $photoExtension;
                     $photoPath = $request->lampiran->storeAs('lampiran', $photoFileName, 'public');
             }  
+
+            $alatSelected = is_array($request->alat) ? implode("\n", $request->alat) : $request->alat;
             
             $form_project = Project::create([
                 'no_reg' => $no_reg,
@@ -95,8 +97,7 @@ class ProjectController extends Controller
                 'kondisi_sebelum' => $request->kondisi_sebelum ,
                 'kondisi_target' => $request->kondisi_target ,
                 'benefit' => $request->benefit ,
-                'alat' => $request->alat ,
-                'cost' => $request->cost1 . ' - ' . $request->cost2 ,
+                'alat' => $alatSelected,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,

@@ -126,11 +126,11 @@
                     <tr>
                         <td>Benefit yang didapat</td>
                         <td>${d.benefit ?? '-'}</td>
-                    </tr>  
+                    </tr>
                     <tr>
-                        <td>Estimasi Cost</td>
-                        <td>${d.cost ?? '-'}</td>
-                    </tr>             
+                        <td>Additional Support Device</td>
+                        <td><textarea class="form-control-plaintext" style="height: 150px;" disabled>${d.alat ?? '-'}</textarea></td>
+                    </tr>         
                     <tfoot>
                     <tr>
                         <th>Dibuat oleh</th>
