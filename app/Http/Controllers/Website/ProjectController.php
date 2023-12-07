@@ -260,21 +260,20 @@ class ProjectController extends Controller
         $type=$request->type;
         $project = Project::findOrFail($id);
         if($type=='ok'){
-            $isi = "FORM Request project\n";
+            $isi = "FORM Request Project\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNama : *" . $project->fullname ."*";        
+            $isi .= "\n*Nama* : " . $project->fullname;        
             
-            $isi .= "\nDepartment : " . $project->department;
-            $isi .= "\n\nNama Aplikasi : " . $project->aplikasi;
-            $isi .= "\nNama project : " . $project->nama_project;
-            $isi .= "\nKondisi Sebelum Improvement : " . $project->kondisi_sebelum;
-            $isi .= "\nKondisi yang diharapkan : " . $project->kondisi_target;
-            $isi .= "\nBenefit yang didapat : " . $project->benefit;
-            $isi .= "\nEstimasi Cost : " . $project->cost;
-            $isi .= "\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
+            $isi .= "\n*Department* : " . $project->department;
+            $isi .= "\n\n*Nama Project* : " . $project->nama_project;
+            $isi .= "\n*Kondisi Sebelum Improvement* : " . $project->kondisi_sebelum;
+            $isi .= "\n*Kondisi yang diharapkan* : " . $project->kondisi_target;
+            $isi .= "\n*Benefit yang didapat* : " . $project->benefit;
+            $isi .= "\n*Additional Support Device* : " . $project->alat;
+            $isi .= "\n\n*Note* : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
-            $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
+            $isi .= "\n\n*Approved ITD by* : " . Auth::user()->name;
             
             $nomorhpModel = new Alert();
             $nomorhp = $nomorhpModel->getNoHpItMgr();
@@ -299,11 +298,13 @@ class ProjectController extends Controller
             $project->is_it_approve=1;
             $project->final_status='IT Approve';
             $project->it_note=$request->it_note;
+            $project->it_approve_by=Auth::user()->id;
         }else{
             $project->is_it_approve=0;
             $project->final_status='IT Reject';
             $project->it_note=$request->it_note;
             $project->is_finish=0;
+            $project->it_approve_by=Auth::user()->id;
         }
         $project->it_approval_date= Carbon::now();
         $project->save();
@@ -383,12 +384,16 @@ class ProjectController extends Controller
         $user = $project->createdBy;
         
         if($type=='ok'){
-            $isi = "FORM Request project\n";
-        
-            $isi .= "\nNPK : *" . $project->npk ."*";
-            $isi .= "\nName : *" . $project->fullname ."*";
-            $isi .= "\nDepartment : " . $project->department;
-            $isi .= "\nPhone : " . $project->phone;            
+            $isi = "FORM Request Project\n";
+            $isi .= "\n\nREQUESTOR";
+            $isi .= "\n*Nama* : " . $project->fullname;        
+            
+            $isi .= "\n*Department* : " . $project->department;
+            $isi .= "\n\n*Nama Project* : " . $project->nama_project;
+            $isi .= "\n*Kondisi Sebelum Improvement* : " . $project->kondisi_sebelum;
+            $isi .= "\n*Kondisi yang diharapkan* : " . $project->kondisi_target;
+            $isi .= "\n*Benefit yang didapat* : " . $project->benefit;
+            $isi .= "\n*Additional Support Device* : " . $project->alat;
     
             $isi .= "\n\nStatus : Finished";
     
@@ -420,6 +425,7 @@ class ProjectController extends Controller
             $project->is_confirm=0;
             $project->final_status='Finished';
             $project->finish_note=$request->finish_note;
+            $project->finish_by=Auth::user()->id;
         } else if($type=='delay'){
             $project->is_delay=1;
             $project->final_status='Delay';
@@ -428,6 +434,7 @@ class ProjectController extends Controller
             $project->is_finish=0;
             $project->final_status='Rejected';
             $project->finish_note=$request->finish_note;
+            $project->finish_by=Auth::user()->id;
         }
         $project->finish_date= Carbon::now();
         $project->save();

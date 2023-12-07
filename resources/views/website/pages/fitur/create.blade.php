@@ -82,34 +82,35 @@
                                     <div class="invalid-feedback">Please enter your Nama Fitur</div>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="lampiran"><b>Lampiran</b></label>
-                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran" accept=".xlsx, .xls, .pdf">
-                                    <div class="invalid-feedback">Please enter your Lampiran</div>
+                                    <label for="lampiran"><b>File PDF Konsep</b></label>
+                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran"
+                                        id="lampiran" accept=".pdf">
+                                    <div class="invalid-feedback">Please enter your File PDF Konsep</div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="kondisi_sebelum" style="height: 100px;"
                                             name="kondisi_sebelum" required>{{ old('kondisi_sebelum') }}</textarea>
-                                        <label for="floatingTextarea">Kondisi Sebelum Improvement</label>
+                                        <label for="kondisi_sebelum"><b>Kondisi Sebelum Improvement</b></label>
                                         <div class="invalid-feedback">Please fill your Kondisi Sebelum Improvement</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="kondisi_target" style="height: 100px;"
                                             name="kondisi_target" required>{{ old('kondisi_target') }}</textarea>
-                                        <label for="floatingTextarea">Kondisi yang diharapkan</label>
+                                        <label for="kondisi_target"><b>Kondisi yang diharapkan</b></label>
                                         <div class="invalid-feedback">Please fill your Kondisi yang diharapkan</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="benefit" style="height: 100px;"
                                             name="benefit" required>{{ old('benefit') }}</textarea>
-                                        <label for="floatingTextarea">Benefit</label>
+                                        <label for="benefit"><b>Benefit yang didapat</b></label>
                                         <div class="invalid-feedback">Please fill your Benefit</div>
                                     </div>
                                 </div>

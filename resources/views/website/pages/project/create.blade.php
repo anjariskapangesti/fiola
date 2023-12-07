@@ -141,9 +141,9 @@
                                                         {{ $device->cost }}</option>
                                                 @endforeach
                                             </select>
-                                            <input type="number" class="form-control" style="max-width: 100px;"
-                                                placeholder="Qty" name="qty[]">
-                                            <span class="input-group-text" id="unit">Unit</span>
+                                            <input type="number" class="form-control" style="max-width: 100px; margin-left: 5px; margin-right: 5px;"
+                                                placeholder="Qty" name="qty[]" min="1">
+                                            <span class="input-group-text" id="unit" style="margin-right: 5px;">Unit</span>
                                             <button type="button" class="btn btn-success btn-tambah"
                                                 onclick="tambahDevice(this)"><i class="fa fa-plus"></i></button>
                                         </div>

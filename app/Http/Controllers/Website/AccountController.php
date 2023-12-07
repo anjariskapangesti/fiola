@@ -390,6 +390,7 @@ class AccountController extends Controller
             $account->final_status='IT Reject';
             $account->it_note=$request->it_note;
             $account->is_finish=0;
+            $account->it_approve_by=Auth::user()->id;
         }
         $account->it_approval_date= Carbon::now();
         $account->save();
@@ -524,6 +525,7 @@ class AccountController extends Controller
             $account->is_finish=0;
             $account->final_status='Rejected';
             $account->finish_note=$request->finish_note;
+            $account->finish_by=Auth::user()->id;
         }
         $account->finish_date= Carbon::now();
         $account->save();
