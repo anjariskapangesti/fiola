@@ -86,19 +86,22 @@ class ProjectController extends Controller
             $alatSelected = $request->input('alat');
             $qtySelected = $request->input('qty');
 
-            $combinedDescriptions = [];
-
-            if (is_array($alatSelected) && is_array($qtySelected)) {
-                if (count($alatSelected) === count($qtySelected)) {
-                    foreach ($alatSelected as $index => $alat) {
-                        $qty = isset($qtySelected[$index]) ? $qtySelected[$index] : '';
-                        $combinedDescriptions[] = $alat . ' | ' . $qty . ' Unit';
+            if ($alatSelected == [null]) {
+                $combinedDescriptionString = null;
+            } else {
+                $combinedDescriptions = [];
+                if (is_array($alatSelected) && is_array($qtySelected)) {
+                    if (count($alatSelected) === count($qtySelected)) {
+                        foreach ($alatSelected as $index => $alat) {
+                            $qty = isset($qtySelected[$index]) ? $qtySelected[$index] : '';
+                            $combinedDescriptions[] = $alat . ' | ' . $qty . ' Unit';
+                        }
                     }
                 }
+
+                $combinedDescriptionString = implode("\n", $combinedDescriptions);
             }
-
-            $combinedDescriptionString = implode("\n", $combinedDescriptions);
-
+            
             $form_project = Project::create([
                 'no_reg' => $no_reg,
                 'npk' => $request->npk ,

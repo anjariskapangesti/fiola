@@ -379,4 +379,11 @@
 
         });
     </script>
+    <script>
+        const btnApprove = document.getElementById('btn-approve');
+
+        btnApprove.addEventListener('click', function() {
+            btnApprove.disabled = true;
+        });
+    </script>
 @endpush

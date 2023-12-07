@@ -218,17 +218,24 @@
                             url: "{{ route('website.get_approval_count') }}",
                             type: "GET",
                             success: function(data) {
-                                $('#manager_approvals_count').text(data.manager_approvals_count);
+                                $('#manager_approvals_count').text(data
+                                    .manager_approvals_count);
                                 $('#confirms_count').text(data.confirms_count);
-                                $('#it_approvals_count').text(data.it_approvals_count);
-                                $('#it_mgr_approvals_count').text(data.it_mgr_approvals_count);
+                                $('#it_approvals_count').text(data
+                                    .it_approvals_count);
+                                $('#it_mgr_approvals_count').text(data
+                                    .it_mgr_approvals_count);
                                 $('#execution_count').text(data.execution_count);
 
-                                $('#account_mgr_count').text(data.account_mgr_count);
-                                $('#account_confirm_count').text(data.account_confirm_count);
+                                $('#account_mgr_count').text(data
+                                .account_mgr_count);
+                                $('#account_confirm_count').text(data
+                                    .account_confirm_count);
                                 $('#account_it_count').text(data.account_it_count);
-                                $('#account_it_mgr_count').text(data.account_it_mgr_count);
-                                $('#account_execution_count').text(data.account_execution_count);
+                                $('#account_it_mgr_count').text(data
+                                    .account_it_mgr_count);
+                                $('#account_execution_count').text(data
+                                    .account_execution_count);
                             },
                             error: function(xhr, status, error) {
                                 alert(error);
@@ -288,6 +295,13 @@
                 // console.log(id_form_account_reject);
             })
 
+        });
+    </script>
+    <script>
+        const btnApprove = document.getElementById('btn-approve');
+
+        btnApprove.addEventListener('click', function() {
+            btnApprove.disabled = true;
         });
     </script>
 @endpush

@@ -23,7 +23,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.folder-access.store') }}" class="needs-validation" novalidate>
+            <form method="post" action="{{ route('website.folder-access.store') }}" class="needs-validation" novalidate id="myForm">
                 @csrf
                 <div class="col-lg-12">
                     <div class="card mb-2">

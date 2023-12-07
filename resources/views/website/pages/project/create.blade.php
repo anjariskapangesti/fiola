@@ -24,7 +24,7 @@
                 </div>
             @endif
             <form method="post" enctype="multipart/form-data" action="{{ route('website.project.store') }}"
-                class="needs-validation" novalidate>
+                class="needs-validation" novalidate id="myForm">
                 @csrf
                 <div class="col-lg-12">
 
@@ -80,7 +80,7 @@
                                 <div class="col-md-12">
                                     <label for="lampiran"><b>File PDF Konsep</b></label>
                                     <input type="file" class="form-control" placeholder="Lampiran" name="lampiran"
-                                        id="lampiran" accept=".pdf">
+                                        id="lampiran" accept=".pdf" required>
                                     <div class="invalid-feedback">Please enter your File PDF Konsep</div>
                                 </div>
 
@@ -134,16 +134,18 @@
                                     <div class="device-container">
                                         <div class="d-flex justify-content-center mb-3" id="div-alat">
                                             <select class="form-control alat" name="alat[]">
-                                                <option value=""></option>
+                                                <option value="">-- Pilih Device --</option>
                                                 @foreach ($devices as $device)
                                                     <option value="{{ $device->name }} | {{ $device->cost }}">
                                                         {{ $device->name }} |
                                                         {{ $device->cost }}</option>
                                                 @endforeach
                                             </select>
-                                            <input type="number" class="form-control" style="max-width: 100px; margin-left: 5px; margin-right: 5px;"
+                                            <input type="number" class="form-control"
+                                                style="max-width: 100px; margin-left: 5px; margin-right: 5px;"
                                                 placeholder="Qty" name="qty[]" min="1">
-                                            <span class="input-group-text" id="unit" style="margin-right: 5px;">Unit</span>
+                                            <span class="input-group-text" id="unit"
+                                                style="margin-right: 5px;">Unit</span>
                                             <button type="button" class="btn btn-success btn-tambah"
                                                 onclick="tambahDevice(this)"><i class="fa fa-plus"></i></button>
                                         </div>
@@ -300,5 +302,16 @@
         function hapusDevice(button) {
             button.parentNode.remove();
         }
+    </script>
+    <script>
+        document.querySelector('.alat').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var qtyInput = this.nextElementSibling;
+            if (selectedOption.value !== '') {
+                qtyInput.setAttribute('required', 'required');
+            } else {
+                qtyInput.removeAttribute('required');
+            }
+        });
     </script>
 @endpush

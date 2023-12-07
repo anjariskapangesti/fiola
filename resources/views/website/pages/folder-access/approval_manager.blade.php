@@ -261,15 +261,20 @@
                 var username_folder_access = $(this).data('username');
                 $('#id_folder_access').val(id_folder_access)
                 $('#username_folder_access').val(username_folder_access)
-                // console.log(id_folder_access);
             })
 
             $('.table').on('click', '.btn-table-reject', function() {
                 var id_folder_access_reject = $(this).data('id');
                 $('#id_folder_access_reject').val(id_folder_access_reject)
-                // console.log(id_folder_access_reject);
             })
 
         })
+    </script>
+    <script>
+        const btnApprove = document.getElementById('btn-approve');
+
+        btnApprove.addEventListener('click', function() {
+            btnApprove.disabled = true;
+        });
     </script>
 @endpush

@@ -23,7 +23,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.account.store') }}" class="needs-validation" novalidate>
+            <form method="post" action="{{ route('website.account.store') }}" class="needs-validation" novalidate
+                id="myForm">
                 @csrf
                 <div class="col-lg-12">
                     <div class="card mb-2">
@@ -84,9 +85,9 @@
                                         <div class="invalid-feedback">Please enter your NPK</div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="Full Name"
-                                            name="fullname" maxlength="60" required onkeyup="formatFullName(this)"
-                                            data-toggle="tooltip" data-placement="top" title="Nama Lengkap">
+                                        <input type="text" class="form-control" placeholder="Full Name" name="fullname"
+                                            maxlength="60" required onkeyup="formatFullName(this)" data-toggle="tooltip"
+                                            data-placement="top" title="Nama Lengkap">
                                         <div class="invalid-feedback">Please enter your Full Name</div>
                                     </div>
                                     <div class="col-md-6">
@@ -269,7 +270,7 @@
                         </div>
                     </div>
                     {{-- <input type="hidden" name="created_dept" value="{{ $userDepartment->id }}"> --}}
-                    <button class="btn btn-success" type="submit">Save & Submit Request</button>
+                    <button class="btn btn-success" type="submit" id="submitButton">Save & Submit Request</button>
                 </div>
             </form>
         </div>
@@ -378,4 +379,32 @@
             }
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('myForm');
+            var submitButton = document.getElementByType('submit');
+    
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    event.preventDefault();
+                } else {
+                    submitButton.setAttribute('disabled', 'true');
+                    submitButton.innerHTML = 'Submitting...';
+                }
+            });
+    
+            form.addEventListener('input', function () {
+                if (form.checkValidity()) {
+                    submitButton.removeAttribute('disabled');
+                    submitButton.innerHTML = 'Save & Submit Request';
+                }
+            });
+        });
+    </script>
+    
+    
+    
+    
+    
 @endpush
