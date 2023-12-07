@@ -34,21 +34,21 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="npk"><b>NPK</b></label>
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk" id="npk"
-                                        maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="fullname"><b>Nama</b></label>
-                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname" id="fullname"
-                                        maxlength="60" value="{{ Auth::user()->name }}" readonly required
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" readonly required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone"><b>No. Handphone</b></label>
-                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone" id="phone"
-                                        maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
@@ -63,9 +63,10 @@
                                 </div> --}}
                                 <div class="col-md-6">
                                     <label for="department"><b>Department</b></label>
-                                    <input type="text" class="form-control" placeholder="Department" name="department" id="department"
-                                        maxlength="14" value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}"
-                                        readonly required>
+                                    <input type="text" class="form-control" placeholder="Department" name="department"
+                                        id="department" maxlength="14"
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly
+                                        required>
                                     <div class="invalid-feedback">Please enter your Department</div>
                                 </div>
                                 <hr style="margin-bottom: 0rem; opacity: 100%;">
@@ -78,8 +79,8 @@
 
                                 <div class="col-md-12">
                                     <label for="lampiran"><b>File PDF Konsep</b></label>
-                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran" id="lampiran"
-                                        accept=".pdf">
+                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran"
+                                        id="lampiran" accept=".pdf">
                                     <div class="invalid-feedback">Please enter your File PDF Konsep</div>
                                 </div>
 
@@ -140,6 +141,9 @@
                                                         {{ $device->cost }}</option>
                                                 @endforeach
                                             </select>
+                                            <input type="number" class="form-control" style="max-width: 100px;"
+                                                placeholder="Qty" name="qty[]">
+                                            <span class="input-group-text" id="unit">Unit</span>
                                             <button type="button" class="btn btn-success btn-tambah"
                                                 onclick="tambahDevice(this)"><i class="fa fa-plus"></i></button>
                                         </div>
@@ -279,13 +283,17 @@
         function tambahDevice(button) {
             deviceCount++;
             const divAlat = button.parentNode.cloneNode(true);
+            const qtyInput = divAlat.querySelector('input[name="qty[]"]');
+            qtyInput.value = '';
             divAlat.querySelector('.btn-tambah').setAttribute('onclick', 'tambahDevice(this)');
+
             divAlat.querySelector('.btn-tambah').classList.remove('btn-success');
             divAlat.querySelector('.btn-tambah').classList.add('btn-kurang');
             divAlat.querySelector('.btn-tambah').classList.add('btn-danger');
             divAlat.querySelector('.btn-tambah').innerHTML = '<i class="fa fa-minus"></i>';
             divAlat.querySelector('.btn-tambah').setAttribute('onclick', 'hapusDevice(this)');
             divAlat.id = `div-alat-${deviceCount}`;
+
             document.querySelector('.device-container').appendChild(divAlat);
         }
 

@@ -83,8 +83,22 @@ class ProjectController extends Controller
                     $photoPath = $request->lampiran->storeAs('lampiran', $photoFileName, 'public');
             }  
 
-            $alatSelected = is_array($request->alat) ? implode("\n", $request->alat) : $request->alat;
-            
+            $alatSelected = $request->input('alat');
+            $qtySelected = $request->input('qty');
+
+            $combinedDescriptions = [];
+
+            if (is_array($alatSelected) && is_array($qtySelected)) {
+                if (count($alatSelected) === count($qtySelected)) {
+                    foreach ($alatSelected as $index => $alat) {
+                        $qty = isset($qtySelected[$index]) ? $qtySelected[$index] : '';
+                        $combinedDescriptions[] = $alat . ' | ' . $qty . ' Unit';
+                    }
+                }
+            }
+
+            $combinedDescriptionString = implode("\n", $combinedDescriptions);
+
             $form_project = Project::create([
                 'no_reg' => $no_reg,
                 'npk' => $request->npk ,
@@ -97,7 +111,7 @@ class ProjectController extends Controller
                 'kondisi_sebelum' => $request->kondisi_sebelum ,
                 'kondisi_target' => $request->kondisi_target ,
                 'benefit' => $request->benefit ,
-                'alat' => $alatSelected,
+                'alat' => $combinedDescriptionString,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
