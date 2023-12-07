@@ -123,7 +123,7 @@
                             @include('website.layouts.approval_flow')
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">Save & Submit Request</button>
+                    <button class="btn btn-success" type="submit" id="submitButton">Save & Submit Request</button>
                 </div>
             </form>
         </div>

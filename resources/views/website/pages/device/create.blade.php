@@ -55,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">Submit</button>
+                    <button class="btn btn-success" type="submit" id="submitButton">Submit</button>
                     <a href="{{ route('website.device.show_data_device') }}" class="btn btn-primary">Data
                         device</a>
                 </div>

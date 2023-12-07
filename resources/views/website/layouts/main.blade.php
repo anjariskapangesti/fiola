@@ -102,7 +102,29 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('myForm');
+            var submitButton = document.getElementById('submitButton');
+    
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    event.preventDefault();
+                } else {
+                    submitButton.setAttribute('disabled', 'true');
+                    submitButton.innerHTML = 'Submitting...';
+                }
+            });
+    
+            form.addEventListener('input', function () {
+                if (form.checkValidity()) {
+                    submitButton.removeAttribute('disabled');
+                    submitButton.innerHTML = 'Save & Submit Request';
+                }
+            });
+        });
+    </script>
     
     @stack('scripts')
 

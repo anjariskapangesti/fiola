@@ -1,5 +1,5 @@
 @extends('website.layouts.main', ['title' => 'Form New Folder'])
-    
+
 @section('content')
     <div class="pagetitle">
         <h4>File Server Folder Add/Change/Delete Form (FRM-ITD-S13-003-00)</h4>
@@ -23,7 +23,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.new-folder.store') }}" class="needs-validation" novalidate id="myForm">
+            <form method="post" action="{{ route('website.new-folder.store') }}" class="needs-validation" novalidate
+                id="myForm">
                 @csrf
                 <div class="col-lg-12">
                     <div class="card mb-2">
@@ -51,7 +52,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title mb-1">New Folder Permission</h5>
@@ -69,7 +70,8 @@
                                                     <div class="input-group has-validation">
                                                         {{-- <span class="input-group-text" id="inputGroupPrepend">AIIA\</span> --}}
                                                         <input type="email" name="username[]" class="form-control"
-                                                            placeholder="Email@aiia.co.id" required onkeyup="convertToLowercase(this)">
+                                                            placeholder="Email@aiia.co.id" required
+                                                            onkeyup="convertToLowercase(this)">
                                                         <div class="invalid-feedback">Please enter your email</div>
                                                     </div>
                                                 </div>
@@ -78,14 +80,18 @@
                                                         <option selected disabled value="">-- Choose Department --
                                                         </option>
                                                         @foreach ($departments as $department)
-                                                            <option value="{{ $department->name }}">{{ $department->name }}
-                                                            </option>
+                                                            @if ($department->id < 19 || $department->id > 27)
+                                                                <option value="{{ $department->name }}">
+                                                                    {{ $department->name }}
+                                                                </option>
+                                                            @endif
                                                         @endforeach
                                                     </select>
                                                     <div class="invalid-feedback">Please select username department</div>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <select name="permission[]" id="" class="form-control" required>
+                                                    <select name="permission[]" id="" class="form-control"
+                                                        required>
                                                         <option value="">-- Choose Permission --</option>
                                                         <option value="Read-only">Read-only</option>
                                                         <option value="Modify">Modify</option>
@@ -93,7 +99,8 @@
                                                     <div class="invalid-feedback">Please select the permission</div>
                                                 </div>
                                                 <div class="col-sm-1">
-                                                    <button type="button" class="btn btn-success border btn-sm btn-tambah">Add
+                                                    <button type="button"
+                                                        class="btn btn-success border btn-sm btn-tambah">Add
                                                     </button>
                                                 </div>
                                             </div>
@@ -109,17 +116,17 @@
                                         <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
                                 </div>
-                                
-                            </div>                          
+
+                            </div>
                         </div>
                     </div>
-                    
+
                     <div class="card">
                         <div class="card-body">
                             @include('website.layouts.approval_flow')
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">Save & Submit Request</button>                    
+                    <button class="btn btn-success" type="submit" id="submitButton">Save & Submit Request</button>
                 </div>
             </form>
         </div>
@@ -157,8 +164,10 @@
                                                     <option selected disabled value="">-- Choose Department --
                                                     </option>
                                                     @foreach ($departments as $department)
-                                                        <option value="{{ $department->name }}">{{ $department->name }}
-                                                        </option>
+                                                        @if ($department->id < 19 || $department->id > 27)
+                                                            <option value="{{ $department->name }}">{{ $department->name }}
+                                                            </option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                                 <div class="invalid-feedback">Please select username department</div>

@@ -45,7 +45,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">Submit</button>
+                    <button class="btn btn-success" type="submit" id="submitButton">Submit</button>
                     <a href="{{ route('website.subfolder.show_data_subfolder') }}" class="btn btn-primary">Data
                         Sub Folder</a>
                 </div>

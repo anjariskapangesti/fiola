@@ -98,7 +98,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-success" type="submit">Submit</button>
+                    <button class="btn btn-success" type="submit" id="submitButton">Submit</button>
                     <a href="{{ route('website.user.show_data_user') }}" class="btn btn-primary">Data
                         User</a>
                 </div>
