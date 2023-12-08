@@ -66,7 +66,18 @@ class HardwareController extends Controller
         $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
         $no_reg = 'HWR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
-        if (Auth::user()->can('can_approve_mgr')) {
+        $isManagerApprove = null;
+        $managerApprovalDate = null;
+        $isItApprove = null;
+        $itApprovalDate = null;
+        $isItManagerApprove = null;
+        $itManagerApprovalDate = null;
+
+        if (Auth::user()->can('can_approve_it_mgr')) {
+            $finalStatus = 'IT MGR Approve';
+            $isItManagerApprove = 1;
+            $itManagerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
@@ -74,6 +85,10 @@ class HardwareController extends Controller
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_it')) {
+            $finalStatus = 'IT Approve';
+            $isItApprove = 1;
+            $itApprovalDate = Carbon::now();
         } else {
             $finalStatus = 'created';
             $isManagerApprove = null;
@@ -97,7 +112,11 @@ class HardwareController extends Controller
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
                 'is_manager_approve' => $isManagerApprove,
-                'manager_approval_date' => $managerApprovalDate,            
+                'is_it_approve' => $isItApprove,
+                'is_it_mgr_approve' => $isItManagerApprove,
+                'manager_approval_date' => $managerApprovalDate,
+                'it_approval_date' => $itApprovalDate,
+                'it_mgr_approval_date' => $itManagerApprovalDate,            
             ]);
             
             $form_hardware->save();

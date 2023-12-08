@@ -73,24 +73,62 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Applicant Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="npk"><b>NPK</b></label>
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" disabled required>
+                                    <div class="invalid-feedback">Please enter your NPK</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="fullname"><b>Nama Lengkap</b></label>
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" disabled required
+                                        onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="department"><b>Department</b></label>
+                                    <input type="text" class="form-control" placeholder="Department" name="department"
+                                        id="department" maxlength="14"
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" disabled
+                                        required>
+                                    <div class="invalid-feedback">Please enter your Department</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone"><b>No. Handphone</b></label>
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" disabled required
+                                        onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="registration-section form-section" style="display: none;">
                         <div class="card mb-2">
                             <div class="card-body">
                                 <h5 class="card-title">User Information (Data User baru yang akan dibuat)</h5>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="NPK (000000)" name="npk"
-                                            maxlength="6" required data-toggle="tooltip" data-placement="top"
-                                            title="6 Digit NPK">
+                                        <label for="npk"><b>NPK</b></label>
+                                        <input type="text" class="form-control" placeholder="NPK 6 Digit (000000)"
+                                            name="npk" maxlength="6" required data-toggle="tooltip"
+                                            data-placement="top" title="6 Digit NPK">
                                         <div class="invalid-feedback">Please enter your NPK</div>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                            maxlength="60" required onkeyup="formatFullName(this)" data-toggle="tooltip"
-                                            data-placement="top" title="Nama Lengkap">
+                                        <label for="npk"><b>Nama Lengkap</b></label>
+                                        <input type="text" class="form-control" placeholder="Full Name"
+                                            name="fullname" maxlength="60" required onkeyup="formatFullName(this)"
+                                            data-toggle="tooltip" data-placement="top" title="Nama Lengkap">
                                         <div class="invalid-feedback">Please enter your Full Name</div>
                                     </div>
                                     <div class="col-md-6">
+                                        <label for="npk"><b>Department</b></label>
                                         <select name="department" class="form-control" required data-toggle="tooltip"
                                             data-placement="top" title="Pilih department">
                                             <option selected disabled value="">-- Choose Department --</option>
@@ -104,6 +142,7 @@
                                         <div class="invalid-feedback">Please choose your department</div>
                                     </div>
                                     <div class="col-md-6">
+                                        <label for="npk"><b>No. Handphone</b></label>
                                         <input type="text" class="form-control"
                                             placeholder="Phone Number (0812345678910)" name="phone" maxlength="14"
                                             required data-toggle="tooltip" data-placement="top" title="No. HP">
@@ -113,7 +152,7 @@
                                         <div class="form-floating mb-3">
                                             <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
                                                 name="purpose" maxlength="100" required data-toggle="tooltip" data-placement="top" title="Alasan membuat akun"></textarea>
-                                            <label for="floatingTextarea">Purpose</label>
+                                            <label for="floatingTextarea"><b>Purpose</b></label>
                                             <div class="invalid-feedback">Please fill your purpose</div>
                                         </div>
                                     </div>
@@ -126,6 +165,7 @@
                                 <h5 class="card-title">Email & Active Directory</h5>
                                 <div class="row g-3">
                                     <div class="col-md-5">
+                                        <label for="phone"><b>Username</b></label>
                                         <input type="text" class="form-control"
                                             placeholder="Login Username (FirstName.LastName)" name="ad_name"
                                             maxlength="60" required onkeyup="convertToLowercase(this)"
@@ -133,7 +173,8 @@
                                         <div class="invalid-feedback">Please enter your username</div>
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="form-check form-switch">
+                                    <label for="phone"><b>Email</b></label>
+                                    <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
                                                 name="is_email" value="false">
                                             <label class="form-check-label" for="flexSwitchCheckDefault"
@@ -379,5 +420,4 @@
             }
         }
     </script>
-    
 @endpush

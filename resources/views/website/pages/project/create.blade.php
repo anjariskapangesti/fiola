@@ -35,41 +35,34 @@
                                 <div class="col-md-6">
                                     <label for="npk"><b>NPK</b></label>
                                     <input type="text" class="form-control" placeholder="NPK" name="npk"
-                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" disabled required>
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="fullname"><b>Nama</b></label>
                                     <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" readonly required
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" disabled required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone"><b>No. Handphone</b></label>
                                     <input type="text" class="form-control" placeholder="No Handphone" name="phone"
-                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" disabled required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <select name="department" class="form-control" required>
-                                        <option selected value="">-- Choose Department --</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">Please choose your department</div>
-                                </div> --}}
                                 <div class="col-md-6">
                                     <label for="department"><b>Department</b></label>
                                     <input type="text" class="form-control" placeholder="Department" name="department"
                                         id="department" maxlength="14"
-                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" disabled
                                         required>
                                     <div class="invalid-feedback">Please enter your Department</div>
                                 </div>
+
                                 <hr style="margin-bottom: 0rem; opacity: 100%;">
+                                
                                 <div class="col-md-12">
                                     <label for="nama_project"><b>Nama Project</b></label>
                                     <input type="text" class="form-control" placeholder="Nama Project"

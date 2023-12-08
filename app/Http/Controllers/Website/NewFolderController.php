@@ -43,7 +43,18 @@ class NewFolderController extends Controller
 
     public function store(Request $request)
     {
-        if (Auth::user()->can('can_approve_mgr')) {
+        $isManagerApprove = null;
+        $managerApprovalDate = null;
+        $isItApprove = null;
+        $itApprovalDate = null;
+        $isItManagerApprove = null;
+        $itManagerApprovalDate = null;
+
+        if (Auth::user()->can('can_approve_it_mgr')) {
+            $finalStatus = 'IT MGR Approve';
+            $isItManagerApprove = 1;
+            $itManagerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_mgr')) {
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
@@ -51,6 +62,10 @@ class NewFolderController extends Controller
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
+        } elseif (Auth::user()->can('can_approve_it')) {
+            $finalStatus = 'IT Approve';
+            $isItApprove = 1;
+            $itApprovalDate = Carbon::now();
         } else {
             $finalStatus = 'created';
             $isManagerApprove = null;
@@ -110,7 +125,11 @@ class NewFolderController extends Controller
             $newfolder->created_dept = $user->departments->pluck('id')->first();
             $newfolder->final_status = $finalStatus;
             $newfolder->is_manager_approve = $isManagerApprove;
+            $newfolder->is_it_approve = $isItApprove;
+            $newfolder->is_it_mgr_approve = $isItManagerApprove;
             $newfolder->manager_approval_date = $managerApprovalDate;
+            $newfolder->it_approval_date = $itApprovalDate;
+            $newfolder->it_mgr_approval_date = $itManagerApprovalDate;
             $newfolder->save();
 
             for ($i = 0; $i < count($request->username ); $i++) {
