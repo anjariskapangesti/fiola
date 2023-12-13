@@ -192,9 +192,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_vpn = $('#id_form_vpn').val();
-                console.log(id_form_vpn);
-                // window.location.href = "{{ route('website.vpn.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.vpn.approve_it_mgr') }}",
                     type: "POST",
@@ -205,9 +204,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

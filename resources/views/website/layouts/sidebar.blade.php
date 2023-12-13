@@ -557,8 +557,8 @@
                     href="#">
                     <i class="bi bi-hourglass"></i><span>ITD MGR Approvals</span>
                     @if (App\Models\AppHelper::it_mgr_approvals_count() > 0)
-                        &nbsp&nbsp<span
-                            class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::it_mgr_approvals_count() }}</span>
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                            id="it_mgr_approvals_count">{{ App\Models\AppHelper::it_mgr_approvals_count() }}</span>
                     @endif
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
@@ -580,8 +580,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
                             @if (App\Models\AppHelper::account_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::account_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="account_it_mgr_count">{{ App\Models\AppHelper::account_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -734,8 +734,8 @@
                 <a class="nav-link collapsed" data-bs-target="#execution" data-bs-toggle="collapse" href="#">
                     <i class="bi bi-rocket-takeoff"></i></i><span>Execution</span>
                     @if (App\Models\AppHelper::execution_count() > 0)
-                        &nbsp&nbsp<span
-                            class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::execution_count() }}</span>
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                            id="execution_count">{{ App\Models\AppHelper::execution_count() }}</span>
                     @endif
                     <i class="bi bi-chevron-down ms-auto"></i>
                 </a>
@@ -757,8 +757,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
                             @if (App\Models\AppHelper::account_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::account_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="account_execution_count">{{ App\Models\AppHelper::account_execution_count() }}</span>
                             @endif
                         </a>
                     </li>

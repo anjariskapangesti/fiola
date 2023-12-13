@@ -222,9 +222,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

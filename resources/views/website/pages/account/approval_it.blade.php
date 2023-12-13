@@ -201,7 +201,14 @@
                     $('#btn-reject').attr('disabled', 'disabled');
             });
 
+            const btnApprove = document.getElementById('btn-approve');
+
+            btnApprove.addEventListener('click', function() {
+                btnApprove.disabled = true;
+            });
+
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_account = $('#id_form_account').val();
                 $.ajax({
                     url: "{{ route('website.account.approve_it') }}",
@@ -213,22 +220,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
-                        
-                        $.ajax({
-                            url: "{{ route('website.get_approval_count') }}",
-                            type: "GET",
-                            success: function(data) {
-                                $('#account_it_count').text(data.account_it_count);
-                                $('#it_approvals_count').text(data.it_approvals_count);
-                            },
-                            error: function(xhr, status, error) {
-                                alert(error);
-                            }
-                        });
-
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
@@ -284,11 +279,5 @@
 
         });
     </script>
-    <script>
-        const btnApprove = document.getElementById('btn-approve');
-
-        btnApprove.addEventListener('click', function() {
-            btnApprove.disabled = true;
-        });
-    </script>
+    <script></script>
 @endpush

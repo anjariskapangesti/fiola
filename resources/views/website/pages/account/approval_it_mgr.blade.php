@@ -200,7 +200,14 @@
                     $('#btn-reject').attr('disabled', 'disabled');
             });
 
+            const btnApprove = document.getElementById('btn-approve');
+
+            btnApprove.addEventListener('click', function() {
+                btnApprove.disabled = true;
+            });
+
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_account = $('#id_form_account').val();
                 $.ajax({
                     url: "{{ route('website.account.approve_it_mgr') }}",
@@ -212,9 +219,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
