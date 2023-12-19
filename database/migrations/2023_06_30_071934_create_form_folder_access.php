@@ -16,7 +16,7 @@ class CreateFormFolderAccess extends Migration
         Schema::create('form_folder_access', function (Blueprint $table) {
             $table->id();
             $table->string('no_reg')->unique();
-            $table->string('username');
+            $table->string('username')->nullable();
             $table->string('purpose',100)->nullable();
             $table->string('final_status',30)->nullable();
             $table->boolean('is_manager_approve')->nullable();
