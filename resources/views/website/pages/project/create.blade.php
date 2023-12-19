@@ -228,8 +228,7 @@
             }
             element.value = words.join(" ");
         }
-    </script>
-    <script>
+        
         function updateUsername(emailInput) {
             const emailValue = emailInput.value.toLowerCase();
             emailInput.value = emailValue;
@@ -244,34 +243,8 @@
             }
         }
     </script>
-    <script>
-        const cost1 = document.getElementById('cost1');
 
-        cost1.addEventListener('input', function(e) {
-            // Menghapus semua karakter selain angka
-            let formatCost1 = this.value.replace(/\D/g, '');
-
-            // Menerapkan pemisah ribuan dengan menambahkan titik setiap 3 digit dari belakang
-            formatCost1 = formatCost1.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-            // Mengupdate nilai input dengan format yang telah dimodifikasi
-            this.value = formatCost1;
-        });
-    </script>
-    <script>
-        const cost2 = document.getElementById('cost2');
-
-        cost2.addEventListener('input', function(e) {
-            // Menghapus semua karakter selain angka
-            let formatCost2 = this.value.replace(/\D/g, '');
-
-            // Menerapkan pemisah ribuan dengan menambahkan titik setiap 3 digit dari belakang
-            formatCost2 = formatCost2.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-            // Mengupdate nilai input dengan format yang telah dimodifikasi
-            this.value = formatCost2;
-        });
-    </script>
+    // TOMBOL TAMBAH //
     <script>
         let deviceCount = 1;
 
@@ -295,8 +268,7 @@
         function hapusDevice(button) {
             button.parentNode.remove();
         }
-    </script>
-    <script>
+    
         document.querySelector('.alat').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
             var qtyInput = this.nextElementSibling;

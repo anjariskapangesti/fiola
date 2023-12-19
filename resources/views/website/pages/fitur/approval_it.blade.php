@@ -209,6 +209,7 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_fitur = $('#id_form_fitur').val();
                 $.ajax({
                     url: "{{ route('website.fitur.approve_it') }}",
@@ -220,9 +221,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

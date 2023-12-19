@@ -40,7 +40,7 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="fullname_form_vpn">
                         <input type="hidden" id="id_form_vpn">
-                        
+
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
 
                     </div>
@@ -66,7 +66,7 @@
                         <input type="hidden" id="id_form_vpn_reject">
 
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -189,9 +189,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_vpn = $('#id_form_vpn').val();
-                console.log(id_form_vpn);
-                // window.location.href = "{{ route('website.vpn.approve_manager') }}";
                 $.ajax({
                     url: "{{ route('website.vpn.approve_manager') }}",
                     type: "POST",
@@ -202,9 +201,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

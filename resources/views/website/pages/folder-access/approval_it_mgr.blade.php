@@ -209,9 +209,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_folder_access = $('#id_folder_access').val();
-                console.log(id_folder_access);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_it_mgr') }}",
                     type: "POST",

@@ -221,9 +221,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_hardware = $('#id_form_hardware').val();
-                console.log(id_form_hardware);
-                // window.location.href = "{{ route('website.hardware.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.hardware.approve_execution') }}",
                     type: "POST",
@@ -235,9 +234,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

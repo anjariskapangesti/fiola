@@ -11,10 +11,10 @@
         </nav>
     </div><!-- End Page Title -->
     <div class="row">
-        @if(Session::get('info'))
-        <div class="alert alert-info">
-          {{ Session::get('info') }}
-        </div>
+        @if (Session::get('info'))
+            <div class="alert alert-info">
+                {{ Session::get('info') }}
+            </div>
         @endif
     </div>
     <section class="section">
@@ -25,7 +25,7 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>Email</th>
+                                <th>No. Reg</th>
                                 <th>Status</th>
                                 <th>Confirm</th>
                             </tr>
@@ -46,7 +46,7 @@
                     <div class="modal-body">
                         Are you sure want to confirm this request?
                         {{-- <input type="text" readonly class="form-control-plaintext" id="fullname_form_folder_access"> --}}
-                        <input type="hidden" id="id_form_folder_access">                       
+                        <input type="hidden" id="id_form_folder_access">
 
                     </div>
                     <div class="modal-footer">
@@ -100,11 +100,10 @@
 @push('scripts')
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script lang="text/javascript">
-
         $(document).ready(function() {
-        @if (session()->has('success'))
-            toastr['success']("{{ Session('success') }}")
-        @endif
+            @if (session()->has('success'))
+                toastr['success']("{{ Session('success') }}")
+            @endif
         })
 
         $(function() {
@@ -133,43 +132,43 @@
                         },
                     },
                     {
-                        data: 'username',
-                        name: 'username',
+                        data: 'no_reg',
+                        name: 'no_reg',
                     },
                     {
-                            data: 'final_status',
-                            name: 'final_status',
-                            render: function(data, type, row, meta) {
-                                if (data == 'created') {
-                                    return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
-                                } else if (data == 'Manager Approve') {
-                                    return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
-                                } else if (data == 'IT Approve') {
-                                    return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
-                                } else if (data == 'IT MGR Approve') {
-                                    return `<span class="badge bg-warning">Waiting Execution</span>`;
-                                } else if (data == 'Finished') {
-                                    return `<span class="badge bg-success">Finished</span>`;
-                                } else {
-                                    return `<span class="badge bg-danger">${data}</span>`;
-                                }
+                        data: 'final_status',
+                        name: 'final_status',
+                        render: function(data, type, row, meta) {
+                            if (data == 'created') {
+                                return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
+                            } else if (data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
+                            } else if (data == 'IT Approve') {
+                                return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
+                            } else if (data == 'IT MGR Approve') {
+                                return `<span class="badge bg-warning">Waiting Execution</span>`;
+                            } else if (data == 'Finished') {
+                                return `<span class="badge bg-success">Finished</span>`;
+                            } else {
+                                return `<span class="badge bg-danger">${data}</span>`;
                             }
-                        },                        
-                        {                        
-                            orderable: false,
-                            searchable: false,
-                            data: null,
-                            render: function(data, type, row, meta) {
-                                if (data.is_confirm == '0') {
-                                    return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Confirm</button>
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `<button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Confirm</button>
                                 `;
-                                } else if (data.is_confirm == '1') {
-                                    return `Confirmed`
-                                } else {
-                                    return `Not yet`;
-                                }
+                            } else if (data.is_confirm == '1') {
+                                return `Confirmed`
+                            } else {
+                                return `Not yet`;
                             }
-                        },
+                        }
+                    },
                 ]
 
             })
@@ -203,9 +202,9 @@
 
                 $('#id_form_folder_access').val(id_form_folder_access)
                 $('#fullname_form_folder_access').val(fullname_form_folder_access)
-                
+
                 console.log(id_form_folder_access);
-                })
+            })
 
             var detailsRow = [];
 
@@ -235,15 +234,30 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sms">
-                                                <tr class = "bg-light">
-                                                <td> Main Path </td>
-                                                <td> Folder </td>
-                                                <td> Subfolder </td>
-                                                <td> Permission </td>
-                                                </tr>
-                                                `
-                console.log(d)
+                    <table class = "table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center">Email</th>    
+                                <th colspan="2" class="text-center">Department</th>    
+                            </tr>    
+                        </thead>`
+
+                        for (let i = 0; i < d.form_folder_access_user.length; i++) {
+                    html += `<tr>
+                                    <td colspan="2">${d.form_folder_access_user[i].username}</td>
+                                    <td colspan="2">${d.form_folder_access_user[i].department}</td>
+                                    `
+                    html += `</tr>
+                    `
+                }
+                        
+                        html += `<tr class = "bg-light">
+                            <th> Main Path </th>
+                            <th> Folder </th>
+                            <th> Subfolder </th>
+                            <th> Permission </th>
+                        </tr>
+                        `
                 for (let i = 0; i < d.form_folder_access_path.length; i++) {
                     html += `<tr>
                                     <td>${d.form_folder_access_path[i].folder}</td>

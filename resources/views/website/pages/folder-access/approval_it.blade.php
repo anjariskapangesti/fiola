@@ -205,9 +205,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_folder_access = $('#id_folder_access').val();
-                console.log(id_folder_access);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_it') }}",
                     type: "POST",
@@ -218,9 +217,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
@@ -231,8 +231,6 @@
 
             $('#btn-reject').on('click', function() {
                 let id_folder_access_reject = $('#id_folder_access_reject').val();
-                console.log(id_folder_access_reject);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_it') }}",
                     type: "POST",

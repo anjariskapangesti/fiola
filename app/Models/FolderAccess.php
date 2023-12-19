@@ -11,7 +11,6 @@ class FolderAccess extends Model
     protected $table = 'form_folder_access';
     protected $fillable = [  
         'no_reg',
-        'username',
         'purpose',
         'final_status',
         'is_manager_approve',
@@ -34,6 +33,11 @@ class FolderAccess extends Model
     public function form_folder_access_path()
     {
         return $this->hasMany(FolderAccessPath::class, 'folder_access_id', 'id');
+    }
+
+    public function form_folder_access_user()
+    {
+        return $this->hasMany(FolderAccessUser::class, 'folder_access_id', 'id');
     }
 
     public function createdBy()

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\FolderAccess;
 use App\Models\FolderAccessPath;
+use App\Models\FolderAccessUser;
 use App\Models\Department;
 use App\Models\Folder;
 use App\Models\SubFolder;
@@ -22,7 +23,7 @@ class FolderAccessController extends Controller
 {
     public function create()
     {
-        $departments = Department::all();
+        $departments = Department::orderBy('name')->get();
         $folders = Folder::orderBy('name', 'ASC')->get();
         $subfolders = SubFolder::orderBy('name', 'ASC')->get();
         
@@ -106,13 +107,10 @@ class FolderAccessController extends Controller
             $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
             $no_reg = 'FAC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
     
-            // $final_status = 'created';
             $user = Auth::user();
-            // $folder_name = Folder::all();
     
             $folderaccess = new FolderAccess();
             $folderaccess->no_reg = $no_reg;
-            $folderaccess->username = $request->username;
             $folderaccess->purpose = $request->purpose;
             $folderaccess->created_by = $user->id;
             $folderaccess->created_dept = $user->departments->pluck('id')->first();
@@ -134,6 +132,14 @@ class FolderAccessController extends Controller
                     'permission' => $request->permission[$i],
                 ]);
             }
+
+            for ($i = 0; $i < count($request->username ); $i++) {
+                FolderAccessUser::create([
+                    'folder_access_id' => $folderaccess->id,
+                    'username' => $request->username[$i],
+                    'department' => $request->department[$i],
+                ]);
+            }
     
             return redirect()->route('website.folder-access.show_data_form')->with('success', 'Success Create Form');
         } catch (Exception $e) {
@@ -146,7 +152,7 @@ class FolderAccessController extends Controller
         $departmetns = Department::all();
         $folders = Folder::orderBy('name', 'ASC')->get();
         $subfolders = SubFolder::orderBy('name', 'ASC')->get();
-        // dd($subfolders);
+
         return view('website.pages.folder-access.show_data_form', compact(['departmetns', 'folders', 'subfolders']));
     }
 
@@ -156,6 +162,7 @@ class FolderAccessController extends Controller
                             ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
                                     ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.final_status as final_status'),
+                                    ('form_folder_access.no_reg'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'),
                                     ('form_folder_access.it_mgr_note'),
@@ -163,7 +170,8 @@ class FolderAccessController extends Controller
                                     ('form_folder_access.is_confirm'))
                             ->where('created_by', Auth::user()->id)
                             ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path');
+                            ->with('form_folder_access_path')
+                            ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -304,6 +312,7 @@ class FolderAccessController extends Controller
                 $isi .= "\nPermission : " . $folderaccesspath->permission;
             }
             $isi .= "\n\nPurpose : " . $folderaccess->purpose;
+            $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
             

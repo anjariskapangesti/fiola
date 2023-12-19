@@ -194,9 +194,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_form_software = $('#id_form_software').val();
-                console.log(id_form_software);
-                // window.location.href = "{{ route('website.software.approve_manager') }}";
                 $.ajax({
                     url: "{{ route('website.software.approve_manager') }}",
                     type: "POST",
@@ -207,9 +206,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {

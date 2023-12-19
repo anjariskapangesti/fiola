@@ -238,8 +238,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                             @if (App\Models\AppHelper::folderaccess_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::folderaccess_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="folderaccess_mgr_count">{{ App\Models\AppHelper::folderaccess_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -248,8 +248,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                             @if (App\Models\AppHelper::newfolder_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::newfolder_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="newfolder_mgr_count">{{ App\Models\AppHelper::newfolder_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -258,8 +258,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if (App\Models\AppHelper::software_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="software_mgr_count">{{ App\Models\AppHelper::software_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -268,8 +268,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if (App\Models\AppHelper::hardware_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="hardware_mgr_count">{{ App\Models\AppHelper::hardware_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -278,8 +278,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if (App\Models\AppHelper::vpn_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="vpn_mgr_count">{{ App\Models\AppHelper::vpn_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -288,8 +288,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
                             @if (App\Models\AppHelper::project_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="project_mgr_count">{{ App\Models\AppHelper::project_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -298,8 +298,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_manager_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
                             @if (App\Models\AppHelper::fitur_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="fitur_mgr_count">{{ App\Models\AppHelper::fitur_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -414,8 +414,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                             @if (App\Models\AppHelper::folderaccess_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::folderaccess_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="folderaccess_it_count">{{ App\Models\AppHelper::folderaccess_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -424,8 +424,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                             @if (App\Models\AppHelper::newfolder_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::newfolder_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="newfolder_it_count">{{ App\Models\AppHelper::newfolder_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -434,8 +434,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if (App\Models\AppHelper::software_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="software_it_count">{{ App\Models\AppHelper::software_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -444,8 +444,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if (App\Models\AppHelper::hardware_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="hardware_it_count">{{ App\Models\AppHelper::hardware_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -454,8 +454,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if (App\Models\AppHelper::vpn_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="vpn_it_count">{{ App\Models\AppHelper::vpn_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -464,8 +464,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
                             @if (App\Models\AppHelper::project_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="project_it_count">{{ App\Models\AppHelper::project_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -474,8 +474,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_it_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
                             @if (App\Models\AppHelper::fitur_it_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_it_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="fitur_it_count">{{ App\Models\AppHelper::fitur_it_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -590,8 +590,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                             @if (App\Models\AppHelper::folderaccess_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::folderaccess_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="folderaccess_it_mgr_count">{{ App\Models\AppHelper::folderaccess_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -600,8 +600,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                             @if (App\Models\AppHelper::newfolder_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::newfolder_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="newfolder_it_mgr_count">{{ App\Models\AppHelper::newfolder_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -610,8 +610,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if (App\Models\AppHelper::software_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="software_it_mgr_count">{{ App\Models\AppHelper::software_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -620,8 +620,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if (App\Models\AppHelper::hardware_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="hardware_it_mgr_count">{{ App\Models\AppHelper::hardware_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -630,8 +630,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if (App\Models\AppHelper::vpn_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="vpn_it_mgr_count">{{ App\Models\AppHelper::vpn_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -640,8 +640,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
                             @if (App\Models\AppHelper::project_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="project_it_mgr_count">{{ App\Models\AppHelper::project_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -650,8 +650,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_it_mgr_approval') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
                             @if (App\Models\AppHelper::fitur_it_mgr_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_it_mgr_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="fitur_it_mgr_count">{{ App\Models\AppHelper::fitur_it_mgr_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -767,8 +767,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
                             @if (App\Models\AppHelper::folderaccess_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::folderaccess_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="folderaccess_execution_count">{{ App\Models\AppHelper::folderaccess_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -777,8 +777,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
                             @if (App\Models\AppHelper::newfolder_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::newfolder_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="newfolder_execution_count">{{ App\Models\AppHelper::newfolder_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -787,8 +787,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
                             @if (App\Models\AppHelper::software_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="software_execution_count">{{ App\Models\AppHelper::software_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -797,8 +797,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
                             @if (App\Models\AppHelper::hardware_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="hardware_execution_count">{{ App\Models\AppHelper::hardware_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -807,8 +807,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
                             @if (App\Models\AppHelper::vpn_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="vpn_execution_count">{{ App\Models\AppHelper::vpn_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -817,8 +817,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
                             @if (App\Models\AppHelper::project_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="project_execution_count">{{ App\Models\AppHelper::project_execution_count() }}</span>
                             @endif
                         </a>
                     </li>
@@ -827,8 +827,8 @@
                             class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_execution') ? 'active' : '' }}">
                             <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
                             @if (App\Models\AppHelper::fitur_execution_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_execution_count() }}</span>
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="fitur_execution_count">{{ App\Models\AppHelper::fitur_execution_count() }}</span>
                             @endif
                         </a>
                     </li>

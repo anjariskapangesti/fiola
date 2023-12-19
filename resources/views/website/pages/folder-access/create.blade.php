@@ -23,21 +23,97 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.folder-access.store') }}" class="needs-validation" novalidate id="myForm">
+            <form method="post" action="{{ route('website.folder-access.store') }}" class="needs-validation" novalidate
+                id="myForm">
                 @csrf
                 <div class="col-lg-12">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Applicant Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="npk"><b>NPK</b></label>
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" disabled required>
+                                    <div class="invalid-feedback">Please enter your NPK</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="fullname"><b>Nama Lengkap</b></label>
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" disabled required
+                                        onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="department"><b>Department</b></label>
+                                    <input type="text" class="form-control" placeholder="Department" name="department"
+                                        id="department" maxlength="14"
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" disabled
+                                        required>
+                                    <div class="invalid-feedback">Please enter your Department</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone"><b>No. Handphone</b></label>
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" disabled required
+                                        onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title">Account Information</h5>
                             <div class="row g-3">
                                 <div class="col-md-12">
+                                    <label for="div-username"><b>Email</b></label>
+                                    <div class="device-container">
+                                        <div class="d-flex justify-content-center mb-3" id="div-username">
+                                            <input type="email" name="username[]" class="form-control"
+                                                style="margin-right: 5px;" placeholder="email@aiia.co.id" required
+                                                onkeyup="convertToLowercase(this)">
+
+                                            <select class="form-control department" name="department[]"
+                                                style="margin-right: 5px;">
+                                                <option value="">-- Department --</option>
+                                                @foreach ($departments as $department)
+                                                    @if ($department->id < 19 || $department->id > 27)
+                                                        <option value="{{ $department->name }}">{{ $department->name }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                            <button type="button" class="btn btn-success btn-tambah"
+                                                onclick="tambahDevice(this)"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- <div class="col-md-6">
                                     <div class="input-group has-validation">
-                                        {{-- <span class="input-group-text" id="inputGroupPrepend">AIIA\</span> --}}
-                                        <input type="email" name="username" class="form-control" placeholder="email@aiia.co.id"
-                                            required onkeyup="convertToLowercase(this)">
+                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
+                                        <input type="email" name="username" class="form-control"
+                                            placeholder="email@aiia.co.id" required onkeyup="convertToLowercase(this)">
                                         <div class="invalid-feedback">Please enter your email</div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="npk"><b>Department</b></label>
+                                    <select name="department" class="form-control" required data-toggle="tooltip"
+                                        data-placement="top" title="Pilih department">
+                                        <option selected disabled value="">-- Choose Department --</option>
+                                        @foreach ($departments as $department)
+                                            @if ($department->id < 19 || $department->id > 27)
+                                                <option value="{{ $department->name }}">{{ $department->name }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">Please choose your department</div>
+                                </div> --}}
+
                             </div>
                         </div>
                     </div>
@@ -66,14 +142,16 @@
                                                     <div class="invalid-feedback">Please select the folder</div>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <select name="subfolder[]" id="subfolder" class="form-control" required>
+                                                    <select name="subfolder[]" id="subfolder" class="form-control"
+                                                        required>
                                                         <option value="">-- Choose Folder --</option>
                                                     </select>
                                                     <div class="invalid-feedback">Please select the subfolder</div>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <input type="text" class="form-control" placeholder="Subfolder (Optional)"
-                                                        name="subsubfolder[]" maxlength="60">
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Subfolder (Optional)" name="subsubfolder[]"
+                                                        maxlength="60">
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <select name="permission[]" id="" class="form-control"
@@ -216,5 +294,41 @@
         function convertToLowercase(element) {
             element.value = element.value.toLowerCase();
         }
+    </script>
+
+    // TOMBOL TAMBAH //
+    <script>
+        let deviceCount = 1;
+
+        function tambahDevice(button) {
+            deviceCount++;
+            const divDepartment = button.parentNode.cloneNode(true);
+            const usernameInput = divDepartment.querySelector('input[name="username[]"]');
+            usernameInput.value = '';
+            divDepartment.querySelector('.btn-tambah').setAttribute('onclick', 'tambahDevice(this)');
+
+            divDepartment.querySelector('.btn-tambah').classList.remove('btn-success');
+            divDepartment.querySelector('.btn-tambah').classList.add('btn-kurang');
+            divDepartment.querySelector('.btn-tambah').classList.add('btn-danger');
+            divDepartment.querySelector('.btn-tambah').innerHTML = '<i class="fa fa-minus"></i>';
+            divDepartment.querySelector('.btn-tambah').setAttribute('onclick', 'hapusDevice(this)');
+            divDepartment.id = `div-department-${deviceCount}`;
+
+            document.querySelector('.device-container').appendChild(divDepartment);
+        }
+
+        function hapusDevice(button) {
+            button.parentNode.remove();
+        }
+
+        document.querySelector('.department').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var usernameInput = this.nextElementSibling;
+            if (selectedOption.value !== '') {
+                usernameInput.setAttribute('required', 'required');
+            } else {
+                usernameInput.removeAttribute('required');
+            }
+        });
     </script>
 @endpush

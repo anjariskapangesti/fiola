@@ -208,8 +208,8 @@
             });
 
             $('#btn-approve').on('click', function() {
+                let btnApprove = $(this);
                 let id_new_folder = $('#id_new_folder').val();
-                console.log(id_new_folder);
                 $.ajax({
                     url: "{{ route('website.new-folder.approve_execution') }}",
                     type: "POST",
@@ -221,9 +221,10 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        btnApprove.prop('disabled', false);
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
