@@ -18,7 +18,7 @@
                         <thead>
                             <tr>
                                 <th>Detail</th>
-                                <th>No. Reg</th>
+                                <th>Email</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -113,8 +113,8 @@
                         },
                     },
                     {
-                        data: 'no_reg',
-                        name: 'no_reg',
+                        data: 'username',
+                        name: 'username',
                     },
                     {
                         orderable: false,
@@ -158,37 +158,21 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sm table-bordered">
-                        <thead>
-                            <tr>
-                                <th colspan="2" class="text-center">Email</th>    
-                                <th colspan="2" class="text-center">Department</th>    
-                            </tr>    
-                        </thead>`
-
-                        for (let i = 0; i < d.form_folder_access_user.length; i++) {
-                    html += `<tr>
-                                    <td colspan="2">${d.form_folder_access_user[i].username}</td>
-                                    <td colspan="2">${d.form_folder_access_user[i].department}</td>
-                                    `
-                    html += `</tr>
-                    `
-                }
-                        
-                        html += `<tr class = "bg-light">
-                            <th> Main Path </th>
-                            <th> Folder </th>
-                            <th> Subfolder </th>
-                            <th> Permission </th>
-                        </tr>
-                        `
+                    <table class = "table table-sms">
+                                                <tr class = "bg-light">
+                                                <td> Main Path </td>
+                                                <td> Folder </td>
+                                                <td> Subfolder </td>
+                                                <td> Permission </td>
+                                                </tr>
+                                                `
+                console.log(d)
                 for (let i = 0; i < d.form_folder_access_path.length; i++) {
                     html += `<tr>
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
                                     <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
-                                    <td>${d.form_folder_access_path[i].permission}</td>
-                                    `
+                                    <td>${d.form_folder_access_path[i].permission}</td>`
                     html += `</tr>
                     `
                 }
@@ -202,18 +186,10 @@
                             <td>ITD Note</td>
                             <td colspan="3">${d.it_note ?? '-'}</td>
                         </tr>  
-                        <tr>
-                            <td>ITD Manager Note</td>
-                            <td colspan="3">${d.it_mgr_note ?? '-'}</td>
-                        </tr>
-                        <tr>
-                            <td>Note</td>
-                            <td colspan="3">${d.finish_note ?? '-'}</td>
-                        </tr>
                         <tfoot>
                             <tr>
                                 <th>Purpose</th>
-                                <th colspan="3">${d.creator_purpose}</th>
+                                <th colspan="3">${d.purpose}</th>
                             </tr>
                             <tr>
                                 <th>Created by</th>

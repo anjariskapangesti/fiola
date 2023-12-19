@@ -383,13 +383,11 @@ class FolderAccessController extends Controller
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
                             ->select('form_folder_access.id', 'username', 
                                     ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.no_reg'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'))
                             ->where('final_status','IT Approve')
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path')                                                
-                            ->with('form_folder_access_user')                                                
                             ->get();
 
         return DataTables::of($data)->make(true);
