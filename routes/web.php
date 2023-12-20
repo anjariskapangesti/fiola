@@ -144,6 +144,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/show_data_form', 'FolderAccessController@show_data_form')->name('folder-access.show_data_form');
             Route::get('/show_data_form_ajax', 'FolderAccessController@show_data_form_ajax')->name('folder-access.show_data_form_ajax'); 
             Route::post('/approve_form', 'FolderAccessController@approve_form')->name('folder-access.approve_form');  
+            Route::get('/get_data_subfolder', 'FolderAccessController@get_data_subfolder')->name('folder-access.get_data_subfolder');  
 
             Route::group(['middleware' => ['can:can_approve_mgr']], function () {
                 Route::get('/show_manager_approval', 'FolderAccessController@show_manager_approval')->name('folder-access.show_manager_approval');

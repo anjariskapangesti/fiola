@@ -69,7 +69,7 @@
                             <div class="row g-3">
                                 <div class="col-md-12">
                                     <label for="div-username"><b>Email</b></label>
-                                    <div class="device-container">
+                                    <div class="account-information">
                                         <div class="d-flex justify-content-center mb-3" id="div-username">
                                             <input type="email" name="username[]" class="form-control"
                                                 style="margin-right: 5px;" placeholder="email@aiia.co.id" required
@@ -85,8 +85,8 @@
                                                     @endif
                                                 @endforeach
                                             </select>
-                                            <button type="button" class="btn btn-success btn-tambah"
-                                                onclick="tambahDevice(this)"><i class="fa fa-plus"></i></button>
+                                            <button type="button" class="btn btn-success btn-tambah-username"
+                                                onclick="tambahUsername(this)"><i class="fa fa-plus"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -119,6 +119,51 @@
                     </div>
 
                     <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Folder Access Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="div-folder"><b>Folder Path</b></label>
+                                    <div class="folder-access-information">
+                                        <div class="d-flex justify-content-center mb-3" id="div-folder">
+                                            <select name="folder[]" id="folder" class="form-control"
+                                                style="margin-right: 5px;" required>
+                                                <option selected disabled value="">-- Choose Main Path --
+                                                </option>
+                                                @foreach ($folders as $folder)
+                                                    <option value="{{ $folder->id }}">{{ $folder->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div class="invalid-feedback">Please select the folder</div>
+
+                                            <select name="subfolder[]" id="subfolder" class="form-control"
+                                                style="margin-right: 5px;" required>
+                                                <option value="">-- Choose Folder --</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please select the subfolder</div>
+
+                                            <input type="text" class="form-control" style="margin-right: 5px;"
+                                                placeholder="Subfolder (Optional)" name="subsubfolder[]" maxlength="60">
+
+                                            <select name="permission[]" id="" class="form-control"
+                                                style="margin-right: 5px;" required>
+                                                <option value="">-- Choose Permission --</option>
+                                                <option value="Read-only">Read-only</option>
+                                                <option value="Modify">Modify</option>
+                                            </select>
+
+                                            <div class="invalid-feedback">Please select the permission</div>
+                                            <button type="button" class="btn btn-success btn-tambah-folder"
+                                                onclick="tambahFolder(this)"><i class="fa fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title mb-1">Folder Access Information</h5>
                             <div class="row g-3">
@@ -183,7 +228,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="card">
                         <div class="card-body">
@@ -203,12 +248,59 @@
 @endpush
 
 @push('scripts')
+<script>
+    $(document).on('change', 'select[id^="folder_"]', function() {
+        var folder_id = this.value;
+        var currentSubfolder = $(this).closest('.folder-access-information').find('select[name^="subfolder_"]');
+        console.log(folder_id, currentSubfolder);
+
+        currentSubfolder.html('');
+        $.ajax({
+            url: "{{ route('website.folder-access.get_data_subfolder') }}",
+            type: "GET",
+            data: {
+                folder_id: folder_id,
+                _token: '{{ csrf_token() }}'
+            },
+            dataType: 'json',
+            success: function(result) {
+                currentSubfolder.html('<option value="">-- Choose Folder --</option>');
+                $.each(result.subfolders, function(key, value) {
+                    currentSubfolder.append('<option value="' + value.name + '">' + value.name + '</option>');
+                });
+            }
+        });
+    });
+
+</script>
     <script>
         $(document).ready(function() {
 
             @if (session()->has('success'))
                 toastr['success']("{{ Session('success') }}")
             @endif
+
+            $('#folder').on('change', function() {
+                var folder_id = this.value;
+                $("#subfolder").html('');
+                $.ajax({
+                    url: "{{ route('website.folder-access.get_data_subfolder') }}",
+                    type: "GET",
+                    data: {
+                        folder_id: folder_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        $('#subfolder').html('<option value="">-- Choose Folder --</option>');
+                        $.each(result.subfolders, function(key, value) {
+                            $("#subfolder").append('<option value="' + value
+                                .name + '">' +
+                                value.name + '</option>');
+                        });
+                    }
+                });
+            });
 
             $('#dynamic-row').on('click', '.btn-tambah', function() {
                 const rowCounter = $('.row.border').length + 1;
@@ -296,28 +388,28 @@
         }
     </script>
 
-    // TOMBOL TAMBAH //
+    // TOMBOL TAMBAH USERNAME //
     <script>
-        let deviceCount = 1;
+        let usernameCount = 1;
 
-        function tambahDevice(button) {
-            deviceCount++;
+        function tambahUsername(button) {
+            usernameCount++;
             const divDepartment = button.parentNode.cloneNode(true);
             const usernameInput = divDepartment.querySelector('input[name="username[]"]');
             usernameInput.value = '';
-            divDepartment.querySelector('.btn-tambah').setAttribute('onclick', 'tambahDevice(this)');
+            divDepartment.querySelector('.btn-tambah-username').setAttribute('onclick', 'tambahUsername(this)');
 
-            divDepartment.querySelector('.btn-tambah').classList.remove('btn-success');
-            divDepartment.querySelector('.btn-tambah').classList.add('btn-kurang');
-            divDepartment.querySelector('.btn-tambah').classList.add('btn-danger');
-            divDepartment.querySelector('.btn-tambah').innerHTML = '<i class="fa fa-minus"></i>';
-            divDepartment.querySelector('.btn-tambah').setAttribute('onclick', 'hapusDevice(this)');
-            divDepartment.id = `div-department-${deviceCount}`;
+            divDepartment.querySelector('.btn-tambah-username').classList.remove('btn-success');
+            divDepartment.querySelector('.btn-tambah-username').classList.add('btn-kurang');
+            divDepartment.querySelector('.btn-tambah-username').classList.add('btn-danger');
+            divDepartment.querySelector('.btn-tambah-username').innerHTML = '<i class="fa fa-minus"></i>';
+            divDepartment.querySelector('.btn-tambah-username').setAttribute('onclick', 'hapusUsername(this)');
+            divDepartment.id = `div-department-${usernameCount}`;
 
-            document.querySelector('.device-container').appendChild(divDepartment);
+            document.querySelector('.account-information').appendChild(divDepartment);
         }
 
-        function hapusDevice(button) {
+        function hapusUsername(button) {
             button.parentNode.remove();
         }
 
@@ -328,6 +420,65 @@
                 usernameInput.setAttribute('required', 'required');
             } else {
                 usernameInput.removeAttribute('required');
+            }
+        });
+    </script>
+
+    // TOMBOL TAMBAH FOLDER //
+    <script>
+        let folderCount = 1;
+
+        function tambahFolder(button) {
+            folderCount++;
+            const divFolder = button.parentNode.cloneNode(true);
+
+            const folderSelect = divFolder.querySelector('select[name="folder[]"]');
+            const subfolderSelect = divFolder.querySelector('select[name="subfolder[]"]');
+            const subsubfolderInput = divFolder.querySelector('input[name="subsubfolder[]"]');
+            const permissionSelect = divFolder.querySelector('select[name="permission[]"]');
+
+            // Mengubah ID dan nama atribut
+            folderSelect.setAttribute('id', `folder_${folderCount}`);
+            folderSelect.setAttribute('name', `folder_${folderCount}[]`);
+
+            subfolderSelect.setAttribute('id', `subfolder_${folderCount}`);
+            subfolderSelect.setAttribute('name', `subfolder_${folderCount}[]`);
+
+            subsubfolderInput.setAttribute('id', `subsubfolder_${folderCount}`);
+            subsubfolderInput.setAttribute('name', `subsubfolder_${folderCount}[]`);
+
+            permissionSelect.setAttribute('id', `permission_${folderCount}`);
+            permissionSelect.setAttribute('name', `permission_${folderCount}[]`);
+
+            // Mereset nilai input
+            folderSelect.selectedIndex = 0;
+            subfolderSelect.innerHTML = '<option value="">-- Choose Folder --</option>';
+            subsubfolderInput.value = '';
+            permissionSelect.selectedIndex = 0;
+
+            // Mengatur kembali fungsi untuk tombol tambah dan kurang
+            divFolder.querySelector('.btn-tambah-folder').setAttribute('onclick', 'tambahFolder(this)');
+            divFolder.querySelector('.btn-tambah-folder').classList.remove('btn-success');
+            divFolder.querySelector('.btn-tambah-folder').classList.add('btn-kurang');
+            divFolder.querySelector('.btn-tambah-folder').classList.add('btn-danger');
+            divFolder.querySelector('.btn-tambah-folder').innerHTML = '<i class="fa fa-minus"></i>';
+            divFolder.querySelector('.btn-tambah-folder').setAttribute('onclick', 'hapusFolder(this)');
+            divFolder.id = `div-folder-${folderCount}`;
+
+            document.querySelector('.folder-access-information').appendChild(divFolder);
+        }
+
+        function hapusFolder(button) {
+            button.parentNode.remove();
+        }
+
+        document.querySelector('.department').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var folderInput = this.nextElementSibling;
+            if (selectedOption.value !== '') {
+                folderInput.setAttribute('required', 'required');
+            } else {
+                folderInput.removeAttribute('required');
             }
         });
     </script>
