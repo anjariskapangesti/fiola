@@ -24,14 +24,13 @@
                     <table class="table table-striped" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th>Detail</th>
-                                <th>No. Reg</th>
+                                <th style="max-width: 50px;">Detail</th>
+                                <th style="max-width: 100px;">No. Reg</th>
+                                <th>Creator</th>
                                 <th>Status</th>
                                 <th>Confirm</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
-
                     </table>
                 </div>
             </div>
@@ -45,7 +44,6 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to confirm this request?
-                        {{-- <input type="text" readonly class="form-control-plaintext" id="fullname_form_folder_access"> --}}
                         <input type="hidden" id="id_form_folder_access">
 
                     </div>
@@ -81,22 +79,11 @@
         <!-- End Confirmation Modal -->
     </section>
 @endsection
-@push('styles')
-    {{-- <link href="{{ asset('vendor/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" /> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        tbody tr td.dt-control {
-            background: url("{{ asset('img/details_open.png') }}") no-repeat center center;
-            cursor: pointer;
-        }
 
-        tr.details td.dt-control {
-            background: url("{{ asset('img/details_close.png') }}") no-repeat center center;
-        }
-    </style> --}}
+@push('styles')
     <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 @endpush
+
 @push('scripts')
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script lang="text/javascript">
@@ -107,15 +94,7 @@
         })
 
         $(function() {
-
-
             var table = $('#app_table').DataTable({
-                'bLengthChange': true,
-                // 'language': {
-                //     'search': 'Cari',
-                //     'lengthMenu': 'Tampilkan _MENU_ data per halaman',
-                //     'info': 'Menampilkan halaman _PAGE_ dari _PAGES_'
-                // },
                 processing: true,
                 ordering: true,
                 serverSide: true,
@@ -134,6 +113,10 @@
                     {
                         data: 'no_reg',
                         name: 'no_reg',
+                    },
+                    {
+                        data: 'creator_created_by',
+                        name: 'creator_created_by',
                     },
                     {
                         data: 'final_status',
@@ -185,7 +168,6 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
                         $('#confirmModal').modal('hide')
@@ -202,8 +184,6 @@
 
                 $('#id_form_folder_access').val(id_form_folder_access)
                 $('#fullname_form_folder_access').val(fullname_form_folder_access)
-
-                console.log(id_form_folder_access);
             })
 
             var detailsRow = [];
@@ -235,7 +215,7 @@
             function format(d) {
                 var html = `
                     <table class = "table table-sm table-bordered">
-                        <thead>
+                        <thead style="background-color: #66a7e3;">
                             <tr>
                                 <th colspan="2" class="text-center">Email</th>    
                                 <th colspan="2" class="text-center">Department</th>    
@@ -243,15 +223,15 @@
                         </thead>`
 
                         for (let i = 0; i < d.form_folder_access_user.length; i++) {
-                    html += `<tr>
-                                    <td colspan="2">${d.form_folder_access_user[i].username}</td>
-                                    <td colspan="2">${d.form_folder_access_user[i].department}</td>
-                                    `
+                    html += `<tr style="background-color: #ebf1f2;">
+                                <td colspan="2">${d.form_folder_access_user[i].username}</td>
+                                <td colspan="2">${d.form_folder_access_user[i].department}</td>
+                                `
                     html += `</tr>
                     `
                 }
                         
-                        html += `<tr class = "bg-light">
+                        html += `<tr style="background-color: #c9d2d4;">
                             <th> Main Path </th>
                             <th> Folder </th>
                             <th> Subfolder </th>
@@ -259,7 +239,7 @@
                         </tr>
                         `
                 for (let i = 0; i < d.form_folder_access_path.length; i++) {
-                    html += `<tr>
+                    html += `<tr style="background-color: #ebf1f2;">
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
                                     <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
@@ -286,16 +266,18 @@
                             <td>Note</td>
                             <td colspan="3">${d.finish_note ?? '-'}</td>
                         </tr>
+
                         <tfoot>
-                            <tr>
+                            <tr style="background-color: #ebf1f2;"style="background-color: #ebf1f2;">
                                 <th>Purpose</th>
-                                <th colspan="3">${d.creator_purpose}</th>
+                                <th colspan="3">${d.purpose}</th>
                             </tr>
-                            <tr>
+                            <tr style="background-color: #ebf1f2;">
                                 <th>Created by</th>
                                 <th colspan="3">${d.creator_created_by}</th>
                             </tr>
-                        </tfoot>                      
+                        </tfoot>     
+
                         </table>`
 
                 return html

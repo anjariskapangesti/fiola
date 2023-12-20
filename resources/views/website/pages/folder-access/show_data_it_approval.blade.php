@@ -17,8 +17,9 @@
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Detail</th>
-                                <th>Email</th>
+                                <th style="max-width: 50px;">Detail</th>
+                                <th style="max-width: 100px;">No. Reg</th>
+                                <th>Creator</th>
                                 <th>Date Approved</th>
                             </tr>
                         </thead>
@@ -72,35 +73,16 @@
         <!-- End Confirmation Modal -->
     </section>
 @endsection
-@push('styles')
-    {{-- <link href="{{ asset('vendor/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" /> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        tbody tr td.dt-control {
-            background: url("{{ asset('img/details_open.png') }}") no-repeat center center;
-            cursor: pointer;
-        }
 
-        tr.details td.dt-control {
-            background: url("{{ asset('img/details_close.png') }}") no-repeat center center;
-        }
-    </style> --}}
+@push('styles')
     <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 @endpush
+
 @push('scripts')
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script lang="text/javascript">
         $(function() {
-
-
             var table = $('.table').DataTable({
-                'bLengthChange': true,
-                // 'language': {
-                //     'search': 'Cari',
-                //     'lengthMenu': 'Tampilkan _MENU_ data per halaman',
-                //     'info': 'Menampilkan halaman _PAGE_ dari _PAGES_'
-                // },
                 processing: true,
                 ordering: true,
                 serverSide: true,
@@ -117,8 +99,12 @@
                         },
                     },
                     {
-                        data: 'username',
-                        name: 'username',
+                        data: 'no_reg',
+                        name: 'no_reg',
+                    },
+                    {
+                        data: 'creator_created_by',
+                        name: 'creator_created_by',
                     },
                     {
                         data: 'it_approval_date',
@@ -156,21 +142,37 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sms">
-                                                <tr class = "bg-light">
-                                                <td> Main Path </td>
-                                                <td> Folder </td>
-                                                <td> Subfolder </td>
-                                                <td> Permission </td>
-                                                </tr>
-                                                `
-                console.log(d)
+                    <table class = "table table-sm table-bordered">
+                        <thead style="background-color: #66a7e3;">
+                            <tr>
+                                <th colspan="2" class="text-center">Email</th>    
+                                <th colspan="2" class="text-center">Department</th>    
+                            </tr>    
+                        </thead>`
+
+                        for (let i = 0; i < d.form_folder_access_user.length; i++) {
+                    html += `<tr style="background-color: #ebf1f2;">
+                                <td colspan="2">${d.form_folder_access_user[i].username}</td>
+                                <td colspan="2">${d.form_folder_access_user[i].department}</td>
+                                `
+                    html += `</tr>
+                    `
+                }
+                        
+                        html += `<tr style="background-color: #c9d2d4;">
+                            <th> Main Path </th>
+                            <th> Folder </th>
+                            <th> Subfolder </th>
+                            <th> Permission </th>
+                        </tr>
+                        `
                 for (let i = 0; i < d.form_folder_access_path.length; i++) {
-                    html += `<tr>
+                    html += `<tr style="background-color: #ebf1f2;">
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
                                     <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
-                                    <td>${d.form_folder_access_path[i].permission}</td>`
+                                    <td>${d.form_folder_access_path[i].permission}</td>
+                                    `
                     html += `</tr>
                     `
                 }
@@ -183,17 +185,19 @@
                         <tr>
                             <td>ITD Note</td>
                             <td colspan="3">${d.it_note ?? '-'}</td>
-                        </tr>
+                        </tr>  
+
                         <tfoot>
-                            <tr>
+                            <tr style="background-color: #ebf1f2;"style="background-color: #ebf1f2;">
                                 <th>Purpose</th>
-                                <th colspan="3">${d.creator_purpose}</th>                                
+                                <th colspan="3">${d.purpose}</th>
                             </tr>
-                            <tr>
+                            <tr style="background-color: #ebf1f2;">
                                 <th>Created by</th>
                                 <th colspan="3">${d.creator_created_by}</th>
                             </tr>
-                        </tfoot>                      
+                        </tfoot>     
+
                         </table>`
 
                 return html

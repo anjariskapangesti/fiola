@@ -44,7 +44,7 @@ class FolderAccessController extends Controller
     public function subfolder_ajax(Request $request)
     {
         $data['subfolders'] = SubFolder::join('folders', 'folders.id','subfolders.folder_id')
-        ->where("folders.name", $request->folder_id)
+                                ->where("folders.name", $request->folder_id)
                                 ->orderBy('subfolders.name')
                                 ->get(["subfolders.name", "subfolders.id"]);
   
@@ -160,7 +160,7 @@ class FolderAccessController extends Controller
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
                             ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.final_status as final_status'),
                                     ('form_folder_access.no_reg'),
                                     ('form_folder_access.manager_note'),
@@ -203,7 +203,7 @@ class FolderAccessController extends Controller
         $lastDepartmentId = $userDepartments->last();
 
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', 
+                            ->select('form_folder_access.id', 'no_reg', 
                                     ('form_folder_access.purpose'), ('users.name as creator_created_by'))
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                     $query->where('created_dept', $firstDepartmentId)
@@ -211,7 +211,8 @@ class FolderAccessController extends Controller
                                     })
                             ->where('final_status','created')
                             ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')                                                
+                            ->with('form_folder_access_path')
+                            ->with('form_folder_access_user')
                             ->get();
 
         return DataTables::of($data)->make(true);
@@ -245,7 +246,7 @@ class FolderAccessController extends Controller
         $departmetns = Department::all();
         $folders = Folder::orderBy('name', 'ASC')->get();
         $subfolders = SubFolder::orderBy('name', 'ASC')->get();
-        // dd($subfolders);
+
         return view('website.pages.folder-access.show_data_manager_approval', compact(['departmetns', 'folders', 'subfolders']));
     }
 
@@ -256,8 +257,8 @@ class FolderAccessController extends Controller
         $lastDepartmentId = $userDepartments->last();
 
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
+                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.manager_approval_date as manager_approval_date'),
                                     ('form_folder_access.manager_note'))
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
@@ -266,7 +267,8 @@ class FolderAccessController extends Controller
                                     })
                             ->where('is_manager_approve','1')
                             ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path');
+                            ->with('form_folder_access_path')
+                            ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -281,12 +283,13 @@ class FolderAccessController extends Controller
     public function show_it_approval_ajax(Request $request)
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', 
+                            ->select('form_folder_access.id', 'no_reg', 
                                     ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.manager_note'))
                             ->where('final_status','Manager Approve')
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path')                                                
+                            ->with('form_folder_access_user')                                                
                             ->get();
 
         return DataTables::of($data)->make(true);
@@ -298,20 +301,30 @@ class FolderAccessController extends Controller
         $type=$request->type;
         $folderaccess = FolderAccess::findOrFail($id);
         $folderaccesspaths = FolderAccessPath::where('folder_access_id', $id)->get();
+        $folderaccessusers = FolderAccessUser::where('folder_access_id', $id)->get();
 
         if($type=='ok'){
             $isi = "FORM FOLDER ACCESS\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nEmail : *" . $folderaccess->username ."*";        
-    
+            $isi .= "\nNo. Reg : *" . $folderaccess->no_reg ."*";
+            $isi .= "\nName : *" . $folderaccess->createdBy->name ."*" . "\n";    
+            
+            $isi .= "\n----------USER----------";
+            foreach ($folderaccessusers as $folderaccessuser) {
+                $isi .= "\nEmail : " . $folderaccessuser->username;
+                $isi .= "\nDepartment : " . $folderaccessuser->department . "\n";
+            }
+
+            $isi .= "\n----------FOLDER----------";
             foreach ($folderaccesspaths as $folderaccesspath) {
-                $isi .= "\n\nMain Path : " . $folderaccesspath->folder;
+                $isi .= "\nMain Path : " . $folderaccesspath->folder;
                 $isi .= "\nFolder : " . $folderaccesspath->subfolder;
                 $isi .= "\nSubfolder : " . $folderaccesspath->subsubfolder;
-                $isi .= "\nPermission : " . $folderaccesspath->permission;
+                $isi .= "\nPermission : " . $folderaccesspath->permission . "\n";
             }
-            $isi .= "\n\nPurpose : " . $folderaccess->purpose;
+
+            $isi .= "\nPurpose : " . $folderaccess->purpose;
             $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
@@ -339,11 +352,13 @@ class FolderAccessController extends Controller
             $folderaccess->is_it_approve=1;
             $folderaccess->final_status='IT Approve';
             $folderaccess->it_note=$request->it_note;
+            $folderaccess->it_approve_by=Auth::user()->id;
         }else{
             $folderaccess->is_it_approve=0;
             $folderaccess->final_status='IT Reject';
             $folderaccess->it_note=$request->it_note;
             $folderaccess->is_finish=0;
+            $folderaccess->it_approve_by=Auth::user()->id;
         }
         $folderaccess->it_approval_date= Carbon::now();
         $folderaccess->save();
@@ -359,14 +374,15 @@ class FolderAccessController extends Controller
     public function show_data_it_approval_ajax(Request $request)
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
+                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.it_approval_date as it_approval_date'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'))
                             ->where('is_it_approve','1')
                             ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path');
+                            ->with('form_folder_access_path')
+                            ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }

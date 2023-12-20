@@ -17,13 +17,12 @@
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Detail</th>
-                                <th>Email</th>
+                                <th style="max-width: 50px;">Detail</th>
+                                <th style="max-width: 100px;">No. Reg</th>
+                                <th>Creator</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
-
                     </table>
                 </div>
             </div>
@@ -37,7 +36,7 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_folder_access">
+                        <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
                         <input type="hidden" id="id_folder_access">
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
                     </div>
@@ -58,7 +57,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Please share the reason why you're rejecting<br /><br />
+                        Please share the reason why you're rejecting
+                        <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
                         <textarea class="form-control" id="reject_reason"></textarea>
                         <input type="hidden" id="id_folder_access_reject">
                     </div>
@@ -73,30 +73,16 @@
         <!-- End Confirmation Modal -->
     </section>
 @endsection
-@push('styles')
-    {{-- <link href="{{ asset('vendor/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" /> --}}
-    {{-- <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-        tbody tr td.dt-control {
-            background: url("{{ asset('img/details_open.png') }}") no-repeat center center;
-            cursor: pointer;
-        }
 
-        tr.details td.dt-control {
-            background: url("{{ asset('img/details_close.png') }}") no-repeat center center;
-        }
-    </style> --}}
+@push('styles')
     <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
 @endpush
+
 @push('scripts')
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script lang="text/javascript">
         $(function() {
-
-
             var table = $('.table').DataTable({
-                'bLengthChange': true,
                 processing: true,
                 ordering: true,
                 serverSide: true,
@@ -113,8 +99,12 @@
                         },
                     },
                     {
-                        data: 'username',
-                        name: 'username',
+                        data: 'no_reg',
+                        name: 'no_reg',
+                    },
+                    {
+                        data: 'creator_created_by',
+                        name: 'creator_created_by',
                     },
                     {
                         orderable: false,
@@ -122,8 +112,8 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-username="${data.username}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-username="${data.username}">Reject</button>`;
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Reject</button>`;
                         }
                     },
                 ]
@@ -158,21 +148,37 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sms">
-                                                <tr class = "bg-light">
-                                                <td> Main Path </td>
-                                                <td> Folder </td>
-                                                <td> Subfolder </td>
-                                                <td> Permission </td>
-                                                </tr>
-                                                `
-                console.log(d)
+                    <table class = "table table-sm table-bordered">
+                        <thead style="background-color: #66a7e3;">
+                            <tr>
+                                <th colspan="2" class="text-center">Email</th>    
+                                <th colspan="2" class="text-center">Department</th>    
+                            </tr>    
+                        </thead>`
+
+                        for (let i = 0; i < d.form_folder_access_user.length; i++) {
+                    html += `<tr style="background-color: #ebf1f2;">
+                                <td colspan="2">${d.form_folder_access_user[i].username}</td>
+                                <td colspan="2">${d.form_folder_access_user[i].department}</td>
+                                `
+                    html += `</tr>
+                    `
+                }
+                        
+                        html += `<tr style="background-color: #c9d2d4;">
+                            <th> Main Path </th>
+                            <th> Folder </th>
+                            <th> Subfolder </th>
+                            <th> Permission </th>
+                        </tr>
+                        `
                 for (let i = 0; i < d.form_folder_access_path.length; i++) {
-                    html += `<tr>
+                    html += `<tr style="background-color: #ebf1f2;">
                                     <td>${d.form_folder_access_path[i].folder}</td>
                                     <td>${d.form_folder_access_path[i].subfolder}</td>
                                     <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
-                                    <td>${d.form_folder_access_path[i].permission}</td>`
+                                    <td>${d.form_folder_access_path[i].permission}</td>
+                                    `
                     html += `</tr>
                     `
                 }
@@ -181,17 +187,19 @@
                         <tr>
                             <td>Manager Note</td>
                             <td colspan="3">${d.manager_note ?? '-'}</td>
-                        </tr>               
+                        </tr>
+
                         <tfoot>
-                            <tr>
+                            <tr style="background-color: #ebf1f2;"style="background-color: #ebf1f2;">
                                 <th>Purpose</th>
                                 <th colspan="3">${d.purpose}</th>
                             </tr>
-                            <tr>
+                            <tr style="background-color: #ebf1f2;">
                                 <th>Created by</th>
                                 <th colspan="3">${d.creator_created_by}</th>
                             </tr>
-                        </tfoot>                      
+                        </tfoot>     
+
                         </table>`
 
                 return html
@@ -252,22 +260,20 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('.table').on('click', '.btn-table-approve', function() {
                 var id_folder_access = $(this).data('id');
-                var username_folder_access = $(this).data('username');
+                var no_reg = $(this).data('no_reg');
+                
                 $('#id_folder_access').val(id_folder_access)
-                $('#username_folder_access').val(username_folder_access)
-                // console.log(id_folder_access);
+                $('#no_reg_approve').val(no_reg)
             })
 
             $('.table').on('click', '.btn-table-reject', function() {
                 var id_folder_access_reject = $(this).data('id');
+                var no_reg = $(this).data('no_reg');
+
                 $('#id_folder_access_reject').val(id_folder_access_reject)
-                // console.log(id_folder_access_reject);
+                $('#no_reg_reject').val(no_reg)
             })
 
         })

@@ -76,7 +76,7 @@
                                                 onkeyup="convertToLowercase(this)">
 
                                             <select class="form-control department" name="department[]"
-                                                style="margin-right: 5px;">
+                                                style="margin-right: 5px;" required>
                                                 <option value="">-- Department --</option>
                                                 @foreach ($departments as $department)
                                                     @if ($department->id < 19 || $department->id > 27)
@@ -125,13 +125,13 @@
                                 <div class="col-md-12">
                                     <label for="div-folder"><b>Folder Path</b></label>
                                     <div class="folder-access-information">
-                                        <div class="d-flex justify-content-center mb-3" id="div-folder">
+                                        <div class="d-flex justify-content-center mb-3 div-folder" id="div-folder">
                                             <select name="folder[]" id="folder" class="form-control"
                                                 style="margin-right: 5px;" required>
                                                 <option selected disabled value="">-- Choose Main Path --
                                                 </option>
                                                 @foreach ($folders as $folder)
-                                                    <option value="{{ $folder->id }}">{{ $folder->name }}
+                                                    <option value="{{ $folder->name }}">{{ $folder->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -157,6 +157,15 @@
                                             <button type="button" class="btn btn-success btn-tambah-folder"
                                                 onclick="tambahFolder(this)"><i class="fa fa-plus"></i></button>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12  mt-0">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
+                                            name="purpose" maxlength="100" required></textarea>
+                                        <label for="floatingTextarea">Purpose</label>
+                                        <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
                                 </div>
                             </div>
@@ -248,7 +257,7 @@
 @endpush
 
 @push('scripts')
-<script>
+    {{-- <script>
     $(document).on('change', 'select[id^="folder_"]', function() {
         var folder_id = this.value;
         var currentSubfolder = $(this).closest('.folder-access-information').find('select[name^="subfolder_"]');
@@ -272,7 +281,7 @@
         });
     });
 
-</script>
+</script> --}}
     <script>
         $(document).ready(function() {
 
@@ -280,27 +289,27 @@
                 toastr['success']("{{ Session('success') }}")
             @endif
 
-            $('#folder').on('change', function() {
-                var folder_id = this.value;
-                $("#subfolder").html('');
-                $.ajax({
-                    url: "{{ route('website.folder-access.get_data_subfolder') }}",
-                    type: "GET",
-                    data: {
-                        folder_id: folder_id,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function(result) {
-                        $('#subfolder').html('<option value="">-- Choose Folder --</option>');
-                        $.each(result.subfolders, function(key, value) {
-                            $("#subfolder").append('<option value="' + value
-                                .name + '">' +
-                                value.name + '</option>');
-                        });
-                    }
-                });
-            });
+            // $('#folder').on('change', function() {
+            //     var folder_id = this.value;
+            //     $("#subfolder").html('');
+            //     $.ajax({
+            //         url: "{{ route('website.folder-access.subfolder_ajax') }}",
+            //         type: "GET",
+            //         data: {
+            //             folder_id: folder_id,
+            //             _token: '{{ csrf_token() }}'
+            //         },
+            //         dataType: 'json',
+            //         success: function(result) {
+            //             $('#subfolder').html('<option value="">-- Choose Folder --</option>');
+            //             $.each(result.subfolders, function(key, value) {
+            //                 $("#subfolder").append('<option value="' + value
+            //                     .name + '">' +
+            //                     value.name + '</option>');
+            //             });
+            //         }
+            //     });
+            // });
 
             $('#dynamic-row').on('click', '.btn-tambah', function() {
                 const rowCounter = $('.row.border').length + 1;
@@ -360,7 +369,30 @@
             $('#dynamic-row').on('change', 'select[name="folder[]"]', function() {
                 var idFolder = $(this).val();
                 var subfolderSelect = $(this).closest('.row').find('select[name="subfolder[]"]');
+                subfolderSelect.html('');
 
+                $.ajax({
+                    url: "{{ route('website.folder-access.subfolder_ajax') }}",
+                    type: "GET",
+                    data: {
+                        folder_id: idFolder,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function(result) {
+                        subfolderSelect.html(
+                            '<option value="">-- Choose Sub Folder --</option>');
+                        $.each(result.subfolders, function(key, value) {
+                            subfolderSelect.append('<option value="' + value.name +
+                                '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            });
+
+            $('.folder-access-information').on('change', 'select[name="folder[]"]', function() {
+                var idFolder = $(this).val();
+                var subfolderSelect = $(this).closest('.div-folder').find('select[name="subfolder[]"]');
                 subfolderSelect.html('');
                 $.ajax({
                     url: "{{ route('website.folder-access.subfolder_ajax') }}",
@@ -438,17 +470,17 @@
             const permissionSelect = divFolder.querySelector('select[name="permission[]"]');
 
             // Mengubah ID dan nama atribut
-            folderSelect.setAttribute('id', `folder_${folderCount}`);
-            folderSelect.setAttribute('name', `folder_${folderCount}[]`);
+            folderSelect.setAttribute('id', `folder${folderCount}`);
+            // folderSelect.setAttribute('name', `folder${folderCount}[]`);
 
-            subfolderSelect.setAttribute('id', `subfolder_${folderCount}`);
-            subfolderSelect.setAttribute('name', `subfolder_${folderCount}[]`);
+            subfolderSelect.setAttribute('id', `subfolder${folderCount}`);
+            // subfolderSelect.setAttribute('name', `subfolder${folderCount}[]`);
 
-            subsubfolderInput.setAttribute('id', `subsubfolder_${folderCount}`);
-            subsubfolderInput.setAttribute('name', `subsubfolder_${folderCount}[]`);
+            subsubfolderInput.setAttribute('id', `subsubfolder${folderCount}`);
+            // subsubfolderInput.setAttribute('name', `subsubfolder${folderCount}[]`);
 
             permissionSelect.setAttribute('id', `permission_${folderCount}`);
-            permissionSelect.setAttribute('name', `permission_${folderCount}[]`);
+            // permissionSelect.setAttribute('name', `permission_${folderCount}[]`);
 
             // Mereset nilai input
             folderSelect.selectedIndex = 0;
@@ -463,7 +495,7 @@
             divFolder.querySelector('.btn-tambah-folder').classList.add('btn-danger');
             divFolder.querySelector('.btn-tambah-folder').innerHTML = '<i class="fa fa-minus"></i>';
             divFolder.querySelector('.btn-tambah-folder').setAttribute('onclick', 'hapusFolder(this)');
-            divFolder.id = `div-folder-${folderCount}`;
+            // divFolder.id = `div-folder-${folderCount}`;
 
             document.querySelector('.folder-access-information').appendChild(divFolder);
         }
