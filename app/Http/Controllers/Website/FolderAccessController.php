@@ -543,4 +543,13 @@ class FolderAccessController extends Controller
 
         return DataTables::eloquent($data)->make(true);
     }
+
+    public function get_data_subfolder(Request $request)
+    {
+        $data['subfolders'] = SubFolder::where('folder_id', $request->folder_id)
+                                    ->orderBy('id')
+                                    ->get(['name']);
+  
+        return response()->json($data);
+    }
 }
