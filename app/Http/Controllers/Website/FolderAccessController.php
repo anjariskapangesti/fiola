@@ -397,13 +397,14 @@ class FolderAccessController extends Controller
     public function show_it_mgr_approval_ajax(Request $request)
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', 
+                            ->select('form_folder_access.id', 'no_reg', 
                                     ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'))
                             ->where('final_status','IT Approve')
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path')                                                
+                            ->with('form_folder_access_user')                                                
                             ->get();
 
         return DataTables::of($data)->make(true);
@@ -438,15 +439,16 @@ class FolderAccessController extends Controller
     public function show_data_it_mgr_approval_ajax(Request $request)
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
+                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.it_mgr_approval_date as it_mgr_approval_date'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'),
                                     ('form_folder_access.it_mgr_note'))
                             ->where('is_it_mgr_approve','1')
                             ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path');
+                            ->with('form_folder_access_path')
+                            ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -461,7 +463,7 @@ class FolderAccessController extends Controller
     public function show_execution_ajax(Request $request)
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', 
+                            ->select('form_folder_access.id', 'no_reg', 
                                     ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.manager_note'),
                                     ('form_folder_access.it_note'),
@@ -469,6 +471,7 @@ class FolderAccessController extends Controller
                             ->where('final_status','IT MGR Approve')
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path')                                                
+                            ->with('form_folder_access_user')                                                
                             ->get();
 
         return DataTables::of($data)->make(true);
@@ -526,10 +529,12 @@ class FolderAccessController extends Controller
             $folderaccess->is_confirm=0;
             $folderaccess->final_status='Finished';
             $folderaccess->finish_note=$request->finish_note;
+            $folderaccess->finish_by=Auth::user()->id;
         }else{
             $folderaccess->is_finish=0;
             $folderaccess->final_status='Rejected';
             $folderaccess->finish_note=$request->finish_note;
+            $folderaccess->finish_by=Auth::user()->id;
         }
         $folderaccess->finish_date= Carbon::now();
         $folderaccess->save();
@@ -545,7 +550,7 @@ class FolderAccessController extends Controller
     public function show_data_execution_ajax(Request $request)
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
+                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
                                     ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.final_status'),
                                     ('form_folder_access.finish_date'),
@@ -555,7 +560,8 @@ class FolderAccessController extends Controller
                                     ('form_folder_access.finish_note'))
                             ->where('is_finish','1')->orWhere('is_finish','0')
                             ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path');
+                            ->with('form_folder_access_path')
+                            ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
