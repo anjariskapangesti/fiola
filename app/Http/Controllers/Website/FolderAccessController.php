@@ -551,7 +551,7 @@ class FolderAccessController extends Controller
     {
         $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
                             ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
-                                    ('form_folder_access.purpose as creator_purpose'), ('users.name as creator_created_by'),
+                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
                                     ('form_folder_access.final_status'),
                                     ('form_folder_access.finish_date'),
                                     ('form_folder_access.manager_note'),
