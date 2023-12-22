@@ -267,14 +267,22 @@
                             <td colspan="3">${d.finish_note ?? '-'}</td>
                         </tr>
 
-                        <tfoot>
-                            <tr style="background-color: #ebf1f2;"style="background-color: #ebf1f2;">
+                        <tfoot style="background-color: #ebf1f2;">
+                            <tr>
                                 <th>Purpose</th>
                                 <th colspan="3">${d.purpose}</th>
                             </tr>
-                            <tr style="background-color: #ebf1f2;">
+                            <tr>
                                 <th>Created by</th>
                                 <th colspan="3">${d.creator_created_by}</th>
+                            </tr>
+                            <tr>
+                                <th>IT Approved by</th>
+                                <th colspan="3">${d.it_approve_by_name  ?? '-'}</th>
+                            </tr>
+                            <tr>
+                                <th>Finish by</th>
+                                <th colspan="3">${d.finish_by_name  ?? '-'}</th>
                             </tr>
                         </tfoot>     
 

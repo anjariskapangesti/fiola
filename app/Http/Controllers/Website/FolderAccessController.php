@@ -158,24 +158,31 @@ class FolderAccessController extends Controller
 
     public function show_data_form_ajax(Request $request)
     {
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'username', DB::Raw('form_folder_access.username as creator_username'), 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.final_status as final_status'),
-                                    ('form_folder_access.no_reg'),
-                                    ('form_folder_access.manager_note'),
-                                    ('form_folder_access.it_note'),
-                                    ('form_folder_access.it_mgr_note'),
-                                    ('form_folder_access.finish_note'),
-                                    ('form_folder_access.is_confirm'))
-                            ->where('created_by', Auth::user()->id)
+        $data = FolderAccess::join('users as created_users', 'form_folder_access.created_by', '=', 'created_users.id')
+                            ->leftJoin('users as it_approve_users', 'form_folder_access.it_approve_by', '=', 'it_approve_users.id')
+                            ->leftJoin('users as finish_users', 'form_folder_access.finish_by', '=', 'finish_users.id')
+                            ->select(
+                                'form_folder_access.id',
+                                DB::Raw('form_folder_access.no_reg'), 
+                                ('form_folder_access.purpose'), 
+                                ('created_users.name as creator_created_by'),
+                                ('form_folder_access.final_status as final_status'),
+                                ('form_folder_access.manager_note'),
+                                ('form_folder_access.it_note'),
+                                ('form_folder_access.it_mgr_note'),
+                                ('form_folder_access.finish_note'),
+                                ('form_folder_access.is_confirm'),
+                                ('it_approve_users.name as it_approve_by_name'),
+                                ('finish_users.name as finish_by_name')
+                            )
+                            ->where('form_folder_access.created_by', Auth::user()->id)
                             ->orderBy('form_folder_access.id', 'desc')
                             ->with('form_folder_access_path')
                             ->with('form_folder_access_user');
-
+    
         return DataTables::eloquent($data)->make(true);
     }
-
+    
     public function approve_form(Request $request)
     {
         $id=$request->id;

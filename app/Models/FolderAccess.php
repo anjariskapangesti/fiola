@@ -27,7 +27,9 @@ class FolderAccess extends Model
         'it_mgr_note',
         'finish_note',
         'created_by',
-        'created_dept'
+        'created_dept',
+        'it_approve_by',
+        'finish_by',
     ];
 
     public function form_folder_access_path()
@@ -44,9 +46,4 @@ class FolderAccess extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
-    // public function folder_name()
-    // {
-    //     return $this->belongsToMany(Folder::class, 'folder', 'id');
-    // }
 }
