@@ -225,12 +225,12 @@
 
             $('#btn-approve').on('click', function() {
                 let btnApprove = $(this);
-                let id_folder_access = $('#id_folder_access').val();
+                let id_folder_access_approve = $('#id_folder_access_approve').val();
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_execution') }}",
                     type: "POST",
                     data: {
-                        id: id_folder_access,
+                        id: id_folder_access_approve,
                         finish_note: $('#note').val(),
                         type: 'ok',
                         '_token': "{{ csrf_token() }}",
