@@ -38,8 +38,8 @@
                     </div>
                     <div class="modal-body">
                         Are you sure want to approve this request?
-                        <input type="text" readonly class="form-control-plaintext" id="username_folder_access">
-                        <input type="hidden" id="id_folder_access">
+                        <input type="text" readonly class="form-control-plaintext" id="no_reg_folder_access_approve">
+                        <input type="hidden" id="id_folder_access_approve">
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
                     </div>
                     <div class="modal-footer">
@@ -59,7 +59,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Please share the reason why you're rejecting<br /><br />
+                        Please share the reason why you're rejecting
+                        <input type="text" readonly class="form-control-plaintext" id="no_reg_folder_access_reject">
                         <textarea class="form-control" id="reject_reason"></textarea>
                         <input type="hidden" id="id_folder_access_reject">
                     </div>
@@ -114,8 +115,8 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-username="${data.username}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-username="${data.username}">Reject</button>`;
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Reject</button>`;
                         }
                     },
                 ]
@@ -249,8 +250,6 @@
 
             $('#btn-reject').on('click', function() {
                 let id_folder_access_reject = $('#id_folder_access_reject').val();
-                console.log(id_folder_access_reject);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
                 $.ajax({
                     url: "{{ route('website.folder-access.approve_execution') }}",
                     type: "POST",
@@ -272,22 +271,20 @@
                 });
             });
 
-            // $('#confirmModal').on('shown.bs.modal', function() {
-            //     $('#nama').text('Nama Requestor')
-            // });
-
             $('.table').on('click', '.btn-table-approve', function() {
-                var id_folder_access = $(this).data('id');
-                var username_folder_access = $(this).data('username');
-                $('#id_folder_access').val(id_folder_access)
-                $('#username_folder_access').val(username_folder_access)
-                // console.log(id_folder_access);
+                var id_folder_access_approve = $(this).data('id');
+                var no_reg_folder_access_approve = $(this).data('no_reg');
+
+                $('#id_folder_access_approve').val(id_folder_access_approve)
+                $('#no_reg_folder_access_approve').val(no_reg_folder_access_approve)
             })
 
             $('.table').on('click', '.btn-table-reject', function() {
                 var id_folder_access_reject = $(this).data('id');
+                var no_reg_folder_access_reject = $(this).data('no_reg');
+
                 $('#id_folder_access_reject').val(id_folder_access_reject)
-                // console.log(id_folder_access_reject);
+                $('#no_reg_folder_access_reject').val(no_reg_folder_access_reject)
             })
 
         })
