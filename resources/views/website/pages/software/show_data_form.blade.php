@@ -150,10 +150,10 @@
                             data: 'category',
                             name: 'category',
                             render: function(data, type, row, meta) {
-                                if (data == 'software') {
-                                    return `<span class="badge bg-success">Software</span>`;
+                                if (data == 'Install') {
+                                    return `<span class="badge bg-success">Install</span>`;
                                 } else {
-                                    return `<span class="badge bg-danger">OS</span>`;
+                                    return `<span class="badge bg-danger">Uninstall</span>`;
                                 }
                             }
                         },

@@ -23,45 +23,83 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.hardware.store') }}" class="needs-validation" novalidate id="myForm">
+            <form method="post" action="{{ route('website.hardware.store') }}" class="needs-validation" novalidate
+                id="myForm">
                 @csrf
                 <div class="col-lg-12">
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">General</h5>
+                            <h5 class="card-title">Applicant Information</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="category">Category : </label>
+                                    <label for="npk"><b>NPK</b></label>
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" disabled required>
+                                    <div class="invalid-feedback">Please enter your NPK</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="fullname"><b>Nama Lengkap</b></label>
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" disabled required
+                                        onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="department"><b>Department</b></label>
+                                    <input type="text" class="form-control" placeholder="Department" name="department"
+                                        id="department" maxlength="14"
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" disabled
+                                        required>
+                                    <div class="invalid-feedback">Please enter your Department</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone"><b>No. Handphone</b></label>
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" disabled required
+                                        onkeyup="formatFullName(this)">
+                                    <div class="invalid-feedback">Please enter your Full Name</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">General</h5>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="mb-2"><b>Category : </b></label>
                                     <br>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="category" id="categoryType1" value="request" required>
+                                        <input class="form-check-input" type="radio" name="category" id="categoryType1"
+                                            value="request" required>
                                         <label class="form-check-label" for="categoryType1">Request</label>
                                         <div class="invalid-feedback">Please select category</div>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="category" id="categoryType2" value="change">
+                                        <input class="form-check-input" type="radio" name="category" id="categoryType2"
+                                            value="change">
                                         <label class="form-check-label" for="categoryType2">Change</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="type">Type : </label>
+                                <div class="col-md-8">
+                                    <label class="mb-2"><b>Device : </b></label>
                                     <br>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="radio01" value="cpu" required>
+                                        <input class="form-check-input" type="radio" name="type" id="radio01"
+                                            value="cpu" required>
                                         <label class="form-check-label" for="radio01">CPU</label>
                                         <div class="invalid-feedback">Please select type</div>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="radio02" value="laptop">
+                                        <input class="form-check-input" type="radio" name="type" id="radio02"
+                                            value="laptop">
                                         <label class="form-check-label" for="radio02">Laptop</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="radio03" value="laptop">
+                                        <input class="form-check-input" type="radio" name="type" id="radio03"
+                                            value="laptop">
                                         <label class="form-check-label" for="radio03">Flashdisk</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
@@ -113,7 +151,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6" id="divDeviceBefore" style="display:none;">
-                                    <input type="text" class="form-control" placeholder="ID Device Before (NTB-001 or CPU-001)" name="device_before"
+                                    <input type="text" class="form-control"
+                                        placeholder="ID Device Before (NTB-001 or CPU-001)" name="device_before"
                                         maxlength="60" onkeyup="convertToUppercase(this)">
                                     <div class="invalid-feedback">Please enter your ID Device Before</div>
                                 </div>
@@ -127,8 +166,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                    
-                    
+                    </div>
+
                     <div class="card">
                         <div class="card-body">
                             @include('website.layouts.approval_flow')

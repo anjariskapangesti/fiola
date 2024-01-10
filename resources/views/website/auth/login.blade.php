@@ -74,17 +74,17 @@
                   <form class="row g-3 needs-validation" novalidate method="post" action="{{ route('website.auth.authenticate') }}">
                     @csrf
                     <div class="col-12">
-                      <label for="yourUsername" class="form-label">Email / NPK</label>
+                      <label for="yourUsername" class="form-label">NPK / Email</label>
                       <div class="input-group has-validation">
                         {{-- <span class="input-group-text" id="inputGroupPrepend">@</span> --}}
-                        <input type="text" name="email" class="form-control" id="yourUsername" required onkeyup="convertToLowercase(this)">
+                        <input type="text" name="email" placeholder="6 digit NPK / Email" class="form-control" id="yourUsername" required onkeyup="convertToLowercase(this)">
                         <div class="invalid-feedback">Please enter your email or NPK</div>
                       </div>
                     </div>
 
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Password</label>
-                      <input type="password" name="password" class="form-control" id="yourPassword" required>
+                      <input type="password" name="password" placeholder="Password" class="form-control" id="yourPassword" required>
                       <div class="invalid-feedback">Please enter your password!</div>
                     </div>
 
@@ -110,7 +110,7 @@
                 <!-- You can delete the links only if you purchased the pro version. -->
                 <!-- Licensing information: https://bootstrapmade.com/license/ -->
                 <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> & ITD AIIA
+                Designed by IT Development AIIA
               </div>
 
             </div>
