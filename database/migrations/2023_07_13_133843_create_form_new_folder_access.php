@@ -13,7 +13,7 @@ class CreateFormNewFolderAccess extends Migration
      */
     public function up()
     {
-        Schema::create('form_new_folder_access', function (Blueprint $table) {
+        Schema::create('form_new_folder_user', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('new_folder_id');
             $table->string('username');

@@ -21,9 +21,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('folder_access_id')
-                  ->references('id')
-                  ->on('form_folder_access')
-                  ->onDelete('cascade');
+                    ->references('id')
+                    ->on('form_folder_access')
+                    ->onDelete('cascade');
         });
     }
 

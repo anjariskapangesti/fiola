@@ -1,136 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html lang="en" class="light-style layout-menu-fixed layout-compact" dir="ltr" data-theme="theme-default"
+    data-assets-path="{{ asset('vendor/materio/assets') }}" data-template="vertical-menu-template-free">
 
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>
-        FIOLA &mdash; {{ $title }}
-    </title>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
-    <meta name="approval-count-url" content="{{ route('website.get_approval_count') }}">
+    <title>FIOLA &mdash; {{ $title }}</title>
 
-    <!-- Favicons -->
-    <link href="{{ asset('img/aiia.png') }}" rel="icon">
-    <link href="{{ asset('vendor/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+    <meta name="description" content="" />
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('img/logo-fiola.png') }}" />
 
-    <!-- Vendor CSS Files -->
-    <link href="{{ asset('vendor/niceadmin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/niceadmin/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/niceadmin/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/niceadmin/vendor/quill/quill.snow.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/niceadmin/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/niceadmin/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/niceadmin/vendor/simple-datatables/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('vendor/fontawesome-6.4.0/css/all.min.css') }}" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/fonts/materialdesignicons.css') }}" />
+
+    <!-- Menu waves for no-customizer fix -->
+    <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/libs/node-waves/node-waves.css') }}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/css/core.css') }}"
+        class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/css/theme-default.css') }}"
+        class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ asset('vendor/materio/assets/css/demo.css') }}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet"
+        href="{{ asset('vendor/materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"> --}}
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" /> --}}
+    <link rel="stylesheet" href="{{ asset('vendor/bs-step/bs-step.css') }}">
 
-    <!-- Template Main CSS File -->
-    <link href="{{ asset('vendor/niceadmin/css/style.css') }}" rel="stylesheet">
+    <!-- Page CSS -->
     @stack('styles')
-
-    <!-- =======================================================
-  * Template Name: NiceAdmin - v2.5.0
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+    <!-- Helpers -->
+    <script src="{{ asset('vendor/materio/assets/vendor/js/helpers.js') }}"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{{ asset('vendor/materio/assets/js/config.js') }}"></script>
 </head>
 
 <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            <!-- Menu -->
+            @include('website.layouts.sidebar')
+            <!-- / Menu -->
 
-    <!-- ======= Header ======= -->
-    @include('website.layouts.header')
-    <!-- End Header -->
+            <!-- Layout container -->
+            <div class="layout-page">
+                <!-- Navbar -->
+                @include('website.layouts.navbar')
+                <!-- / Navbar -->
 
-    <!-- ======= Sidebar ======= -->
-    @include('website.layouts.sidebar')
-    <!-- End Sidebar-->
+                <!-- Content wrapper -->
+                <div class="content-wrapper">
+                    <!-- Content -->
+                    @yield('content')
+                    <!-- / Content -->
 
-    <main id="main" class="main">
-        
-        @yield('content')
-        
-    </main><!-- End #main -->
+                    <!-- Footer -->
+                    @include('website.layouts.footer')
+                    <!-- / Footer -->
 
-    <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
-        <div class="copyright">
-            &copy; Copyright <strong><span>IT Development</span></strong>. All Rights Reserved
+                    <div class="content-backdrop fade"></div>
+                </div>
+                <!-- Content wrapper -->
+            </div>
+            <!-- / Layout page -->
         </div>
-        <div class="credits">
-            <!-- All the links in the footer should remain intact. -->
-            <!-- You can delete the links only if you purchased the pro version. -->
-            <!-- Licensing information: https://bootstrapmade.com/license/ -->
-            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-            {{-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> --}}
-        </div>
-    </footer><!-- End Footer -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
-            class="bi bi-arrow-up-short"></i></a>
+        <!-- Overlay -->
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
 
-    <!-- Vendor JS Files -->
-    <script src="{{ asset('vendor/jquery/jquery-3.5.1.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/chart.js/chart.umd.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/echarts/echarts.min.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/simple-datatables/simple-datatables.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/tinymce/tinymce.min.js') }}"></script>
-    <script src="{{ asset('vendor/niceadmin/vendor/php-email-form/validate.js') }}"></script>
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{{ asset('vendor/materio/assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ asset('vendor/materio/assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ asset('vendor/materio/assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ asset('vendor/materio/assets/vendor/libs/node-waves/node-waves.js') }}"></script>
+    <script src="{{ asset('vendor/materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ asset('vendor/materio/assets/vendor/js/menu.js') }}"></script>
+
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{{ asset('vendor/materio/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+
+    <!-- Main JS -->
+    <script src="{{ asset('vendor/materio/assets/js/main.js') }}"></script>
+
+    <!-- Page JS -->
+    <script src="{{ asset('vendor/materio/assets/js/dashboards-analytics.js') }}"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="{{ asset('vendor/plugins/toastr/toastr.min.js') }}"></script>
-    {{-- <script src="{{ asset('vendor/fontawesome-6.4.0/js/all.min.js') }}"></script> --}}
 
-
-    <!-- Template Main JS File -->
-    <script src="{{ asset('vendor/niceadmin/js/main.js') }}"></script>
-
-    {{-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script src="{{ asset('js/approvalCount.js') }}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var form = document.getElementById('myForm');
-            var submitButton = document.getElementById('submitButton');
-    
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    form.classList.add('was-validated');
-                    event.preventDefault();
-                } else {
-                    submitButton.setAttribute('disabled', 'true');
-                    submitButton.innerHTML = 'Submitting...';
-                }
-            });
-    
-            form.addEventListener('input', function () {
-                if (form.checkValidity()) {
-                    submitButton.removeAttribute('disabled');
-                    submitButton.innerHTML = 'Save & Submit Request';
-                }
-            });
-        });
-    </script>
-    
     @stack('scripts')
-
 </body>
 
 </html>

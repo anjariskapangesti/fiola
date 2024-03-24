@@ -14,25 +14,25 @@ class DeviceController extends Controller
 {
     public function create()
     {
-        $devices = Device::orderBy('name', 'ASC')->get();
-        
-        return view('website.pages.device.create', compact('devices'));
+        return view('website.pages.device.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required' ,            
+            'name' => 'required',
+            'cost' => 'required',
+            'spesifikasi' => 'required',         
         ]);
         
         try
         {
             Device::create([
                 'name' => $request->name,            
-                'cost' => $request->cost1 . ' - ' . $request->cost2,            
+                'cost' => $request->cost,            
                 'spesifikasi' => $request->spesifikasi,
             ]);
-            return redirect('/device/show_data_device')->with('success', 'Success Add device');
+            return redirect('/device/list')->with('success', 'Success Add device');
         }
         catch(\Exception $e)
         {
@@ -40,12 +40,12 @@ class DeviceController extends Controller
         }
     }
 
-    public function show_data_device()
+    public function list()
     {
-        return view('website.pages.device.show_data_device');
+        return view('website.pages.device.list');
     }
 
-    public function show_data_device_ajax(Request $request)
+    public function list_ajax(Request $request)
     {
         $data = Device::orderBy('name', 'ASC');
         

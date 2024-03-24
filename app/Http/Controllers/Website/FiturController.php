@@ -66,19 +66,15 @@ class FiturController extends Controller
         $isItManagerApprove = null;
         $itManagerApprovalDate = null;
 
-        if (Auth::user()->can('can_approve_it_mgr')) {
+        if (Auth::user()->hasDepartment('ITD') && Auth::user()->can('approve_mgr')) {
             $finalStatus = 'IT MGR Approve';
             $isItManagerApprove = 1;
             $itManagerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_mgr')) {
+        } elseif (Auth::user()->can('approve_mgr') || Auth::user()->can('approve_gm') || Auth::user()->can('approve_vp') || Auth::user()->can('approve_pres')) {
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_executives')) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_it')) {
+        } elseif (Auth::user()->hasDepartment('ITD')) {
             $finalStatus = 'IT Approve';
             $isItApprove = 1;
             $itApprovalDate = Carbon::now();
@@ -137,7 +133,7 @@ class FiturController extends Controller
     {
         $data = Fitur::orderBy('id', 'DESC')
                         ->where('created_by', Auth::user()->id)
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
+                        ->join('public.users', 'form_fitur.created_by', '=', 'users.id')
                         ->select('form_fitur.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);

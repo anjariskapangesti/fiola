@@ -16,16 +16,24 @@ use Auth;
 
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasPermissions;
+
+use Alqaj\Organization\Traits\HasDepartments;
 
 class UserController extends Controller
 {
+    use HasRoles;
+    use HasPermissions;
+
+    use HasDepartments;
 
     public function create()
     {
         
         $departments = Department::all()->sortBy('name')->pluck('name', 'id');
 
-        $permissions = Permission::all()->sortBy('id')->pluck('name', 'id');
+        $permissions = Permission::all()->sortBy('name')->pluck('name', 'id');
         
         return view('website.pages.user.create', compact('departments', 'permissions'));
     }
@@ -36,13 +44,12 @@ class UserController extends Controller
             'name' => 'required' ,
             'email' => 'unique:users,email',
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,id',
+            // 'permissions.*' => 'exists:permissions,id',
             'departments' => 'nullable|array',
-            'departments.*' => 'exists:departments,id',
+            // 'departments.*' => 'exists:departments,id',
 
         ], [
             'email.unique' => 'Email already exists',
-            // ...
         ]);
 
         try
@@ -53,7 +60,8 @@ class UserController extends Controller
                 'npk' => $request->npk ,
             ]);
             foreach ($request->input('departments') as $departmentId) {
-                $user->departments()->attach($departmentId, ['model_type' => 'App\Models\User']);
+                $user->departments()->attach($departmentId);
+                // $user->departments()->attach($departmentId, ['model_type' => 'App\Models\User']);
             }
             // $permission = Permission::findOrFail($request->input('permission_id'));
             // $user->givePermissionTo($permission);
@@ -91,18 +99,30 @@ class UserController extends Controller
         }
     }
 
-    public function show_data_user()
+    public function list()
     {
-        $users = User::all();
-        
-        return view('website.pages.user.show_data_user', compact('users'));
+        $users = User::whereHas('permissions', function ($query) {
+            $query->where('permissions.name', 'apps_fiola');
+        })->select('users.*', DB::raw('STRING_AGG(departments.name, \', \') as department_names'))
+            ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
+            ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
+            ->groupBy('users.id')
+            ->orderBy('users.name', 'ASC')
+            ->get();
+        // dd($users);
+        return view('website.pages.user.list', compact('users'));
     }
 
-    public function show_data_user_ajax(Request $request)
+    public function list_ajax(Request $request)
     {
-        $data = User::orderBy('name', 'ASC');
-                    
-        
+        $data = User::whereHas('permissions', function ($query) {
+            $query->where('permissions.name', 'apps_fiola');
+        })->select('users.*', DB::raw('STRING_AGG(departments.code, \', \') as department_codes'))
+            ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
+            ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
+            ->groupBy('users.id')
+            ->orderBy('users.name', 'ASC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -133,7 +153,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            // 'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:4|confirmed',
             'nohp' => 'nullable|string|max:14',
             'npk' => 'nullable|string|min:6',

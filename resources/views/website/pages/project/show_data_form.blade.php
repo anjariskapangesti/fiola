@@ -94,7 +94,7 @@
                     <tr>
                         <td>Lampiran</td>
                         <td>
-                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
+                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success btn-sm" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
                         </td>
                     </tr>
                     <tr>

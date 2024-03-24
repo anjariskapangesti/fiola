@@ -36,7 +36,7 @@ class AuthController extends Controller
                 $field => $login,
                 'password' => $password
             ];
-            // dd($credentials);
+            
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
         

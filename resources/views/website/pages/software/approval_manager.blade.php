@@ -14,14 +14,15 @@
         <div class="row">
             <div class="card">
                 <div class="card-body p-3 table table-responsive">
-                    {{-- <a href="{{ route('website.software.show_data_manager_approval') }}" class="btn btn-primary">Show Data</a> --}}
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th>Detail</th>
+                                <th style="max-width: 30px;">No</th>
+                                <th style="max-width: 70px;">No. Reg</th>
+                                <th>Creator</th>
                                 <th>App Name</th>
-                                <th>Install on</th>
                                 <th>Category</th>
+                                <th>Install on</th>
                                 <th>Option</th>
                             </tr>
                         </thead>
@@ -42,7 +43,7 @@
                         Are you sure want to approve this request?
                         <input type="text" readonly class="form-control-plaintext" id="appname_form_software">
                         <input type="hidden" id="id_form_software">
-                        
+
                         <textarea class="form-control" id="note" placeholder="add note if there are additional"></textarea>
 
                     </div>
@@ -68,7 +69,7 @@
                         <input type="hidden" id="id_form_software_reject">
 
                         <textarea class="form-control" id="reject_reason"></textarea>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -94,28 +95,37 @@
             // `d` is the original data object for the row
             return (
                 `
-                <table class="table table-sm">
-
+                <table class ="table table-sm table-bordered">
                     <tr>
-                        <td width="30%">App Name</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">App Name</th>
                         <td>${d.appname} </td>
                     </tr>
                     <tr>
-                        <td>Install on</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Install on</th>
                         <td>${d.installon} </td>
-                    </tr>                                        
-                    <tfoot>
+                    </tr>      
                     <tr>
-                        <th>Created by</th>
-                        <th>${d.user_name}</th>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Detail</th>
+                        <td>${d.detail}</td>
+                    </tr>     
+                <tfoot>
+                    <tr>
+                        <th colspan="2" class="text-end">
+                        </th>
                     </tr>
                     <tr>
-                        <th>Detail</th>
-                        <th>${d.detail}</th>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Created by</th>
+                        <td>${d.user_name}</td>
                     </tr>
                     <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Purpose</th>
+                        <td>${d.purpose}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="text-end">
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${d.id}" data-appname="${d.user_name}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-appname="${d.user_name}">Reject</button>
+                        </th>
                     </tr>
                 </tfoot>
                 
@@ -133,47 +143,64 @@
                 ajax: {
                     url: "{{ route('website.software.show_manager_approval_ajax') }}",
                 },
-                columns: [{
-                        className: 'dt-control',
-                        orderable: false,
-                        data: null,
-                        defaultContent: '',
-                        searchable: false,
+                columns: [
+                    // {
+                    //     className: 'dt-control',
+                    //     orderable: false,
+                    //     data: null,
+                    //     defaultContent: '',
+                    //     searchable: false,
+                    // },
+                    {
+                        className: 'text-center',
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'no_reg',
+                        name: 'no_reg',
+                    },
+                    {
+                        data: 'user_name',
+                        name: 'user_name',
                     },
                     {
                         data: 'appname',
                         name: 'appname',
                     },
                     {
+                        data: 'category',
+                        name: 'category',
+                    },
+                    {
                         data: 'installon',
                         name: 'installon',
                     },
-                    
+                    // {
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     data: null,
+                    //     render: function(data, type, row, meta) {
+                    //         return `
+                    //         <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-appname="${data.appname}">Approve</button>
+                    //         <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-appname="${data.appname}">Reject</button>`;
+                    //     }
+                    // },
                     {
-                        data: 'category',
-                        name: 'category',
-                        render: function(data, type, row, meta) {
-                            if (data == 'software') {
-                                return `<span class="badge bg-success">Software</span>`;
-                            } else {
-                                return `<span class="badge bg-danger">OS</span>`;
-                            }
-                        }
-                    },
-                    {
+                        className: 'klik',
                         orderable: false,
-                        searchable: false,
                         data: null,
+                        defaultContent: '',
+                        searchable: false,
                         render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-appname="${data.appname}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-appname="${data.appname}">Reject</button>`;
+                            return `<button class="badge bg-primary">Klik untuk Detail dan Approve</button>`;
                         }
                     },
                 ],
             });
 
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
+            $('#app_table tbody').on('click', 'td.klik', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
 

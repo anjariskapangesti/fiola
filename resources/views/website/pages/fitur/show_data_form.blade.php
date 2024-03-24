@@ -24,7 +24,8 @@
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th>Detail</th>
+                                <th style="max-width: 50px;">Detail</th>
+                                <th>No. Reg</th>
                                 <th>Nama Aplikasi</th>
                                 <th>Nama Fitur</th>
                                 <th>Status</th>
@@ -99,7 +100,7 @@
                     <tr>
                         <td>Lampiran</td>
                         <td>
-                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
+                            ${d.lampiran ? `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-success btn-sm" target="_blank"><i class="fas fa-download"></i> Lampiran</a>` : 'Tidak ada lampiran'}
                         </td>
                     </tr>
                     <tr>

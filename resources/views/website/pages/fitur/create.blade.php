@@ -33,42 +33,35 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="npk"><b>NPK</b></label>
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
-                                        maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk" style="background: #dbdbdb;"
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="fullname"><b>Nama</b></label>
-                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        maxlength="60" value="{{ Auth::user()->name }}" readonly required onkeyup="formatFullName(this)">
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname" style="background: #dbdbdb;"
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" readonly required
+                                        onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone"><b>No. Handphone</b></label>
-                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
-                                        maxlength="60" value="{{ Auth::user()->nohp }}" readonly required onkeyup="formatFullName(this)">
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone" style="background: #dbdbdb;"
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
+                                        onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <select name="department" class="form-control" required>
-                                        <option selected value="">-- Choose Department --</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">Please choose your department</div>
-                                </div> --}}
                                 <div class="col-md-6">
                                     <label for="department"><b>Department</b></label>
-                                    <input type="text" class="form-control" placeholder="Department" name="department"
-                                        maxlength="14" value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly required>
+                                    <input type="text" class="form-control" placeholder="Department" name="department" style="background: #dbdbdb;"
+                                        id="department" maxlength="14"
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly
+                                        required>
                                     <div class="invalid-feedback">Please enter your Department</div>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email@aiia.co.id" name="email" maxlength="60" value="{{ Auth::user()->email }}" readonly required onkeyup="updateUsername(this)">
-                                    <div class="invalid-feedback">Please enter your email</div>
-                                </div> --}}
+
                                 <hr style="margin-bottom: 0rem; opacity: 100%;">
+                                
                                 <div class="col-md-6">
                                     <label for="aplikasi"><b>Nama Aplikasi</b></label>
                                     <input type="text" class="form-control" placeholder="Nama Aplikasi" name="aplikasi"

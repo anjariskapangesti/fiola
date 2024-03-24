@@ -21,7 +21,7 @@ class SoftwareController extends Controller
     {
         $departments = Department::orderBy('name')->get();
 
-        $userDepartment = Auth::user()->createdDepartments;
+        $userDepartment = Auth::user()->departments;
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
@@ -70,19 +70,15 @@ class SoftwareController extends Controller
         $isItManagerApprove = null;
         $itManagerApprovalDate = null;
 
-        if (Auth::user()->can('can_approve_it_mgr')) {
+        if (Auth::user()->hasDepartment('ITD') && Auth::user()->can('approve_mgr')) {
             $finalStatus = 'IT MGR Approve';
             $isItManagerApprove = 1;
             $itManagerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_mgr')) {
+        } elseif (Auth::user()->can('approve_mgr') || Auth::user()->can('approve_gm') || Auth::user()->can('approve_vp') || Auth::user()->can('approve_pres')) {
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_executives')) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_it')) {
+        } elseif (Auth::user()->hasDepartment('ITD')) {
             $finalStatus = 'IT Approve';
             $isItApprove = 1;
             $itApprovalDate = Carbon::now();
@@ -134,7 +130,7 @@ class SoftwareController extends Controller
         
         $data = Software::orderBy('id', 'DESC')
                         ->where('created_by', Auth::user()->id)
-                        ->join('users', 'form_software.created_by', '=', 'users.id')
+                        ->join('public.users', 'form_software.created_by', '=', 'users.id')
                         ->select('form_software.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
@@ -172,9 +168,9 @@ class SoftwareController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
         ->where('final_status', 'created')
-        ->join('users', 'form_software.created_by', '=', 'users.id')
+        ->join('public.users', 'form_software.created_by', '=', 'users.id')
         ->select('form_software.*', 'users.name as user_name');
-        // return $data;
+
         return DataTables::eloquent($data)->make(true);
     }
 

@@ -18,7 +18,9 @@
                     <table class="table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Detail</th>
+                                <th style="max-width: 30px;">No</th>
+                                <th style="max-width: 70px;">No. Reg</th>
+                                <th>Creator</th>
                                 <th>New Folder Name</th>
                                 <th>Main Path</th>
                                 <th>Option</th>
@@ -92,14 +94,29 @@
                 ajax: {
                     'url': "{{ route('website.new-folder.show_manager_approval_ajax') }}",
                 },
-                columns: [{
-                        data: null,
-                        className: 'dt-control',
-                        orderable: false,
-                        searchable: false,
+                columns: [
+                    // {
+                    //     data: null,
+                    //     className: 'dt-control',
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     render: function(data, type, row, meta) {
+                    //         return ''
+                    //     },
+                    // },
+                    {
+                        className: 'text-center',
                         render: function(data, type, row, meta) {
-                            return ''
-                        },
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'no_reg',
+                        name: 'no_reg',
+                    },
+                    {
+                        data: 'creator_created_by',
+                        name: 'creator_created_by',
                     },
                     {
                         data: 'creator_foldername',
@@ -109,14 +126,24 @@
                         data: 'creator_mainpath',
                         name: 'creator_mainpath',
                     },
+                    // {
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     data: null,
+                    //     render: function(data, type, row, meta) {
+                    //         return `
+                    //         <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-foldername="${data.foldername}">Approve</button>
+                    //         <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-foldername="${data.foldername}">Reject</button>`;
+                    //     }
+                    // },
                     {
+                        className: 'klik',
                         orderable: false,
-                        searchable: false,
                         data: null,
+                        defaultContent: '',
+                        searchable: false,
                         render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-foldername="${data.foldername}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-foldername="${data.foldername}">Reject</button>`;
+                            return `<button class="badge bg-primary">Klik untuk Detail dan Approve</button>`;
                         }
                     },
                 ]
@@ -125,7 +152,7 @@
 
             var detailsRow = [];
 
-            $('.table tbody').on('click', 'tr td.dt-control', function() {
+            $('.table tbody').on('click', 'tr td.klik', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
                 var idx = $.inArray(tr.attr('id'), detailsRow);
@@ -151,19 +178,21 @@
 
             function format(d) {
                 var html = `
-                    <table class = "table table-sm">
-                                                <tr class = "bg-light">
-                                                <td> Username </td>
-                                                <td> Department </td>
-                                                <td> Permission </td>
-                                                </tr>
-                                                `
+                    <table class = "table table-sm table-bordered">
+                        <thead style="background-color: #66a7e3;">
+                            <tr>
+                                <td> Username </td>
+                                <td> Department </td>
+                                <td> Permission </td>
+                            </tr>
+                        </thead>
+                        `
                 console.log(d)
                 for (let i = 0; i < d.form_new_folder_access.length; i++) {
                     html += `<tr>
-                                    <td>${d.form_new_folder_access[i].username}</td>
-                                    <td>${d.form_new_folder_access[i].department}</td>
-                                    <td>${d.form_new_folder_access[i].permission}</td>`
+                                <td>${d.form_new_folder_access[i].username}</td>
+                                <td>${d.form_new_folder_access[i].department}</td>
+                                <td>${d.form_new_folder_access[i].permission}</td>`
                     html += `</tr>
                     `
                 }
@@ -171,15 +200,21 @@
                 html += `
                         <tfoot>
                             <tr>
-                                <th>Purpose</th>
-                                <th colspan="2">${d.creator_purpose}</th>
+                                <td>Purpose</td>
+                                <td colspan="2">${d.creator_purpose}</td>
                             </tr>
                             <tr>
-                                <th>Created by</th>
-                                <th colspan="2">${d.creator_created_by}</th>
+                                <td>Created by</td>
+                                <td colspan="2">${d.creator_created_by}</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" class="text-end">
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${d.id}" data-foldername="${d.foldername}">Approve</button>
+                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-foldername="${d.foldername}">Reject</button>    
+                                </th>    
                             </tr>
                         </tfoot>                      
-                        </table>`
+                    </table>`
 
                 return html
             }

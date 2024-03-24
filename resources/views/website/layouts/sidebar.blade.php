@@ -1,956 +1,219 @@
-<aside id="sidebar" class="sidebar">
-    <ul class="sidebar-nav" id="sidebar-nav">
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <div class="app-brand demo">
+        <a href="{{ route('website.home') }}" class="app-brand-link">
+            <span class="app-brand-logo demo me-1">
+                <span style="color: var(--bs-primary)">
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <svg viewBox="0 0 159.41 159.41" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+                        <defs>
+                            <radialGradient gradientUnits="userSpaceOnUse" cx="86.024" cy="65.421" r="45.997"
+                                id="gradient-0"
+                                gradientTransform="matrix(1.174419, 0, 0, 1.174419, -12.599426, -10.357308)">
+                                <stop offset="0" style="stop-color: rgb(56.471% 33.333% 99.216%)" />
+                                <stop offset="1" style="stop-color: rgb(32.907% 12.624% 76.34%)" />
+                            </radialGradient>
+                            <style bx:fonts="Agbalumo">
+                                @import url(https://fonts.googleapis.com/css2?family=Agbalumo%3Aital%2Cwght%400%2C400&amp;display=swap);
+                            </style>
+                        </defs>
+                        <text
+                            style="fill: url('#gradient-0'); font-family: Agbalumo; font-size: 143.7px; font-style: italic; white-space: pre;"
+                            x="34.409" y="132.453"
+                            transform="matrix(1, 0, 0, 1, 7.105427357601002e-15, 7.105427357601002e-15)">F</text>
+                    </svg>
+                </span>
+            </span>
+            <span class="app-brand-text demo menu-text fw-semibold ms-2">FIOLA</span>
+        </a>
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('website.auth.home') }}"
-                class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.auth.home') ? 'active' : '' }}">
-                <i class="bi bi-speedometer"></i>
-                <span>Dashboard</span>
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+            <i class="mdi menu-toggle-icon d-xl-block align-middle mdi-20px"></i>
+        </a>
+    </div>
+
+    <div class="menu-inner-shadow"></div>
+
+    <ul class="menu-inner py-1">
+        <!-- Dashboards -->
+        <li class="menu-item {{ Route::is('website.home') ? 'active' : '' }}">
+            <a href="{{ route('website.home') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-home-outline"></i>
+                <div data-i18n="Basic">Dashboard</div>
             </a>
-        </li><!-- End Dashboard Nav -->
-        <li class="nav-heading">Pages</li>
-        @can('can_create_form')
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="forms-nav"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.create') ||
-                Route::is('website.folder-access.create') ||
-                Route::is('website.new-folder.create') ||
-                Route::is('website.software.create') ||
-                Route::is('website.hardware.create') ||
-                Route::is('website.vpn.create') ||
-                Route::is('website.project.create') ||
-                Route::is('website.fitur.create') ||
-                Route::is('website.relayout.create')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.relayout.create') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.relayout.create') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Relayout</span>
-                        </a>
-                    </li>
-                    @can('can_approve_it')
-                        <li>
-                            <a href="{{ route('website.network.create') }}"
-                                class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.network.create') ? 'active' : '' }}">
-                                <i class="bi bi-record-circle-fill"></i><span>Form Network Change</span>
-                            </a>
-                        </li>
-                    @endcan
+        </li>
+        <li class="menu-header fw-medium mt-4">
+            <span class="menu-header-text">Apps &amp; Pages</span>
+        </li>
+        <!-- Apps -->
+        <!-- Pages -->
+        @php
+            $masterLink = [
+                'account',
+                'folder-access',
+                'new-folder',
+                'software',
+                'hardware',
+                'vpn',
+                'project',
+                'fitur',
+                'relayout',
+                'network',
+            ];
+            $createRoutes = [];
+            $editRoutes = [];
+            $listRoutes = [];
 
-                </ul>
-            </li><!-- End Forms Nav -->
+            foreach ($masterLink as $link) {
+                $createRoutes[] = 'website.' . $link . '.create';
+                $editRoutes[] = 'website.' . $link . '.edit';
+                $listRoutes[] = 'website.' . $link . '.list';
+                $manager_approvalRoutes[] = 'website.' . $link . '.manager_approval';
+            }
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#track_forms" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-search"></i><span>Track Forms</span>
-                    @if (App\Models\AppHelper::confirms_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="confirms_count">{{ App\Models\AppHelper::confirms_count() }}</span>
-                    @endif
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="track_forms"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_data_form') ||
-                Route::is('website.folder-access.show_data_form') ||
-                Route::is('website.new-folder.show_data_form') ||
-                Route::is('website.software.show_data_form') ||
-                Route::is('website.hardware.show_data_form') ||
-                Route::is('website.vpn.show_data_form') ||
-                Route::is('website.project.show_data_form') ||
-                Route::is('website.fitur.show_data_form')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
-                            @if (App\Models\AppHelper::account_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::account_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
-                            @if (App\Models\AppHelper::folderaccess_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::folderaccess_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
-                            @if (App\Models\AppHelper::newfolder_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::newfolder_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
-                            @if (App\Models\AppHelper::software_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::software_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
-                            @if (App\Models\AppHelper::hardware_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::hardware_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
-                            @if (App\Models\AppHelper::vpn_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::vpn_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
-                            @if (App\Models\AppHelper::project_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_data_form') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_data_form') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
-                            @if (App\Models\AppHelper::fitur_confirm_count() > 0)
-                                &nbsp&nbsp<span
-                                    class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::fitur_confirm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-        @endcan
-
-        @can('can_approve_mgr')
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#approval_mgr" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-hourglass"></i><span>Manager Approvals</span>
-                    @if (App\Models\AppHelper::manager_approvals_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
-                    @endif
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="approval_mgr"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_manager_approval') ||
-                Route::is('website.folder-access.show_manager_approval') ||
-                Route::is('website.new-folder.show_manager_approval') ||
-                Route::is('website.software.show_manager_approval') ||
-                Route::is('website.hardware.show_manager_approval') ||
-                Route::is('website.vpn.show_manager_approval') ||
-                Route::is('website.project.show_manager_approval') ||
-                Route::is('website.fitur.show_manager_approval')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
-                            @if (App\Models\AppHelper::account_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="account_mgr_count">{{ App\Models\AppHelper::account_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
-                            @if (App\Models\AppHelper::folderaccess_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="folderaccess_mgr_count">{{ App\Models\AppHelper::folderaccess_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
-                            @if (App\Models\AppHelper::newfolder_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="newfolder_mgr_count">{{ App\Models\AppHelper::newfolder_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
-                            @if (App\Models\AppHelper::software_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="software_mgr_count">{{ App\Models\AppHelper::software_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
-                            @if (App\Models\AppHelper::hardware_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="hardware_mgr_count">{{ App\Models\AppHelper::hardware_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
-                            @if (App\Models\AppHelper::vpn_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="vpn_mgr_count">{{ App\Models\AppHelper::vpn_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
-                            @if (App\Models\AppHelper::project_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="project_mgr_count">{{ App\Models\AppHelper::project_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
-                            @if (App\Models\AppHelper::fitur_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="fitur_mgr_count">{{ App\Models\AppHelper::fitur_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#approved_mgr" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clock-history"></i><span>Manager History</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="approved_mgr"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_data_manager_approval') ||
-                Route::is('website.folder-access.show_data_manager_approval') ||
-                Route::is('website.new-folder.show_data_manager_approval') ||
-                Route::is('website.software.show_data_manager_approval') ||
-                Route::is('website.hardware.show_data_manager_approval') ||
-                Route::is('website.vpn.show_data_manager_approval') ||
-                Route::is('website.project.show_data_manager_approval') ||
-                Route::is('website.fitur.show_data_manager_approval')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_data_manager_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_data_manager_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-        @endcan
-
-        @can('can_approve_it')
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#approval_it" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-hourglass"></i><span>ITD Approvals</span>
-                    @if (App\Models\AppHelper::it_approvals_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="it_approvals_count">{{ App\Models\AppHelper::it_approvals_count() }}</span>
-                    @endif
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="approval_it"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_it_approval') ||
-                Route::is('website.folder-access.show_it_approval') ||
-                Route::is('website.new-folder.show_it_approval') ||
-                Route::is('website.software.show_it_approval') ||
-                Route::is('website.hardware.show_it_approval') ||
-                Route::is('website.vpn.show_it_approval') ||
-                Route::is('website.project.show_it_approval') ||
-                Route::is('website.fitur.show_it_approval')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
-                            @if (App\Models\AppHelper::account_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="account_it_count">{{ App\Models\AppHelper::account_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
-                            @if (App\Models\AppHelper::folderaccess_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="folderaccess_it_count">{{ App\Models\AppHelper::folderaccess_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
-                            @if (App\Models\AppHelper::newfolder_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="newfolder_it_count">{{ App\Models\AppHelper::newfolder_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
-                            @if (App\Models\AppHelper::software_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="software_it_count">{{ App\Models\AppHelper::software_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
-                            @if (App\Models\AppHelper::hardware_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="hardware_it_count">{{ App\Models\AppHelper::hardware_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
-                            @if (App\Models\AppHelper::vpn_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="vpn_it_count">{{ App\Models\AppHelper::vpn_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
-                            @if (App\Models\AppHelper::project_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="project_it_count">{{ App\Models\AppHelper::project_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
-                            @if (App\Models\AppHelper::fitur_it_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="fitur_it_count">{{ App\Models\AppHelper::fitur_it_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#approved_it" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clock-history"></i><span>ITD History</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="approved_it"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_data_it_approval') ||
-                Route::is('website.folder-access.show_data_it_approval') ||
-                Route::is('website.new-folder.show_data_it_approval') ||
-                Route::is('website.software.show_data_it_approval') ||
-                Route::is('website.hardware.show_data_it_approval') ||
-                Route::is('website.vpn.show_data_it_approval') ||
-                Route::is('website.project.show_data_it_approval') ||
-                Route::is('website.fitur.show_data_it_approval')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_data_it_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_data_it_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-        @endcan
-
-        @can('can_approve_it_mgr')
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#approval_it_mgr" data-bs-toggle="collapse"
-                    href="#">
-                    <i class="bi bi-hourglass"></i><span>ITD MGR Approvals</span>
-                    @if (App\Models\AppHelper::it_mgr_approvals_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="it_mgr_approvals_count">{{ App\Models\AppHelper::it_mgr_approvals_count() }}</span>
-                    @endif
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="approval_it_mgr"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_it_mgr_approval') ||
-                Route::is('website.folder-access.show_it_mgr_approval') ||
-                Route::is('website.new-folder.show_it_mgr_approval') ||
-                Route::is('website.software.show_it_mgr_approval') ||
-                Route::is('website.hardware.show_it_mgr_approval') ||
-                Route::is('website.vpn.show_it_mgr_approval') ||
-                Route::is('website.project.show_it_mgr_approval') ||
-                Route::is('website.fitur.show_it_mgr_approval')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
-                            @if (App\Models\AppHelper::account_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="account_it_mgr_count">{{ App\Models\AppHelper::account_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
-                            @if (App\Models\AppHelper::folderaccess_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="folderaccess_it_mgr_count">{{ App\Models\AppHelper::folderaccess_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
-                            @if (App\Models\AppHelper::newfolder_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="newfolder_it_mgr_count">{{ App\Models\AppHelper::newfolder_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
-                            @if (App\Models\AppHelper::software_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="software_it_mgr_count">{{ App\Models\AppHelper::software_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
-                            @if (App\Models\AppHelper::hardware_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="hardware_it_mgr_count">{{ App\Models\AppHelper::hardware_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
-                            @if (App\Models\AppHelper::vpn_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="vpn_it_mgr_count">{{ App\Models\AppHelper::vpn_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
-                            @if (App\Models\AppHelper::project_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="project_it_mgr_count">{{ App\Models\AppHelper::project_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
-                            @if (App\Models\AppHelper::fitur_it_mgr_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="fitur_it_mgr_count">{{ App\Models\AppHelper::fitur_it_mgr_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#approved_it_mgr" data-bs-toggle="collapse"
-                    href="#">
-                    <i class="bi bi-clock-history"></i><span>ITD MGR History</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="approved_it_mgr"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_data_it_mgr_approval') ||
-                Route::is('website.folder-access.show_data_it_mgr_approval') ||
-                Route::is('website.new-folder.show_data_it_mgr_approval') ||
-                Route::is('website.software.show_data_it_mgr_approval') ||
-                Route::is('website.hardware.show_data_it_mgr_approval') ||
-                Route::is('website.vpn.show_data_it_mgr_approval') ||
-                Route::is('website.project.show_data_it_mgr_approval') ||
-                Route::is('website.fitur.show_data_it_mgr_approval')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_data_it_mgr_approval') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_data_it_mgr_approval') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-        @endcan
-
-        @can('can_execution')
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#execution" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-rocket-takeoff"></i></i><span>Execution</span>
-                    @if (App\Models\AppHelper::execution_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="execution_count">{{ App\Models\AppHelper::execution_count() }}</span>
-                    @endif
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="execution"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_execution') ||
-                Route::is('website.folder-access.show_execution') ||
-                Route::is('website.new-folder.show_execution') ||
-                Route::is('website.software.show_execution') ||
-                Route::is('website.hardware.show_execution') ||
-                Route::is('website.vpn.show_execution') ||
-                Route::is('website.project.show_execution') ||
-                Route::is('website.fitur.show_execution')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Account</span>
-                            @if (App\Models\AppHelper::account_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="account_execution_count">{{ App\Models\AppHelper::account_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Folder Access</span>
-                            @if (App\Models\AppHelper::folderaccess_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="folderaccess_execution_count">{{ App\Models\AppHelper::folderaccess_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form New Folder</span>
-                            @if (App\Models\AppHelper::newfolder_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="newfolder_execution_count">{{ App\Models\AppHelper::newfolder_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Software Installation</span>
-                            @if (App\Models\AppHelper::software_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="software_execution_count">{{ App\Models\AppHelper::software_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Device</span>
-                            @if (App\Models\AppHelper::hardware_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="hardware_execution_count">{{ App\Models\AppHelper::hardware_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form VPN</span>
-                            @if (App\Models\AppHelper::vpn_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="vpn_execution_count">{{ App\Models\AppHelper::vpn_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Project</span>
-                            @if (App\Models\AppHelper::project_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="project_execution_count">{{ App\Models\AppHelper::project_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Form Request Fitur</span>
-                            @if (App\Models\AppHelper::fitur_execution_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="fitur_execution_count">{{ App\Models\AppHelper::fitur_execution_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#finished" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-clipboard-check"></i><span>Finished</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="finished"
-                    class="nav-content collapse 
-                {{ Route::is('website.account.show_data_execution') ||
-                Route::is('website.folder-access.show_data_execution') ||
-                Route::is('website.new-folder.show_data_execution') ||
-                Route::is('website.software.show_data_execution') ||
-                Route::is('website.hardware.show_data_execution') ||
-                Route::is('website.vpn.show_data_execution') ||
-                Route::is('website.project.show_data_execution') ||
-                Route::is('website.fitur.show_data_execution')
-                    ? 'show'
-                    : '' }}"
-                    data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.account.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.account.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Account</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.folder-access.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.folder-access.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Folder Access</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.new-folder.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.new-folder.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form New Folder</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.software.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.software.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Software Installation</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.hardware.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.hardware.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Device</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.vpn.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.vpn.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form VPN</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.project.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.project.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Project</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.fitur.show_data_execution') }}"
-                            class="list-group-item list-group-item-action py-2 ripple {{ Route::is('website.fitur.show_data_execution') ? 'active' : '' }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Data Form Request Fitur</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
-        @endcan
-
-        @can('can_master')
-            <li class="nav-heading">Master</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('website.device.show_data_device') }}">
-                    <i class="bi bi-device-hdd"></i><span>Device</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('website.department.show_data_department') }}">
-                    <i class="bi bi-bank"></i><span>Department</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#app_folder_path_nav" data-bs-toggle="collapse"
-                    href="#">
-                    <i class="bi bi-folder"></i><span>Folder Path</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="app_folder_path_nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('website.folder.show_data_folder') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Folder</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('website.subfolder.show_data_subfolder') }}">
-                            <i class="bi bi-record-circle-fill"></i><span>Sub Folder</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('website.user.show_data_user') }}">
-                    <i class="bi bi-people"></i><span>Users</span>
-                </a>
-            </li><!-- End Tables Nav -->
-        @endcan
-
-        <li class="nav-heading">ACTION</li>
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('website.auth.logout') }}">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
+        @endphp
+        <li
+            class="menu-item {{ in_array(Route::currentRouteName(), $createRoutes) || in_array(Route::currentRouteName(), $editRoutes) ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons mdi mdi-list-box-outline"></i>
+                <div data-i18n="Forms">Forms</div>
             </a>
-        </li><!-- End Login Page Nav -->
-    </ul>
+            @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
+        </li>
+        <li class="menu-item {{ in_array(Route::currentRouteName(), $listRoutes) ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons mdi mdi-text-search"></i>
+                <div data-i18n="Track Forms">Track Forms</div>
+            </a>
+            @include('website.layouts.sidebar_items', ['link' => 'list', 'text' => 'Form'])
+        </li>
 
+        {{-- MANAGER --}}
+        @can('approve_mgr')
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approvalRoutes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="Manager Approval">Manager Approval
+                        @if (App\Models\AppHelper::manager_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form'])
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="Manager History">Manager History</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
+            </li>
+        @endcan
+        {{-- ITD --}}
+        @if (auth()->user()->hasDepartment('ITD'))
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="ITD Approval">ITD Approval
+                        @if (App\Models\AppHelper::it_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="it_approvals_count">{{ App\Models\AppHelper::it_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'it_approval', 'text' => 'Form'])
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="ITD History">ITD History</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'it_approval', 'text' => 'Form'])
+            </li>
+            {{-- ITD MGR --}}
+            @can('approve_mgr')
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                        <div data-i18n="ITD MGR Approval">ITD MGR Approval</div>
+                    </a>
+                    @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
+                </li>
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons mdi mdi-history"></i>
+                        <div data-i18n="ITD MGR History">ITD MGR History</div>
+                    </a>
+                    @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
+                </li>
+            @endcan
+            {{-- Execution --}}
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-rocket-launch"></i>
+                    <div data-i18n="Execution">Execution</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'execution', 'text' => 'Form'])
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-clipboard-check"></i>
+                    <div data-i18n="Finished">Finished</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'finished', 'text' => 'Form'])
+            </li>
+
+            <!-- Master -->
+            <li class="menu-header fw-medium mt-4"><span class="menu-header-text">Master</span></li>
+            @php
+                $alertRoutes = ['website.alert.list', 'website.alert.create', 'website.alert.edit'];
+            @endphp
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $alertRoutes) ? 'active' : '' }}">
+                <a href="{{ route('website.alert.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-message-alert"></i>
+                    <div data-i18n="Alert">Alert</div>
+                </a>
+            </li>
+            @php
+                $deviceRoutes = ['website.device.list', 'website.device.create', 'website.device.edit'];
+            @endphp
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $deviceRoutes) ? 'active' : '' }}">
+                <a href="{{ route('website.device.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-harddisk"></i>
+                    <div data-i18n="Device">Device</div>
+                </a>
+            </li>
+            @php
+                $folderRoutes = ['website.folder.list', 'website.folder.create', 'website.folder.edit'];
+                $subfolderRoutes = ['website.subfolder.list', 'website.subfolder.create', 'website.subfolder.edit'];
+            @endphp
+            <li
+                class="menu-item {{ in_array(Route::currentRouteName(), $folderRoutes) || in_array(Route::currentRouteName(), $subfolderRoutes) ? 'active open' : '' }}">
+                <a href="javascript:void(0)" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-folder"></i>
+                    <div data-i18n="Folder">Folder</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ in_array(Route::currentRouteName(), $folderRoutes) ? 'active' : '' }}">
+                        <a href="{{ route('website.folder.list') }}" class="menu-link">
+                            <div data-i18n="Folder">Folder</div>
+                        </a>
+                    </li>
+                    <li class="menu-item {{ in_array(Route::currentRouteName(), $subfolderRoutes) ? 'active' : '' }}">
+                        <a href="{{ route('website.subfolder.list') }}" class="menu-link">
+                            <div data-i18n="Sub Folder">Subfolder</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Icons -->
+            <li class="menu-item {{ Route::is('website.user.list') ? 'active' : '' }}">
+                <a href="{{ route('website.user.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-account-multiple"></i>
+                    <div data-i18n="Users">Users</div>
+                </a>
+            </li>
+        @endcan
+</ul>
 </aside>

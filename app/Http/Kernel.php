@@ -70,5 +70,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
 
         'profile.complete' => \App\Http\Middleware\ProfileCompletionCheck::class,
+
+        'can_dept' => \Alqaj\Organization\Middleware\CheckUserDepartmentAbility::class,
     ];
 }

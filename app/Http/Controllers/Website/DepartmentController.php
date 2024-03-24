@@ -22,7 +22,7 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:departments,code' ,
+            // 'code' => 'required|unique:departments,code' ,
             'name' => 'required' ,            
         ], [
             'code.unique' => 'CODE already exists',

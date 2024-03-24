@@ -5,22 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasPermissions;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+use Alqaj\Organization\Traits\HasDepartments;
 
 class User extends Authenticatable
 {
     
     use Notifiable;
     use HasRoles;
+    use HasPermissions;
+    use HasDepartments;
     
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $table = 'users';
+    protected $table = 'public.users';
     protected $fillable = [
         'npk', 'name', 'email', 'password', 'nohp'
     ];
@@ -43,10 +48,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function departments(): BelongsToMany
-    {
-        return $this->belongsToMany(Department::class, 'model_has_departments', 'model_id', 'department_id');
-    }
+    // public function departments(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Department::class, 'public.model_has_departments', 'model_id', 'department_id');
+    // }
 
     public function createdDepartments()
     {

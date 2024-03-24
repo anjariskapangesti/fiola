@@ -50,19 +50,15 @@ class NewFolderController extends Controller
         $isItManagerApprove = null;
         $itManagerApprovalDate = null;
 
-        if (Auth::user()->can('can_approve_it_mgr')) {
+        if (Auth::user()->hasDepartment('ITD') && Auth::user()->can('approve_mgr')) {
             $finalStatus = 'IT MGR Approve';
             $isItManagerApprove = 1;
             $itManagerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_mgr')) {
+        } elseif (Auth::user()->can('approve_mgr') || Auth::user()->can('approve_gm') || Auth::user()->can('approve_vp') || Auth::user()->can('approve_pres')) {
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_executives')) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_it')) {
+        } elseif (Auth::user()->hasDepartment('ITD')) {
             $finalStatus = 'IT Approve';
             $isItApprove = 1;
             $itApprovalDate = Carbon::now();
@@ -157,7 +153,7 @@ class NewFolderController extends Controller
 
     public function show_data_form_ajax(Request $request)
     {
-        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
+        $data = NewFolder::join('public.users', 'form_new_folder.created_by', '=', 'users.id')
                             ->select('form_new_folder.id', 'foldername', 
                                     ('form_new_folder.mainpath'),
                                     ('form_new_folder.purpose'), ('users.name as creator_created_by'),
@@ -200,8 +196,8 @@ class NewFolderController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = NewFolder::join('users', 'form_new_folder.created_by', '=', 'users.id')
-                            ->select('form_new_folder.id', 'foldername', DB::Raw('form_new_folder.foldername as creator_foldername'), 
+        $data = NewFolder::join('public.users', 'form_new_folder.created_by', '=', 'users.id')
+                            ->select('form_new_folder.id', 'foldername', 'form_new_folder.no_reg', DB::Raw('form_new_folder.foldername as creator_foldername'), 
                                     ('form_new_folder.mainpath as creator_mainpath'),
                                     ('form_new_folder.purpose as creator_purpose'), ('users.name as creator_created_by'),)
                             ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {

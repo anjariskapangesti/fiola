@@ -23,7 +23,11 @@ class SubFolderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required' ,
+            'name' => 'required|regex:/^[^\s]+$/',
+            'folder_id' => 'required',
+        ], [
+            'name.regex' => 'The name may not contain spaces.',
+            'folder_id.required' => 'The folder name field is required.',
         ]);
         
         try
@@ -32,8 +36,7 @@ class SubFolderController extends Controller
                 'name' => $request->name , 
                 'folder_id' => $request->folder_id,               
             ]);
-            // return redirect()->back()->with('success', 'Success Add subfolder');
-            return redirect('/subfolder/show_data_subfolder')->with('success', 'Success Add subfolder');
+            return redirect()->route('website.subfolder.list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {
@@ -41,12 +44,46 @@ class SubFolderController extends Controller
         }
     }
 
-    public function show_data_subfolder()
+    public function edit($id)
     {
-        return view('website.pages.subfolder.show_data_subfolder');
+        $subfolder = SubFolder::findOrFail($id);
+        $folders = Folder::orderBy('name', 'ASC')->get();
+        
+        return view('website.pages.subfolder.edit', compact('subfolder', 'folders'));
     }
 
-    public function show_data_subfolder_ajax(Request $request)
+    public function update(Request $request, $id)
+    {
+        $subfolder = SubFolder::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|regex:/^[^\s]+$/',
+            'folder_id' => 'required',
+        ], [
+            'name.regex' => 'The name may not contain spaces.',
+            'folder_id.required' => 'The folder name field is required.',
+        ]);
+        
+        try
+        {
+            $subfolder->update([
+                'name' => $request->name , 
+                'folder_id' => $request->folder_id,               
+            ]);
+            return redirect()->route('website.subfolder.list')->with('success', 'Edit Successfully');
+        }
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public function list()
+    {
+        return view('website.pages.subfolder.list');
+    }
+
+    public function list_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
         $data = SubFolder::orderBy('name')
@@ -56,10 +93,16 @@ class SubFolderController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        SubFolder::findOrFail($id)->delete();
-
-        return redirect()->back()->with('error', 'Delete Item');
+        $id = $request->id;
+        $subfolder = SubFolder::find($id);
+        if (Auth::user()->can('apps_fiola')) {
+            $subfolder->delete();
+            
+            return 'Delete Successfully';
+        } else {
+            return response()->json(['error' => 'You are not authorized to delete this subfolder.'], 403);
+        }
     }
 }

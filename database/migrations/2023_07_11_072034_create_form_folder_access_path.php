@@ -26,16 +26,6 @@ class CreateFormFolderAccessPath extends Migration
                   ->references('id')
                   ->on('form_folder_access')
                   ->onDelete('cascade');
-                
-            // $table->foreign('folder')
-            // ->references('id')
-            // ->on('folders')
-            // ->onDelete('cascade');
-
-            // $table->foreign('subfolder')
-            // ->references('id')
-            // ->on('subfolders')
-            // ->onDelete('cascade');
         });
     }
 

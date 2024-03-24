@@ -24,19 +24,19 @@ class AccountController extends Controller
     {
         $departments = Department::orderBy('name')->get();
 
-        $userDepartment = Auth::user()->createdDepartments;
-        
+        $userDepartment = Auth::user()->departments;
+
         $auth = User::where('id', Auth::user()->id)
-                                    ->whereNull('nohp')
-                                    ->count();        
+            ->whereNull('nohp')
+            ->count();
 
         $data = Account::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
-        } else if($data > 0){
-            return redirect()->route('website.account.show_data_form')->with('info', 'Please confirm!');
-        }else{
-            return view('website.pages.account.create', compact(['departments', 'userDepartment']));
+        } else if ($data > 0) {
+            return redirect()->route('website.account.list')->with('info', 'Please confirm!');
+        } else {
+            return view('website.pages.account.create', compact('departments'));
         }
     }
 
@@ -44,34 +44,34 @@ class AccountController extends Controller
     {
         $request->validate([
             'no_reg' => 'unique',
-            'budget_type' => 'required' ,
-            'form_type' => 'required' ,
-            'npk' => 'required|min:6' ,
-            'fullname' => 'required' ,
-            'department' => 'required' ,
-            'phone' => 'required' ,
-            'purpose' => 'required' ,
-            'ad_name' => 'required' ,
+            'budget_type' => 'required',
+            'form_type' => 'required',
+            'npk' => 'nullable|min:6|required_if:form_type,Registration|required_if:form_type,Change',
+            'fullname' => 'required_if:form_type,Registration|required_if:form_type,Change',
+            'department' => 'required_if:form_type,Registration|required_if:form_type,Change',
+            'phone' => 'required_if:form_type,Registration|required_if:form_type,Change',
+            'purpose' => 'required_if:form_type,Registration',
+            'ad_name' => 'required_if:form_type,Registration',
         ]);
 
         $year = date('y');
         $month = date('m');
         $lastForm = DB::table('form_account')
-                      ->select('no_reg')
-                      ->orderBy('no_reg', 'desc')
-                      ->first();
+            ->select('no_reg')
+            ->orderBy('no_reg', 'desc')
+            ->first();
         $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
-        
-        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
-        if ($lastMonth !== $month){
+
+        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';
+        if ($lastMonth !== $month) {
             $lastNumber = '000';
-        }            
-        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+        }
+        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);
         $no_reg = 'ACC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
-        if($request->is_email==false){
+        if ($request->is_email == false) {
             $request->is_email = 0;
-        }else{
+        } else {
             $request->is_email = 1;
         }
 
@@ -82,19 +82,15 @@ class AccountController extends Controller
         $isItManagerApprove = null;
         $itManagerApprovalDate = null;
 
-        if (Auth::user()->can('can_approve_it_mgr')) {
+        if (Auth::user()->hasDepartment('ITD') && Auth::user()->can('approve_mgr')) {
             $finalStatus = 'IT MGR Approve';
             $isItManagerApprove = 1;
             $itManagerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_mgr')) {
+        } elseif (Auth::user()->can('approve_mgr') || Auth::user()->can('approve_gm') || Auth::user()->can('approve_vp') || Auth::user()->can('approve_pres')) {
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_executives')) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_it')) {
+        } elseif (Auth::user()->hasDepartment('ITD')) {
             $finalStatus = 'IT Approve';
             $isItApprove = 1;
             $itApprovalDate = Carbon::now();
@@ -104,21 +100,20 @@ class AccountController extends Controller
             $managerApprovalDate = null;
         }
 
-        try
-        {
+        try {
             $form_account = Account::create([
                 'no_reg' => $no_reg,
-                'budget_type' => $request->budget_type ,
-                'form_type' => $request->form_type ,
-                'npk' => $request->npk ,
-                'fullname' => $request->fullname ,
-                'department' => $request->department ,
-                'phone' => $request->phone ,
-                'company' => $request->company ,
-                'expired_date' => $request->expired_date ,
-                'purpose' => $request->purpose ,
-                'ad_name' => $request->ad_name ,
-                'is_email' => $request->is_email ,
+                'budget_type' => $request->budget_type,
+                'form_type' => $request->form_type,
+                'npk' => $request->npk,
+                'fullname' => $request->fullname,
+                'department' => $request->department,
+                'phone' => $request->phone,
+                'company' => $request->company,
+                'expired_date' => $request->expired_date,
+                'purpose' => $request->purpose,
+                'ad_name' => $request->ad_name,
+                'is_email' => $request->is_email,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
@@ -130,44 +125,42 @@ class AccountController extends Controller
                 'it_mgr_approval_date' => $itManagerApprovalDate,
             ]);
 
-            
+
             $form_account->save();
 
-            $depts = Department::all();
-            return redirect()->route('website.account.show_data_form')->with('success', 'Success Create Form');
-        }
-        catch(\Exception $e)
-        {
+            return redirect()->route('website.account.list')->with('success', 'Create Successfully');
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
     public function edit($id)
     {
-        $account = Account::findOrFail($id);    
+        $account = Account::findOrFail($id);
+
         $departments = Department::orderBy('name')->get();
-    
+
         return view('website.pages.account.edit', compact('account', 'departments'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'budget_type' => 'required' ,
-            'form_type' => 'required' ,
-            'npk' => 'required|min:6' ,
-            'fullname' => 'required' ,
-            'department' => 'required' ,
-            'phone' => 'required' ,
-            'purpose' => 'required' ,
-            'ad_name' => 'required' ,
+            'budget_type' => 'required',
+            'form_type' => 'required',
+            'npk' => 'required|min:6',
+            'fullname' => 'required',
+            'department' => 'required',
+            'phone' => 'required',
+            'purpose' => 'required',
+            'ad_name' => 'required',
         ]);
 
-        $form_account = Account::findOrFail($id);        
+        $form_account = Account::findOrFail($id);
 
-        if($request->is_email==false){
+        if ($request->is_email == false) {
             $request->is_email = 0;
-        }else{
+        } else {
             $request->is_email = 1;
         }
 
@@ -185,62 +178,59 @@ class AccountController extends Controller
             $managerApprovalDate = null;
         }
 
-        try
-        {
+        try {
             $form_account->update([
-                'budget_type' => $request->budget_type ,
-                'form_type' => $request->form_type ,
-                'npk' => $request->npk ,
-                'fullname' => $request->fullname ,
-                'department' => $request->department ,
-                'phone' => $request->phone ,
-                'company' => $request->company ,
-                'expired_date' => $request->expired_date ,
-                'purpose' => $request->purpose ,
-                'ad_name' => $request->ad_name ,
-                'is_email' => $request->is_email ,
+                'budget_type' => $request->budget_type,
+                'form_type' => $request->form_type,
+                'npk' => $request->npk,
+                'fullname' => $request->fullname,
+                'department' => $request->department,
+                'phone' => $request->phone,
+                'company' => $request->company,
+                'expired_date' => $request->expired_date,
+                'purpose' => $request->purpose,
+                'ad_name' => $request->ad_name,
+                'is_email' => $request->is_email,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
                 'is_manager_approve' => $isManagerApprove,
-                'manager_approval_date' => $managerApprovalDate,            
+                'manager_approval_date' => $managerApprovalDate,
             ]);
 
             $depts = Department::all();
-            return redirect()->route('website.account.show_data_form')->with('success', 'Success Edit Form');
-        }
-        catch(\Exception $e)
-        {
+            return redirect()->route('website.account.list')->with('success', 'Success Edit Form');
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function show_data_form()
+    public function list()
     {
         $depts = Department::all();
-        return view('website.pages.account.show_data_form', compact(['depts']));
+        return view('website.pages.account.list', compact(['depts']));
     }
 
-    public function show_data_form_ajax(Request $request)
+    public function list_ajax(Request $request)
     {
-        
+
         $data = Account::orderBy('id', 'DESC')
-                        ->where('created_by', Auth::user()->id)
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
+            ->where('created_by', Auth::user()->id)
+            ->join('public.users', 'form_account.created_by', '=', 'public.users.id')
+            ->select('form_account.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_form(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
         $account = Account::findOrFail($id);
-        if($type=='ok'){
-            $account->is_confirm=1;
-        }else{
-            $account->is_confirm=0;
+        if ($type == 'ok') {
+            $account->is_confirm = 1;
+        } else {
+            $account->is_confirm = 0;
         }
         $account->save();
         return "Confirm is Saved!";
@@ -248,11 +238,11 @@ class AccountController extends Controller
 
     public function delete_form(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
 
         $account = Account::findOrFail($id);
-        if($type=='ok'){
+        if ($type == 'ok') {
             $account->delete();
         }
         return "Form deleted!";
@@ -260,87 +250,87 @@ class AccountController extends Controller
 
     // MGR //
 
-    public function show_manager_approval()
+    public function manager_approval()
     {
-        return view('website.pages.account.approval_manager');
+        return view('website.pages.account.manager_approval');
     }
 
-    public function show_manager_approval_ajax(Request $request)
+    public function manager_approval_ajax(Request $request)
     {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-        
-        $data = Account::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+
+        $data = Account::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
-        ->where('final_status', 'created')
-        ->join('users', 'form_account.created_by', '=', 'users.id')
-        ->select('form_account.*', 'users.name as user_name');
-        // return $data;
+            ->where('final_status', 'created')
+            ->join('public.users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
+
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function show_data_manager_approval()
+    public function manager_approved()
     {
         $depts = Department::all();
-        return view('website.pages.account.show_data_manager_approval', compact(['depts']));
+        return view('website.pages.account.manager_approved', compact(['depts']));
     }
 
-    public function show_data_manager_approval_ajax(Request $request)
+    public function manager_approved_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-        
-        $data = Account::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+
+        $data = Account::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
-        ->where('is_manager_approve','1')
-        ->join('users', 'form_account.created_by', '=', 'users.id')
-        ->select('form_account.*', 'users.name as user_name');
+            ->where('is_manager_approve', '1')
+            ->join('users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_manager(Request $request)
     {
-        $id=$request->id;
-        
-        $type=$request->type;
-        
+        $id = $request->id;
+
+        $type = $request->type;
+
         $account = Account::findOrFail($id);
-        
-        if($type=='ok'){
-            $account->is_manager_approve=1;
-            $account->final_status='Manager Approve';
-            $account->manager_note=$request->manager_note;
-        }else{
-            $account->is_manager_approve=0;
-            $account->final_status='Manager Reject';
-            $account->manager_note=$request->manager_note;
-            $account->is_finish=0;
+
+        if ($type == 'ok') {
+            $account->is_manager_approve = 1;
+            $account->final_status = 'Manager Approve';
+            $account->manager_note = $request->manager_note;
+        } else {
+            $account->is_manager_approve = 0;
+            $account->final_status = 'Manager Reject';
+            $account->manager_note = $request->manager_note;
+            $account->is_finish = 0;
         }
-        $account->manager_approval_date= Carbon::now();
+        $account->manager_approval_date = Carbon::now();
         $account->save();
-        return "Request is Saved!";        
+        return "Request is Saved!";
     }
 
     /// ITD APPROVE ///
 
-    public function show_it_approval()
+    public function it_approval()
     {
-        return view('website.pages.account.approval_it');
+        return view('website.pages.account.it_approval');
     }
 
-    public function show_it_approval_ajax(Request $request)
+    public function it_approval_ajax(Request $request)
     {
-        $data = Account::where('final_status','Manager Approve')
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
+        $data = Account::where('final_status', 'Manager Approve')
+            ->join('public.users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -354,63 +344,66 @@ class AccountController extends Controller
     public function show_data_it_approval_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
-        $data = Account::where('is_it_approve','1')
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
-        
+        $data = Account::where('is_it_approve', '1')
+            ->join('public.users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
+
         // return $data;
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_it(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
         $account = Account::findOrFail($id);
-        if($type=='ok'){
+        if ($type == 'ok') {
             $isi = "FORM ACCOUNT\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nType : " . $account->form_type;
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNama : *" . $account->createdBy->name ."*";        
-            $isi .= "\nDepartment : *" . $account->department ."*";        
+            $isi .= "\nNama : *" . $account->createdBy->name . "*";
+            $isi .= "\nDepartment : *" . $account->department . "*";
             $isi .= "\nPurpose : " . $account->purpose;
             $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
-            
+
             $nomorhpModel = new Alert();
             $nomorhp = $nomorhpModel->getNoHpItMgr();
 
-            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            foreach ($nomorhp as $nomor) {
+                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
+                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
                 ));
+
                 $response = curl_exec($curl);
                 curl_close($curl);
+            }
 
-            $account->is_it_approve=1;
-            $account->final_status='IT Approve';
-            $account->it_note=$request->it_note;
-            $account->it_approve_by=Auth::user()->id;
-        }else{
-            $account->is_it_approve=0;
-            $account->final_status='IT Reject';
-            $account->it_note=$request->it_note;
-            $account->is_finish=0;
-            $account->it_approve_by=Auth::user()->id;
+            $account->is_it_approve = 1;
+            $account->final_status = 'IT Approve';
+            $account->it_note = $request->it_note;
+            $account->it_approve_by = Auth::user()->id;
+        } else {
+            $account->is_it_approve = 0;
+            $account->final_status = 'IT Reject';
+            $account->it_note = $request->it_note;
+            $account->is_finish = 0;
+            $account->it_approve_by = Auth::user()->id;
         }
-        $account->it_approval_date= Carbon::now();
+        $account->it_approval_date = Carbon::now();
         $account->save();
         return "Request is Saved!";
     }
@@ -423,28 +416,28 @@ class AccountController extends Controller
 
     public function show_it_mgr_approval_ajax(Request $request)
     {
-        $data = Account::where('final_status','IT Approve')
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
+        $data = Account::where('final_status', 'IT Approve')
+            ->join('public.users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_it_mgr(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
         $account = Account::findOrFail($id);
-        if($type=='ok'){
-            $account->is_it_mgr_approve=1;
-            $account->final_status='IT MGR Approve';
-            $account->it_mgr_note=$request->it_mgr_note;
-        }else{
-            $account->is_it_mgr_approve=0;
-            $account->final_status='IT MGR Reject';
-            $account->it_mgr_note=$request->it_mgr_note;
-            $account->is_finish=0;
+        if ($type == 'ok') {
+            $account->is_it_mgr_approve = 1;
+            $account->final_status = 'IT MGR Approve';
+            $account->it_mgr_note = $request->it_mgr_note;
+        } else {
+            $account->is_it_mgr_approve = 0;
+            $account->final_status = 'IT MGR Reject';
+            $account->it_mgr_note = $request->it_mgr_note;
+            $account->is_finish = 0;
         }
-        $account->it_mgr_approval_date= Carbon::now();
+        $account->it_mgr_approval_date = Carbon::now();
         $account->save();
         return "Request is Saved!";
     }
@@ -457,44 +450,44 @@ class AccountController extends Controller
 
     public function show_data_it_mgr_approval_ajax(Request $request)
     {
-        $data = Account::where('is_it_mgr_approve','1')
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
-                        
+        $data = Account::where('is_it_mgr_approve', '1')
+            ->join('users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
+
         return DataTables::eloquent($data)->make(true);
     }
 
     /// EXECUTION ///
-    public function show_execution()
+    public function execution()
     {
-        return view('website.pages.account.approval_execution');
+        return view('website.pages.account.execution');
     }
 
-    public function show_execution_ajax(Request $request)
+    public function execution_ajax(Request $request)
     {
-        $data = Account::whereIn('final_status', ['IT MGR Approve', 'Delay'])
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
-    
+        $data = Account::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
+            ->join('public.users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
+
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_execution(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
         $account = Account::findOrFail($id);
-        
+
         $user = $account->createdBy;
-        
-        if($type=='ok'){
+
+        if ($type == 'ok') {
             $isi = "FORM ACCOUNT\n\n";
-                
+
             $isi .= "Budget Type : " . $account->budget_type;
             $isi .= "\nForm Type : " . $account->form_type;
-            
-            $isi .= "\n\nNPK : *" . $account->npk ."*";
-            $isi .= "\nName : *" . $account->fullname ."*";
+
+            $isi .= "\n\nNPK : *" . $account->npk . "*";
+            $isi .= "\nName : *" . $account->fullname . "*";
             $isi .= "\nDepartment : " . $account->department;
             $isi .= "\nPhone : " . $account->phone;
             $isi .= "\nEmail : " . $request->email_address;
@@ -508,13 +501,13 @@ class AccountController extends Controller
             $isi .= "\n\nNote : " . $request->finish_note;
 
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
 
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
+            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -523,29 +516,29 @@ class AccountController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-                ));
-                $response = curl_exec($curl);
-                curl_close($curl);
+                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
 
-            $account->ad_name=$request->ad_name;
-            $account->email_address=$request->email_address;
-            $account->is_finish=1;
-            $account->is_confirm=0;
-            $account->finish_by=Auth::user()->id;
-            $account->final_status='Finished';
-            $account->finish_note='Done';
-        } else if($type=='delay'){
-            $account->is_delay=1;
-            $account->final_status='Delay';
-            $account->delay_note=$request->delay_note;            
+            $account->ad_name = $request->ad_name;
+            $account->email_address = $request->email_address;
+            $account->is_finish = 1;
+            $account->is_confirm = 0;
+            $account->finish_by = Auth::user()->id;
+            $account->final_status = 'Finished';
+            $account->finish_note = 'Done';
+        } else if ($type == 'On Progress') {
+            $account->is_on_progress = 1;
+            $account->final_status = 'On Progress';
+            $account->on_progress_note = $request->on_progress_note;
         } else {
-            $account->is_finish=0;
-            $account->final_status='Rejected';
-            $account->finish_note=$request->finish_note;
-            $account->finish_by=Auth::user()->id;
+            $account->is_finish = 0;
+            $account->final_status = 'Rejected';
+            $account->finish_note = $request->finish_note;
+            $account->finish_by = Auth::user()->id;
         }
-        $account->finish_date= Carbon::now();
+        $account->finish_date = Carbon::now();
         $account->save();
 
         return "Request is Saved!";
@@ -559,11 +552,10 @@ class AccountController extends Controller
 
     public function show_data_execution_ajax(Request $request)
     {
-        $data = Account::where('is_finish','1')->orWhere('is_finish','0')
-                        ->join('users', 'form_account.created_by', '=', 'users.id')
-                        ->select('form_account.*', 'users.name as user_name');
+        $data = Account::where('is_finish', '1')->orWhere('is_finish', '0')
+            ->join('users', 'form_account.created_by', '=', 'users.id')
+            ->select('form_account.*', 'users.name as user_name');
 
         return DataTables::eloquent($data)->make(true);
     }
-
 }

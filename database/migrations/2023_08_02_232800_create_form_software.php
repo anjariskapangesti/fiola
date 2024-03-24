@@ -16,27 +16,37 @@ return new class extends Migration
         Schema::create('form_software', function (Blueprint $table) {
             $table->id();
             $table->string('no_reg')->unique();
+            $table->string('budget_type', 20)->nullable();
             $table->string('category', 20)->nullable();
             $table->string('appname', 100)->nullable();
             $table->string('installon', 100)->nullable();
-            $table->string('detail',200)->nullable();
-            $table->string('purpose',100)->nullable();            
-            $table->string('final_status',30)->nullable();            
+            $table->text('detail')->nullable();
+
+            $table->text('purpose')->nullable();
+            $table->string('final_status',30)->nullable();
             $table->boolean('is_manager_approve')->nullable();
             $table->boolean('is_it_approve')->nullable();
             $table->boolean('is_it_mgr_approve')->nullable();
+            $table->boolean('is_on_progress')->nullable();
             $table->boolean('is_finish')->nullable();
             $table->boolean('is_confirm')->nullable();
             $table->timestamp('manager_approval_date')->nullable();
             $table->timestamp('it_approval_date')->nullable();
             $table->timestamp('it_mgr_approval_date')->nullable();
+            $table->timestamp('on_progress_date')->nullable();
             $table->timestamp('finish_date')->nullable();
-            $table->string('manager_note',100)->nullable();
-            $table->string('it_note',100)->nullable();
-            $table->string('it_mgr_note',100)->nullable();
-            $table->string('finish_note',100)->nullable();
+            $table->text('manager_note')->nullable();
+            $table->text('it_note')->nullable();
+            $table->text('it_mgr_note')->nullable();
+            $table->text('on_progress_note')->nullable();
+            $table->text('finish_note')->nullable();
             $table->bigInteger('created_by')->nullable();
             $table->bigInteger('created_dept')->nullable();
+            $table->bigInteger('manager_approve_by')->nullable();
+            $table->bigInteger('it_approve_by')->nullable();
+            $table->bigInteger('it_mgr_approve_by')->nullable();
+            $table->bigInteger('on_progress_by')->nullable();
+            $table->bigInteger('finish_by')->nullable();
             $table->timestamps();
         });
     }

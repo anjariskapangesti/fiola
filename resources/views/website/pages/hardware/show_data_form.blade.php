@@ -24,7 +24,8 @@
                     <table class="display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th>Detail</th>
+                                <th style="max-width: 50px;">Detail</th>
+                                <th>No. Reg</th>
                                 <th>Fullname</th>
                                 <th>Category</th>
                                 <th>Type</th>

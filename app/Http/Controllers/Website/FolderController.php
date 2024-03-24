@@ -14,15 +14,15 @@ class FolderController extends Controller
 {
     public function create()
     {
-        $folders = Folder::orderBy('name', 'ASC')->get();
-        
-        return view('website.pages.folder.create', compact('folders'));
+        return view('website.pages.folder.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required' ,
+            'name' => 'required|regex:/^[^\s]+$/',
+        ], [
+            'name.regex' => 'The name may not contain spaces.',
         ]);
         
         try
@@ -30,8 +30,7 @@ class FolderController extends Controller
             Folder::create([
                 'name' => $request->name ,                
             ]);
-            // return redirect()->back()->with('success', 'Success Add folder');
-            return redirect('/folder/show_data_folder')->with('success', 'Success Add Folder');
+            return redirect('/folder/list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {
@@ -39,12 +38,42 @@ class FolderController extends Controller
         }
     }
 
-    public function show_data_folder()
+    public function edit($id)
     {
-        return view('website.pages.folder.show_data_folder');
+        $folder = Folder::findOrFail($id);
+
+        return view('website.pages.folder.edit', compact('folder'));
     }
 
-    public function show_data_folder_ajax(Request $request)
+    public function update(Request $request, $id)
+    {
+        $folder = Folder::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|regex:/^[^\s]+$/',
+        ], [
+            'name.regex' => 'The name may not contain spaces.',
+        ]);
+
+        try
+        {
+            $folder->update([
+                'name' => $request->name ,                
+            ]);
+            return redirect('/folder/list')->with('success', 'Edit Successfully');
+        }
+        catch(\Exception $e)
+        {
+            return $e->getMessage();
+        }
+    }
+
+    public function list()
+    {
+        return view('website.pages.folder.list');
+    }
+
+    public function list_ajax(Request $request)
     {
         // return Auth::user()->dept_id;
         $data = Folder::orderBy('name');
@@ -56,12 +85,12 @@ class FolderController extends Controller
     {
         $id = $request->id;
         $folder = Folder::find($id);
-        if (Auth::user()->can('can_master')) {
+        if (Auth::user()->can('apps_fiola')) {
             $folder->delete();
             
-            return "Folder deleted successfully";
+            return 'Delete Successfully';
+        } else {
+            return response()->json(['error' => 'You are not authorized to delete this subfolder.'], 403);
         }
-
-        return "Error";
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Department extends Model
 {
-    protected $table = 'departments';
+    protected $table = 'public.departments';
     protected $fillable = [
         'code',
         'name'

@@ -34,29 +34,29 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="npk"><b>NPK</b></label>
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
-                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" disabled required>
+                                    <input type="text" class="form-control" placeholder="NPK" name="npk" style="background: #dbdbdb;"
+                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="fullname"><b>Nama</b></label>
-                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" disabled required
+                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname" style="background: #dbdbdb;"
+                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" readonly required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone"><b>No. Handphone</b></label>
-                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone"
-                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" disabled required
+                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone" style="background: #dbdbdb;"
+                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
                                         onkeyup="formatFullName(this)">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="department"><b>Department</b></label>
-                                    <input type="text" class="form-control" placeholder="Department" name="department"
+                                    <input type="text" class="form-control" placeholder="Department" name="department" style="background: #dbdbdb;"
                                         id="department" maxlength="14"
-                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" disabled
+                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly
                                         required>
                                     <div class="invalid-feedback">Please enter your Department</div>
                                 </div>
