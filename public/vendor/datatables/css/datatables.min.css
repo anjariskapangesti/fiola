@@ -17,18 +17,38 @@ table.dataTable td.dt-control {
 table.dataTable td.dt-control:before {
     display: inline-block;
     box-sizing: border-box;
+    content: "Lihat Detail";
+    padding: 6px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #006aff;
+    border-color: #0004ff;
+}
+table.dataTable tr.dt-hasChild td.dt-control:before {
+    content: "Tutup Detail";
+    padding: 6px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #006aff;
+    border-color: #0004ff;
+}
+/* table.dataTable td.dt-control:before {
+    display: inline-block;
+    box-sizing: border-box;
     content: "";
     border-top: 5px solid transparent;
-    border-left: 10px solid rgba(0, 0, 0, 0.5);
+    border-left: 10px solid black;
     border-bottom: 5px solid transparent;
     border-right: 0px solid transparent;
 }
 table.dataTable tr.dt-hasChild td.dt-control:before {
-    border-top: 10px solid rgba(0, 0, 0, 0.5);
+    border-top: 10px solid black;
     border-left: 5px solid transparent;
     border-bottom: 0px solid transparent;
     border-right: 5px solid transparent;
-}
+} */
 html.dark table.dataTable td.dt-control:before,
 :root[data-bs-theme="dark"] table.dataTable td.dt-control:before {
     border-left-color: rgba(255, 255, 255, 0.5);

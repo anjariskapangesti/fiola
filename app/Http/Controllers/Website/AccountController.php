@@ -124,8 +124,6 @@ class AccountController extends Controller
                 'it_approval_date' => $itApprovalDate,
                 'it_mgr_approval_date' => $itManagerApprovalDate,
             ]);
-
-
             $form_account->save();
 
             return redirect()->route('website.account.list')->with('success', 'Create Successfully');
@@ -137,7 +135,6 @@ class AccountController extends Controller
     public function edit($id)
     {
         $account = Account::findOrFail($id);
-
         $departments = Department::orderBy('name')->get();
 
         return view('website.pages.account.edit', compact('account', 'departments'));
@@ -207,17 +204,25 @@ class AccountController extends Controller
 
     public function list()
     {
-        $depts = Department::all();
-        return view('website.pages.account.list', compact(['depts']));
+        return view('website.pages.account.list');
     }
 
     public function list_ajax(Request $request)
     {
-
-        $data = Account::orderBy('id', 'DESC')
-            ->where('created_by', Auth::user()->id)
-            ->join('public.users', 'form_account.created_by', '=', 'public.users.id')
-            ->select('form_account.*', 'users.name as user_name');
+        $data = Account::where('created_by', Auth::user()->id)
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -233,19 +238,17 @@ class AccountController extends Controller
             $account->is_confirm = 0;
         }
         $account->save();
-        return "Confirm is Saved!";
+        return "Confirm Successfully";
     }
 
     public function delete_form(Request $request)
     {
         $id = $request->id;
-        $type = $request->type;
 
         $account = Account::findOrFail($id);
-        if ($type == 'ok') {
-            $account->delete();
-        }
-        return "Form deleted!";
+        $account->delete();
+
+        return "Delete Successfully";
     }
 
     // MGR //
@@ -266,8 +269,19 @@ class AccountController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
             ->where('final_status', 'created')
-            ->join('public.users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+            ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -289,34 +303,48 @@ class AccountController extends Controller
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
-            ->where('is_manager_approve', '1')
-            ->join('users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
-        // return $data;
+            ->whereNotNull('is_manager_approve')
+            ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('manager_approval_date', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_manager(Request $request)
     {
         $id = $request->id;
-
         $type = $request->type;
 
         $account = Account::findOrFail($id);
 
-        if ($type == 'ok') {
+        if ($type == 'approve') {
             $account->is_manager_approve = 1;
             $account->final_status = 'Manager Approve';
             $account->manager_note = $request->manager_note;
+            $account->manager_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
         } else {
             $account->is_manager_approve = 0;
             $account->final_status = 'Manager Reject';
             $account->manager_note = $request->manager_note;
+            $account->manager_approve_by = Auth::user()->id;
             $account->is_finish = 0;
+            $return = "Reject Successfully";
         }
         $account->manager_approval_date = Carbon::now();
         $account->save();
-        return "Request is Saved!";
+        return $return;
     }
 
     /// ITD APPROVE ///
@@ -329,26 +357,45 @@ class AccountController extends Controller
     public function it_approval_ajax(Request $request)
     {
         $data = Account::where('final_status', 'Manager Approve')
-            ->join('public.users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function show_data_it_approval()
+    public function it_approved()
     {
-        $depts = Department::all();
-        return view('website.pages.account.show_data_it_approval', compact(['depts']));
+        return view('website.pages.account.it_approved');
     }
 
-    public function show_data_it_approval_ajax(Request $request)
+    public function it_approved_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
         $data = Account::where('is_it_approve', '1')
-            ->join('public.users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('manager_approval_date', 'DESC');
 
-        // return $data;
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -356,8 +403,27 @@ class AccountController extends Controller
     {
         $id = $request->id;
         $type = $request->type;
+
         $account = Account::findOrFail($id);
-        if ($type == 'ok') {
+        
+        if ($type == 'approve') {
+            $account->is_it_approve = 1;
+            $account->final_status = 'IT Approve';
+            $account->it_note = $request->it_note;
+            $account->it_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $account->is_it_approve = 0;
+            $account->final_status = 'IT Reject';
+            $account->it_note = $request->it_note;
+            $account->is_finish = 0;
+            $account->it_approve_by = Auth::user()->id;
+            $return = "Reject Successfully";
+        }
+        $account->it_approval_date = Carbon::now();
+        $account->save();
+
+        if ($request->notifikasi == 'Ya') {
             $isi = "FORM ACCOUNT\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nType : " . $account->form_type;
@@ -369,10 +435,9 @@ class AccountController extends Controller
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
 
-            $nomorhpModel = new Alert();
-            $nomorhp = $nomorhpModel->getNoHpItMgr();
+            $nomors = Alert::where('role', 'IT Manager')->get();
 
-            foreach ($nomorhp as $nomor) {
+            foreach ($nomors as $nomor) {
                 $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
@@ -385,40 +450,39 @@ class AccountController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
                 ));
 
                 $response = curl_exec($curl);
                 curl_close($curl);
             }
-
-            $account->is_it_approve = 1;
-            $account->final_status = 'IT Approve';
-            $account->it_note = $request->it_note;
-            $account->it_approve_by = Auth::user()->id;
-        } else {
-            $account->is_it_approve = 0;
-            $account->final_status = 'IT Reject';
-            $account->it_note = $request->it_note;
-            $account->is_finish = 0;
-            $account->it_approve_by = Auth::user()->id;
         }
-        $account->it_approval_date = Carbon::now();
-        $account->save();
-        return "Request is Saved!";
+        return $return;
     }
 
     /// IT MGR ///
-    public function show_it_mgr_approval()
+    public function it_mgr_approval()
     {
-        return view('website.pages.account.approval_it_mgr');
+        return view('website.pages.account.it_mgr_approval');
     }
 
-    public function show_it_mgr_approval_ajax(Request $request)
+    public function it_mgr_approval_ajax(Request $request)
     {
         $data = Account::where('final_status', 'IT Approve')
-            ->join('public.users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -427,19 +491,23 @@ class AccountController extends Controller
         $id = $request->id;
         $type = $request->type;
         $account = Account::findOrFail($id);
-        if ($type == 'ok') {
+        if ($type == 'approve') {
             $account->is_it_mgr_approve = 1;
             $account->final_status = 'IT MGR Approve';
             $account->it_mgr_note = $request->it_mgr_note;
+            $account->it_mgr_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
         } else {
             $account->is_it_mgr_approve = 0;
             $account->final_status = 'IT MGR Reject';
             $account->it_mgr_note = $request->it_mgr_note;
+            $account->it_mgr_approve_by = Auth::user()->id;
             $account->is_finish = 0;
+            $return = "Reject Successfully";
         }
         $account->it_mgr_approval_date = Carbon::now();
         $account->save();
-        return "Request is Saved!";
+        return $return;
     }
 
     public function show_data_it_mgr_approval()
@@ -452,7 +520,7 @@ class AccountController extends Controller
     {
         $data = Account::where('is_it_mgr_approve', '1')
             ->join('users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+            ->select('form_account.*', 'users.name as requestor');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -467,7 +535,7 @@ class AccountController extends Controller
     {
         $data = Account::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
             ->join('public.users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+            ->select('form_account.*', 'users.name as requestor');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -554,7 +622,7 @@ class AccountController extends Controller
     {
         $data = Account::where('is_finish', '1')->orWhere('is_finish', '0')
             ->join('users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as user_name');
+            ->select('form_account.*', 'users.name as requestor');
 
         return DataTables::eloquent($data)->make(true);
     }

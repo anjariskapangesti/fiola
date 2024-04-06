@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'Track Forms Account'])
+@extends('website.layouts.main', ['title' => 'IT MGR Approval Account'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -18,7 +18,6 @@
                     <thead>
                         <tr>
                             <th width="50px">No</th>
-                            <th style="max-width: 50px;">Detail</th>
                             <th>No. Reg</th>
                             <th>Requestor</th>
                             <th>Created Date</th>
@@ -33,21 +32,51 @@
         </div>
     </div>
 
-    <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal fade" id="approveModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete Confirmation</h5>
+                    <h5 class="modal-title">Approve Confirmation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure want to delete this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_delete">
-                    <input type="hidden" id="id_delete">
+                    Are you sure want to approve this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
+                    <input type="hidden" id="id_approve">
+                    <div class="form-floating form-floating-outline">
+                        <textarea class="form-control auto-resize" id="it_mgr_note_approve" name="it_mgr_note_approve"
+                            placeholder="add note if there are additional">{{ old('it_mgr_note_approve') }}</textarea>
+                        <label for="it_mgr_note_approve">ITD MGR Note</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
+                    <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reject Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to reject this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
+                    <input type="hidden" id="id_reject">
+                    <div class="form-floating form-floating-outline">
+                        <textarea class="form-control auto-resize" id="it_mgr_note_reject" name="it_mgr_note_reject"
+                            placeholder="add note if there are additional">{{ old('it_mgr_note_reject') }}</textarea>
+                        <label for="it_mgr_note_reject">ITD MGR Note</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="btn-reject" disabled>Yes, Reject!</button>
                 </div>
             </div>
         </div>
@@ -61,7 +90,14 @@
 @push('scripts')
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+        const textarea = document.querySelector('.auto-resize');
 
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
     <script>
         $(document).ready(function() {
             @if (session()->has('success'))
@@ -77,7 +113,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.account.list_ajax') }}",
+                    url: "{{ route('website.account.it_mgr_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -88,13 +124,6 @@
                             return rowIndex;
                         },
                         className: "text-center" // Menetapkan kelas CSS 'text-center'
-                    },
-                    {
-                        className: 'dt-control text-center',
-                        orderable: false,
-                        data: null,
-                        defaultContent: '',
-                        searchable: false,
                     },
                     {
                         data: 'no_reg',
@@ -133,27 +162,13 @@
                         }
                     },
                     {
+                        className: 'detail',
                         orderable: false,
-                        searchable: false,
                         data: null,
+                        content: '',
+                        searchable: false,
                         render: function(data, type, row, meta) {
-                            if (data.is_confirm == '0') {
-                                return `
-                                <center>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
-                                </center>
-                                `;
-                            } else if (data.is_confirm == '1') {
-                                return `Confirmed`
-                            } else if (data.final_status == 'created') {
-                                return `
-                                <center>
-                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
-                                </center>
-                                `;
-                            } else {
-                                return `<center>Not yet</center>`;
-                            }
+                            return `<button class="badge bg-primary">Klik untuk Detail dan Approve</button>`;
                         }
                     },
                 ],
@@ -195,13 +210,13 @@
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
                                 <td>
-                                    ${d.is_email === false ? '<i>Tidak butuh lisensi</i>' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
+                                    ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
                                 </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
                                 <td>
-                                    ${d.is_email === false ? '<i>Tidak butuh email</i>' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : '')}
+                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : '')}
                                 </td>
                             </tr>
                             <tr>
@@ -237,82 +252,20 @@
                                 <td>${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
-                        <tbody style="border: 2px solid black;">
+                        <tfoot>
                             <tr>
-                                <td>ITD Manager Approval Date</td>
-                                <td>${d.it_mgr_approval_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Manager Approval By</td>
-                                <td>${d.it_mgr_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Manager Note</td>
-                                <td>${d.it_mgr_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>On Progress Date</td>
-                                <td>${d.on_progress_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>On Progress By</td>
-                                <td>${d.on_progress_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>On Progress Note</td>
-                                <td>${d.on_progress_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>Finish Date</td>
-                                <td>${d.finish_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>Finish By</td>
-                                <td>${d.finish_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>Finish Note</td>
-                                <td>${d.finish_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
+                                <th colspan="2" class="text-end">
+                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
+                                </th>
+                            </tr>    
+                        </tfoot>
                     </table>
                     `
                 );
             }
 
-            $('#app_table').on('click', '.btn-table-delete', function() {
-                var id_delete = $(this).data('id');
-                var no_reg_delete = $(this).data('no_reg');
-
-                $('#id_delete').val(id_delete)
-                $('#no_reg_delete').val(no_reg_delete)
-            })
-
-            $('#btn-delete').on('click', function() {
-                let id_delete = $('#id_delete').val();
-                $.ajax({
-                    url: "{{ route('website.account.delete_form') }}",
-                    type: "POST",
-                    data: {
-                        id: id_delete,
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#deleteModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
-
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
+            $('#app_table tbody').on('click', 'td.detail', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
 
@@ -324,48 +277,103 @@
                     tr.addClass('shown');
                 }
             });
+            // APPROVE
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_approve = $(this).data('id');
+                var no_reg_approve = $(this).data('no_reg');
+                var approveButton = document.getElementById('btn-approve');
 
-            $('#reject_reason').on('keyup', function() {
+                approveButton.removeAttribute('disabled');
+                approveButton.innerHTML = 'Yes, Approve!';
+                $('#id_approve').val(id_approve)
+                $('#no_reg_approve').val(no_reg_approve)
+                $('#it_mgr_note_approve').val('');
+            })
+
+            $('#btn-approve').on('click', function() {
+                let id_approve = $('#id_approve').val();
+                $.ajax({
+                    url: "{{ route('website.account.approve_it_mgr') }}",
+                    type: "POST",
+                    data: {
+                        id: id_approve,
+                        it_mgr_note: $('#it_mgr_note_approve').val(),
+                        type: 'approve',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        getApprovalCount();
+                        $('#approveModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+            // REJECT
+            $('#it_mgr_note_reject').on('keyup', function() {
                 if ($(this).val() != "")
                     $('#btn-reject').removeAttr('disabled');
                 else
                     $('#btn-reject').attr('disabled', 'disabled');
             });
 
-            $('#btn-approve').on('clcik', function() {
+            $('#app_table').on('click', '.btn-table-reject', function() {
+                var id_reject = $(this).data('id');
+                var no_reg_reject = $(this).data('no_reg');
+                var approveButton = document.getElementById('btn-reject');
 
-            });
-
-            $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_account = $(this).data('id');
-                var fullname_form_account = $(this).data('fullname');
-                var ad_name = $(this).data('ad_name');
-
-                $('#id_form_account').val(id_form_account)
-                $('#fullname_form_account').val(fullname_form_account)
-                $('#ad_name').val(ad_name)
+                approveButton.innerHTML = 'Yes, Reject!';
+                $('#id_reject').val(id_reject)
+                $('#no_reg_reject').val(no_reg_reject)
+                $('#it_mgr_note_reject').val('');
             })
 
-            $('#btn-approve').on('click', function() {
-                let id_form_account = $('#id_form_account').val();
+            $('#btn-reject').on('click', function() {
+                let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.account.approve_form') }}",
+                    url: "{{ route('website.account.approve_it_mgr') }}",
                     type: "POST",
                     data: {
-                        id: id_form_account,
-                        type: 'ok',
+                        id: id_reject,
+                        it_mgr_note: $('#it_mgr_note_reject').val(),
+                        type: 'reject',
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
-                        $('#confirmModal').modal('hide')
+                        getApprovalCount();
+                        $('#rejectModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
                         alert(error);
                     }
                 });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var approveButton = document.getElementById('btn-approve');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            approveButton.addEventListener('click', function() {
+                approveButton.setAttribute('disabled', 'true');
+                approveButton.innerHTML = spinner + ' Approving...';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var rejectButton = document.getElementById('btn-reject');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            rejectButton.addEventListener('click', function() {
+                rejectButton.setAttribute('disabled', 'true');
+                rejectButton.innerHTML = spinner + ' Rejecting...';
             });
         });
     </script>

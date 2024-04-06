@@ -51,7 +51,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'AlertController@create')->name('alert.create');
                     Route::post('/store', 'AlertController@store')->name('alert.store');
-                    Route::post('/edit', 'AlertController@edit')->name('alert.edit');
+                    Route::get('/edit/{id}', 'AlertController@edit')->name('alert.edit');
+                    Route::post('/update/{id}', 'AlertController@update')->name('alert.update');
                     Route::post('/destroy', 'AlertController@destroy')->name('alert.destroy');
                     Route::get('/list', 'AlertController@list')->name('alert.list');
                     Route::get('/list_ajax', 'AlertController@list_ajax')->name('alert.list_ajax');
@@ -145,11 +146,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'AccountController@it_approved_ajax')->name('account.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
-                    Route::get('/show_it_mgr_approval', 'AccountController@show_it_mgr_approval')->name('account.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'AccountController@show_it_mgr_approval_ajax')->name('account.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'AccountController@it_mgr_approval')->name('account.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'AccountController@it_mgr_approval_ajax')->name('account.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'AccountController@approve_it_mgr')->name('account.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'AccountController@show_data_it_mgr_approval')->name('account.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'AccountController@show_data_it_mgr_approval_ajax')->name('account.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'AccountController@it_mgr_approved')->name('account.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'AccountController@it_mgr_approved_ajax')->name('account.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -186,11 +187,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'FolderAccessController@it_approved_ajax')->name('folder-access.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'FolderAccessController@show_it_mgr_approval')->name('folder-access.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'FolderAccessController@show_it_mgr_approval_ajax')->name('folder-access.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'FolderAccessController@it_mgr_approval')->name('folder-access.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'FolderAccessController@it_mgr_approval_ajax')->name('folder-access.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'FolderAccessController@approve_it_mgr')->name('folder-access.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'FolderAccessController@show_data_it_mgr_approval')->name('folder-access.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'FolderAccessController@show_data_it_mgr_approval_ajax')->name('folder-access.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'FolderAccessController@it_mgr_approved')->name('folder-access.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'FolderAccessController@it_mgr_approved_ajax')->name('folder-access.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -225,11 +226,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'NewFolderController@it_approved_ajax')->name('new-folder.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'NewFolderController@show_it_mgr_approval')->name('new-folder.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'NewFolderController@show_it_mgr_approval_ajax')->name('new-folder.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'NewFolderController@it_mgr_approval')->name('new-folder.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'NewFolderController@it_mgr_approval_ajax')->name('new-folder.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'NewFolderController@approve_it_mgr')->name('new-folder.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'NewFolderController@show_data_it_mgr_approval')->name('new-folder.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'NewFolderController@show_data_it_mgr_approval_ajax')->name('new-folder.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'NewFolderController@it_mgr_approved')->name('new-folder.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'NewFolderController@it_mgr_approved_ajax')->name('new-folder.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -264,11 +265,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'SoftwareController@it_approved_ajax')->name('software.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'SoftwareController@show_it_mgr_approval')->name('software.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'SoftwareController@show_it_mgr_approval_ajax')->name('software.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'SoftwareController@it_mgr_approval')->name('software.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'SoftwareController@it_mgr_approval_ajax')->name('software.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'SoftwareController@approve_it_mgr')->name('software.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'SoftwareController@show_data_it_mgr_approval')->name('software.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'SoftwareController@show_data_it_mgr_approval_ajax')->name('software.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'SoftwareController@it_mgr_approved')->name('software.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'SoftwareController@it_mgr_approved_ajax')->name('software.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -306,11 +307,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'HardwareController@it_approved_ajax')->name('hardware.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'HardwareController@show_it_mgr_approval')->name('hardware.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'HardwareController@show_it_mgr_approval_ajax')->name('hardware.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'HardwareController@it_mgr_approval')->name('hardware.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'HardwareController@it_mgr_approval_ajax')->name('hardware.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'HardwareController@approve_it_mgr')->name('hardware.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'HardwareController@show_data_it_mgr_approval')->name('hardware.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'HardwareController@show_data_it_mgr_approval_ajax')->name('hardware.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'HardwareController@it_mgr_approved')->name('hardware.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'HardwareController@it_mgr_approved_ajax')->name('hardware.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -345,11 +346,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'VpnController@it_approved_ajax')->name('vpn.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'VpnController@show_it_mgr_approval')->name('vpn.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'VpnController@show_it_mgr_approval_ajax')->name('vpn.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'VpnController@it_mgr_approval')->name('vpn.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'VpnController@it_mgr_approval_ajax')->name('vpn.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'VpnController@approve_it_mgr')->name('vpn.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'VpnController@show_data_it_mgr_approval')->name('vpn.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'VpnController@show_data_it_mgr_approval_ajax')->name('vpn.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'VpnController@it_mgr_approved')->name('vpn.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'VpnController@it_mgr_approved_ajax')->name('vpn.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -384,11 +385,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'NetworkController@it_approved_ajax')->name('network.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'NetworkController@show_it_mgr_approval')->name('network.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'NetworkController@show_it_mgr_approval_ajax')->name('network.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'NetworkController@it_mgr_approval')->name('network.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'NetworkController@it_mgr_approval_ajax')->name('network.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'NetworkController@approve_it_mgr')->name('network.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'NetworkController@show_data_it_mgr_approval')->name('network.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'NetworkController@show_data_it_mgr_approval_ajax')->name('network.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'NetworkController@it_mgr_approved')->name('network.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'NetworkController@it_mgr_approved_ajax')->name('network.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -423,11 +424,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'ProjectController@it_approved_ajax')->name('project.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'ProjectController@show_it_mgr_approval')->name('project.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'ProjectController@show_it_mgr_approval_ajax')->name('project.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'ProjectController@it_mgr_approval')->name('project.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'ProjectController@it_mgr_approval_ajax')->name('project.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'ProjectController@approve_it_mgr')->name('project.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'ProjectController@show_data_it_mgr_approval')->name('project.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'ProjectController@show_data_it_mgr_approval_ajax')->name('project.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'ProjectController@it_mgr_approved')->name('project.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'ProjectController@it_mgr_approved_ajax')->name('project.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -462,11 +463,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'FiturController@it_approved_ajax')->name('fitur.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'FiturController@show_it_mgr_approval')->name('fitur.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'FiturController@show_it_mgr_approval_ajax')->name('fitur.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'FiturController@it_mgr_approval')->name('fitur.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'FiturController@it_mgr_approval_ajax')->name('fitur.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'FiturController@approve_it_mgr')->name('fitur.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'FiturController@show_data_it_mgr_approval')->name('fitur.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'FiturController@show_data_it_mgr_approval_ajax')->name('fitur.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'FiturController@it_mgr_approved')->name('fitur.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'FiturController@it_mgr_approved_ajax')->name('fitur.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -501,11 +502,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved_ajax', 'RelayoutController@it_approved_ajax')->name('relayout.it_approved_ajax');
                 });
                 Route::group(['middleware' => ['permission:can_approve_it_mgr']], function () {
-                    Route::get('/show_it_mgr_approval', 'RelayoutController@show_it_mgr_approval')->name('relayout.show_it_mgr_approval');
-                    Route::get('/show_it_mgr_approval_ajax', 'RelayoutController@show_it_mgr_approval_ajax')->name('relayout.show_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approval', 'RelayoutController@it_mgr_approval')->name('relayout.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'RelayoutController@it_mgr_approval_ajax')->name('relayout.it_mgr_approval_ajax');
                     Route::post('/approve_it_mgr', 'RelayoutController@approve_it_mgr')->name('relayout.approve_it_mgr');
-                    Route::get('/show_data_it_mgr_approval', 'RelayoutController@show_data_it_mgr_approval')->name('relayout.show_data_it_mgr_approval');
-                    Route::get('/show_data_it_mgr_approval_ajax', 'RelayoutController@show_data_it_mgr_approval_ajax')->name('relayout.show_data_it_mgr_approval_ajax');
+                    Route::get('/it_mgr_approved', 'RelayoutController@it_mgr_approved')->name('relayout.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'RelayoutController@it_mgr_approved_ajax')->name('relayout.it_mgr_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {

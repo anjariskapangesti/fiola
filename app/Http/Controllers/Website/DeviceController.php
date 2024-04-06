@@ -32,7 +32,7 @@ class DeviceController extends Controller
                 'cost' => $request->cost,            
                 'spesifikasi' => $request->spesifikasi,
             ]);
-            return redirect('/device/list')->with('success', 'Success Add device');
+            return redirect('/device/list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {
@@ -64,7 +64,7 @@ class DeviceController extends Controller
                 'spesifikasi' => $request->spesifikasi,
             ]);
             
-            return "Device updated successfully";
+            return "Update Successfully";
         }
 
         return "Error";
@@ -78,7 +78,7 @@ class DeviceController extends Controller
         if (Auth::user()->can('can_master')) {
             $devices->delete();
             
-            return "device deleted successfully";
+            return "Delete Successfully";
         }
 
         return "Error";

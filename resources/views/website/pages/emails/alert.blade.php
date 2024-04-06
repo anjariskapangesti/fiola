@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <link rel="stylesheet" href="{{ asset('mail/default.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/mail/default.css') }}">
     <title>{{ $subject }}</title>
 </head>
-<body>
-    @component('mail::message')
-    # FIOLA
 
-    Reminder
+<body>
+    *ini adalah pesan otomatis <br><br>
+    Dear Manager Department, <br>
+    <strong>Reminder</strong><br><br>
+
+    Terkait Form ITD, terdapat {{ $data }}. Mohon diapprove/bisa tekan tombol More Details untuk masuk ke
+    website FIOLA. <br><br>
 
     @component('mail::button', ['url' => 'https://fiola.aiia.co.id'])
         More Details
     @endcomponent
-
-    Thanks,<br>
-    ITD
-@endcomponent
+    Terima kasih,<br>
+    AISINBISA
 </body>
+
 </html>

@@ -1845,11 +1845,11 @@ progress {
     --bs-table-bg-type: initial;
     --bs-table-color-state: initial;
     --bs-table-bg-state: initial;
-    --bs-table-color: var(--bs-body-color);
+    --bs-table-color: black;
     --bs-table-bg: transparent;
     --bs-table-border-color: #e7e7e8;
     --bs-table-accent-bg: transparent;
-    --bs-table-striped-color: var(--bs-body-color);
+    --bs-table-striped-color: black;
     --bs-table-striped-bg: rgba(var(--bs-emphasis-color-rgb), 0.05);
     --bs-table-active-color: #89868d;
     --bs-table-active-bg: rgba(144, 85, 253, 0.08);

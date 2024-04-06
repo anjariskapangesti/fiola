@@ -1,5 +1,6 @@
 <ul class="menu-sub">
-    <li class="menu-item {{ Route::is('website.account.' . $link) ? 'active' : '' }}">
+    <li
+        class="menu-item {{ Route::is('website.account.' . $link) || Route::is('website.account.edit') ? 'active' : '' }}">
         <a href="{{ route('website.account.' . $link) }}" class="menu-link">
             <div data-i18n="Account">{{ $text }} Account</div>
             @if ($link == 'manager_approval' && App\Models\AppHelper::account_mgr_count() > 0)
@@ -7,9 +8,24 @@
                     id="account_mgr_count">{{ App\Models\AppHelper::account_mgr_count() }}</span>
             @endif
 
+            @if ($link == 'list' && App\Models\AppHelper::account_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="account_confirm_count">{{ App\Models\AppHelper::account_confirm_count() }}</span>
+            @endif
+
             @if ($link == 'it_approval' && App\Models\AppHelper::account_it_count() > 0)
                 &nbsp&nbsp<span class="badge bg-danger rounded-pill"
                     id="account_it_count">{{ App\Models\AppHelper::account_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::account_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="account_it_mgr_count">{{ App\Models\AppHelper::account_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::account_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="account_execution_count">{{ App\Models\AppHelper::account_execution_count() }}</span>
             @endif
         </a>
     </li>

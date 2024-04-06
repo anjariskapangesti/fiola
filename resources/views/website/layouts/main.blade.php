@@ -41,6 +41,21 @@
     <link rel="stylesheet" href="{{ asset('vendor/bs-step/bs-step.css') }}">
 
     <!-- Page CSS -->
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
     @stack('styles')
     <!-- Helpers -->
     <script src="{{ asset('vendor/materio/assets/vendor/js/helpers.js') }}"></script>
@@ -108,7 +123,37 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <script src="{{ asset('vendor/plugins/toastr/toastr.min.js') }}"></script>
+    <script>
+        function getApprovalCount() {
+            $.ajax({
+                url: "{{ route('website.get_approval_count') }}",
+                success: function(response) {
+                    $('#account_mgr_count').text(response.account_mgr_count);
+                    $('#account_it_count').text(response.account_it_count);
+                    $('#account_it_mgr_count').text(response.account_it_mgr_count);
+                    $('#account_execution_count').text(response.account_execution_count);
 
+                    $('#folderaccess_mgr_count').text(response.folderaccess_mgr_count);
+                    $('#folderaccess_it_count').text(response.folderaccess_it_count);
+                    $('#folderaccess_it_mgr_count').text(response.folderaccess_it_mgr_count);
+                    $('#folderaccess_execution_count').text(response.folderaccess_execution_count);
+
+                    $('#manager_approvals_count').text(response.manager_approvals_count);
+                    $('#confirms_count').text(response.confirms_count);
+                    $('#it_approvals_count').text(response.it_approvals_count);
+                    $('#it_mgr_approvals_count').text(response.it_mgr_approvals_count);
+                    $('#execution_count').text(response.execution_count);
+
+                    // Menampilkan atau menyembunyikan badge sesuai dengan kondisi
+                    if (response.manager_approvals_count > 0) {
+                        $('#manager_approvals_count').show();
+                    } else {
+                        $('#manager_approvals_count').hide();
+                    }
+                }
+            });
+        }
+    </script>
     @stack('scripts')
 </body>
 

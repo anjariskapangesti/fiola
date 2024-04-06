@@ -1,11 +1,11 @@
-@extends('website.layouts.main', ['title' => 'ITD Manager Approval Account'])
+@extends('website.layouts.main', ['title' => 'Manager Approval Account'])
 
 @section('content')
     <div class="pagetitle">
         <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">ITD Manager Approval</a></li>
+                <li class="breadcrumb-item "><a href="#">Manager Approval</a></li>
                 <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
@@ -13,12 +13,12 @@
     <section class="section">
         <div class="row">
             <div class="card">
-                <div class="card-body p-3 table table-responsive">
-                    {{-- <a href="{{ route('website.account.show_data_it_mgr_approval') }}" class="btn btn-primary">Show Data</a> --}}
-                    <table class="display" width="100%" id="app_table">
+                <div class="card-body p-3 table-responsive">
+                    <table class="table table-striped display" width="100%" id="app_table">
                         <thead>
                             <tr>
-                                <th>Detail</th>
+                                <th style="max-width: 30px;">No</th>
+                                <th style="max-width: 70px;">No. Reg</th>
                                 <th>Fullname</th>
                                 <th>Budget Type</th>
                                 <th>Request Type</th>
@@ -63,9 +63,12 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Please share the reason why you're rejecting<br /><br />
-                        <textarea class="form-control" id="reject_reason"></textarea>
+                        Please share the reason why you're rejecting
+                        <input type="text" readonly class="form-control-plaintext" id="fullname_form_account_reject">
                         <input type="hidden" id="id_form_account_reject">
+
+                        <textarea class="form-control" id="reject_reason"></textarea>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -91,50 +94,49 @@
             // `d` is the original data object for the row
             return (
                 `
-                <table class="table table-sm">
-
+                <table class = "table table-sm table-bordered" style="background-color: #ebf1f2;">
                     <tr>
-                        <td width="30%">NPK / Full Name</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">NPK / Full Name</th>
                         <td>${d.npk} / ${d.fullname} </td>
                     </tr>
                     <tr>
-                        <td>Department</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Department</th>
                         <td>${d.department} </td>
                     </tr>
                     <tr>
-                        <td>Company</td>
-                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Company</th>
+                        <td>${d.company?? 'PT. Aisin Indonesia Automotive'} </td>
                     </tr>
                     <tr>
-                        <td>Phone Number</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Phone Number</th>
                         <td>${d.phone} </td>
                     </tr>
                     <tr>
-                        <td>Login Username</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Login Username</th>
                         <td>${d.ad_name}@aiia.co.id</td>
                     </tr>
                     <tr>
-                        <td>Email Address</td>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Email Address</th>
                         <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
-                    </tr>   
-                    <tr>
-                        <td>Manager Note</td>
-                        <td>${d.manager_note ?? '-'}</td>
                     </tr>
-                    <tr>
-                        <td>ITD Note</td>
-                        <td>${d.it_note ?? '-'}</td>
-                    </tr>                 
+
                 <tfoot>
                     <tr>
-                        <th>Created by</th>
-                        <th>${d.user_name}</th>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Created by</th>
+                        <td>${d.user_name}</td>
                     </tr>
                     <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
+                        <th style="background-color: #66a7e3; max-width: 50px;">Purpose</th>
+                        <td>${d.purpose}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2" class="text-end">
+                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${d.id}" data-fullname="${d.fullname}">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-fullname="${d.fullname}">Reject</button>
+                        </th>
                     </tr>
                 </tfoot>
+                
                 </table>
                 `
             );
@@ -145,15 +147,30 @@
                 "lengthChange": true,
                 'processing': true,
                 'serverSide': true,
+                // "sScrollY": true,
                 ajax: {
-                    url: "{{ route('website.account.show_it_mgr_approval_ajax') }}",
+                    url: "{{ route('website.account.manager_approval_ajax') }}",
                 },
-                columns: [{
-                        className: 'dt-control',
-                        orderable: false,
-                        data: null,
-                        defaultContent: '',
-                        searchable: false,
+                columns: [
+                    // {
+                    //     className: 'klik',
+                    //     orderable: false,
+                    //     data: null,
+                    //     defaultContent: '',
+                    //     searchable: false,
+                    //     render: function(data, type, row, meta) {
+                    //         return `<button class="badge bg-primary">Klik untuk Approve</button>`;
+                    //     }
+                    // },
+                    {
+                        className: 'text-center',
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    {
+                        data: 'no_reg',
+                        name: 'no_reg',
                     },
                     {
                         data: 'fullname',
@@ -167,29 +184,41 @@
                         data: 'form_type',
                         name: 'form_type'
                     },
+                    // {
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     data: null,
+                    //     render: function(data, type, row, meta) {
+                    //         return `
+                //         <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Approve</button>
+                //         <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                    //     }
+                    // },
                     {
+                        className: 'klik',
                         orderable: false,
-                        searchable: false,
                         data: null,
+                        defaultContent: '',
+                        searchable: false,
                         render: function(data, type, row, meta) {
-                            return `
-                            <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-fullname="${data.fullname}">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-fullname="${data.fullname}">Reject</button>`;
+                            return `<button class="badge bg-primary">Klik untuk Detail dan Approve</button>`;
                         }
                     },
                 ],
             });
 
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
+            $('#app_table tbody').on('click', 'td.klik', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
 
                 if (row.child.isShown()) {
                     row.child.hide();
                     tr.removeClass('shown');
+
                 } else {
                     row.child(format(row.data())).show();
                     tr.addClass('shown');
+
                 }
             });
 
@@ -200,22 +229,16 @@
                     $('#btn-reject').attr('disabled', 'disabled');
             });
 
-            const btnApprove = document.getElementById('btn-approve');
-
-            btnApprove.addEventListener('click', function() {
-                btnApprove.disabled = true;
-            });
-
             $('#btn-approve').on('click', function() {
                 let btnApprove = $(this);
                 let id_form_account = $('#id_form_account').val();
                 $.ajax({
-                    url: "{{ route('website.account.approve_it_mgr') }}",
+                    url: "{{ route('website.account.approve_manager') }}",
                     type: "POST",
                     data: {
                         id: id_form_account,
                         type: 'ok',
-                        it_mgr_note: $('#note').val(),
+                        manager_note: $('#note').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -234,14 +257,14 @@
             $('#btn-reject').on('click', function() {
                 let id_form_account_reject = $('#id_form_account_reject').val();
                 console.log(id_form_account_reject);
-                // window.location.href = "{{ route('website.account.approve_it') }}";
+                // window.location.href = "{{ route('website.account.approve_manager') }}";
                 $.ajax({
-                    url: "{{ route('website.account.approve_it_mgr') }}",
+                    url: "{{ route('website.account.approve_manager') }}",
                     type: "POST",
                     data: {
                         id: id_form_account_reject,
                         type: 'reject',
-                        it_mgr_note: $('#reject_reason').val(),
+                        manager_note: $('#reject_reason').val(),
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
@@ -270,7 +293,9 @@
 
             $('#app_table').on('click', '.btn-table-reject', function() {
                 var id_form_account_reject = $(this).data('id');
+                var fullname_form_account_reject = $(this).data('fullname');
                 $('#id_form_account_reject').val(id_form_account_reject)
+                $('#fullname_form_account_reject').val(fullname_form_account_reject)
                 // console.log(id_form_account_reject);
             })
 

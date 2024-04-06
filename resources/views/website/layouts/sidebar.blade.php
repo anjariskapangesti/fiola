@@ -67,7 +67,12 @@
                 $createRoutes[] = 'website.' . $link . '.create';
                 $editRoutes[] = 'website.' . $link . '.edit';
                 $listRoutes[] = 'website.' . $link . '.list';
-                $manager_approvalRoutes[] = 'website.' . $link . '.manager_approval';
+                $manager_approval_routes[] = 'website.' . $link . '.manager_approval';
+                $manager_approved_routes[] = 'website.' . $link . '.manager_approved';
+                $it_approval_routes[] = 'website.' . $link . '.it_approval';
+                $it_approved_routes[] = 'website.' . $link . '.it_approved';
+                $it_mgr_approval_routes[] = 'website.' . $link . '.it_mgr_approval';
+                $it_mgr_approved_routes[] = 'website.' . $link . '.it_mgr_approved';
             }
 
         @endphp
@@ -82,14 +87,19 @@
         <li class="menu-item {{ in_array(Route::currentRouteName(), $listRoutes) ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-text-search"></i>
-                <div data-i18n="Track Forms">Track Forms</div>
+                <div data-i18n="Track Forms">Track Forms
+                    @if (App\Models\AppHelper::confirms_count() > 0)
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                            id="confirms_count">{{ App\Models\AppHelper::confirms_count() }}</span>
+                    @endif
+                </div>
             </a>
             @include('website.layouts.sidebar_items', ['link' => 'list', 'text' => 'Form'])
         </li>
 
         {{-- MANAGER --}}
         @can('approve_mgr')
-            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approvalRoutes) ? 'active open' : '' }}">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
                     <div data-i18n="Manager Approval">Manager Approval
@@ -101,7 +111,7 @@
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form'])
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-history"></i>
                     <div data-i18n="Manager History">Manager History</div>
@@ -111,7 +121,7 @@
         @endcan
         {{-- ITD --}}
         @if (auth()->user()->hasDepartment('ITD'))
-            <li class="menu-item">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
                     <div data-i18n="ITD Approval">ITD Approval
@@ -123,35 +133,53 @@
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'it_approval', 'text' => 'Form'])
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $it_approved_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-history"></i>
                     <div data-i18n="ITD History">ITD History</div>
                 </a>
-                @include('website.layouts.sidebar_items', ['link' => 'it_approval', 'text' => 'Form'])
+                @include('website.layouts.sidebar_items', ['link' => 'it_approved', 'text' => 'Form'])
             </li>
             {{-- ITD MGR --}}
             @can('approve_mgr')
-                <li class="menu-item">
+                <li
+                    class="menu-item {{ in_array(Route::currentRouteName(), $it_mgr_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
-                        <div data-i18n="ITD MGR Approval">ITD MGR Approval</div>
+                        <div data-i18n="ITD MGR Approval">ITD MGR Approval
+                            @if (App\Models\AppHelper::it_mgr_approvals_count() > 0)
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="it_mgr_approvals_count">{{ App\Models\AppHelper::it_mgr_approvals_count() }}</span>
+                            @endif
+                        </div>
                     </a>
-                    @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
+                    @include('website.layouts.sidebar_items', [
+                        'link' => 'it_mgr_approval',
+                        'text' => 'Form',
+                    ])
                 </li>
-                <li class="menu-item">
+                <li
+                    class="menu-item {{ in_array(Route::currentRouteName(), $it_mgr_approved_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon tf-icons mdi mdi-history"></i>
                         <div data-i18n="ITD MGR History">ITD MGR History</div>
                     </a>
-                    @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
+                    @include('website.layouts.sidebar_items', [
+                        'link' => 'it_mgr_approved',
+                        'text' => 'Form',
+                    ])
                 </li>
             @endcan
             {{-- Execution --}}
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-rocket-launch"></i>
-                    <div data-i18n="Execution">Execution</div>
+                    <div data-i18n="Execution">Execution
+                        @if (App\Models\AppHelper::execution_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="execution_count">{{ App\Models\AppHelper::execution_count() }}</span>
+                        @endif
+                    </div>
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'execution', 'text' => 'Form'])
             </li>

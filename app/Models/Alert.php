@@ -9,15 +9,15 @@ class Alert extends Model
 {
     protected $table = 'alerts';
     protected $fillable = [
-        'department_name',
-        'department_code',
         'name',
         'email',
         'nohp',
+        'role',
+        'department',
     ];
 
     // protected $nohpitmgr = '081223506433';
-    protected $nohpitmgr = ['082125008160', '081223506433'];
+    protected $nohpitmgr = ['082125008160'];
     // protected $nohpitmgr = '082260050066';
 
     public function getNoHpItMgr()

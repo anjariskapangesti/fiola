@@ -1,150 +1,276 @@
-@extends('website.layouts.main', ['title' => 'Manager History Account'])
+@extends('website.layouts.main', ['title' => 'Manager Approved Account'])
 
 @section('content')
-    <div class="pagetitle">
-        <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Manager History</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-    <section class="section">
-        <div class="row">
-            <div class="card">
-                <div class="card-body p-3 table table-responsive">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="card">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-header">Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h5>
+            </div>
+            <div class="row">
+                @if (Session::get('info'))
+                    <div class="alert alert-info">
+                        {{ Session::get('info') }}
+                    </div>
+                @endif
+            </div>
+            <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
+                <table class="table table-bordered" id="app_table" width="100%">
+                    <thead>
+                        <tr>
+                            <th width="50px">No</th>
+                            <th style="max-width: 50px;">Detail</th>
+                            <th>No. Reg</th>
+                            <th>Requestor</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-                    <table class="display" width="100%" id="app_table">
-                        <thead>
-                            <tr>
-                                <th>Detail</th>
-                                <th>Fullname</th>
-                                <th>Budget Type</th>
-                                <th>Request Type</th>
-                                <th>Date Approved</th>
-                            </tr>
-                        </thead>
-                    </table>
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to delete this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_delete">
+                    <input type="hidden" id="id_delete">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+@endsection
 
-    @push('styles')
-        <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
-    @endpush
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
+@endpush
 
-    @push('scripts')
-        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-        <script>
+@push('scripts')
+    <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            @if (session()->has('success'))
+                toastr['success']("{{ Session('success') }}")
+            @endif
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#app_table').DataTable({
+                'lengthChange': true,
+                'processing': true,
+                'serverSide': false,
+                'orderable': true,
+                ajax: {
+                    url: "{{ route('website.account.manager_approved_ajax') }}",
+                },
+                columns: [{
+                        data: null,
+                        orderable: true,
+                        searchable: true,
+                        render: function(data, type, row, meta) {
+                            var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
+                            return rowIndex;
+                        },
+                        className: "text-center" // Menetapkan kelas CSS 'text-center'
+                    },
+                    {
+                        className: 'dt-control text-center',
+                        orderable: false,
+                        data: null,
+                        defaultContent: '',
+                        searchable: false,
+                    },
+                    {
+                        data: 'no_reg',
+                        name: 'no_reg',
+                    },
+                    {
+                        data: 'requestor',
+                        name: 'requestor',
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row, meta) {
+                            return moment(data).format('YYYY-MM-DD HH:mm:ss');
+                        }
+                    },
+                    {
+                        data: 'final_status',
+                        name: 'final_status',
+                        render: function(data, type, row, meta) {
+                            if (data == 'created') {
+                                return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
+                            } else if (data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
+                            } else if (data == 'IT Approve') {
+                                return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
+                            } else if (data == 'IT MGR Approve') {
+                                return `<span class="badge bg-warning">Waiting Execution</span>`;
+                            } else if (data == 'On Progress') {
+                                return `<span class="badge bg-primary">On Progress</span>`;
+                            } else if (data == 'Finished') {
+                                return `<span class="badge bg-success">Finished</span>`;
+                            } else {
+                                return `<span class="badge bg-danger">${data}</span>`;
+                            }
+                        }
+                    },
+                ],
+            });
+
             function format(d) {
-                // `d` is the original data object for the row
                 return (
                     `
-                <table class="table table-sm">
-
-                    <tr>
-                        <td width="30%">NPK / Full Name</td>
-                        <td>${d.npk} / ${d.fullname} </td>
-                    </tr>
-                    <tr>
-                        <td>Department</td>
-                        <td>${d.department} </td>
-                    </tr>
-                    <tr>
-                        <td>Company</td>
-                        <td>${d.company ?? 'PT. Aisin Indonesia Automotive'} </td>
-                    </tr>
-                    <tr>
-                        <td>Phone Number</td>
-                        <td>${d.phone} </td>
-                    </tr>
-                    <tr>
-                        <td>Login Username</td>
-                        <td>${d.ad_name}@aiia.co.id</td>
-                    </tr>
-                    <tr>
-                        <td>Email Address</td>
-                        <td>${ d.is_email == 1 ? '<i>Will be Informed Later after approved</i>' : 'User did not Request'}</td>
-                    </tr>
-                    <tr>
-                        <td>Manager Note</td>
-                        <td>${d.manager_note ?? '-'}</td>
-                    </tr>                    
-                    <tfoot>
-                    <tr>
-                        <th>Created by</th>
-                        <th>${d.user_name}</th>
-                    </tr>
-                    <tr>
-                        <th>Purpose</th>
-                        <th>${d.purpose}</th>
-                    </tr>
-                </tfoot>
-                </table>
-                `
+                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
+                                <td>${d.budget_type} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Form Type</td>
+                                <td>${d.form_type} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
+                                <td>${d.npk}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
+                                <td>${d.fullname} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
+                                <td>${d.department} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
+                                <td>${d.phone} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username</td>
+                                <td>AIIA\\${d.ad_name}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
+                                <td>
+                                    ${d.is_email === false ? '<i>Tidak butuh lisensi</i>' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
+                                <td>
+                                    ${d.is_email === false ? '<i>Tidak butuh email</i>' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : '')}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
+                                <td>${d.purpose} </td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>Manager Approval Date</td>
+                                <td>${d.manager_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Approval By</td>
+                                <td>${d.manager_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Note</td>
+                                <td>${d.manager_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Approval Date</td>
+                                <td>${d.it_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Approval By</td>
+                                <td>${d.it_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Note</td>
+                                <td>${d.it_note ?? '-'}</td>
+                            </tr>  
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Manager Approval Date</td>
+                                <td>${d.it_mgr_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Manager Approval By</td>
+                                <td>${d.it_mgr_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Manager Note</td>
+                                <td>${d.it_mgr_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>On Progress Date</td>
+                                <td>${d.on_progress_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>On Progress By</td>
+                                <td>${d.on_progress_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>On Progress Note</td>
+                                <td>${d.on_progress_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>Finish Date</td>
+                                <td>${d.finish_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Finish By</td>
+                                <td>${d.finish_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Finish Note</td>
+                                <td>${d.finish_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    `
                 );
             }
 
-            $(document).ready(function() {
-                var table = $('#app_table').DataTable({
-                    "lengthChange": true,
-                    'processing': true,
-                    'serverSide': true,
-                    ajax: {
-                        url: "{{ route('website.account.manager_approved_ajax') }}",
-                    },
-                    columns: [{
-                            className: 'dt-control',
-                            orderable: false,
-                            data: null,
-                            defaultContent: '',
-                            searchable: false,
-                        },
-                        {
-                            data: 'fullname',
-                            name: 'fullname',
-                        },
-                        {
-                            data: 'budget_type',
-                            name: 'budget_type',
-                        },
-                        {
-                            data: 'form_type',
-                            name: 'form_type'
-                        },
-                        {
-                            data: 'manager_approval_date',
-                            name: 'manager_approval_date'
-                        },
-                    ],
-                });
+            $('#app_table tbody').on('click', 'td.dt-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
 
-                $('#app_table tbody').on('click', 'td.dt-control', function() {
-                    var tr = $(this).closest('tr');
-                    var row = table.row(tr);
-
-                    if (row.child.isShown()) {
-                        row.child.hide();
-                        tr.removeClass('shown');
-                    } else {
-                        row.child(format(row.data())).show();
-                        tr.addClass('shown');
-                    }
-                });
-
-                $('#reject_reason').on('keyup', function() {
-                    if ($(this).val() != "")
-                        $('#btn-reject').removeAttr('disabled');
-                    else
-                        $('#btn-reject').attr('disabled', 'disabled');
-                });
-
-                $('#btn-approve').on('clcik', function() {
-
-                });
-
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
             });
-        </script>
-    @endpush
+        });
+    </script>
+@endpush

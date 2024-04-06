@@ -102,7 +102,7 @@ class SubFolderController extends Controller
             
             return 'Delete Successfully';
         } else {
-            return response()->json(['error' => 'You are not authorized to delete this subfolder.'], 403);
+            return response()->json(['error' => 'You are not authorized to delete this item.'], 403);
         }
     }
 }

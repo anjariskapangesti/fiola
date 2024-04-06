@@ -312,6 +312,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var form = document.getElementById('myForm');
             var submitButton = document.getElementById('submitButton');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
 
             form.addEventListener('submit', function(event) {
                 if (!form.checkValidity()) {
@@ -319,7 +320,7 @@
                     event.preventDefault();
                 } else {
                     submitButton.setAttribute('disabled', 'true');
-                    submitButton.innerHTML = 'Submitting...';
+                    submitButton.innerHTML = spinner + ' Submitting...';
                 }
             });
 
