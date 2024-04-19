@@ -17,6 +17,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
     Route::post('login', 'AuthController@authenticate')->name('auth.authenticate');
     Route::get('register', 'RegisterController@showRegisterForm')->name('auth.register');
     Route::post('register', 'RegisterController@register')->name('auth.create');
+    Route::get('logout', 'AuthController@logout')->name('auth.logout');
 
     Route::get('alert', 'AlertController@alert')->name('alert');
     Route::get('alert_view', 'AlertController@alert_view')->name('alert_view');
@@ -27,7 +28,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/', 'HomeController@index')->name('home');
             Route::get('/home_ajax', 'HomeController@home_ajax')->name('home_ajax');
             Route::get('/home', 'HomeController@index')->name('auth.home');
-            Route::get('logout', 'AuthController@logout')->name('auth.logout');
             Route::get('/mail', function () {
                 \Illuminate\Support\Facades\Mail::send(new \App\Mail\TaskReminder());
 
