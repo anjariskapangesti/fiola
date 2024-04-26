@@ -51,7 +51,6 @@
 
 <body>
     <!-- Content -->
-
     <div class="position-relative">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner py-4">
@@ -67,8 +66,7 @@
                     <!-- /Logo -->
 
                     <div class="card-body mt-2">
-                        <h4 class="mb-2 text-center">Form ITD Online Application</h4>
-                        <p class="mb-4">Please sign-in to your account and start the adventure</p>
+                        <h4 class="mb-5 text-center">Form ITD Online Application</h4>
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -84,9 +82,9 @@
                             <div class="form-floating form-floating-outline mb-3">
                                 <input type="text" class="form-control" id="email" name="email"
                                     placeholder="Enter your email or username" autofocus />
-                                <label for="email">Email or Username</label>
+                                <label for="email">NPK or Email</label>
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-5">
                                 <div class="form-password-toggle">
                                     <div class="input-group input-group-merge">
                                         <div class="form-floating form-floating-outline">
@@ -100,7 +98,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3 d-flex justify-content-between">
+                            {{-- <div class="mb-3 d-flex justify-content-between">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="remember-me" />
                                     <label class="form-check-label" for="remember-me"> Remember Me </label>
@@ -108,18 +106,18 @@
                                 <a href="auth-forgot-password-basic.html" class="float-end mb-1">
                                     <span>Forgot Password?</span>
                                 </a>
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
                                 <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
                             </div>
                         </form>
 
-                        <p class="text-center">
+                        {{-- <p class="text-center">
                             <span>New on our platform?</span>
                             <a href="auth-register-basic.html">
                                 <span>Create an account</span>
                             </a>
-                        </p>
+                        </p> --}}
                     </div>
                 </div>
                 <!-- /Login -->
