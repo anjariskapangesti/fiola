@@ -136,15 +136,12 @@ class UserController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $departments = Department::pluck('name', 'id');
-
-        $permissions = Permission::pluck('name', 'id');
 
         if ($user->profileIncomplete()) {
             session()->flash('incomplete', 'Please complete your data.');
         }
 
-        return view('website.pages.user.edit', compact('user', 'departments', 'permissions'));
+        return view('website.pages.user.edit', compact('user'));
     }
 
     public function update(Request $request)
@@ -153,20 +150,18 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:4|confirmed',
             'nohp' => 'nullable|string|max:14',
             'npk' => 'nullable|string|min:6',
         ]);
 
-        $user->npk = $request->input('npk');
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        if ($request->has('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-        $user->nohp = $request->input('nohp');
-        $user->save();
+        $user->update([
+            'npk' => $request->npk,
+            'name' => $request->name,
+            'email' => $request->email,
+            'nohp' => $request->nohp,
+            'password' => $request->change_password ? Hash::make($request->password) : $user->password,
+        ]);
 
         if ($user->profileIncomplete()) {
             Session::flash('incomplete', 'Please complete your data!!!');

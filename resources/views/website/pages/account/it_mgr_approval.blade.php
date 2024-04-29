@@ -293,7 +293,7 @@
             $('#btn-approve').on('click', function() {
                 let id_approve = $('#id_approve').val();
                 $.ajax({
-                    url: "{{ route('website.account.approve_it_mgr') }}",
+                    url: "{{ route('website.account.it_mgr_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
@@ -334,7 +334,7 @@
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.account.approve_it_mgr') }}",
+                    url: "{{ route('website.account.it_mgr_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,

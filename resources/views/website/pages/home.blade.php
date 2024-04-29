@@ -3,44 +3,50 @@
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row gy-4">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="card-header">Form Queue</h5>
-                    </div>
-                    <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
-                        <table class="table table-bordered" id="app_table" width="100%">
-                            <thead>
-                                <tr>
-                                    <th width="50px">Tanggal</th>
-                                    <th>No Registrasi</th>
-                                    <th>Requestor</th>
-                                    <th>Department</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-border-bottom-0">
-                            </tbody>
-                        </table>
+            @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-header">Form Queue</h5>
+                        </div>
+                        <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
+                            <table class="table table-bordered" id="app_table" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="50px">Tanggal</th>
+                                        <th>No Registrasi</th>
+                                        <th>Requestor</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
-            <div class="col-md-12 col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div id="piechart"></div>
+            @if (auth()->check() && auth()->user()->can('apps_fiola'))
+                <div class="col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="piechart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <div id="chart"></div>
+            @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 @endsection

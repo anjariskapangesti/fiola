@@ -24,13 +24,12 @@ class AccountController extends Controller
     {
         $departments = Department::orderBy('name')->get();
 
-        $userDepartment = Auth::user()->departments;
-
         $auth = User::where('id', Auth::user()->id)
             ->whereNull('nohp')
             ->count();
 
         $data = Account::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else if ($data > 0) {
@@ -321,7 +320,7 @@ class AccountController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_manager(Request $request)
+    public function manager_approve(Request $request)
     {
         $id = $request->id;
         $type = $request->type;
@@ -399,7 +398,7 @@ class AccountController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_it(Request $request)
+    public function it_approve(Request $request)
     {
         $id = $request->id;
         $type = $request->type;
@@ -422,41 +421,41 @@ class AccountController extends Controller
         }
         $account->it_approval_date = Carbon::now();
         $account->save();
+        
+        // if ($request->notifikasi == 'Ya') {
+        //     $isi = "FORM ACCOUNT\n";
+        //     $isi .= "*TUNGGU APPROVE IT MANAGER*";
+        //     $isi .= "\n\nType : " . $account->form_type;
+        //     $isi .= "\n\nREQUESTOR";
+        //     $isi .= "\nNama : *" . $account->createdBy->name . "*";
+        //     $isi .= "\nDepartment : *" . $account->department . "*";
+        //     $isi .= "\nPurpose : " . $account->purpose;
+        //     $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
-        if ($request->notifikasi == 'Ya') {
-            $isi = "FORM ACCOUNT\n";
-            $isi .= "*TUNGGU APPROVE IT MANAGER*";
-            $isi .= "\n\nType : " . $account->form_type;
-            $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNama : *" . $account->createdBy->name . "*";
-            $isi .= "\nDepartment : *" . $account->department . "*";
-            $isi .= "\nPurpose : " . $account->purpose;
-            $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
+        //     $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
 
-            $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
+        //     $nomors = Alert::where('role', 'IT Manager')->get();
 
-            $nomors = Alert::where('role', 'IT Manager')->get();
+        //     foreach ($nomors as $nomor) {
+        //         $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+        //         $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+        //         $curl = curl_init();
+        //         curl_setopt_array($curl, array(
+        //             CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+        //             CURLOPT_RETURNTRANSFER => true,
+        //             CURLOPT_ENCODING => '',
+        //             CURLOPT_MAXREDIRS => 10,
+        //             CURLOPT_TIMEOUT => 0,
+        //             CURLOPT_FOLLOWLOCATION => true,
+        //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //             CURLOPT_CUSTOMREQUEST => 'POST',
+        //             CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+        //         ));
 
-            foreach ($nomors as $nomor) {
-                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 0,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
-                ));
-
-                $response = curl_exec($curl);
-                curl_close($curl);
-            }
-        }
+        //         $response = curl_exec($curl);
+        //         curl_close($curl);
+        //     }
+        // }
         return $return;
     }
 
@@ -486,7 +485,7 @@ class AccountController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_it_mgr(Request $request)
+    public function it_mgr_approve(Request $request)
     {
         $id = $request->id;
         $type = $request->type;
@@ -540,7 +539,7 @@ class AccountController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_execution(Request $request)
+    public function execution_approve(Request $request)
     {
         $id = $request->id;
         $type = $request->type;

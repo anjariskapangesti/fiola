@@ -50,23 +50,21 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if($exception){
-            $text_error = '';
+        if ($this->isHttpException($exception)) {
             $code_error = $exception->getStatusCode();
-    
-            if ($this->isHttpException($exception)) {
-                if ($code_error == 403) {
-                    $text_error = 'Not permission';
-                } elseif ($code_error == 404) {
-                    $text_error = 'Not found';
-                } elseif ($code_error == 500) {
-                    $text_error = 'Server error';
-                }
-    
-                return response()->view('errors.error', ['text_error' => $text_error, 'code_error' => $code_error], $code_error);
+            $text_error = '';
+
+            if ($code_error == 403) {
+                $text_error = 'Not permission';
+            } elseif ($code_error == 404) {
+                $text_error = 'Not found';
+            } elseif ($code_error == 500) {
+                $text_error = 'Server error';
             }
-        } else {
-            return parent::render($request, $exception);
+
+            return response()->view('errors.error', ['text_error' => $text_error, 'code_error' => $code_error], $code_error);
         }
+
+        return parent::render($request, $exception);
     }
 }

@@ -289,7 +289,7 @@
                 let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
                     'Tidak';
                 $.ajax({
-                    url: "{{ route('website.account.approve_it') }}",
+                    url: "{{ route('website.account.it_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
@@ -331,7 +331,7 @@
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.account.approve_it') }}",
+                    url: "{{ route('website.account.it_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,
