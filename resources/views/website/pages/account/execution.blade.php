@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Account'])
+@extends('website.layouts.main', ['title' => 'Execution Account'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -44,14 +44,47 @@
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
                     <input type="hidden" id="id_approve">
                     <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="manager_note_approve" name="manager_note_approve"
-                            placeholder="add note if there are additional">{{ old('manager_note_approve') }}</textarea>
-                        <label for="manager_note_approve">Manager Note</label>
+                        <textarea class="form-control auto-resize" id="finish_note_approve" name="finish_note_approve"
+                            placeholder="add note if there are additional" style="height: 410px;">{{ old('finish_note_approve') }}</textarea>
+                        <label for="finish_note_approve">Finish Note</label>
                     </div>
+                    <label class="col-sm-6 col-form-label" for="notifikasi_approve">
+                        <small class="text-light fw-medium d-block">Kirim Notifikasi Whatsapp?</small>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="notifikasi_approve"
+                                name="notifikasi_approve" {{ old('notifikasi_approve') ? 'checked' : '' }} checked />
+                            <label class="form-check-label" for="notifikasi_approve">(Tidak/Ya)</label>
+                        </div>
+                    </label>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="progressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Progress Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to progress this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_progress">
+                    <input type="hidden" id="id_progress">
+                    <div class="form-floating form-floating-outline">
+                        <textarea class="form-control auto-resize" id="on_progress_note_progress" name="on_progress_note_progress"
+                            placeholder="add note if there are additional">{{ old('on_progress_note_progress') }}</textarea>
+                        <label for="on_progress_note_progress">Progress Note</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-info" id="btn-progress" disabled>Yes, Progress!</button>
                 </div>
             </div>
         </div>
@@ -69,9 +102,9 @@
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
                     <input type="hidden" id="id_reject">
                     <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="manager_note_reject" name="manager_note_reject"
-                            placeholder="add note if there are additional">{{ old('manager_note_reject') }}</textarea>
-                        <label for="manager_note_reject">Manager Note</label>
+                        <textarea class="form-control auto-resize" id="finish_note_reject" name="finish_note_reject"
+                            placeholder="add note if there are additional">{{ old('finish_note_reject') }}</textarea>
+                        <label for="finish_note_reject">Reject Note</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -113,7 +146,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.account.manager_approval_ajax') }}",
+                    url: "{{ route('website.account.execution_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -210,13 +243,13 @@
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
                                 <td>
-                                    ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
+                                    ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
                                 </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
                                 <td>
-                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : '')}
+                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.npk + '-aiia@ap01.aisingroup.com') : '')}
                                 </td>
                             </tr>
                             <tr>
@@ -224,11 +257,68 @@
                                 <td>${d.purpose} </td>
                             </tr>
                         </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>Manager Approval Date</td>
+                                <td>${d.manager_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Approval By</td>
+                                <td>${d.manager_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Note</td>
+                                <td>${d.manager_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Approval Date</td>
+                                <td>${d.it_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Approval By</td>
+                                <td>${d.it_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Note</td>
+                                <td>${d.it_note ?? '-'}</td>
+                            </tr>  
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Manager Approval Date</td>
+                                <td>${d.it_mgr_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Manager Approval By</td>
+                                <td>${d.it_mgr_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Manager Note</td>
+                                <td>${d.it_mgr_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>On Progress Date</td>
+                                <td>${d.on_progress_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>On Progress By</td>
+                                <td>${d.on_progress_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>On Progress Note</td>
+                                <td>${d.on_progress_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="2" class="text-end">
                                     <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
+                                    <button class="btn btn-info btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Progress</button>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}" data-ad_name="${d.ad_name}" data-is_email="${d.is_email}" data-npk="${d.npk}">Approve</button>
                                 </th>
                             </tr>    
                         </tfoot>
@@ -253,23 +343,45 @@
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_approve = $(this).data('id');
                 var no_reg_approve = $(this).data('no_reg');
+                var ad_name_approve = $(this).data('ad_name');
+                var npk_approve = $(this).data('npk');
+                var is_email_approve = $(this).data('is_email');
                 var approveButton = document.getElementById('btn-approve');
+                var currentYear = new Date().getFullYear();
 
                 approveButton.removeAttribute('disabled');
                 approveButton.innerHTML = 'Yes, Approve!';
                 $('#id_approve').val(id_approve)
                 $('#no_reg_approve').val(no_reg_approve)
-                $('#manager_note_approve').val('');
+                // $('#finish_note_approve').val('');
+
+                var noteText =
+                    'Form Account telah selesai dibuat Silahkan login windows pada Device dengan memilih Other user, dengan user : \n\nLogin Windows\nUser name : ' +
+                    ad_name_approve + '@aiia.co.id\nPassword : Kiic' + currentYear + '\n\n';
+
+                if (is_email_approve === true) {
+                    noteText += 'Lisensi Microsoft Office\nUser name : ' + ad_name_approve +
+                        '@Aisinaiia.onmicrosoft.com\nPassword : Kiic' + currentYear + '\n\n';
+
+                    noteText += 'Akun Email\nEmail address : ' + npk_approve +
+                        '-aiia@ap01.aisingroup.com\nPassword : P@55w0rd!' + npk_approve + '\n\n';
+                }
+
+                noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
+                $('#finish_note_approve').val(noteText);
             })
 
             $('#btn-approve').on('click', function() {
                 let id_approve = $('#id_approve').val();
+                let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
+                    'Tidak';
                 $.ajax({
-                    url: "{{ route('website.account.manager_approve') }}",
+                    url: "{{ route('website.account.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
-                        manager_note: $('#manager_note_approve').val(),
+                        finish_note: $('#finish_note_approve').val(),
+                        notifikasi: notifikasi_approve,
                         type: 'approve',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -284,8 +396,49 @@
                     }
                 });
             });
+            // ON PROGRESS
+            $('#on_progress_note_progress').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-progress').removeAttr('disabled');
+                else
+                    $('#btn-progress').attr('disabled', 'disabled');
+            });
+
+            $('#app_table').on('click', '.btn-table-progress', function() {
+                var id_progress = $(this).data('id');
+                var no_reg_progress = $(this).data('no_reg');
+                var approveButton = document.getElementById('btn-progress');
+
+                approveButton.innerHTML = 'Yes, Progress!';
+                $('#id_progress').val(id_progress)
+                $('#no_reg_progress').val(no_reg_progress)
+                $('#on_progress_note_progress').val('');
+            })
+
+            $('#btn-progress').on('click', function() {
+                let id_progress = $('#id_progress').val();
+                $.ajax({
+                    url: "{{ route('website.account.execution_approve') }}",
+                    type: "POST",
+                    data: {
+                        id: id_progress,
+                        on_progress_note: $('#on_progress_note_progress').val(),
+                        type: 'progress',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        getApprovalCount();
+                        $('#progressModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
             // REJECT
-            $('#manager_note_reject').on('keyup', function() {
+            $('#finish_note_reject').on('keyup', function() {
                 if ($(this).val() != "")
                     $('#btn-reject').removeAttr('disabled');
                 else
@@ -300,17 +453,17 @@
                 approveButton.innerHTML = 'Yes, Reject!';
                 $('#id_reject').val(id_reject)
                 $('#no_reg_reject').val(no_reg_reject)
-                $('#manager_note_reject').val('');
+                $('#finish_note_reject').val('');
             })
 
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.account.manager_approve') }}",
+                    url: "{{ route('website.account.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,
-                        manager_note: $('#manager_note_reject').val(),
+                        finish_note: $('#finish_note_reject').val(),
                         type: 'reject',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -335,6 +488,17 @@
             approveButton.addEventListener('click', function() {
                 approveButton.setAttribute('disabled', 'true');
                 approveButton.innerHTML = spinner + ' Approving...';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var progressButton = document.getElementById('btn-progress');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            progressButton.addEventListener('click', function() {
+                progressButton.setAttribute('disabled', 'true');
+                progressButton.innerHTML = spinner + ' Progressing...';
             });
         });
     </script>

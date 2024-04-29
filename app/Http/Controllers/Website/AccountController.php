@@ -422,40 +422,40 @@ class AccountController extends Controller
         $account->it_approval_date = Carbon::now();
         $account->save();
         
-        // if ($request->notifikasi == 'Ya') {
-        //     $isi = "FORM ACCOUNT\n";
-        //     $isi .= "*TUNGGU APPROVE IT MANAGER*";
-        //     $isi .= "\n\nType : " . $account->form_type;
-        //     $isi .= "\n\nREQUESTOR";
-        //     $isi .= "\nNama : *" . $account->createdBy->name . "*";
-        //     $isi .= "\nDepartment : *" . $account->department . "*";
-        //     $isi .= "\nPurpose : " . $account->purpose;
-        //     $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
+        if ($request->notifikasi == 'Ya') {
+            $isi = "FORM ACCOUNT\n";
+            $isi .= "*TUNGGU APPROVE IT MANAGER*";
+            $isi .= "\n\nType : " . $account->form_type;
+            $isi .= "\n\nREQUESTOR";
+            $isi .= "\nNama : *" . $account->createdBy->name . "*";
+            $isi .= "\nDepartment : *" . $account->department . "*";
+            $isi .= "\nPurpose : " . $account->purpose;
+            $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
-        //     $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
+            $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
 
-        //     $nomors = Alert::where('role', 'IT Manager')->get();
+            $nomors = Alert::where('role', 'IT Manager')->get();
 
-        //     foreach ($nomors as $nomor) {
-        //         $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-        //         $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-        //         $curl = curl_init();
-        //         curl_setopt_array($curl, array(
-        //             CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-        //             CURLOPT_RETURNTRANSFER => true,
-        //             CURLOPT_ENCODING => '',
-        //             CURLOPT_MAXREDIRS => 10,
-        //             CURLOPT_TIMEOUT => 0,
-        //             CURLOPT_FOLLOWLOCATION => true,
-        //             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //             CURLOPT_CUSTOMREQUEST => 'POST',
-        //             CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
-        //         ));
+            foreach ($nomors as $nomor) {
+                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $curl = curl_init();
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                ));
 
-        //         $response = curl_exec($curl);
-        //         curl_close($curl);
-        //     }
-        // }
+                $response = curl_exec($curl);
+                curl_close($curl);
+            }
+        }
         return $return;
     }
 
@@ -489,7 +489,9 @@ class AccountController extends Controller
     {
         $id = $request->id;
         $type = $request->type;
+
         $account = Account::findOrFail($id);
+
         if ($type == 'approve') {
             $account->is_it_mgr_approve = 1;
             $account->final_status = 'IT MGR Approve';
@@ -509,17 +511,27 @@ class AccountController extends Controller
         return $return;
     }
 
-    public function show_data_it_mgr_approval()
+    public function it_mgr_approved()
     {
-        $depts = Department::all();
-        return view('website.pages.account.show_data_it_mgr_approval', compact(['depts']));
+        return view('website.pages.account.it_mgr_approved');
     }
 
-    public function show_data_it_mgr_approval_ajax(Request $request)
+    public function it_mgr_approved_ajax(Request $request)
     {
         $data = Account::where('is_it_mgr_approve', '1')
-            ->join('users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as requestor');
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -533,8 +545,19 @@ class AccountController extends Controller
     public function execution_ajax(Request $request)
     {
         $data = Account::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-            ->join('public.users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as requestor');
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -543,34 +566,61 @@ class AccountController extends Controller
     {
         $id = $request->id;
         $type = $request->type;
+
         $account = Account::findOrFail($id);
 
         $user = $account->createdBy;
 
-        if ($type == 'ok') {
-            $isi = "FORM ACCOUNT\n\n";
+        if ($type == 'approve') {
+            $account->email_address = $account->npk . '-aiia@ap01.aisingroup.com';
+            $account->is_finish = 1;
+            $account->is_confirm = 0;
+            $account->finish_by = Auth::user()->id;
+            $account->final_status = 'Finished';
+            $account->finish_note = $request->finish_note;
+            $account->finish_date = Carbon::now();
+            $return = "Approve Successfully";
+        } else if ($type == 'progress') {
+            $account->is_on_progress = 1;
+            $account->final_status = 'On Progress';
+            $account->on_progress_note = $request->on_progress_note;
+            $account->on_progress_by = Auth::user()->id;
+            $account->on_progress_date = Carbon::now();
+            $return = "Progress Successfully";
+        } else {
+            $account->is_finish = 0;
+            $account->final_status = 'Rejected';
+            $account->finish_note = $request->finish_note;
+            $account->finish_by = Auth::user()->id;
+            $account->finish_date = Carbon::now();
+            $return = "Reject Successfully";
+        }
+        $account->save();
 
+        if ($request->notifikasi == 'Ya') {
+            $isi = "FORM ACCOUNT\n\n";
+            
             $isi .= "Budget Type : " . $account->budget_type;
             $isi .= "\nForm Type : " . $account->form_type;
-
+            
             $isi .= "\n\nNPK : *" . $account->npk . "*";
             $isi .= "\nName : *" . $account->fullname . "*";
             $isi .= "\nDepartment : " . $account->department;
             $isi .= "\nPhone : " . $account->phone;
             $isi .= "\nEmail : " . $request->email_address;
             $isi .= "\nPurpose : " . $account->purpose;
-
+            
             $isi .= "\n\nStatus : Finished";
-
+            
             $isi .= "\n\nManager Note : " . $account->manager_note;
             $isi .= "\nITD Note : " . $account->it_note;
             $isi .= "\nITD Manager Note : " . $account->it_mgr_note;
-            $isi .= "\n\nNote : " . $request->finish_note;
-
+            $isi .= "\n\nFinish Note : " . $request->finish_note;
+            
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-
+            
             $nomor = $user->nohp;
-
+            
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
             $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
             $curl = curl_init();
@@ -587,28 +637,9 @@ class AccountController extends Controller
             ));
             $response = curl_exec($curl);
             curl_close($curl);
-
-            $account->ad_name = $request->ad_name;
-            $account->email_address = $request->email_address;
-            $account->is_finish = 1;
-            $account->is_confirm = 0;
-            $account->finish_by = Auth::user()->id;
-            $account->final_status = 'Finished';
-            $account->finish_note = 'Done';
-        } else if ($type == 'On Progress') {
-            $account->is_on_progress = 1;
-            $account->final_status = 'On Progress';
-            $account->on_progress_note = $request->on_progress_note;
-        } else {
-            $account->is_finish = 0;
-            $account->final_status = 'Rejected';
-            $account->finish_note = $request->finish_note;
-            $account->finish_by = Auth::user()->id;
         }
-        $account->finish_date = Carbon::now();
-        $account->save();
 
-        return "Request is Saved!";
+        return $return;
     }
 
     public function show_data_execution()

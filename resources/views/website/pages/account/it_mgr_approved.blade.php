@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'Manager Approved Account'])
+@extends('website.layouts.main', ['title' => 'IT MGR Approved Account'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -23,6 +23,7 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
+                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -76,7 +77,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.account.manager_approved_ajax') }}",
+                    url: "{{ route('website.account.it_mgr_approved_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -128,6 +129,30 @@
                                 return `<span class="badge bg-success">Finished</span>`;
                             } else {
                                 return `<span class="badge bg-danger">${data}</span>`;
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `
+                                <center>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
+                                </center>
+                                `;
+                            } else if (data.is_confirm == '1') {
+                                return `Confirmed`
+                            } else if (data.final_status == 'created') {
+                                return `
+                                <center>
+                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
+                                </center>
+                                `;
+                            } else {
+                                return `<center>Not yet</center>`;
                             }
                         }
                     },
@@ -259,6 +284,34 @@
                 );
             }
 
+            $('#app_table').on('click', '.btn-table-delete', function() {
+                var id_delete = $(this).data('id');
+                var no_reg_delete = $(this).data('no_reg');
+
+                $('#id_delete').val(id_delete)
+                $('#no_reg_delete').val(no_reg_delete)
+            })
+
+            $('#btn-delete').on('click', function() {
+                let id_delete = $('#id_delete').val();
+                $.ajax({
+                    url: "{{ route('website.account.delete_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_delete,
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#deleteModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
             $('#app_table tbody').on('click', 'td.dt-control', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
@@ -270,6 +323,49 @@
                     row.child(format(row.data())).show();
                     tr.addClass('shown');
                 }
+            });
+
+            $('#reject_reason').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-reject').removeAttr('disabled');
+                else
+                    $('#btn-reject').attr('disabled', 'disabled');
+            });
+
+            $('#btn-approve').on('clcik', function() {
+
+            });
+
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_form_account = $(this).data('id');
+                var fullname_form_account = $(this).data('fullname');
+                var ad_name = $(this).data('ad_name');
+
+                $('#id_form_account').val(id_form_account)
+                $('#fullname_form_account').val(fullname_form_account)
+                $('#ad_name').val(ad_name)
+            })
+
+            $('#btn-approve').on('click', function() {
+                let id_form_account = $('#id_form_account').val();
+                $.ajax({
+                    url: "{{ route('website.account.approve_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
             });
         });
     </script>

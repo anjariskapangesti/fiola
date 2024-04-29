@@ -124,7 +124,7 @@
                             } else if (data == 'IT MGR Approve') {
                                 return `<span class="badge bg-warning">Waiting Execution</span>`;
                             } else if (data == 'On Progress') {
-                                return `<span class="badge bg-primary">On Progress</span>`;
+                                return `<span class="badge bg-info">On Progress</span>`;
                             } else if (data == 'Finished') {
                                 return `<span class="badge bg-success">Finished</span>`;
                             } else {

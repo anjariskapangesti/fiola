@@ -73,6 +73,7 @@
                 $it_approved_routes[] = 'website.' . $link . '.it_approved';
                 $it_mgr_approval_routes[] = 'website.' . $link . '.it_mgr_approval';
                 $it_mgr_approved_routes[] = 'website.' . $link . '.it_mgr_approved';
+                $execution_routes[] = 'website.' . $link . '.execution';
             }
 
         @endphp
@@ -171,7 +172,7 @@
                 </li>
             @endcan
             {{-- Execution --}}
-            <li class="menu-item">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $execution_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-rocket-launch"></i>
                     <div data-i18n="Execution">Execution
