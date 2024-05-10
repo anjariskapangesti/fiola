@@ -170,6 +170,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'FolderAccessController@list')->name('folder-access.list');
                 Route::get('/list_ajax', 'FolderAccessController@list_ajax')->name('folder-access.list_ajax'); 
                 Route::post('/approve_form', 'FolderAccessController@approve_form')->name('folder-access.approve_form');  
+                Route::post('/delete_form', 'FolderAccessController@delete_form')->name('folder-access.delete_form');
                 Route::get('/get_data_subfolder', 'FolderAccessController@get_data_subfolder')->name('folder-access.get_data_subfolder');  
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {

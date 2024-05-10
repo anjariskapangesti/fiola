@@ -230,13 +230,16 @@ class AccountController extends Controller
     {
         $id = $request->id;
         $type = $request->type;
+
         $account = Account::findOrFail($id);
-        if ($type == 'ok') {
+
+        if ($type == 'confirm') {
             $account->is_confirm = 1;
         } else {
             $account->is_confirm = 0;
         }
         $account->save();
+
         return "Confirm Successfully";
     }
 
@@ -607,10 +610,10 @@ class AccountController extends Controller
             $isi .= "\nName : *" . $account->fullname . "*";
             $isi .= "\nDepartment : " . $account->department;
             $isi .= "\nPhone : " . $account->phone;
-            $isi .= "\nEmail : " . $request->email_address;
+            $isi .= "\nAlamat Email : " . $account->ad_name . "@aiia.co.id";
             $isi .= "\nPurpose : " . $account->purpose;
             
-            $isi .= "\n\nStatus : Finished";
+            $isi .= "\n\nStatus : *Finished*";
             
             $isi .= "\n\nManager Note : " . $account->manager_note;
             $isi .= "\nITD Note : " . $account->it_note;
@@ -642,17 +645,27 @@ class AccountController extends Controller
         return $return;
     }
 
-    public function show_data_execution()
+    public function finished()
     {
-        $depts = Department::all();
-        return view('website.pages.account.show_data_execution', compact(['depts']));
+        return view('website.pages.account.finished');
     }
 
-    public function show_data_execution_ajax(Request $request)
+    public function finished_ajax(Request $request)
     {
         $data = Account::where('is_finish', '1')->orWhere('is_finish', '0')
-            ->join('users', 'form_account.created_by', '=', 'users.id')
-            ->select('form_account.*', 'users.name as requestor');
+                        ->join('public.users', 'form_account.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
+                        ->select('form_account.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }

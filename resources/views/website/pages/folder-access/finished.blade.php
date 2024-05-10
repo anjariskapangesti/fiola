@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'IT Approved Account'])
+@extends('website.layouts.main', ['title' => 'Finished Account'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -23,31 +23,12 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
+                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to delete this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_delete">
-                    <input type="hidden" id="id_delete">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
-                </div>
             </div>
         </div>
     </div>
@@ -76,7 +57,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.account.it_approved_ajax') }}",
+                    url: "{{ route('website.account.finished_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -131,6 +112,34 @@
                             }
                         }
                     },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `
+                                <center>
+                                    <span class="badge bg-warning">Not Yet Confirmed</span>
+                                </center>
+                                `;
+                            } else if (data.is_confirm == '1') {
+                                return `
+                                <center>
+                                    <span class="badge bg-success">Confirmed</span>
+                                </center>
+                                `
+                            } else if (data.final_status == 'created') {
+                                return `
+                                <center>
+                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
+                                </center>
+                                `;
+                            } else {
+                                return `<center>Not yet</center>`;
+                            }
+                        }
+                    },
                 ],
             });
 
@@ -181,7 +190,7 @@
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.purpose} </td>
+                                <td>${d.purpose} </td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -195,7 +204,7 @@
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td>${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -209,7 +218,7 @@
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td>${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -223,7 +232,7 @@
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td>${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -259,6 +268,34 @@
                 );
             }
 
+            $('#app_table').on('click', '.btn-table-delete', function() {
+                var id_delete = $(this).data('id');
+                var no_reg_delete = $(this).data('no_reg');
+
+                $('#id_delete').val(id_delete)
+                $('#no_reg_delete').val(no_reg_delete)
+            })
+
+            $('#btn-delete').on('click', function() {
+                let id_delete = $('#id_delete').val();
+                $.ajax({
+                    url: "{{ route('website.account.delete_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_delete,
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#deleteModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+
             $('#app_table tbody').on('click', 'td.dt-control', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
@@ -270,6 +307,49 @@
                     row.child(format(row.data())).show();
                     tr.addClass('shown');
                 }
+            });
+
+            $('#reject_reason').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-reject').removeAttr('disabled');
+                else
+                    $('#btn-reject').attr('disabled', 'disabled');
+            });
+
+            $('#btn-approve').on('clcik', function() {
+
+            });
+
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_form_account = $(this).data('id');
+                var fullname_form_account = $(this).data('fullname');
+                var ad_name = $(this).data('ad_name');
+
+                $('#id_form_account').val(id_form_account)
+                $('#fullname_form_account').val(fullname_form_account)
+                $('#ad_name').val(ad_name)
+            })
+
+            $('#btn-approve').on('click', function() {
+                let id_form_account = $('#id_form_account').val();
+                $.ajax({
+                    url: "{{ route('website.account.approve_form') }}",
+                    type: "POST",
+                    data: {
+                        id: id_form_account,
+                        type: 'ok',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#confirmModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
             });
         });
     </script>

@@ -32,6 +32,7 @@ class FolderAccessController extends Controller
                                     ->count(); 
 
         $data = FolderAccess::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+        
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else if($data > 0){
@@ -47,7 +48,7 @@ class FolderAccessController extends Controller
                                 ->where("folders.name", $request->folder_id)
                                 ->orderBy('subfolders.name')
                                 ->get(["subfolders.name", "subfolders.id"]);
-  
+
         return response()->json($data);
     }
 
@@ -137,7 +138,7 @@ class FolderAccessController extends Controller
                 ]);
             }
     
-            return redirect()->route('website.folder-access.list')->with('success', 'Success Create Form');
+            return redirect()->route('website.folder-access.list')->with('success', 'Create Successfully');
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
@@ -154,28 +155,21 @@ class FolderAccessController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = FolderAccess::join('public.users as created_users', 'form_folder_access.created_by', '=', 'created_users.id')
-                            ->leftJoin('public.users as it_approve_users', 'form_folder_access.it_approve_by', '=', 'it_approve_users.id')
-                            ->leftJoin('public.users as finish_users', 'form_folder_access.finish_by', '=', 'finish_users.id')
-                            ->select(
-                                'form_folder_access.id',
-                                DB::Raw('form_folder_access.no_reg'), 
-                                ('form_folder_access.purpose'), 
-                                ('created_users.name as creator_created_by'),
-                                ('form_folder_access.final_status as final_status'),
-                                ('form_folder_access.manager_note'),
-                                ('form_folder_access.it_note'),
-                                ('form_folder_access.it_mgr_note'),
-                                ('form_folder_access.finish_note'),
-                                ('form_folder_access.is_confirm'),
-                                ('it_approve_users.name as it_approve_by_name'),
-                                ('finish_users.name as finish_by_name')
-                            )
-                            ->where('form_folder_access.created_by', Auth::user()->id)
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')
-                            ->with('form_folder_access_user');
-    
+        $data = FolderAccess::where('created_by', Auth::user()->id)
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
     

@@ -50,12 +50,13 @@
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type" id="Change"
-                                            value="Change" {{ old('form_type') == 'Change' ? 'checked' : '' }} />
+                                            value="Change" {{ old('form_type') == 'Change' ? 'checked' : '' }} disabled />
                                         <label class="form-check-label" for="Change">Change</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type" id="Deletion"
-                                            value="Deletion" {{ old('form_type') == 'Deletion' ? 'checked' : '' }} />
+                                            value="Deletion" {{ old('form_type') == 'Deletion' ? 'checked' : '' }}
+                                            disabled />
                                         <label class="form-check-label" for="Deletion">Deletion</label>
                                     </div>
                                 </div>
@@ -153,7 +154,7 @@
                                             <label for="phone">Phone Number <span class="text-danger">*</span></label>
                                         </div>
                                     </label>
-                                    <label class="col-sm-12 col-form-label" for="phone">
+                                    <label class="col-sm-12 col-form-label" for="purpose">
                                         <div class="form-floating form-floating-outline">
                                             <textarea class="form-control auto-resize" id="purpose" name="purpose" placeholder="Reason">{{ old('purpose') }}</textarea>
                                             <label for="purpose">Purpose <span class="text-danger">*</span></label>

@@ -8,11 +8,6 @@
                     id="account_mgr_count">{{ App\Models\AppHelper::account_mgr_count() }}</span>
             @endif
 
-            @if ($link == 'list' && App\Models\AppHelper::account_confirm_count() > 0)
-                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                    id="account_confirm_count">{{ App\Models\AppHelper::account_confirm_count() }}</span>
-            @endif
-
             @if ($link == 'it_approval' && App\Models\AppHelper::account_it_count() > 0)
                 &nbsp&nbsp<span class="badge bg-danger rounded-pill"
                     id="account_it_count">{{ App\Models\AppHelper::account_it_count() }}</span>
@@ -26,6 +21,11 @@
             @if ($link == 'execution' && App\Models\AppHelper::account_execution_count() > 0)
                 &nbsp&nbsp<span class="badge bg-danger rounded-pill"
                     id="account_execution_count">{{ App\Models\AppHelper::account_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::account_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="account_confirm_count">{{ App\Models\AppHelper::account_confirm_count() }}</span>
             @endif
         </a>
     </li>

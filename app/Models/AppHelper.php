@@ -58,7 +58,7 @@ class AppHelper
     
         foreach ($models as $model) {
             $count = $model::where('created_by', Auth::user()->id)
-                            ->where('is_confirm', 'LIKE', '%0%')->count();
+                            ->where('is_confirm', 'false')->count();
     
             $totalCount += $count;
         }
@@ -136,7 +136,7 @@ class AppHelper
     public static function account_confirm_count()
     {
         return Account::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'false')->count();
     }
 
     public static function account_it_count()

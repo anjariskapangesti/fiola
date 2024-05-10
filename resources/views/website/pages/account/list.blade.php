@@ -6,14 +6,12 @@
             <div class="d-flex justify-content-between">
                 <h5 class="card-header">Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h5>
             </div>
-            <div class="row">
+            <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                 @if (Session::get('info'))
                     <div class="alert alert-info">
                         {{ Session::get('info') }}
                     </div>
                 @endif
-            </div>
-            <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                 <table class="table table-bordered" id="app_table" width="100%">
                     <thead>
                         <tr>
@@ -32,7 +30,27 @@
             </div>
         </div>
     </div>
-
+    {{-- CONFIRM MODAL --}}
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Finish Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to confirm this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_confirm">
+                    <input type="hidden" id="id_confirm">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="btn-confirm">Yes, Confirm!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- DELETE MODAL --}}
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -140,11 +158,11 @@
                             if (data.is_confirm == '0') {
                                 return `
                                 <center>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
+                                    <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
                                 </center>
                                 `;
                             } else if (data.is_confirm == '1') {
-                                return `Confirmed`
+                                return `<center><span class="badge bg-success">Confrimed</span></center>`
                             } else if (data.final_status == 'created') {
                                 return `
                                 <center>
@@ -206,7 +224,7 @@
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
-                                <td>${d.purpose} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.purpose} </td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -220,7 +238,7 @@
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td>${d.manager_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -234,7 +252,7 @@
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td>${d.it_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -248,7 +266,7 @@
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td>${d.it_mgr_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -262,7 +280,7 @@
                             </tr>
                             <tr>
                                 <td>On Progress Note</td>
-                                <td>${d.on_progress_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -276,7 +294,7 @@
                             </tr>
                             <tr>
                                 <td>Finish Note</td>
-                                <td>${d.finish_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -284,6 +302,20 @@
                 );
             }
 
+            $('#app_table tbody').on('click', 'td.dt-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+
+            // DELETE MODAL
             $('#app_table').on('click', '.btn-table-delete', function() {
                 var id_delete = $(this).data('id');
                 var no_reg_delete = $(this).data('no_reg');
@@ -311,61 +343,53 @@
                     }
                 });
             });
+            // END DELETE MODAL
 
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
+            // CONFIRM MODAL
+            $('#app_table').on('click', '.btn-table-confirm', function() {
+                var id_confirm = $(this).data('id');
+                var no_reg_confirm = $(this).data('no_reg');
+                var confirmButton = document.getElementById('btn-confirm');
 
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
-
-            $('#reject_reason').on('keyup', function() {
-                if ($(this).val() != "")
-                    $('#btn-reject').removeAttr('disabled');
-                else
-                    $('#btn-reject').attr('disabled', 'disabled');
-            });
-
-            $('#btn-approve').on('clcik', function() {
-
-            });
-
-            $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_account = $(this).data('id');
-                var fullname_form_account = $(this).data('fullname');
-                var ad_name = $(this).data('ad_name');
-
-                $('#id_form_account').val(id_form_account)
-                $('#fullname_form_account').val(fullname_form_account)
-                $('#ad_name').val(ad_name)
+                confirmButton.removeAttribute('disabled');
+                confirmButton.innerHTML = 'Yes, Confirm!';
+                $('#id_confirm').val(id_confirm)
+                $('#no_reg_confirm').val(no_reg_confirm)
+                $('#it_mgr_note_confirm').val('');
             })
 
-            $('#btn-approve').on('click', function() {
-                let id_form_account = $('#id_form_account').val();
+            $('#btn-confirm').on('click', function() {
+                let id_confirm = $('#id_confirm').val();
                 $.ajax({
                     url: "{{ route('website.account.approve_form') }}",
                     type: "POST",
                     data: {
-                        id: id_form_account,
-                        type: 'ok',
+                        id: id_confirm,
+                        type: 'confirm',
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-
                         toastr['success'](response)
                         table.ajax.reload();
+                        getApprovalCount();
                         $('#confirmModal').modal('hide')
                     },
                     error: function(xhr, status, error) {
                         alert(error);
                     }
                 });
+            });
+            // END CONFIRM MODAL
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var confirmButton = document.getElementById('btn-confirm');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            confirmButton.addEventListener('click', function() {
+                confirmButton.setAttribute('disabled', 'true');
+                confirmButton.innerHTML = spinner + ' Confirming...';
             });
         });
     </script>
