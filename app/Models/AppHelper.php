@@ -96,25 +96,14 @@ class AppHelper
 
     public static function execution_count()
     {
-        $account_execution_count = Account::where(function($query) {
-            $query->where('final_status', 'LIKE', '%IT MGR Approve%')
-                  ->orWhere('final_status', 'LIKE', '%On Progress%');
-        })->count();
-        $folderaccess_execution_count = FolderAccess::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
-        $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
-        $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
-        $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
-        $vpn_execution_count = Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
-        $project_execution_count = Project::where(function($query) {
-            $query->where('final_status', 'LIKE', '%IT MGR Approve%')
-                  ->orWhere('final_status', 'LIKE', '%On Progress%')
-                  ->orWhere('final_status', 'LIKE', '%On Progress%');
-        })->count();
-        $fitur_execution_count = Fitur::where(function($query) {
-            $query->where('final_status', 'LIKE', '%IT MGR Approve%')
-                  ->orWhere('final_status', 'LIKE', '%On Progress%')
-                  ->orWhere('final_status', 'LIKE', '%On Progress%');
-        })->count();
+        $account_execution_count = Account::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $folderaccess_execution_count = FolderAccess::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $newfolder_execution_count = NewFolder::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $software_execution_count = Software::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $hardware_execution_count = Hardware::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $vpn_execution_count = Vpn::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $project_execution_count = Project::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        $fitur_execution_count = Fitur::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
 
         return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count + $vpn_execution_count + $project_execution_count + $fitur_execution_count;
     }
