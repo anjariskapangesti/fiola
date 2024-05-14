@@ -339,6 +339,7 @@
                             <tr>
                                 <th colspan="4" class="text-end">
                                     <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
+                                    <button class="btn btn-info btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Progress</button>
                                     <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
                                 </th>
                             </tr>    

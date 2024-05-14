@@ -39,10 +39,49 @@
             @endif
 
             @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
+                @php
+                    $startOfMonth = \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d');
+                    $endOfMonth = \Carbon\Carbon::now()->endOfMonth()->format('Y-m-d');
+                @endphp
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div id="chart"></div>
+                            <center>
+                                <h5 style="color: black;"><b>Total Form</b></h5>
+                            </center>
+                            <form action="{{ route('website.home') }}" method="GET" id="dateFilterForm">
+                                <div class="row m-3">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="filterFirst">Tanggal Mulai</label>
+                                            <input type="date" name="filterFirst" id="filterFirst" class="form-control"
+                                                value="{{ request('filterFirst', $startOfMonth) }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="filterEnd">Tanggal Akhir</label>
+                                            <input type="date" name="filterEnd" id="filterEnd" class="form-control"
+                                                value="{{ request('filterEnd', $endOfMonth) }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-group" style="margin-right: 10px;">
+                                                <label for="filterSubmit" style="color: white;">Button</label>
+                                                <button type="submit" class="btn btn-primary btn-block">Filter</button>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="resetButton" style="color: white;">Button</label>
+                                                <button type="button" class="btn btn-secondary btn-block"
+                                                    id="resetButton">Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="chart" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -189,7 +228,7 @@
             },
 
             title: {
-                text: 'Total Form',
+                text: '',
                 align: 'center'
             },
 
@@ -235,6 +274,13 @@
                     {{ $project_rejected }}, {{ $fitur_rejected }}
                 ],
             }]
+        });
+    </script>
+    <script>
+        document.getElementById('resetButton').addEventListener('click', function() {
+            document.getElementById('filterFirst').value = "{{ $startOfMonth }}";
+            document.getElementById('filterEnd').value = "{{ $endOfMonth }}";
+            document.getElementById('dateFilterForm').submit();
         });
     </script>
 @endpush

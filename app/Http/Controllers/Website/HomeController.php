@@ -18,10 +18,11 @@ use App\Models\Fitur;
 use App\Models\Alert;
 use Illuminate\Support\Facades\DB;
 use Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
@@ -125,13 +126,13 @@ class HomeController extends Controller
                                               ->count();
 
         $fitur_create_rejected = Fitur::where('created_by', Auth::user()->id)
-                                              ->where(function ($query) {
-                                                  $query->where('final_status', 'LIKE', '%Rejected%')
-                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                              })
-                                              ->count();
+                                            ->where(function ($query) {
+                                                $query->where('final_status', 'LIKE', '%Rejected%')
+                                                    ->orWhere('final_status', 'LIKE', '%Manager Reject%')
+                                                    ->orWhere('final_status', 'LIKE', '%IT Reject%')
+                                                    ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
+                                            })
+                                            ->count();
 
         $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected + $vpn_create_rejected + $project_create_rejected + $fitur_create_rejected;
         /// MGR ///
@@ -353,70 +354,44 @@ class HomeController extends Controller
         $fitur_it_mgr_count = Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
         $fitur_execution_count = Fitur::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
-        ///
+        /// DIAGRAM BATANG ///
+        $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+
+        $filterFirst = $request->input('filterFirst', $startOfMonth) ?? $startOfMonth;
+        $filterEnd = $request->input('filterEnd', $endOfMonth) ?? $endOfMonth;
+
         $account_total = Account::count();
-        $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->count();
-        $account_rejected = Account::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count();
+        $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $account_rejected = Account::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
 
         $folderaccess_total = FolderAccess::count();
         $folderaccess_finished = FolderAccess::where('final_status', 'LIKE', '%Finished%')->count();
-        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count();
+        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Reject%')->count();
 
         $newfolder_total = NewFolder::count();
         $newfolder_finished = NewFolder::where('final_status', 'LIKE', '%Finished%')->count();
-        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count();   
+        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Reject%')->count();   
                                 
         $software_total = Software::count();
         $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->count();
-        $software_rejected = Software::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count(); 
+        $software_rejected = Software::where('final_status', 'LIKE', '%Reject%')->count(); 
 
         $hardware_total = Hardware::count();
         $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->count();
-        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count(); 
+        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Reject%')->count(); 
 
         $vpn_total = Vpn::count();
         $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->count();
-        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count(); 
+        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Reject%')->count(); 
 
         $project_total = Project::count();
         $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->count();
-        $project_rejected = Project::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count();
+        $project_rejected = Project::where('final_status', 'LIKE', '%Reject%')->count();
 
         $fitur_total = Fitur::count();
         $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->count();
-        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Rejected%')
-                                ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                ->orWhere('final_status', 'LIKE', '%IT MGR Reject%')
-                                ->count();
+        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Reject%')->count();
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
@@ -444,8 +419,6 @@ class HomeController extends Controller
                     'fitur_mgr_count', 'fitur_it_count', 'fitur_it_mgr_count', 'fitur_execution_count',
                     'fitur_total', 'fitur_finished', 'fitur_rejected',));
         }
-                                    
-        
     }    
 
     public function home_ajax()
