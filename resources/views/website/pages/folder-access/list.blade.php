@@ -177,143 +177,153 @@
                 ],
             });
 
+            var detailsRow = [];
+
+            $('.table tbody').on('click', 'tr td.dt-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var idx = $.inArray(tr.attr('id'), detailsRow);
+
+                if (row.child.isShown()) {
+                    tr.removeClass('details')
+                    row.child.hide()
+                    detailsRow.splice(idx, 1)
+                } else {
+                    tr.addClass('details')
+                    row.child(format(row.data())).show()
+                    if (idx === -1) {
+                        detailsRow.push(tr.attr('id'))
+                    }
+                }
+            })
+
+            table.on('draw', function() {
+                $.each(detailsRow, function(i, id) {
+                    $('#' + id + ' td.dt-control').trigger('click')
+                })
+            })
+
             function format(d) {
-                return (
+                var html = `
+                    <table class="table table-sm table-bordered">
+                        <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
+                            <tr>
+                                <td colspan="2" class="text-center">Email</td>    
+                                <td colspan="2" class="text-center">Department</td>    
+                            </tr>    
+                        `
+
+                for (let i = 0; i < d.form_folder_access_user.length; i++) {
+                    html += `
+                            <tr style="background-color: #ebf1f2;">
+                                <td colspan="2">${d.form_folder_access_user[i].username}</td>
+                                <td colspan="2">${d.form_folder_access_user[i].department}</td>
+                                `
+                    html += `</tr>
                     `
-                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
-                        <tbody style="border: 2px solid black;">
+                }
+
+                html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
+                            <td> Main Path </td>
+                            <td> Folder </td>
+                            <td> Subfolder </td>
+                            <td> Permission </td>
+                        </tr>
+                        `
+                for (let i = 0; i < d.form_folder_access_path.length; i++) {
+                    html += `<tr style="background-color: #ebf1f2;">
+                                    <td>${d.form_folder_access_path[i].folder}</td>
+                                    <td>${d.form_folder_access_path[i].subfolder}</td>
+                                    <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
+                                    <td>${d.form_folder_access_path[i].permission}</td>
+                                    `
+                    html += `</tr>
+                            
+                    `
+                }
+
+                html += `
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
+                                <td colspan="4" class="text-center">Purpose</td>    
                             </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Form Type</td>
-                                <td>${d.form_type} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
-                                <td>${d.npk}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
-                                <td>${d.fullname} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
-                                <td>${d.phone} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username</td>
-                                <td>AIIA\\${d.ad_name}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
-                                <td>
-                                    ${d.is_email === false ? '<i>Tidak butuh lisensi</i>' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
-                                <td>
-                                    ${d.is_email === false ? '<i>Tidak butuh email</i>' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : '')}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.purpose} </td>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="4" >${d.purpose}</td>   
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Manager Approval Date</td>
-                                <td>${d.manager_approval_date ?? '-'}</td>
+                                <td colspan="3">${d.manager_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Approval By</td>
-                                <td>${d.manager_name ?? '-'}</td>
+                                <td colspan="3">${d.manager_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td colspan="3" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Approval Date</td>
-                                <td>${d.it_approval_date ?? '-'}</td>
+                                <td colspan="3">${d.it_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Approval By</td>
-                                <td>${d.it_name ?? '-'}</td>
+                                <td colspan="3">${d.it_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td colspan="3" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Manager Approval Date</td>
-                                <td>${d.it_mgr_approval_date ?? '-'}</td>
+                                <td colspan="3">${d.it_mgr_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Approval By</td>
-                                <td>${d.it_mgr_name ?? '-'}</td>
+                                <td colspan="3">${d.it_mgr_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td colspan="3" style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>On Progress Date</td>
-                                <td>${d.on_progress_date ?? '-'}</td>
+                                <td colspan="3">${d.on_progress_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress By</td>
-                                <td>${d.on_progress_name ?? '-'}</td>
+                                <td colspan="3">${d.on_progress_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
+                                <td colspan="3" style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Finish Date</td>
-                                <td>${d.finish_date ?? '-'}</td>
+                                <td colspan="3">${d.finish_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish By</td>
-                                <td>${d.finish_name ?? '-'}</td>
+                                <td colspan="3">${d.finish_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
+                                <td colspan="3" style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
                             </tr>
-                        </tbody>
-                    </table>
-                    `
-                );
+                        </tbody>   
+                        </table>`
+
+                return html
             }
-
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
 
             // DELETE MODAL
             $('#app_table').on('click', '.btn-table-delete', function() {
@@ -390,6 +400,17 @@
             confirmButton.addEventListener('click', function() {
                 confirmButton.setAttribute('disabled', 'true');
                 confirmButton.innerHTML = spinner + ' Confirming...';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteButton = document.getElementById('btn-delete');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            deleteButton.addEventListener('click', function() {
+                deleteButton.setAttribute('disabled', 'true');
+                deleteButton.innerHTML = spinner + ' Deleting...';
             });
         });
     </script>

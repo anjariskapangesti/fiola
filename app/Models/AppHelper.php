@@ -171,7 +171,7 @@ class AppHelper
     public static function folderaccess_confirm_count()
     {
         return FolderAccess::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function folderaccess_it_count()
@@ -206,7 +206,7 @@ class AppHelper
     public static function newfolder_confirm_count()
     {
         return NewFolder::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function newfolder_it_count()
@@ -241,7 +241,7 @@ class AppHelper
     public static function software_confirm_count()
     {
         return Software::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function software_it_count()
@@ -276,7 +276,7 @@ class AppHelper
     public static function hardware_confirm_count()
     {
         return Hardware::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function hardware_it_count()
@@ -311,7 +311,7 @@ class AppHelper
     public static function vpn_confirm_count()
     {
         return Vpn::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function vpn_it_count()
@@ -346,7 +346,7 @@ class AppHelper
     public static function project_confirm_count()
     {
         return Project::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function project_it_count()
@@ -381,7 +381,7 @@ class AppHelper
     public static function fitur_confirm_count()
     {
         return Fitur::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', '%0%')->count();
+                        ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function fitur_it_count()

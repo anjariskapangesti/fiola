@@ -74,6 +74,7 @@
                 $it_mgr_approval_routes[] = 'website.' . $link . '.it_mgr_approval';
                 $it_mgr_approved_routes[] = 'website.' . $link . '.it_mgr_approved';
                 $execution_routes[] = 'website.' . $link . '.execution';
+                $finished_routes[] = 'website.' . $link . '.finished';
             }
 
         @endphp
@@ -184,7 +185,7 @@
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'execution', 'text' => 'Form'])
             </li>
-            <li class="menu-item">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $finished_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-clipboard-check"></i>
                     <div data-i18n="Finished">Finished</div>

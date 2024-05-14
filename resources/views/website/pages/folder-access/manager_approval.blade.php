@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Account'])
+@extends('website.layouts.main', ['title' => 'Manager Approval Folder Access'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h5>
+                <h5 class="card-header">Change Access of Folder Share Application (FRM-ITD-S13-009-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -113,7 +113,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.account.manager_approval_ajax') }}",
+                    url: "{{ route('website.folder-access.manager_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -174,81 +174,90 @@
                 ],
             });
 
+            var detailsRow = [];
+
+            $('.table tbody').on('click', 'tr td.detail', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var idx = $.inArray(tr.attr('id'), detailsRow);
+
+                if (row.child.isShown()) {
+                    tr.removeClass('details')
+                    row.child.hide()
+                    detailsRow.splice(idx, 1)
+                } else {
+                    tr.addClass('details')
+                    row.child(format(row.data())).show()
+                    if (idx === -1) {
+                        detailsRow.push(tr.attr('id'))
+                    }
+                }
+            })
+
+            table.on('draw', function() {
+                $.each(detailsRow, function(i, id) {
+                    $('#' + id + ' td.detail').trigger('click')
+                })
+            })
+
             function format(d) {
-                return (
+                var html = `
+                    <table class="table table-sm table-bordered">
+                        <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
+                            <tr>
+                                <td colspan="2" class="text-center">Email</td>    
+                                <td colspan="2" class="text-center">Department</td>    
+                            </tr>    
+                        `
+
+                for (let i = 0; i < d.form_folder_access_user.length; i++) {
+                    html += `
+                            <tr style="background-color: #ebf1f2;">
+                                <td colspan="2">${d.form_folder_access_user[i].username}</td>
+                                <td colspan="2">${d.form_folder_access_user[i].department}</td>
+                                `
+                    html += `</tr>
                     `
-                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
-                        <tbody style="border: 2px solid black;">
+                }
+
+                html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
+                            <td> Main Path </td>
+                            <td> Folder </td>
+                            <td> Subfolder </td>
+                            <td> Permission </td>
+                        </tr>
+                        `
+                for (let i = 0; i < d.form_folder_access_path.length; i++) {
+                    html += `<tr style="background-color: #ebf1f2;">
+                                    <td>${d.form_folder_access_path[i].folder}</td>
+                                    <td>${d.form_folder_access_path[i].subfolder}</td>
+                                    <td>${d.form_folder_access_path[i].subsubfolder ?? '-'}</td>
+                                    <td>${d.form_folder_access_path[i].permission}</td>
+                                    `
+                    html += `</tr>
+                    `
+                }
+
+                html += `
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
-                                <td>${d.budget_type} </td>
+                                <td colspan="4" class="text-center">Purpose</td>    
                             </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Form Type</td>
-                                <td>${d.form_type} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
-                                <td>${d.npk}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
-                                <td>${d.fullname} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
-                                <td>${d.phone} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username</td>
-                                <td>AIIA\\${d.ad_name}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
-                                <td>
-                                    ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
-                                <td>
-                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : '')}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.purpose} </td>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="4" >${d.purpose}</td>   
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="2" class="text-end">
+                                <th colspan="4" class="text-end">
                                     <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
                                     <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
                                 </th>
                             </tr>    
                         </tfoot>
-                    </table>
-                    `
-                );
+                        </table>`
+
+                return html
             }
-
-            $('#app_table tbody').on('click', 'td.detail', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
             // APPROVE
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_approve = $(this).data('id');
@@ -265,7 +274,7 @@
             $('#btn-approve').on('click', function() {
                 let id_approve = $('#id_approve').val();
                 $.ajax({
-                    url: "{{ route('website.account.manager_approve') }}",
+                    url: "{{ route('website.folder-access.manager_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
@@ -306,7 +315,7 @@
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.account.manager_approve') }}",
+                    url: "{{ route('website.folder-access.manager_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,

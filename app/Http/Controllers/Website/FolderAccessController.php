@@ -168,347 +168,441 @@ class FolderAccessController extends Controller
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
+                        ->orderBy('created_at', 'DESC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
     
     public function approve_form(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $folderaccess = FolderAccess::findOrFail($id);
-        if($type=='ok'){
-            $folderaccess->is_confirm=1;
-        }else{
-            $folderaccess->is_confirm=0;
+
+        if ($type == 'confirm') {
+            $folderaccess->is_confirm = 1;
+        } else {
+            $folderaccess->is_confirm = 0;
         }
         $folderaccess->save();
-        return "Confirm is Saved!";
+
+        return "Confirm Successfully";
+    }
+
+    public function delete_form(Request $request)
+    {
+        $id = $request->id;
+
+        $folderaccess = FolderAccess::findOrFail($id);
+        $folderaccess->delete();
+
+        return "Delete Successfully";
     }
     
     // MGR //
-    public function show_manager_approval()
+    public function manager_approval()
     {
-        return view('website.pages.folder-access.approval_manager');
+        return view('website.pages.folder-access.manager_approval');
     }
 
-    public function show_manager_approval_ajax()
+    public function manager_approval_ajax(Request $request)
     {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = FolderAccess::join('public.users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'no_reg', 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'))
-                            ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                    $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                                    })
-                            ->where('final_status','created')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')
-                            ->with('form_folder_access_user')
-                            ->get();
+        $data = FolderAccess::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'created')
+            ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('created_at', 'ASC')
+            ->with('form_folder_access_path')
+            ->with('form_folder_access_user');
 
-        return DataTables::of($data)->make(true);
+        return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_manager(Request $request)
+    public function manager_approve(Request $request)
     {
-        $id=$request->id;
-        
-        $type=$request->type;
-        
+        $id = $request->id;
+        $type = $request->type;
+
         $folderaccess = FolderAccess::findOrFail($id);
-        
-        if($type=='ok'){
-            $folderaccess->is_manager_approve=1;
-            $folderaccess->final_status='Manager Approve';
-            $folderaccess->manager_note=$request->manager_note;
-        }else{
-            $folderaccess->is_manager_approve=0;
-            $folderaccess->final_status='Manager Reject';
-            $folderaccess->manager_note=$request->manager_note;
-            $folderaccess->is_finish=0;
+
+        if ($type == 'approve') {
+            $folderaccess->is_manager_approve = 1;
+            $folderaccess->final_status = 'Manager Approve';
+            $folderaccess->manager_note = $request->manager_note;
+            $folderaccess->manager_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $folderaccess->is_manager_approve = 0;
+            $folderaccess->final_status = 'Manager Reject';
+            $folderaccess->manager_note = $request->manager_note;
+            $folderaccess->manager_approve_by = Auth::user()->id;
+            $folderaccess->is_finish = 0;
+            $return = "Reject Successfully";
         }
-        $folderaccess->manager_approval_date= Carbon::now();
+        $folderaccess->manager_approval_date = Carbon::now();
         $folderaccess->save();
-        return "Request is Saved!";        
+        return $return;
     }
 
-    public function show_data_manager_approval()
+    public function manager_approved()
     {
-        $departmetns = Department::all();
-        $folders = Folder::orderBy('name', 'ASC')->get();
-        $subfolders = SubFolder::orderBy('name', 'ASC')->get();
-
-        return view('website.pages.folder-access.show_data_manager_approval', compact(['departmetns', 'folders', 'subfolders']));
+        return view('website.pages.folder-access.manager_approved');
     }
 
-    public function show_data_manager_approval_ajax(Request $request)
+    public function manager_approved_ajax(Request $request)
     {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.manager_approval_date as manager_approval_date'),
-                                    ('form_folder_access.manager_note'))
-                            ->where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                    $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                                    })
-                            ->where('is_manager_approve','1')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')
-                            ->with('form_folder_access_user');
+        $data = FolderAccess::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->whereNotNull('is_manager_approve')
+            ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('manager_approval_date', 'DESC')
+            ->with('form_folder_access_path')
+            ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     /// ITD APPROVE ///
 
-    public function show_it_approval()
+    public function it_approval()
     {
-        return view('website.pages.folder-access.approval_it');
+        return view('website.pages.folder-access.it_approval');
     }
 
-    public function show_it_approval_ajax(Request $request)
+    public function it_approval_ajax(Request $request)
     {
-        $data = FolderAccess::join('public.users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'no_reg', 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.manager_note'))
-                            ->where('final_status','Manager Approve')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')                                                
-                            ->with('form_folder_access_user')                                                
-                            ->get();
+        $data = FolderAccess::where('final_status', 'Manager Approve')
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
-        return DataTables::of($data)->make(true);
+        return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_it(Request $request)
+    public function it_approve(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $folderaccess = FolderAccess::findOrFail($id);
         $folderaccesspaths = FolderAccessPath::where('folder_access_id', $id)->get();
         $folderaccessusers = FolderAccessUser::where('folder_access_id', $id)->get();
-
-        if($type=='ok'){
+        
+        if ($type == 'approve') {
+            $folderaccess->is_it_approve = 1;
+            $folderaccess->final_status = 'IT Approve';
+            $folderaccess->it_note = $request->it_note;
+            $folderaccess->it_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $folderaccess->is_it_approve = 0;
+            $folderaccess->final_status = 'IT Reject';
+            $folderaccess->it_note = $request->it_note;
+            $folderaccess->is_finish = 0;
+            $folderaccess->it_approve_by = Auth::user()->id;
+            $return = "Reject Successfully";
+        }
+        $folderaccess->it_approval_date = Carbon::now();
+        $folderaccess->save();
+        
+        if ($request->notifikasi == 'Ya') {
             $isi = "FORM FOLDER ACCESS\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNo. Reg : *" . $folderaccess->no_reg ."*";
-            $isi .= "\nName : *" . $folderaccess->createdBy->name ."*" . "\n";    
-            
-            $isi .= "\n----------USER----------";
-            foreach ($folderaccessusers as $folderaccessuser) {
-                $isi .= "\nEmail : " . $folderaccessuser->username;
-                $isi .= "\nDepartment : " . $folderaccessuser->department . "\n";
-            }
-
-            $isi .= "\n----------FOLDER----------";
-            foreach ($folderaccesspaths as $folderaccesspath) {
-                $isi .= "\nMain Path : " . $folderaccesspath->folder;
-                $isi .= "\nFolder : " . $folderaccesspath->subfolder;
-                $isi .= "\nSubfolder : " . $folderaccesspath->subsubfolder;
-                $isi .= "\nPermission : " . $folderaccesspath->permission . "\n";
-            }
-
+            $isi .= "\nNama : *" . $folderaccess->createdBy->name . "*";
+            $isi .= "\nDepartment : *" . $folderaccess->createdBy->departments->pluck('code')->implode(', ') . "*";
             $isi .= "\nPurpose : " . $folderaccess->purpose;
             $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
-            
-            $nomorhpModel = new Alert();
-            $nomorhp = $nomorhpModel->getNoHpItMgr();
 
-            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $nomors = Alert::where('role', 'IT Manager')->get();
+
+            foreach ($nomors as $nomor) {
+                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
+                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
                 ));
+
                 $response = curl_exec($curl);
                 curl_close($curl);
-
-            $folderaccess->is_it_approve=1;
-            $folderaccess->final_status='IT Approve';
-            $folderaccess->it_note=$request->it_note;
-            $folderaccess->it_approve_by=Auth::user()->id;
-        }else{
-            $folderaccess->is_it_approve=0;
-            $folderaccess->final_status='IT Reject';
-            $folderaccess->it_note=$request->it_note;
-            $folderaccess->is_finish=0;
-            $folderaccess->it_approve_by=Auth::user()->id;
+            }
         }
-        $folderaccess->it_approval_date= Carbon::now();
-        $folderaccess->save();
-        return "Request is Saved!";
+        return $return;
     }
 
-    public function show_data_it_approval()
+    public function it_approved()
     {
-        $departments = Department::all();
-        return view('website.pages.folder-access.show_data_it_approval', compact(['departments']));
+        return view('website.pages.folder-access.it_approved');
     }
 
-    public function show_data_it_approval_ajax(Request $request)
+    public function it_approved_ajax(Request $request)
     {
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.it_approval_date as it_approval_date'),
-                                    ('form_folder_access.manager_note'),
-                                    ('form_folder_access.it_note'))
-                            ->where('is_it_approve','1')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')
-                            ->with('form_folder_access_user');
+        $data = FolderAccess::where('is_it_approve', '1')
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('manager_approval_date', 'DESC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     /// ITD MGR APPROVE ///
 
-    public function show_it_mgr_approval()
+    public function it_mgr_approval()
     {
-        return view('website.pages.folder-access.approval_it_mgr');
+        return view('website.pages.folder-access.it_mgr_approval');
     }
 
-    public function show_it_mgr_approval_ajax(Request $request)
+    public function it_mgr_approval_ajax(Request $request)
     {
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'no_reg', 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.manager_note'),
-                                    ('form_folder_access.it_note'))
-                            ->where('final_status','IT Approve')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')                                                
-                            ->with('form_folder_access_user')                                                
-                            ->get();
+        $data = FolderAccess::where('final_status', 'IT Approve')
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
-        return DataTables::of($data)->make(true);
+        return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_it_mgr(Request $request)
+    public function it_mgr_approve(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $folderaccess = FolderAccess::findOrFail($id);
-        if($type=='ok'){
-            $folderaccess->is_it_mgr_approve=1;
-            $folderaccess->final_status='IT MGR Approve';
-            $folderaccess->it_mgr_note=$request->it_mgr_note;
-        }else{
-            $folderaccess->is_it_mgr_approve=0;
-            $folderaccess->final_status='IT MGR Reject';
-            $folderaccess->it_mgr_note=$request->it_mgr_note;
-            $folderaccess->is_finish=0;
+
+        if ($type == 'approve') {
+            $folderaccess->is_it_mgr_approve = 1;
+            $folderaccess->final_status = 'IT MGR Approve';
+            $folderaccess->it_mgr_note = $request->it_mgr_note;
+            $folderaccess->it_mgr_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $folderaccess->is_it_mgr_approve = 0;
+            $folderaccess->final_status = 'IT MGR Reject';
+            $folderaccess->it_mgr_note = $request->it_mgr_note;
+            $folderaccess->it_mgr_approve_by = Auth::user()->id;
+            $folderaccess->is_finish = 0;
+            $return = "Reject Successfully";
         }
-        $folderaccess->it_mgr_approval_date= Carbon::now();
+        $folderaccess->it_mgr_approval_date = Carbon::now();
         $folderaccess->save();
-        return "Request is Saved!";
+        return $return;
     }
 
-    public function show_data_it_mgr_approval()
+    public function it_mgr_approved()
     {
-        $departments = Department::all();
-        return view('website.pages.folder-access.show_data_it_mgr_approval', compact(['departments']));
+        return view('website.pages.folder-access.it_mgr_approved');
     }
 
-    public function show_data_it_mgr_approval_ajax(Request $request)
+    public function it_mgr_approved_ajax(Request $request)
     {
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.it_mgr_approval_date as it_mgr_approval_date'),
-                                    ('form_folder_access.manager_note'),
-                                    ('form_folder_access.it_note'),
-                                    ('form_folder_access.it_mgr_note'))
-                            ->where('is_it_mgr_approve','1')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')
-                            ->with('form_folder_access_user');
+        $data = FolderAccess::where('is_it_mgr_approve', '1')
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     /// EXECUTION ///
 
-    public function show_execution()
+    public function execution()
     {
-        return view('website.pages.folder-access.approval_execution');
+        return view('website.pages.folder-access.execution');
     }
 
-    public function show_execution_ajax(Request $request)
+    public function execution_ajax(Request $request)
     {
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', 'no_reg', 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.manager_note'),
-                                    ('form_folder_access.it_note'),
-                                    ('form_folder_access.it_mgr_note'))
-                            ->where('final_status','IT MGR Approve')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')                                                
-                            ->with('form_folder_access_user')                                                
-                            ->get();
+        $data = FolderAccess::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
-        return DataTables::of($data)->make(true);
+        return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_execution(Request $request)
+    public function execution_approve(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $folderaccess = FolderAccess::findOrFail($id);
+        $folderaccessusers = FolderAccessUser::where('folder_access_id', $id)->get();
         $folderaccesspaths = FolderAccessPath::where('folder_access_id', $id)->get();
 
         $user = $folderaccess->createdBy;
 
-        if($type=='ok'){
-            $isi = "FORM FOLDER ACCESS\n\n";                
-        
-            $isi .= "\nEmail : *" . $folderaccess->username ."*";        
-    
-            foreach ($folderaccesspaths as $folderaccesspath) {
-                $isi .= "\n\nMain Path : " . $folderaccesspath->folder;
-                $isi .= "\nFolder : " . $folderaccesspath->subfolder;
-                $isi .= "\nSubfolder : " . $folderaccesspath->subsubfolder;
-                $isi .= "\nPermission : " . $folderaccesspath->permission;
+        if ($type == 'approve') {
+            $folderaccess->is_finish = 1;
+            $folderaccess->is_confirm = 0;
+            $folderaccess->finish_by = Auth::user()->id;
+            $folderaccess->final_status = 'Finished';
+            $folderaccess->finish_note = $request->finish_note;
+            $folderaccess->finish_date = Carbon::now();
+            $return = "Approve Successfully";
+        } else if ($type == 'progress') {
+            $folderaccess->is_on_progress = 1;
+            $folderaccess->final_status = 'On Progress';
+            $folderaccess->on_progress_note = $request->on_progress_note;
+            $folderaccess->on_progress_by = Auth::user()->id;
+            $folderaccess->on_progress_date = Carbon::now();
+            $return = "Progress Successfully";
+        } else {
+            $folderaccess->is_finish = 0;
+            $folderaccess->final_status = 'Rejected';
+            $folderaccess->finish_note = $request->finish_note;
+            $folderaccess->finish_by = Auth::user()->id;
+            $folderaccess->finish_date = Carbon::now();
+            $return = "Reject Successfully";
+        }
+        $folderaccess->save();
+
+        if ($request->notifikasi == 'Ya') {
+            $isi = "FORM FOLDER ACCESS\n\n";
+
+            $isi .= "User : \n";
+            $nouser = 1;
+            foreach($folderaccessusers as $folderaccessuser)
+            {
+                $isi .= $nouser++ . ". " . $folderaccessuser->username . " - " . $folderaccessuser->department . "\n";
             }
-            $isi .= "\n\nPurpose : " . $folderaccess->purpose;
-    
-            $isi .= "\n\nStatus : Finished";
-    
+
+            $isi .= "\nPath : \n";
+            $nopath = 1;
+            foreach($folderaccesspaths as $folderaccesspath)
+            {
+                if($folderaccesspath->subsubfolder !== null){
+                    $subsubfolder = $folderaccesspath->subsubfolder . " - ";
+                } else {
+                    $subsubfolder = "";
+                }
+                $isi .= $nopath++ . ". " . $folderaccesspath->folder . " - " . $folderaccesspath->subfolder . " - " . $subsubfolder  . $folderaccesspath->permission . "\n";
+            }
+            
+            $isi .= "\nPurpose : " . $folderaccess->purpose;
+            
+            $isi .= "\n\nStatus : *Finished*";
+            
             $isi .= "\n\nManager Note : " . $folderaccess->manager_note;
             $isi .= "\nITD Note : " . $folderaccess->it_note;
             $isi .= "\nITD Manager Note : " . $folderaccess->it_mgr_note;
-            $isi .= "\n\nNote : " . $request->finish_note;
-    
-            $nomor = $user->nohp;;
-    
+            $isi .= "\n\nFinish Note : " . $request->finish_note;
+            
+            $isi .= "\n\nExecution by : " . Auth::user()->name;
+            
+            $nomor = $user->nohp;
+            
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
+            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -517,48 +611,38 @@ class FolderAccessController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-                ));
-                $response = curl_exec($curl);
-                curl_close($curl);
-                
-            $folderaccess->is_finish=1;
-            $folderaccess->is_confirm=0;
-            $folderaccess->final_status='Finished';
-            $folderaccess->finish_note=$request->finish_note;
-            $folderaccess->finish_by=Auth::user()->id;
-        }else{
-            $folderaccess->is_finish=0;
-            $folderaccess->final_status='Rejected';
-            $folderaccess->finish_note=$request->finish_note;
-            $folderaccess->finish_by=Auth::user()->id;
+                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
         }
-        $folderaccess->finish_date= Carbon::now();
-        $folderaccess->save();
-        return "Request is Saved!";
+
+        return $return;
     }
 
-    public function show_data_execution()
+    public function finished()
     {
-        $departments = Department::all();
-        return view('website.pages.folder-access.show_data_execution', compact(['departments']));
+        return view('website.pages.folder-access.finished');
     }
 
-    public function show_data_execution_ajax(Request $request)
+    public function finished_ajax(Request $request)
     {
-        $data = FolderAccess::join('users', 'form_folder_access.created_by', '=', 'users.id')
-                            ->select('form_folder_access.id', DB::Raw('form_folder_access.no_reg'), 
-                                    ('form_folder_access.purpose'), ('users.name as creator_created_by'),
-                                    ('form_folder_access.final_status'),
-                                    ('form_folder_access.finish_date'),
-                                    ('form_folder_access.manager_note'),
-                                    ('form_folder_access.it_note'),
-                                    ('form_folder_access.it_mgr_note'),
-                                    ('form_folder_access.finish_note'))
-                            ->where('is_finish','1')->orWhere('is_finish','0')
-                            ->orderBy('form_folder_access.id', 'desc')
-                            ->with('form_folder_access_path')
-                            ->with('form_folder_access_user');
+        $data = FolderAccess::where('is_finish', '1')->orWhere('is_finish', '0')
+                        ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
+                        ->select('form_folder_access.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC')
+                        ->with('form_folder_access_path')
+                        ->with('form_folder_access_user');
 
         return DataTables::eloquent($data)->make(true);
     }

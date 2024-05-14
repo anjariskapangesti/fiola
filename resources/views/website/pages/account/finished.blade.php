@@ -268,34 +268,6 @@
                 );
             }
 
-            $('#app_table').on('click', '.btn-table-delete', function() {
-                var id_delete = $(this).data('id');
-                var no_reg_delete = $(this).data('no_reg');
-
-                $('#id_delete').val(id_delete)
-                $('#no_reg_delete').val(no_reg_delete)
-            })
-
-            $('#btn-delete').on('click', function() {
-                let id_delete = $('#id_delete').val();
-                $.ajax({
-                    url: "{{ route('website.account.delete_form') }}",
-                    type: "POST",
-                    data: {
-                        id: id_delete,
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#deleteModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
-
             $('#app_table tbody').on('click', 'td.dt-control', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
@@ -307,49 +279,6 @@
                     row.child(format(row.data())).show();
                     tr.addClass('shown');
                 }
-            });
-
-            $('#reject_reason').on('keyup', function() {
-                if ($(this).val() != "")
-                    $('#btn-reject').removeAttr('disabled');
-                else
-                    $('#btn-reject').attr('disabled', 'disabled');
-            });
-
-            $('#btn-approve').on('clcik', function() {
-
-            });
-
-            $('#app_table').on('click', '.btn-table-approve', function() {
-                var id_form_account = $(this).data('id');
-                var fullname_form_account = $(this).data('fullname');
-                var ad_name = $(this).data('ad_name');
-
-                $('#id_form_account').val(id_form_account)
-                $('#fullname_form_account').val(fullname_form_account)
-                $('#ad_name').val(ad_name)
-            })
-
-            $('#btn-approve').on('click', function() {
-                let id_form_account = $('#id_form_account').val();
-                $.ajax({
-                    url: "{{ route('website.account.approve_form') }}",
-                    type: "POST",
-                    data: {
-                        id: id_form_account,
-                        type: 'ok',
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#confirmModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
             });
         });
     </script>

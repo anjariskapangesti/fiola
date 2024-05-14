@@ -33,6 +33,30 @@
     <li class="menu-item {{ Route::is('website.folder-access.' . $link) ? 'active' : '' }}">
         <a href="{{ route('website.folder-access.' . $link) }}" class="menu-link">
             <div data-i18n="Folder Access">{{ $text }} Folder Access</div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::folderaccess_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="folderaccess_mgr_count">{{ App\Models\AppHelper::folderaccess_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::folderaccess_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="folderaccess_it_count">{{ App\Models\AppHelper::folderaccess_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::folderaccess_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="folderaccess_it_mgr_count">{{ App\Models\AppHelper::folderaccess_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::folderaccess_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="folderaccess_execution_count">{{ App\Models\AppHelper::folderaccess_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::folderaccess_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="folderaccess_confirm_count">{{ App\Models\AppHelper::folderaccess_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 

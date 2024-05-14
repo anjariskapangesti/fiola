@@ -196,7 +196,7 @@
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
-                                <td>${d.fullname} </td>
+                                <td>${d.fullname}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
@@ -390,6 +390,17 @@
             confirmButton.addEventListener('click', function() {
                 confirmButton.setAttribute('disabled', 'true');
                 confirmButton.innerHTML = spinner + ' Confirming...';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var deleteButton = document.getElementById('btn-delete');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            deleteButton.addEventListener('click', function() {
+                deleteButton.setAttribute('disabled', 'true');
+                deleteButton.innerHTML = spinner + ' Deleting...';
             });
         });
     </script>

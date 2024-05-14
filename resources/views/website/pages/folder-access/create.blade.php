@@ -68,7 +68,8 @@
                                     <label class="col-md-6 col-sm-6 col-form-label" for="username">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" class="form-control" id="username" name="username[]"
-                                                {{ old('username') }} placeholder="user@aiia.co.id" required />
+                                                {{ old('username') }} placeholder="user@aiia.co.id" required
+                                                onkeyup="convertToLowercase(this)" />
                                             <label for="username">Email <span class="text-danger">*</span></label>
                                             <div class="invalid-feedback">*Mohon isi Email</div>
                                         </div>

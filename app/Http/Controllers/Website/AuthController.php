@@ -39,7 +39,7 @@ class AuthController extends Controller
             
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
-        
+                
                 if ($user->profileIncomplete()) {
                     return redirect()->route('website.user.edit');
                 }
