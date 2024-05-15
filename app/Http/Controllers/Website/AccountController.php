@@ -28,7 +28,13 @@ class AccountController extends Controller
             ->whereNull('nohp')
             ->count();
 
-        $data = Account::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+        $data = Account::where('created_by', Auth::user()->id)
+                        ->where(function($query) {
+                                $query->where('final_status', 'LIKE', '%Reject%')
+                                    ->orWhere('final_status', 'Finished');
+                        })
+                        ->where('is_confirm', 0)
+                        ->count();
 
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
@@ -442,7 +448,7 @@ class AccountController extends Controller
 
     public function it_approved_ajax(Request $request)
     {
-        $data = Account::where('is_it_approve', '1')
+        $data = Account::whereNotNull('is_it_approve')
                         ->join('public.users', 'form_account.created_by', 'public.users.id')
                         ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
                         ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
@@ -519,7 +525,7 @@ class AccountController extends Controller
 
     public function it_mgr_approved_ajax(Request $request)
     {
-        $data = Account::where('is_it_mgr_approve', '1')
+        $data = Account::whereNotNull('is_it_mgr_approve')
                         ->join('public.users', 'form_account.created_by', 'public.users.id')
                         ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
                         ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
@@ -650,7 +656,7 @@ class AccountController extends Controller
 
     public function finished_ajax(Request $request)
     {
-        $data = Account::where('is_finish', '1')->orWhere('is_finish', '0')
+        $data = Account::whereNotNull('is_finish')
                         ->join('public.users', 'form_account.created_by', 'public.users.id')
                         ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
                         ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')

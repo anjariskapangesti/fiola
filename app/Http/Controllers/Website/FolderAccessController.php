@@ -31,7 +31,13 @@ class FolderAccessController extends Controller
                                     ->whereNull('nohp')
                                     ->count(); 
 
-        $data = FolderAccess::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+        $data = FolderAccess::where('created_by', Auth::user()->id)
+                            ->where(function($query) {
+                                    $query->where('final_status', 'LIKE', '%Reject%')
+                                        ->orWhere('final_status', 'Finished');
+                            })
+                            ->where('is_confirm', 0)
+                            ->count();
         
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
@@ -397,7 +403,7 @@ class FolderAccessController extends Controller
 
     public function it_approved_ajax(Request $request)
     {
-        $data = FolderAccess::where('is_it_approve', '1')
+        $data = FolderAccess::whereNotNull('is_it_approve')
                         ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
                         ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
                         ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
@@ -479,7 +485,7 @@ class FolderAccessController extends Controller
 
     public function it_mgr_approved_ajax(Request $request)
     {
-        $data = FolderAccess::where('is_it_mgr_approve', '1')
+        $data = FolderAccess::whereNotNull('is_it_mgr_approve')
                         ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
                         ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
                         ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
@@ -627,7 +633,7 @@ class FolderAccessController extends Controller
 
     public function finished_ajax(Request $request)
     {
-        $data = FolderAccess::where('is_finish', '1')->orWhere('is_finish', '0')
+        $data = FolderAccess::whereNotNull('is_finish')
                         ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
                         ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
                         ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')

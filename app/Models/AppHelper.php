@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Account;
-use App\Models\FolderAccess;
-use App\Models\NewFolder;
 use Auth;
 
 class AppHelper
@@ -24,6 +21,8 @@ class AppHelper
             Vpn::class,
             Project::class,
             Fitur::class,
+            Relayout::class,
+            Network::class,
         ];
     
         $totalCount = 0;
@@ -52,6 +51,8 @@ class AppHelper
             Vpn::class,
             Project::class,
             Fitur::class,
+            Relayout::class,
+            Network::class,
         ];
     
         $totalCount = 0;
@@ -68,44 +69,80 @@ class AppHelper
 
     public static function it_approvals_count()
     {
-        $account_it_count = Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $folderaccess_it_count = FolderAccess::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $newfolder_it_count = NewFolder::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $software_it_count = Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $hardware_it_count = Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $vpn_it_count = Vpn::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $project_it_count = Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $fitur_it_count = Fitur::where('final_status', 'LIKE', '%Manager Approve%')->count();
-
-        return $account_it_count + $folderaccess_it_count + $newfolder_it_count + $software_it_count + $hardware_it_count + $vpn_it_count + $project_it_count + $fitur_it_count;
+        $models = [
+            Account::class,
+            FolderAccess::class,
+            NewFolder::class,
+            Software::class,
+            Hardware::class,
+            Vpn::class,
+            Project::class,
+            Fitur::class,
+            Relayout::class,
+            Network::class,
+        ];
+    
+        $totalCount = 0;
+    
+        foreach ($models as $model) {
+            $count = $model::where('final_status', 'Manager Approve')->count();
+    
+            $totalCount += $count;
+        }
+    
+        return $totalCount;
     }
 
     public static function it_mgr_approvals_count()
     {
-        $account_it_mgr_count = Account::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $folderaccess_it_mgr_count = FolderAccess::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $software_it_mgr_count = Software::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $vpn_it_mgr_count = Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $project_it_mgr_count = Project::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $fitur_it_mgr_count = Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
-
-        return $account_it_mgr_count + $folderaccess_it_mgr_count + $newfolder_it_mgr_count + $software_it_mgr_count + $hardware_it_mgr_count + $vpn_it_mgr_count + $project_it_mgr_count + $fitur_it_mgr_count;
+        $models = [
+            Account::class,
+            FolderAccess::class,
+            NewFolder::class,
+            Software::class,
+            Hardware::class,
+            Vpn::class,
+            Project::class,
+            Fitur::class,
+            Relayout::class,
+            Network::class,
+        ];
+    
+        $totalCount = 0;
+    
+        foreach ($models as $model) {
+            $count = $model::where('final_status', 'IT Approve')->count();
+    
+            $totalCount += $count;
+        }
+    
+        return $totalCount;
     }
 
     public static function execution_count()
     {
-        $account_execution_count = Account::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $folderaccess_execution_count = FolderAccess::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $newfolder_execution_count = NewFolder::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $software_execution_count = Software::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $hardware_execution_count = Hardware::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $vpn_execution_count = Vpn::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $project_execution_count = Project::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-        $fitur_execution_count = Fitur::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-
-        return $account_execution_count + $folderaccess_execution_count + $newfolder_execution_count + $software_execution_count + $hardware_execution_count + $vpn_execution_count + $project_execution_count + $fitur_execution_count;
+        $models = [
+            Account::class,
+            FolderAccess::class,
+            NewFolder::class,
+            Software::class,
+            Hardware::class,
+            Vpn::class,
+            Project::class,
+            Fitur::class,
+            Relayout::class,
+            Network::class,
+        ];
+    
+        $totalCount = 0;
+    
+        foreach ($models as $model) {
+            $count = $model::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+    
+            $totalCount += $count;
+        }
+    
+        return $totalCount;
     }
 
     /// FORM ACCOUNT ///
@@ -386,5 +423,75 @@ class AppHelper
     public static function fitur_execution_count()
     {
         return Fitur::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+    }
+
+    /// FORM RELAYOUT ///
+    public static function relayout_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Relayout::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function relayout_confirm_count()
+    {
+        return Relayout::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', 'false')->count();
+    }
+
+    public static function relayout_it_count()
+    {
+        return Relayout::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function relayout_it_mgr_count()
+    {
+        return Relayout::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function relayout_execution_count()
+    {
+        return Relayout::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+    }
+
+    /// FORM NETWORK ///
+    public static function network_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Network::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function network_confirm_count()
+    {
+        return Network::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'LIKE', 'false')->count();
+    }
+
+    public static function network_it_count()
+    {
+        return Network::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function network_it_mgr_count()
+    {
+        return Network::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function network_execution_count()
+    {
+        return Network::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
     }
 }

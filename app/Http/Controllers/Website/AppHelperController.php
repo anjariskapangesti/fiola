@@ -22,7 +22,56 @@ class AppHelperController extends Controller
         $folderaccess_it_count = AppHelper::folderaccess_it_count();
         $folderaccess_it_mgr_count = AppHelper::folderaccess_it_mgr_count();
         $folderaccess_execution_count = AppHelper::folderaccess_execution_count();
-
+        $folderaccess_confirm_count = AppHelper::folderaccess_confirm_count();
+        // FORM NEW FOLDER //
+        $newfolder_mgr_count = AppHelper::newfolder_mgr_count();
+        $newfolder_it_count = AppHelper::newfolder_it_count();
+        $newfolder_it_mgr_count = AppHelper::newfolder_it_mgr_count();
+        $newfolder_execution_count = AppHelper::newfolder_execution_count();
+        $newfolder_confirm_count = AppHelper::newfolder_confirm_count();
+        // FORM SOFTWARE //
+        $software_mgr_count = AppHelper::software_mgr_count();
+        $software_it_count = AppHelper::software_it_count();
+        $software_it_mgr_count = AppHelper::software_it_mgr_count();
+        $software_execution_count = AppHelper::software_execution_count();
+        $software_confirm_count = AppHelper::software_confirm_count();
+        // FORM HARDWARE //
+        $hardware_mgr_count = AppHelper::hardware_mgr_count();
+        $hardware_it_count = AppHelper::hardware_it_count();
+        $hardware_it_mgr_count = AppHelper::hardware_it_mgr_count();
+        $hardware_execution_count = AppHelper::hardware_execution_count();
+        $hardware_confirm_count = AppHelper::hardware_confirm_count();
+        // FORM VPN //
+        $vpn_mgr_count = AppHelper::vpn_mgr_count();
+        $vpn_it_count = AppHelper::vpn_it_count();
+        $vpn_it_mgr_count = AppHelper::vpn_it_mgr_count();
+        $vpn_execution_count = AppHelper::vpn_execution_count();
+        $vpn_confirm_count = AppHelper::vpn_confirm_count();
+        // FORM PROJECT //
+        $project_mgr_count = AppHelper::project_mgr_count();
+        $project_it_count = AppHelper::project_it_count();
+        $project_it_mgr_count = AppHelper::project_it_mgr_count();
+        $project_execution_count = AppHelper::project_execution_count();
+        $project_confirm_count = AppHelper::project_confirm_count();
+        // FORM FITUR //
+        $fitur_mgr_count = AppHelper::fitur_mgr_count();
+        $fitur_it_count = AppHelper::fitur_it_count();
+        $fitur_it_mgr_count = AppHelper::fitur_it_mgr_count();
+        $fitur_execution_count = AppHelper::fitur_execution_count();
+        $fitur_confirm_count = AppHelper::fitur_confirm_count();
+        // FORM RELAYOUT //
+        $relayout_mgr_count = AppHelper::relayout_mgr_count();
+        $relayout_it_count = AppHelper::relayout_it_count();
+        $relayout_it_mgr_count = AppHelper::relayout_it_mgr_count();
+        $relayout_execution_count = AppHelper::relayout_execution_count();
+        $relayout_confirm_count = AppHelper::relayout_confirm_count();
+        // FORM NETWORK //
+        $network_mgr_count = AppHelper::network_mgr_count();
+        $network_it_count = AppHelper::network_it_count();
+        $network_it_mgr_count = AppHelper::network_it_mgr_count();
+        $network_execution_count = AppHelper::network_execution_count();
+        $network_confirm_count = AppHelper::network_confirm_count();
+        // ALL FORM //
         $manager_approvals_count = AppHelper::manager_approvals_count();
         $confirms_count = AppHelper::confirms_count();
         $it_approvals_count = AppHelper::it_approvals_count();
@@ -40,6 +89,55 @@ class AppHelperController extends Controller
             'folderaccess_it_count' => $folderaccess_it_count,
             'folderaccess_it_mgr_count' => $folderaccess_it_mgr_count,
             'folderaccess_execution_count' => $folderaccess_execution_count,
+            'folderaccess_confirm_count' => $folderaccess_confirm_count,
+
+            'newfolder_mgr_count' => $newfolder_mgr_count,
+            'newfolder_it_count' => $newfolder_it_count,
+            'newfolder_it_mgr_count' => $newfolder_it_mgr_count,
+            'newfolder_execution_count' => $newfolder_execution_count,
+            'newfolder_confirm_count' => $newfolder_confirm_count,
+
+            'software_mgr_count' => $software_mgr_count,
+            'software_it_count' => $software_it_count,
+            'software_it_mgr_count' => $software_it_mgr_count,
+            'software_execution_count' => $software_execution_count,
+            'software_confirm_count' => $software_confirm_count,
+
+            'hardware_mgr_count' => $hardware_mgr_count,
+            'hardware_it_count' => $hardware_it_count,
+            'hardware_it_mgr_count' => $hardware_it_mgr_count,
+            'hardware_execution_count' => $hardware_execution_count,
+            'hardware_confirm_count' => $hardware_confirm_count,
+
+            'vpn_mgr_count' => $vpn_mgr_count,
+            'vpn_it_count' => $vpn_it_count,
+            'vpn_it_mgr_count' => $vpn_it_mgr_count,
+            'vpn_execution_count' => $vpn_execution_count,
+            'vpn_confirm_count' => $vpn_confirm_count,
+
+            'project_mgr_count' => $project_mgr_count,
+            'project_it_count' => $project_it_count,
+            'project_it_mgr_count' => $project_it_mgr_count,
+            'project_execution_count' => $project_execution_count,
+            'project_confirm_count' => $project_confirm_count,
+
+            'fitur_mgr_count' => $fitur_mgr_count,
+            'fitur_it_count' => $fitur_it_count,
+            'fitur_it_mgr_count' => $fitur_it_mgr_count,
+            'fitur_execution_count' => $fitur_execution_count,
+            'fitur_confirm_count' => $fitur_confirm_count,
+
+            'relayout_mgr_count' => $relayout_mgr_count,
+            'relayout_it_count' => $relayout_it_count,
+            'relayout_it_mgr_count' => $relayout_it_mgr_count,
+            'relayout_execution_count' => $relayout_execution_count,
+            'relayout_confirm_count' => $relayout_confirm_count,
+
+            'network_mgr_count' => $network_mgr_count,
+            'network_it_count' => $network_it_count,
+            'network_it_mgr_count' => $network_it_mgr_count,
+            'network_execution_count' => $network_execution_count,
+            'network_confirm_count' => $network_confirm_count,
             
             'manager_approvals_count' => $manager_approvals_count,
             'confirms_count' => $confirms_count,

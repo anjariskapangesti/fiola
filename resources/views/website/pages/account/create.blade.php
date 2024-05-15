@@ -21,51 +21,6 @@
                     @csrf
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-header">General</h5>
-                        </div>
-                        <div class="card-body demo-vertical-spacing demo-only-element">
-                            <div class="row row-bordered g-0">
-                                <div class="col-md p-1">
-                                    <small class="text-light fw-medium d-block">Budget Type <span
-                                            class="text-danger">*</span></small>
-                                    <div class="form-check form-check-inline mt-3">
-                                        <input class="form-check-input" type="radio" name="budget_type" id="Budget"
-                                            value="Budget" {{ old('budget_type') == 'Budget' ? 'checked' : '' }} />
-                                        <label class="form-check-label" for="Budget">Budget</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="budget_type" id="Unbudget"
-                                            value="Unbudget" {{ old('budget_type') == 'Unbudget' ? 'checked' : '' }} />
-                                        <label class="form-check-label" for="Unbudget">Unbudget</label>
-                                    </div>
-                                </div>
-                                <div class="col-md p-1">
-                                    <small class="text-light fw-medium d-block">Form Type <span
-                                            class="text-danger">*</span></small>
-                                    <div class="form-check form-check-inline mt-3">
-                                        <input class="form-check-input" type="radio" name="form_type" id="Registration"
-                                            value="Registration"
-                                            {{ old('form_type') == 'Registration' ? 'checked' : '' }} />
-                                        <label class="form-check-label" for="Registration">Registration</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="form_type" id="Change"
-                                            value="Change" {{ old('form_type') == 'Change' ? 'checked' : '' }} disabled />
-                                        <label class="form-check-label" for="Change">Change</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="form_type" id="Deletion"
-                                            value="Deletion" {{ old('form_type') == 'Deletion' ? 'checked' : '' }}
-                                            disabled />
-                                        <label class="form-check-label" for="Deletion">Deletion</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="d-flex justify-content-between">
                             <h5 class="card-header">Applicant Information</h5>
                         </div>
                         <div class="card-body demo-vertical-spacing demo-only-element">
@@ -102,6 +57,54 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card mb-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-header">General</h5>
+                        </div>
+                        <div class="card-body demo-vertical-spacing demo-only-element">
+                            <div class="row row-bordered g-0">
+                                <div class="col-md p-1">
+                                    <small class="text-light fw-medium d-block">Budget Type <span
+                                            class="text-danger">*</span></small>
+                                    <div class="form-check form-check-inline mt-3">
+                                        <input class="form-check-input" type="radio" name="budget_type" id="Budget"
+                                            value="Budget" {{ old('budget_type') == 'Budget' ? 'checked' : '' }} required />
+                                        <label class="form-check-label" for="Budget">Budget</label>
+                                        <div class="invalid-feedback">*Mohon pilih Budget Type</div>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="budget_type" id="Unbudget"
+                                            value="Unbudget" {{ old('budget_type') == 'Unbudget' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="Unbudget">Unbudget</label>
+                                        <div class="invalid-feedback">*</div>
+                                    </div>
+                                </div>
+                                <div class="col-md p-1">
+                                    <small class="text-light fw-medium d-block">Form Type <span
+                                            class="text-danger">*</span></small>
+                                    <div class="form-check form-check-inline mt-3">
+                                        <input class="form-check-input" type="radio" name="form_type" id="Registration"
+                                            value="Registration"
+                                            {{ old('form_type') == 'Registration' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="Registration">Registration</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="form_type" id="Change"
+                                            value="Change" {{ old('form_type') == 'Change' ? 'checked' : '' }} disabled />
+                                        <label class="form-check-label" for="Change">Change</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="form_type" id="Deletion"
+                                            value="Deletion" {{ old('form_type') == 'Deletion' ? 'checked' : '' }}
+                                            disabled />
+                                        <label class="form-check-label" for="Deletion">Deletion</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="registration-section form-section" style="display: none;">
                         <div class="card mb-4">
                             <div class="d-flex justify-content-between">

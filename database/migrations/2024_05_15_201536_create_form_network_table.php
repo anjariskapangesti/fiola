@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('form_software', function (Blueprint $table) {
+        Schema::create('form_network', function (Blueprint $table) {
             $table->id();
             $table->string('no_reg')->unique();
-            $table->string('type', 20)->nullable();
-            $table->string('category', 20)->nullable();
-            $table->string('appname', 100)->nullable();
-            $table->string('installon', 100)->nullable();
+            $table->string('project_name')->nullable();
+            $table->string('lampiran')->nullable();
             $table->text('detail')->nullable();
-
+            
             $table->text('purpose')->nullable();
             $table->string('final_status',30)->nullable();
             $table->boolean('is_manager_approve')->nullable();
@@ -58,6 +56,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('form_software');
+        Schema::dropIfExists('form_network');
     }
 };

@@ -211,6 +211,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'NewFolderController@list')->name('new-folder.list');
                 Route::get('/list_ajax', 'NewFolderController@list_ajax')->name('new-folder.list_ajax');  
                 Route::post('/approve_form', 'NewFolderController@approve_form')->name('new-folder.approve_form');
+                Route::post('/delete_form', 'NewFolderController@delete_form')->name('new-folder.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'NewFolderController@manager_approval')->name('new-folder.manager_approval');
@@ -250,6 +251,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'SoftwareController@list')->name('software.list');
                 Route::get('/list_ajax', 'SoftwareController@list_ajax')->name('software.list_ajax'); 
                 Route::post('/approve_form', 'SoftwareController@approve_form')->name('software.approve_form');
+                Route::post('/delete_form', 'SoftwareController@delete_form')->name('software.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'SoftwareController@manager_approval')->name('software.manager_approval');

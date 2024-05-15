@@ -68,8 +68,31 @@
 
     <li class="menu-item {{ Route::is('website.software.' . $link) ? 'active' : '' }}">
         <a href="{{ route('website.software.' . $link) }}" class="menu-link">
-            <div data-i18n="Software Installation">{{ $text }} Software Installation
-            </div>
+            <div data-i18n="Software Installation">{{ $text }} Software Installation</div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::software_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="software_mgr_count">{{ App\Models\AppHelper::software_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::software_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="software_it_count">{{ App\Models\AppHelper::software_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::software_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="software_it_mgr_count">{{ App\Models\AppHelper::software_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::software_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="software_execution_count">{{ App\Models\AppHelper::software_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::software_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="software_confirm_count">{{ App\Models\AppHelper::software_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 

@@ -128,32 +128,52 @@
             $.ajax({
                 url: "{{ route('website.get_approval_count') }}",
                 success: function(response) {
-                    $('#account_mgr_count').text(response.account_mgr_count);
-                    $('#account_it_count').text(response.account_it_count);
-                    $('#account_it_mgr_count').text(response.account_it_mgr_count);
-                    $('#account_execution_count').text(response.account_execution_count);
+                    // Define the categories and suffixes
+                    const categories = ['account', 'folderaccess', 'newfolder', 'software', 'hardware', 'vpn',
+                        'project', 'fitur', 'relayout', 'network'
+                    ];
+                    const suffixes = ['mgr_count', 'it_count', 'it_mgr_count', 'execution_count',
+                        'confirm_count'
+                    ];
 
-                    $('#folderaccess_mgr_count').text(response.folderaccess_mgr_count);
-                    $('#folderaccess_it_count').text(response.folderaccess_it_count);
-                    $('#folderaccess_it_mgr_count').text(response.folderaccess_it_mgr_count);
-                    $('#folderaccess_execution_count').text(response.folderaccess_execution_count);
+                    // Loop through each category and suffix to update the counts
+                    categories.forEach(category => {
+                        suffixes.forEach(suffix => {
+                            const elementId = `#${category}_${suffix}`;
+                            if (response[`${category}_${suffix}`] !== undefined) {
+                                $(elementId).text(response[`${category}_${suffix}`]);
+                            }
+                        });
+                    });
 
+                    // Update other counts
                     $('#manager_approvals_count').text(response.manager_approvals_count);
                     $('#confirms_count').text(response.confirms_count);
                     $('#it_approvals_count').text(response.it_approvals_count);
                     $('#it_mgr_approvals_count').text(response.it_mgr_approvals_count);
                     $('#execution_count').text(response.execution_count);
 
-                    // Menampilkan atau menyembunyikan badge sesuai dengan kondisi
-                    if (response.manager_approvals_count > 0) {
-                        $('#manager_approvals_count').show();
-                    } else {
-                        $('#manager_approvals_count').hide();
-                    }
+                    // Show or hide badges based on counts
+                    const badgeCounts = {
+                        manager_approvals_count: response.manager_approvals_count,
+                        confirms_count: response.confirms_count,
+                        it_approvals_count: response.it_approvals_count,
+                        it_mgr_approvals_count: response.it_mgr_approvals_count,
+                        execution_count: response.execution_count
+                    };
+
+                    Object.keys(badgeCounts).forEach(key => {
+                        if (badgeCounts[key] > 0) {
+                            $(`#${key}`).show();
+                        } else {
+                            $(`#${key}`).hide();
+                        }
+                    });
                 }
             });
         }
     </script>
+
     @stack('scripts')
 </body>
 
