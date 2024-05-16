@@ -236,6 +236,7 @@ class SoftwareController extends Controller
             $software->manager_note = $request->manager_note;
             $software->manager_approve_by = Auth::user()->id;
             $software->is_finish = 0;
+            $software->is_confirm = 0;
             $return = "Reject Successfully";
         }
         $software->manager_approval_date = Carbon::now();
@@ -321,6 +322,7 @@ class SoftwareController extends Controller
             $software->final_status = 'IT Reject';
             $software->it_note = $request->it_note;
             $software->is_finish = 0;
+            $software->is_confirm = 0;
             $software->it_approve_by = Auth::user()->id;
             $return = "Reject Successfully";
         }
@@ -435,6 +437,7 @@ class SoftwareController extends Controller
             $software->it_mgr_note = $request->it_mgr_note;
             $software->it_mgr_approve_by = Auth::user()->id;
             $software->is_finish = 0;
+            $software->is_confirm = 0;
             $return = "Reject Successfully";
         }
         $software->it_mgr_approval_date = Carbon::now();
@@ -519,6 +522,7 @@ class SoftwareController extends Controller
             $return = "Progress Successfully";
         } else {
             $software->is_finish = 0;
+            $software->is_confirm = 0;
             $software->final_status = 'Rejected';
             $software->finish_note = $request->finish_note;
             $software->finish_by = Auth::user()->id;

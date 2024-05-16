@@ -21,19 +21,24 @@ class HardwareController extends Controller
     {
         $departments = Department::orderBy('name')->get();
 
-        $userDepartment = Auth::user()->departments;
-
         $auth = User::where('id', Auth::user()->id)
-                                    ->whereNull('nohp')
-                                    ->count(); 
-        
-        $data = Hardware::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+            ->whereNull('nohp')
+            ->count();
+
+        $data = Hardware::where('created_by', Auth::user()->id)
+                        ->where(function($query) {
+                                $query->where('final_status', 'LIKE', '%Reject%')
+                                    ->orWhere('final_status', 'Finished');
+                        })
+                        ->where('is_confirm', 0)
+                        ->count();
+
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
-        } else if($data > 0){
-            return redirect()->route('website.hardware.show_data_form')->with('info', 'Please confirm!');
-        }else{
-            return view('website.pages.hardware.create', compact(['departments', 'userDepartment']));
+        } else if ($data > 0) {
+            return redirect()->route('website.hardware.list')->with('info', 'Please confirm!');
+        } else {
+            return view('website.pages.hardware.create', compact('departments'));
         }
     }
 
@@ -41,30 +46,36 @@ class HardwareController extends Controller
     {
         $request->validate([
             'no_reg' => 'unique',
-            'category' => 'required' ,
-            'type' => 'required' ,  
-            'npk' => 'required' ,          
-            'fullname' => 'required' ,
-            'department' => 'required' ,
-            'phone' => 'required' ,
-            'due_date' => 'required' ,
-            'purpose' => 'required' ,
+            'budget_type' => 'required',
+            'type' => 'required',
+            'category' => 'required',
+            'npk' => 'nullable|min:6|required_if:category,Request|required_if:category,Transfer',
+            'fullname' => 'required_if:category,Request|required_if:category,Transfer',
+            'department' => 'required_if:category,Request|required_if:category,Transfer',
+            'phone' => 'required_if:category,Request|required_if:category,Transfer',
+            'purpose' => 'required_if:category,Request',
         ]);
 
         $year = date('y');
         $month = date('m');
         $lastForm = DB::table('form_hardware')
-                      ->select('no_reg')
-                      ->orderBy('no_reg', 'desc')
-                      ->first();
+            ->select('no_reg')
+            ->orderBy('no_reg', 'desc')
+            ->first();
         $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
-        
-        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
-        if ($lastMonth !== $month){
+
+        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';
+        if ($lastMonth !== $month) {
             $lastNumber = '000';
-        }            
-        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+        }
+        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);
         $no_reg = 'HWR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+        if ($request->is_email == false) {
+            $request->is_email = 0;
+        } else {
+            $request->is_email = 1;
+        }
 
         $isManagerApprove = null;
         $managerApprovalDate = null;
@@ -91,19 +102,19 @@ class HardwareController extends Controller
             $managerApprovalDate = null;
         }
 
-        try
-        {
+        try {
             $form_hardware = Hardware::create([
                 'no_reg' => $no_reg,
-                'category' => $request->category ,
-                'type' => $request->type ,
-                'npk' => $request->npk ,
-                'fullname' => $request->fullname ,
-                'department' => $request->department ,
-                'phone' => $request->phone ,
-                'due_date' => $request->due_date ,
-                'device_before' => $request->device_before ,
-                'purpose' => $request->purpose ,                
+                'budget_type' => $request->budget_type,
+                'type' => $request->type === 'Other' ? $request->other_type : $request->type,
+                'category' => $request->category,
+                'npk' => $request->npk,
+                'fullname' => $request->fullname,
+                'department' => $request->department,
+                'phone' => $request->phone,
+                'device_before' => $request->device_before,
+                'due_date' => Carbon::now()->addMonth()->format('Y-m-d'),
+                'purpose' => $request->purpose,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
@@ -112,39 +123,36 @@ class HardwareController extends Controller
                 'is_it_mgr_approve' => $isItManagerApprove,
                 'manager_approval_date' => $managerApprovalDate,
                 'it_approval_date' => $itApprovalDate,
-                'it_mgr_approval_date' => $itManagerApprovalDate,            
+                'it_mgr_approval_date' => $itManagerApprovalDate,
             ]);
-            
             $form_hardware->save();
 
-            $depts = Department::all();
-            return redirect()->route('website.hardware.show_data_form')->with('success', 'Success Create Form');
-        }
-        catch(\Exception $e)
-        {
+            return redirect()->route('website.hardware.list')->with('success', 'Create Successfully');
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
     public function edit($id)
     {
-        $hardware = Hardware::findOrFail($id);    
+        $hardware = Hardware::findOrFail($id);
         $departments = Department::orderBy('name')->get();
-    
+
         return view('website.pages.hardware.edit', compact('hardware', 'departments'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category' => 'required' ,
-            'type' => 'required' ,  
-            'npk' => 'required' ,          
-            'fullname' => 'required' ,
-            'department' => 'required' ,
-            'phone' => 'required' ,
-            'due_date' => 'required' ,
-            'purpose' => 'required' ,
+            'budget_type' => 'required',
+            'category' => 'required',
+            'type' => 'required',  
+            'npk' => 'required',          
+            'fullname' => 'required',
+            'department' => 'required',
+            'phone' => 'required',
+            'due_date' => 'required',
+            'purpose' => 'required',
         ]);
 
         $form_hardware = Hardware::findOrFail($id);
@@ -166,15 +174,15 @@ class HardwareController extends Controller
         try
         {
             $form_hardware->update([
-                'category' => $request->category ,
-                'type' => $request->type ,
-                'npk' => $request->npk ,
-                'fullname' => $request->fullname ,
-                'department' => $request->department ,
-                'phone' => $request->phone ,
-                'due_date' => $request->due_date ,
-                'device_before' => $request->device_before ,
-                'purpose' => $request->purpose ,                
+                'category' => $request->category,
+                'type' => $request->type,
+                'npk' => $request->npk,
+                'fullname' => $request->fullname,
+                'department' => $request->department,
+                'phone' => $request->phone,
+                'due_date' => $request->due_date,
+                'device_before' => $request->device_before,
+                'purpose' => $request->purpose,                
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
@@ -191,310 +199,436 @@ class HardwareController extends Controller
         }
     }
 
-    public function show_data_form()
+    public function list()
     {
-        $depts = Department::all();
-        return view('website.pages.hardware.show_data_form', compact(['depts']));
+        return view('website.pages.hardware.list');
     }
 
-    public function show_data_form_ajax(Request $request)
+    public function list_ajax(Request $request)
     {
-        
-        $data = Hardware::orderBy('id', 'DESC')
-                        ->where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');
+        $data = Hardware::where('created_by', Auth::user()->id)
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_form(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $hardware = Hardware::findOrFail($id);
-        if($type=='ok'){
-            $hardware->is_confirm=1;
-        }else{
-            $hardware->is_confirm=0;
+
+        if ($type == 'confirm') {
+            $hardware->is_confirm = 1;
+        } else {
+            $hardware->is_confirm = 0;
         }
         $hardware->save();
-        return "Confirm is Saved!";
+
+        return "Confirm Successfully";
     }
 
     public function delete_form(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
 
         $hardware = Hardware::findOrFail($id);
-        if($type=='ok'){
-            $hardware->delete();
-        }
-        return "Form deleted!";
+        $hardware->delete();
+
+        return "Delete Successfully";
     }
 
     // MGR //
 
-    public function show_manager_approval()
+    public function manager_approval()
     {
-        return view('website.pages.hardware.approval_manager');
+        return view('website.pages.hardware.manager_approval');
     }
 
-    public function show_manager_approval_ajax(Request $request)
+    public function manager_approval_ajax(Request $request)
     {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-        
-        $data = Hardware::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+
+        $data = Hardware::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
-        ->where('final_status', 'created')
-        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-        ->select('form_hardware.*', 'users.name as user_name');
-        // return $data;
+            ->where('final_status', 'created')
+            ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('created_at', 'ASC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function show_data_manager_approval()
+    public function manager_approve(Request $request)
     {
-        $depts = Department::all();
-        return view('website.pages.hardware.show_data_manager_approval', compact(['depts']));
-    }
+        $id = $request->id;
+        $type = $request->type;
 
-    public function show_data_manager_approval_ajax(Request $request)
-    {
-        // return Auth::user()->dept_id;
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-        
-        $data = Hardware::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-            $query->where('created_dept', $firstDepartmentId)
-                ->orWhere('created_dept', $lastDepartmentId);
-        })
-        ->where('is_manager_approve','1')
-        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-        ->select('form_hardware.*', 'users.name as user_name');
-        // return $data;
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function approve_manager(Request $request)
-    {
-        $id=$request->id;
-        
-        $type=$request->type;
-        
         $hardware = Hardware::findOrFail($id);
-        
-        if($type=='ok'){
-            $hardware->is_manager_approve=1;
-            $hardware->final_status='Manager Approve';
-            $hardware->manager_note=$request->manager_note;
-        }else{
-            $hardware->is_manager_approve=0;
-            $hardware->final_status='Manager Reject';
-            $hardware->manager_note=$request->manager_note;
-            $hardware->is_finish=0;
+
+        if ($type == 'approve') {
+            $hardware->is_manager_approve = 1;
+            $hardware->final_status = 'Manager Approve';
+            $hardware->manager_note = $request->manager_note;
+            $hardware->manager_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $hardware->is_manager_approve = 0;
+            $hardware->final_status = 'Manager Reject';
+            $hardware->manager_note = $request->manager_note;
+            $hardware->manager_approve_by = Auth::user()->id;
+            $hardware->is_finish = 0;
+            $hardware->is_confirm = 0;
+            $return = "Reject Successfully";
         }
-        $hardware->manager_approval_date= Carbon::now();
+        $hardware->manager_approval_date = Carbon::now();
         $hardware->save();
-        return "Request is Saved!";        
+        return $return;
+    }
+
+    public function manager_approved()
+    {
+        return view('website.pages.hardware.manager_approved');
+    }
+
+    public function manager_approved_ajax(Request $request)
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        $data = Hardware::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->whereNotNull('is_manager_approve')
+            ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('manager_approval_date', 'DESC');
+
+        return DataTables::eloquent($data)->make(true);
     }
 
     /// ITD APPROVE ///
 
-    public function show_it_approval()
+    public function it_approval()
     {
-        return view('website.pages.hardware.approval_it');
+        return view('website.pages.hardware.it_approval');
     }
 
-    public function show_it_approval_ajax(Request $request)
+    public function it_approval_ajax(Request $request)
     {
-        $data = Hardware::where('final_status','Manager Approve')
-                        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');
+        $data = Hardware::where('final_status', 'Manager Approve')
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function show_data_it_approval()
+    public function it_approve(Request $request)
     {
-        $depts = Department::all();
-        return view('website.pages.hardware.show_data_it_approval', compact(['depts']));
-    }
+        $id = $request->id;
+        $type = $request->type;
 
-    public function show_data_it_approval_ajax(Request $request)
-    {
-        // return Auth::user()->dept_id;
-        $data = Hardware::where('is_it_approve','1')
-                        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');
-        
-        // return $data;
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function approve_it(Request $request)
-    {
-        $id=$request->id;
-        $type=$request->type;
         $hardware = Hardware::findOrFail($id);
-        if($type=='ok'){
+        
+        if ($type == 'approve') {
+            $hardware->is_it_approve = 1;
+            $hardware->final_status = 'IT Approve';
+            $hardware->it_note = $request->it_note;
+            $hardware->it_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $hardware->is_it_approve = 0;
+            $hardware->is_confirm = 0;
+            $hardware->final_status = 'IT Reject';
+            $hardware->it_note = $request->it_note;
+            $hardware->is_finish = 0;
+            $hardware->it_approve_by = Auth::user()->id;
+            $return = "Reject Successfully";
+        }
+        $hardware->it_approval_date = Carbon::now();
+        $hardware->save();
+        
+        if ($request->notifikasi == 'Ya') {
             $isi = "FORM HARDWARE\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
+            $isi .= "\n\nType : " . $hardware->type;
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNama : *" . $hardware->fullname ."*";        
-            
-            $isi .= "\n\nDepartment : " . $hardware->department;
-            $isi .= "\nCategory : " . $hardware->category;
-            $isi .= "\nAlasan : " . $hardware->purpose;
-            $isi .= "\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
+            $isi .= "\nNama : *" . $hardware->createdBy->name . "*";
+            $isi .= "\nDepartment : *" . $hardware->createdBy->departments->pluck('code')->implode(', ') . "*";
+            $isi .= "\nPurpose : " . $hardware->purpose;
+            $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
-            
-            $nomorhpModel = new Alert();
-            $nomorhp = $nomorhpModel->getNoHpItMgr();
 
-            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $nomors = Alert::where('role', 'IT Manager')->get();
+
+            foreach ($nomors as $nomor) {
+                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
+                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
                 ));
+
                 $response = curl_exec($curl);
                 curl_close($curl);
-
-            $hardware->is_it_approve=1;
-            $hardware->final_status='IT Approve';
-            $hardware->it_note=$request->it_note;
-        }else{
-            $hardware->is_it_approve=0;
-            $hardware->final_status='IT Reject';
-            $hardware->it_note=$request->it_note;
-            $hardware->is_finish=0;
+            }
         }
-        $hardware->it_approval_date= Carbon::now();
-        $hardware->save();
-        return "Request is Saved!";
+        return $return;
     }
 
-    /// IT MGR ///
-    public function show_it_mgr_approval()
+    public function it_approved()
     {
-        return view('website.pages.hardware.approval_it_mgr');
+        return view('website.pages.hardware.it_approved');
     }
 
-    public function show_it_mgr_approval_ajax(Request $request)
+    public function it_approved_ajax(Request $request)
     {
-        $data = Hardware::where('final_status','IT Approve')
-                        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');
+        $data = Hardware::whereNotNull('is_it_approve')
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('manager_approval_date', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_it_mgr(Request $request)
+    /// IT MGR ///
+    public function it_mgr_approval()
     {
-        $id=$request->id;
-        $type=$request->type;
+        return view('website.pages.hardware.it_mgr_approval');
+    }
+
+    public function it_mgr_approval_ajax(Request $request)
+    {
+        $data = Hardware::where('final_status', 'IT Approve')
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function it_mgr_approve(Request $request)
+    {
+        $id = $request->id;
+        $type = $request->type;
+
         $hardware = Hardware::findOrFail($id);
-        if($type=='ok'){
-            $hardware->is_it_mgr_approve=1;
-            $hardware->final_status='IT MGR Approve';
-            $hardware->it_mgr_note=$request->it_mgr_note;
-        }else{
-            $hardware->is_it_mgr_approve=0;
-            $hardware->final_status='IT MGR Reject';
-            $hardware->it_mgr_note=$request->it_mgr_note;
-            $hardware->is_finish=0;
+
+        if ($type == 'approve') {
+            $hardware->is_it_mgr_approve = 1;
+            $hardware->final_status = 'IT MGR Approve';
+            $hardware->it_mgr_note = $request->it_mgr_note;
+            $hardware->it_mgr_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $hardware->is_it_mgr_approve = 0;
+            $hardware->final_status = 'IT MGR Reject';
+            $hardware->it_mgr_note = $request->it_mgr_note;
+            $hardware->it_mgr_approve_by = Auth::user()->id;
+            $hardware->is_finish = 0;
+            $hardware->is_confirm = 0;
+            $return = "Reject Successfully";
         }
-        $hardware->it_mgr_approval_date= Carbon::now();
+        $hardware->it_mgr_approval_date = Carbon::now();
         $hardware->save();
-        return "Request is Saved!";
+        return $return;
     }
 
-    public function show_data_it_mgr_approval()
+    public function it_mgr_approved()
     {
-        $depts = Department::all();
-        return view('website.pages.hardware.show_data_it_mgr_approval', compact(['depts']));
+        return view('website.pages.hardware.it_mgr_approved');
     }
 
-    public function show_data_it_mgr_approval_ajax(Request $request)
+    public function it_mgr_approved_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
-        $data = Hardware::where('is_it_mgr_approve','1')
-                        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');;
-        // return $data;
+        $data = Hardware::whereNotNull('is_it_mgr_approve')
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
     /// EXECUTION ///
-    public function show_execution()
+    public function execution()
     {
-        return view('website.pages.hardware.approval_execution');
+        return view('website.pages.hardware.execution');
     }
 
-    public function show_execution_ajax(Request $request)
+    public function execution_ajax(Request $request)
     {
-        $data = Hardware::where('final_status','IT MGR Approve')
-                        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');
-                        
+        $data = Hardware::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_execution(Request $request)
+    public function execution_approve(Request $request)
     {
-        $request->validate([
-            'device_after' => 'required' ,
-        ]);
+        $id = $request->id;
+        $type = $request->type;
 
-        $id=$request->id;
-        $type=$request->type;
         $hardware = Hardware::findOrFail($id);
-        
+
         $user = $hardware->createdBy;
 
-        if($type=='ok'){
+        if ($type == 'approve') {
+            $hardware->device_after = $request->device_after;
+            $hardware->is_finish = 1;
+            $hardware->is_confirm = 0;
+            $hardware->finish_by = Auth::user()->id;
+            $hardware->final_status = 'Finished';
+            $hardware->finish_note = $request->finish_note;
+            $hardware->finish_date = Carbon::now();
+            $return = "Approve Successfully";
+        } else if ($type == 'progress') {
+            $hardware->is_on_progress = 1;
+            $hardware->final_status = 'On Progress';
+            $hardware->on_progress_note = $request->on_progress_note;
+            $hardware->on_progress_by = Auth::user()->id;
+            $hardware->on_progress_date = Carbon::now();
+            $return = "Progress Successfully";
+        } else {
+            $hardware->is_finish = 0;
+            $hardware->is_confirm = 0;
+            $hardware->final_status = 'Rejected';
+            $hardware->finish_note = $request->finish_note;
+            $hardware->finish_by = Auth::user()->id;
+            $hardware->finish_date = Carbon::now();
+            $return = "Reject Successfully";
+        }
+        $hardware->save();
+
+        if ($request->notifikasi == 'Ya') {
             $isi = "FORM HARDWARE\n\n";
-                
-            $isi .= "Category : " . $hardware->category;
-            $isi .= "\nType : " . $hardware->type;
             
-            $isi .= "\n\nNPK : *" . $hardware->npk ."*";
-            $isi .= "\nName : *" . $hardware->fullname ."*";
+            $isi .= "Budget Type : " . $hardware->budget_type;
+            $isi .= "\nType : " . $hardware->type;
+            $isi .= "\nCategory : " . $hardware->category;
+            
+            $isi .= "\n\nNPK : *" . $hardware->npk . "*";
+            $isi .= "\nName : *" . $hardware->fullname . "*";
             $isi .= "\nDepartment : " . $hardware->department;
             $isi .= "\nPhone : " . $hardware->phone;
-            $isi .= "\nDue date : " . $hardware->due_date;
-            $isi .= "\nDevice Before : " . ($hardware->device_before ? $hardware->device_before : '-');
-            $isi .= "\nDevice After : " . $request->device_after;
+            $isi .= "\nID Device : " . $hardware->device_after;
             $isi .= "\nPurpose : " . $hardware->purpose;
-    
-            $isi .= "\n\nStatus : Finished";
-    
+            
+            $isi .= "\n\nStatus : *Finished*";
+            
             $isi .= "\n\nManager Note : " . $hardware->manager_note;
             $isi .= "\nITD Note : " . $hardware->it_note;
             $isi .= "\nITD Manager Note : " . $hardware->it_mgr_note;
-            $isi .= "\n\nNote : " . $request->finish_note;
-    
-            $nomor = $user->nohp;;
-    
+            $isi .= "\n\nFinish Note : " . $request->finish_note;
+            
+            $isi .= "\n\nExecution by : " . Auth::user()->name;
+            
+            $nomor = $user->nohp;
+            
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
+            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -503,40 +637,37 @@ class HardwareController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-                ));
-                $response = curl_exec($curl);
-                curl_close($curl);
-
-            $hardware->device_after=$request->device_after;
-            $hardware->is_finish=1;
-            $hardware->is_confirm=0;
-            $hardware->final_status='Finished';
-            $hardware->finish_note=$request->finish_note;
-        }else{
-            $hardware->is_finish=0;
-            $hardware->final_status='Rejected';
-            $hardware->finish_note=$request->finish_note;
+                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
         }
-        $hardware->finish_date= Carbon::now();
-        $hardware->save();
 
-        return "Request is Saved!";
+        return $return;
     }
 
-    public function show_data_execution()
+    public function finished()
     {
-        $depts = Department::all();
-        return view('website.pages.hardware.show_data_execution', compact(['depts']));
+        return view('website.pages.hardware.finished');
     }
 
-    public function show_data_execution_ajax(Request $request)
+    public function finished_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
-        $data = Hardware::where('is_finish','1')->orWhere('is_finish','0')
-                        ->join('users', 'form_hardware.created_by', '=', 'users.id')
-                        ->select('form_hardware.*', 'users.name as user_name');
-        // return $data;
+        $data = Hardware::whereNotNull('is_finish')
+                        ->join('public.users', 'form_hardware.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_hardware.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_hardware.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_hardware.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_hardware.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_hardware.finish_by', 'finish.id')
+                        ->select('form_hardware.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 }

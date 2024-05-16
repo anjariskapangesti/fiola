@@ -100,6 +100,30 @@
         <a href="{{ route('website.hardware.' . $link) }}" class="menu-link">
             <div data-i18n="Request Device">{{ $text }} Request Device
             </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::hardware_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="hardware_mgr_count">{{ App\Models\AppHelper::hardware_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::hardware_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="hardware_it_count">{{ App\Models\AppHelper::hardware_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::hardware_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="hardware_it_mgr_count">{{ App\Models\AppHelper::hardware_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::hardware_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="hardware_execution_count">{{ App\Models\AppHelper::hardware_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::hardware_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="hardware_confirm_count">{{ App\Models\AppHelper::hardware_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 
@@ -107,6 +131,30 @@
         <a href="{{ route('website.vpn.' . $link) }}" class="menu-link">
             <div data-i18n="VPN">{{ $text }} VPN
             </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::vpn_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="vpn_mgr_count">{{ App\Models\AppHelper::vpn_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::vpn_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="vpn_it_count">{{ App\Models\AppHelper::vpn_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::vpn_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="vpn_it_mgr_count">{{ App\Models\AppHelper::vpn_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::vpn_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="vpn_execution_count">{{ App\Models\AppHelper::vpn_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::vpn_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="vpn_confirm_count">{{ App\Models\AppHelper::vpn_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 
@@ -114,6 +162,30 @@
         <a href="{{ route('website.project.' . $link) }}" class="menu-link">
             <div data-i18n="Request Project">{{ $text }} Request Project
             </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::project_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="project_mgr_count">{{ App\Models\AppHelper::project_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::project_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="project_it_count">{{ App\Models\AppHelper::project_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::project_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="project_it_mgr_count">{{ App\Models\AppHelper::project_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::project_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="project_execution_count">{{ App\Models\AppHelper::project_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::project_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="project_confirm_count">{{ App\Models\AppHelper::project_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 
@@ -121,6 +193,30 @@
         <a href="{{ route('website.fitur.' . $link) }}" class="menu-link">
             <div data-i18n="Request Fitur">{{ $text }} Request Fitur
             </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::fitur_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="fitur_mgr_count">{{ App\Models\AppHelper::fitur_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::fitur_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="fitur_it_count">{{ App\Models\AppHelper::fitur_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::fitur_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="fitur_it_mgr_count">{{ App\Models\AppHelper::fitur_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::fitur_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="fitur_execution_count">{{ App\Models\AppHelper::fitur_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::fitur_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="fitur_confirm_count">{{ App\Models\AppHelper::fitur_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 
@@ -128,6 +224,30 @@
         <a href="{{ route('website.relayout.' . $link) }}" class="menu-link">
             <div data-i18n="Relayout">{{ $text }} Relayout
             </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::relayout_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="relayout_mgr_count">{{ App\Models\AppHelper::relayout_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::relayout_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="relayout_it_count">{{ App\Models\AppHelper::relayout_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::relayout_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="relayout_it_mgr_count">{{ App\Models\AppHelper::relayout_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::relayout_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="relayout_execution_count">{{ App\Models\AppHelper::relayout_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::relayout_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="relayout_confirm_count">{{ App\Models\AppHelper::relayout_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 
@@ -135,6 +255,30 @@
         <a href="{{ route('website.network.' . $link) }}" class="menu-link">
             <div data-i18n="Network Change">{{ $text }} Network Change
             </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::network_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="network_mgr_count">{{ App\Models\AppHelper::network_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::network_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="network_it_count">{{ App\Models\AppHelper::network_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::network_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="network_it_mgr_count">{{ App\Models\AppHelper::network_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::network_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="network_execution_count">{{ App\Models\AppHelper::network_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::network_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="network_confirm_count">{{ App\Models\AppHelper::network_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 </ul>

@@ -313,6 +313,7 @@ class AccountController extends Controller
             $account->manager_note = $request->manager_note;
             $account->manager_approve_by = Auth::user()->id;
             $account->is_finish = 0;
+            $account->is_confirm = 0;
             $return = "Reject Successfully";
         }
         $account->manager_approval_date = Carbon::now();
@@ -395,6 +396,7 @@ class AccountController extends Controller
             $return = "Approve Successfully";
         } else {
             $account->is_it_approve = 0;
+            $account->is_confirm = 0;
             $account->final_status = 'IT Reject';
             $account->it_note = $request->it_note;
             $account->is_finish = 0;
@@ -511,6 +513,7 @@ class AccountController extends Controller
             $account->it_mgr_note = $request->it_mgr_note;
             $account->it_mgr_approve_by = Auth::user()->id;
             $account->is_finish = 0;
+            $account->is_confirm = 0;
             $return = "Reject Successfully";
         }
         $account->it_mgr_approval_date = Carbon::now();
@@ -596,6 +599,7 @@ class AccountController extends Controller
             $return = "Progress Successfully";
         } else {
             $account->is_finish = 0;
+            $account->is_confirm = 0;
             $account->final_status = 'Rejected';
             $account->finish_note = $request->finish_note;
             $account->finish_by = Auth::user()->id;

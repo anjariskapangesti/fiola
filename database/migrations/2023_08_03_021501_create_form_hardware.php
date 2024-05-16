@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('no_reg')->unique();
             $table->string('budget_type', 20)->nullable();
-            $table->string('category', 20)->nullable();
             $table->string('type', 20)->nullable();
+            $table->string('category', 20)->nullable();
             $table->string('npk', 6)->nullable();
             $table->string('fullname', 100)->nullable();
             $table->string('department', 100)->nullable();

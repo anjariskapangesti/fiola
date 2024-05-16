@@ -15,6 +15,8 @@ use App\Models\Hardware;
 use App\Models\Vpn;
 use App\Models\Project;
 use App\Models\Fitur;
+use App\Models\Relayout;
+use App\Models\Network;
 use App\Models\Alert;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -354,6 +356,26 @@ class HomeController extends Controller
         $fitur_it_mgr_count = Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
         $fitur_execution_count = Fitur::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
+        $relayout_mgr_count = Relayout::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $relayout_it_count = Relayout::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $relayout_it_mgr_count = Relayout::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $relayout_execution_count = Relayout::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
+        $network_mgr_count = Network::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+                                    
+        $network_it_count = Network::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $network_it_mgr_count = Network::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $network_execution_count = Network::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
         /// DIAGRAM BATANG ///
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
@@ -366,32 +388,40 @@ class HomeController extends Controller
         $account_rejected = Account::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
 
         $folderaccess_total = FolderAccess::count();
-        $folderaccess_finished = FolderAccess::where('final_status', 'LIKE', '%Finished%')->count();
-        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Reject%')->count();
+        $folderaccess_finished = FolderAccess::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
 
         $newfolder_total = NewFolder::count();
-        $newfolder_finished = NewFolder::where('final_status', 'LIKE', '%Finished%')->count();
-        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Reject%')->count();   
-                                
+        $newfolder_finished = NewFolder::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();   
+
         $software_total = Software::count();
-        $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->count();
-        $software_rejected = Software::where('final_status', 'LIKE', '%Reject%')->count(); 
+        $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $software_rejected = Software::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count(); 
 
         $hardware_total = Hardware::count();
-        $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->count();
-        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Reject%')->count(); 
+        $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count(); 
 
         $vpn_total = Vpn::count();
-        $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->count();
-        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Reject%')->count(); 
+        $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count(); 
 
         $project_total = Project::count();
-        $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->count();
-        $project_rejected = Project::where('final_status', 'LIKE', '%Reject%')->count();
+        $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $project_rejected = Project::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
 
         $fitur_total = Fitur::count();
-        $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->count();
-        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Reject%')->count();
+        $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+
+        $relayout_total = Relayout::count();
+        $relayout_finished = Relayout::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $relayout_rejected = Relayout::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+
+        $network_total = Network::count();
+        $network_finished = Network::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $network_rejected = Network::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
@@ -417,7 +447,11 @@ class HomeController extends Controller
                     'project_mgr_count', 'project_it_count', 'project_it_mgr_count', 'project_execution_count',
                     'project_total', 'project_finished', 'project_rejected',
                     'fitur_mgr_count', 'fitur_it_count', 'fitur_it_mgr_count', 'fitur_execution_count',
-                    'fitur_total', 'fitur_finished', 'fitur_rejected',));
+                    'fitur_total', 'fitur_finished', 'fitur_rejected',
+                    'relayout_mgr_count', 'relayout_it_count', 'relayout_it_mgr_count', 'relayout_execution_count',
+                    'relayout_total', 'relayout_finished', 'relayout_rejected',
+                    'network_mgr_count', 'network_it_count', 'network_it_mgr_count', 'network_execution_count',
+                    'network_total', 'network_finished', 'network_rejected',));
         }
     }    
 

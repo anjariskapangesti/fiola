@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'Form Hardware'])
+@extends('website.layouts.main', ['title' => 'Form Account'])
 
 @section('content')
     <div class="pagetitle">
@@ -6,7 +6,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item "><a href="#">Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Hardware</a></li>
+                <li class="breadcrumb-item active"><a href="#">Form Account</a></li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -23,7 +23,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form method="post" action="{{ route('website.hardware.update', ['id' => $hardware->id]) }}" class="needs-validation" novalidate>
+            <form method="post" action="{{ route('website.account.update', ['id' => $account->id]) }}"
+                class="needs-validation" novalidate>
                 @csrf
                 <div class="col-lg-12">
                     <div class="card mb-2">
@@ -31,38 +32,37 @@
                             <h5 class="card-title">General</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label for="category">Category : </label>
-                                    <br>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="category" id="categoryType1" value="request" required {{ $hardware->category === 'request' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="categoryType1">Request</label>
-                                        <div class="invalid-feedback">Please select category</div>
+                                        <input class="form-check-input" type="radio" name="budget_type" id="budgetType1"
+                                            value="budget" required
+                                            {{ $account->budget_type === 'budget' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="budgetType1" data-toggle="tooltip"
+                                            data-placement="top">Budget</label>
+                                        <div class="invalid-feedback">Please select budget type</div>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="category" id="categoryType2" value="change" {{ $hardware->category === 'change' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="categoryType2">Change</label>
+                                        <input class="form-check-input" type="radio" name="budget_type" id="budgetType2"
+                                            value="unbudget" {{ $account->budget_type === 'unbudget' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="budgetType2" data-toggle="tooltip"
+                                            data-placement="top">Un Budget</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="type">Type : </label>
-                                    <br>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="inlineRadioType1" value="cpu" required {{ $hardware->type === 'cpu' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="inlineRadioType1">CPU</label>
-                                        <div class="invalid-feedback">Please select type</div>
+                                        <input class="form-check-input" type="radio" name="form_type"
+                                            id="inlineRadioType1" value="registration" required
+                                            {{ $account->form_type === 'registration' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="inlineRadioType1" data-toggle="tooltip"
+                                            data-placement="top" title="Baru">Registration</label>
+                                        <div class="invalid-feedback">Please select request type</div>
                                     </div>
-                                    {{-- <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="inlineRadioType2" value="change">
-                                        <label class="form-check-label" for="inlineRadioType2">Change</label>
-                                        <div class="invalid-feedback">-</div>
-                                    </div> --}}
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="type"
-                                            id="inlineRadioType3" value="laptop" {{ $hardware->type === 'laptop' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="inlineRadioType3">Laptop</label>
+                                        <input class="form-check-input" type="radio" name="form_type"
+                                            id="inlineRadioType3" value="deletion"
+                                            {{ $account->form_type === 'deletion' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="inlineRadioType3" data-toggle="tooltip"
+                                            data-placement="top" title="Hapus">Deletion</label>
                                         <div class="invalid-feedback">-</div>
                                     </div>
                                 </div>
@@ -71,67 +71,88 @@
                     </div>
                     <div class="card mb-2">
                         <div class="card-body">
-                            <h5 class="card-title">User Information</h5>
+                            <h5 class="card-title">User Information (Data User baru yang akan dibuat)</h5>
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
-                                        maxlength="6" required value="{{ $hardware->npk }}">
+                                    <input type="text" class="form-control" placeholder="NPK (000000)" name="npk"
+                                        maxlength="6" required data-toggle="tooltip" data-placement="top"
+                                        title="6 Digit NPK" value="{{ $account->npk }}">
                                     <div class="invalid-feedback">Please enter your NPK</div>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        maxlength="60" required onkeyup="formatFullName(this)" value="{{ $hardware->fullname }}">
+                                        maxlength="60" required onkeyup="formatFullName(this)"
+                                        value="{{ $account->fullname }}" data-toggle="tooltip" data-placement="top"
+                                        title="Nama Lengkap">
                                     <div class="invalid-feedback">Please enter your Full Name</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <select name="department" class="form-control" required>
-                                        <option selected value="{{ $hardware->department }}">{{ $hardware->department }}</option>
+                                    <select name="department" class="form-control" required data-toggle="tooltip"
+                                        data-placement="top" title="Pilih Department">
+                                        <option selected value="{{ $account->department }}">{{ $account->department }}
+                                        </option>
                                         @foreach ($departments as $department)
-                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
+                                            @if ($department->id < 19 || $department->id > 27)
+                                                <option value="{{ $department->name }}">{{ $department->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback">Please choose your department</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Phone Number" name="phone"
-                                        maxlength="14" required value="{{ $hardware->phone }}">
+                                    <input type="text" class="form-control" placeholder="Phone Number (0812345678910)"
+                                        name="phone" maxlength="14" required data-toggle="tooltip"
+                                        data-placement="top" title="No. HP" value="{{ $account->phone }}">
                                     <div class="invalid-feedback">Please enter your phone number</div>
-                                </div>
-                                {{-- <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Company Name (If External/Non AIIA)"
-                                        name="company" maxlength="100">
-                                </div> --}}
-                                <div class="col-md-6">
-                                    <div class="input-group has-validation">
-                                        <span class="input-group-text" id="inputGroupPrepend">Due Date</span>
-                                        <input type="date" name="due_date" class="form-control" required value="{{ $hardware->due_date }}">
-                                        <div class="invalid-feedback">Please enter your due date</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6" id="divDeviceBefore" style="display:none;">
-                                    <input type="text" class="form-control" placeholder="ID Device Before (NTB-001 or CPU-001)" name="device_before"
-                                        maxlength="60" onkeyup="convertToUppercase(this)" value="{{ $hardware->device_before }}">
-                                    <div class="invalid-feedback">Please enter your ID Device Before</div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-floating mb-3">
                                         <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
-                                            name="purpose" maxlength="100" required>{{ $hardware->purpose }}</textarea>
+                                            name="purpose" maxlength="100" required data-toggle="tooltip" data-placement="top" title="Alasan membuat akun">{{ $account->purpose }}</textarea>
                                         <label for="floatingTextarea">Purpose</label>
                                         <div class="invalid-feedback">Please fill your purpose</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>                    
-                    
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Email & Active Directory</h5>
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control"
+                                        placeholder="Login Username (FirstName.LastName)" name="ad_name" maxlength="60"
+                                        required onkeyup="convertToLowercase(this)" data-toggle="tooltip"
+                                        data-placement="top" title="2 Kata (depan.belakang)"
+                                        value="{{ $account->ad_name }}">
+                                    <div class="invalid-feedback">Please enter your username</div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                            name="is_email" value="true" {{ $account->is_email ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="flexSwitchCheckDefault"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Buatkan Email Outlook">Create Email for Outlook (Mail address will be
+                                            decided by ITD)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-check-label text-danger" for="note_ad_name">*Username may change
+                                        depending on the availability on the server</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card">
                         <div class="card-body">
                             @include('website.layouts.approval_flow')
                         </div>
                     </div>
                     {{-- <input type="hidden" name="created_dept" value="{{ $userDepartment->id }}"> --}}
-                    <button class="btn btn-success" type="submit" id="submitButton">Save & Submit Request</button>
+                    <button class="btn btn-success" type="submit">Save & Submit Request</button>
                 </div>
             </form>
         </div>
@@ -163,29 +184,12 @@
             }
             element.value = words.join(" ");
         }
+    </script>
 
-        function convertToUppercase(inputElement) {
-            let inputValue = inputElement.value;
-            inputElement.value = inputValue.toUpperCase();
-        }
-
-        const categoryType1 = document.getElementById("categoryType1");
-        const categoryType2 = document.getElementById("categoryType2");
-        const divDeviceBefore = document.getElementById("divDeviceBefore");
-
-        // Add event listener to the radio buttons
-        categoryType1.addEventListener("change", toggleDivDeviceBefore);
-        categoryType2.addEventListener("change", toggleDivDeviceBefore);
-
-        function toggleDivDeviceBefore() {
-            if (categoryType2.checked) {
-                divDeviceBefore.style.display = "block";
-            } else {
-                divDeviceBefore.style.display = "none";
-            }
-        }
-
-        // Trigger the initial state when the page loads
-        toggleDivDeviceBefore();
+    <script>
+        // Aktifkan tooltip Bootstrap
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
     </script>
 @endpush

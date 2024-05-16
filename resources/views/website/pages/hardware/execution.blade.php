@@ -1,0 +1,528 @@
+@extends('website.layouts.main', ['title' => 'Execution Hardware'])
+
+@section('content')
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="card">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-header">Device Request/Transfer/Scrap Form (FRM-ITD-S13-002-00)</h5>
+            </div>
+            <div class="row">
+                @if (Session::get('info'))
+                    <div class="alert alert-info">
+                        {{ Session::get('info') }}
+                    </div>
+                @endif
+            </div>
+            <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
+                <table class="table table-bordered" id="app_table" width="100%">
+                    <thead>
+                        <tr>
+                            <th width="50px">No</th>
+                            <th>No. Reg</th>
+                            <th>Requestor</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th width="150px">Option</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="approveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Approve Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to approve this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
+                    <input type="hidden" id="id_approve">
+                    <label class="col-sm-12 col-form-label" for="device_before_approve">
+                        <div class="form-floating form-floating-outline">
+                            <input type="text" class="form-control" id="device_before_approve"
+                                name="device_before_approve" value="{{ old('device_before_approve') }}"
+                                placeholder="NTB-001 / CPU-001" disabled />
+                            <label for="device_before_approve">ID Device Before <span class="text-danger">*</span></label>
+                        </div>
+                    </label>
+                    <label class="col-sm-12 col-form-label" for="device_after_approve">
+                        <div class="form-floating form-floating-outline">
+                            <input type="text" class="form-control" id="device_after_approve" name="device_after_approve"
+                                value="{{ old('device_after_approve') }}" placeholder="NTB-001 / CPU-001" />
+                            <label for="device_after_approve">ID Device After <span class="text-danger">*</span></label>
+                        </div>
+                    </label>
+                    <div class="form-floating form-floating-outline mt-3">
+                        <textarea class="form-control auto-resize" id="finish_note_approve" name="finish_note_approve"
+                            placeholder="add note if there are additional" style="height: 410px;">{{ old('finish_note_approve') }}</textarea>
+                        <label for="finish_note_approve">Finish Note</label>
+                    </div>
+                    <label class="col-sm-6 col-form-label" for="notifikasi_approve">
+                        <small class="text-light fw-medium d-block">Kirim Notifikasi Whatsapp?</small>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="notifikasi_approve"
+                                name="notifikasi_approve" {{ old('notifikasi_approve') ? 'checked' : '' }} checked />
+                            <label class="form-check-label" for="notifikasi_approve">(Tidak/Ya)</label>
+                        </div>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="btn-approve">Yes, Approve!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="progressModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Progress Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to progress this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_progress">
+                    <input type="hidden" id="id_progress">
+                    <div class="form-floating form-floating-outline">
+                        <textarea class="form-control auto-resize" id="on_progress_note_progress" name="on_progress_note_progress"
+                            placeholder="add note if there are additional">{{ old('on_progress_note_progress') }}</textarea>
+                        <label for="on_progress_note_progress">Progress Note</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-info" id="btn-progress" disabled>Yes, Progress!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reject Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to reject this item?
+                    <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
+                    <input type="hidden" id="id_reject">
+                    <div class="form-floating form-floating-outline">
+                        <textarea class="form-control auto-resize" id="finish_note_reject" name="finish_note_reject"
+                            placeholder="add note if there are additional">{{ old('finish_note_reject') }}</textarea>
+                        <label for="finish_note_reject">Reject Note</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="btn-reject" disabled>Yes, Reject!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
+@endpush
+
+@push('scripts')
+    <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+        const textarea = document.querySelector('.auto-resize');
+
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            @if (session()->has('success'))
+                toastr['success']("{{ Session('success') }}")
+            @endif
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            var table = $('#app_table').DataTable({
+                'lengthChange': true,
+                'processing': true,
+                'serverSide': false,
+                'orderable': true,
+                ajax: {
+                    url: "{{ route('website.hardware.execution_ajax') }}",
+                },
+                columns: [{
+                        data: null,
+                        orderable: true,
+                        searchable: true,
+                        render: function(data, type, row, meta) {
+                            var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
+                            return rowIndex;
+                        },
+                        className: "text-center" // Menetapkan kelas CSS 'text-center'
+                    },
+                    {
+                        data: 'no_reg',
+                        name: 'no_reg',
+                    },
+                    {
+                        data: 'requestor',
+                        name: 'requestor',
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row, meta) {
+                            return moment(data).format('YYYY-MM-DD HH:mm:ss');
+                        }
+                    },
+                    {
+                        data: 'final_status',
+                        name: 'final_status',
+                        render: function(data, type, row, meta) {
+                            if (data == 'created') {
+                                return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
+                            } else if (data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
+                            } else if (data == 'IT Approve') {
+                                return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
+                            } else if (data == 'IT MGR Approve') {
+                                return `<span class="badge bg-warning">Waiting Execution</span>`;
+                            } else if (data == 'On Progress') {
+                                return `<span class="badge bg-info">On Progress</span>`;
+                            } else if (data == 'Finished') {
+                                return `<span class="badge bg-success">Finished</span>`;
+                            } else {
+                                return `<span class="badge bg-danger">${data}</span>`;
+                            }
+                        }
+                    },
+                    {
+                        className: 'detail',
+                        orderable: false,
+                        data: null,
+                        content: '',
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return `<button class="badge bg-primary">Klik untuk Detail dan Approve</button>`;
+                        }
+                    },
+                ],
+            });
+
+            function format(d) {
+                return (
+                    `
+                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
+                                <td>${d.budget_type} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Type</td>
+                                <td>${d.type} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Category</td>
+                                <td>${d.category} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
+                                <td>${d.npk}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
+                                <td>${d.fullname}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
+                                <td>${d.department} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
+                                <td>${d.phone} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Delivery Due Date</td>
+                                <td>${d.due_date} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">ID Device Before</td>
+                                <td>${d.device_before === null ? '-' : d.device_before} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">ID Device After</td>
+                                <td>
+                                    ${d.device_after === null ? '<i>Akan diinformasikan setelah disetujui</i>' : (d.device_after !== null ? d.device_after : '')}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.purpose} </td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>Manager Approval Date</td>
+                                <td>${d.manager_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Approval By</td>
+                                <td>${d.manager_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Note</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Approval Date</td>
+                                <td>${d.it_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Approval By</td>
+                                <td>${d.it_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Note</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                            </tr>  
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Manager Approval Date</td>
+                                <td>${d.it_mgr_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Manager Approval By</td>
+                                <td>${d.it_mgr_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Manager Note</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>On Progress Date</td>
+                                <td>${d.on_progress_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>On Progress By</td>
+                                <td>${d.on_progress_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>On Progress Note</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" class="text-end">
+                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
+                                    <button class="btn btn-info btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Progress</button>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}" data-ad_name="${d.ad_name}" data-is_email="${d.is_email}" data-npk="${d.npk}" data-device_before="${d.device_before}">Approve</button>
+                                </th>
+                            </tr>    
+                        </tfoot>
+                    </table>
+                    `
+                );
+            }
+
+            $('#app_table tbody').on('click', 'td.detail', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+            // APPROVE
+            $('#app_table').on('click', '.btn-table-approve', function() {
+                var id_approve = $(this).data('id');
+                var no_reg_approve = $(this).data('no_reg');
+                var ad_name_approve = $(this).data('ad_name');
+                var npk_approve = $(this).data('npk');
+                var is_email_approve = $(this).data('is_email');
+                var device_before_approve = $(this).data('device_before');
+                var approveButton = document.getElementById('btn-approve');
+                var currentYear = new Date().getFullYear();
+
+                approveButton.removeAttribute('disabled');
+                approveButton.innerHTML = 'Yes, Approve!';
+                $('#id_approve').val(id_approve)
+                $('#no_reg_approve').val(no_reg_approve)
+                $('#device_before_approve').val(device_before_approve ? device_before_approve : "-");
+                // $('#finish_note_approve').val('');
+
+                var noteText =
+                    'Form Hardware telah selesai. Silahkan ambil device ke Meja ITD di Office Lt. 2\n\n';
+
+                noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
+                $('#finish_note_approve').val(noteText);
+            })
+
+            $('#btn-approve').on('click', function() {
+                let id_approve = $('#id_approve').val();
+                let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
+                    'Tidak';
+                let device_after_approve = $('#device_after_approve').val();
+                $.ajax({
+                    url: "{{ route('website.hardware.execution_approve') }}",
+                    type: "POST",
+                    data: {
+                        id: id_approve,
+                        finish_note: $('#finish_note_approve').val(),
+                        notifikasi: notifikasi_approve,
+                        device_after: device_after_approve,
+                        type: 'approve',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        getApprovalCount();
+                        $('#approveModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+            // ON PROGRESS
+            $('#on_progress_note_progress').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-progress').removeAttr('disabled');
+                else
+                    $('#btn-progress').attr('disabled', 'disabled');
+            });
+
+            $('#app_table').on('click', '.btn-table-progress', function() {
+                var id_progress = $(this).data('id');
+                var no_reg_progress = $(this).data('no_reg');
+                var approveButton = document.getElementById('btn-progress');
+
+                approveButton.innerHTML = 'Yes, Progress!';
+                $('#id_progress').val(id_progress)
+                $('#no_reg_progress').val(no_reg_progress)
+                $('#on_progress_note_progress').val('');
+            })
+
+            $('#btn-progress').on('click', function() {
+                let id_progress = $('#id_progress').val();
+                $.ajax({
+                    url: "{{ route('website.hardware.execution_approve') }}",
+                    type: "POST",
+                    data: {
+                        id: id_progress,
+                        on_progress_note: $('#on_progress_note_progress').val(),
+                        type: 'progress',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        getApprovalCount();
+                        $('#progressModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+            // REJECT
+            $('#finish_note_reject').on('keyup', function() {
+                if ($(this).val() != "")
+                    $('#btn-reject').removeAttr('disabled');
+                else
+                    $('#btn-reject').attr('disabled', 'disabled');
+            });
+
+            $('#app_table').on('click', '.btn-table-reject', function() {
+                var id_reject = $(this).data('id');
+                var no_reg_reject = $(this).data('no_reg');
+                var approveButton = document.getElementById('btn-reject');
+
+                approveButton.innerHTML = 'Yes, Reject!';
+                $('#id_reject').val(id_reject)
+                $('#no_reg_reject').val(no_reg_reject)
+                $('#finish_note_reject').val('');
+            })
+
+            $('#btn-reject').on('click', function() {
+                let id_reject = $('#id_reject').val();
+                $.ajax({
+                    url: "{{ route('website.hardware.execution_approve') }}",
+                    type: "POST",
+                    data: {
+                        id: id_reject,
+                        finish_note: $('#finish_note_reject').val(),
+                        type: 'reject',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        getApprovalCount();
+                        $('#rejectModal').modal('hide')
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var approveButton = document.getElementById('btn-approve');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            approveButton.addEventListener('click', function() {
+                approveButton.setAttribute('disabled', 'true');
+                approveButton.innerHTML = spinner + ' Approving...';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var progressButton = document.getElementById('btn-progress');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            progressButton.addEventListener('click', function() {
+                progressButton.setAttribute('disabled', 'true');
+                progressButton.innerHTML = spinner + ' Progressing...';
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var rejectButton = document.getElementById('btn-reject');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            rejectButton.addEventListener('click', function() {
+                rejectButton.setAttribute('disabled', 'true');
+                rejectButton.innerHTML = spinner + ' Rejecting...';
+            });
+        });
+    </script>
+@endpush

@@ -98,9 +98,9 @@ class FolderAccessController extends Controller
             $year = date('y');
             $month = date('m');
             $lastForm = DB::table('form_folder_access')
-                          ->select('no_reg')
-                          ->orderBy('no_reg', 'desc')
-                          ->first();
+                        ->select('no_reg')
+                        ->orderBy('no_reg', 'desc')
+                        ->first();
             $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
             
             $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
@@ -263,6 +263,7 @@ class FolderAccessController extends Controller
             $folderaccess->manager_note = $request->manager_note;
             $folderaccess->manager_approve_by = Auth::user()->id;
             $folderaccess->is_finish = 0;
+            $folderaccess->is_confirm = 0;
             $return = "Reject Successfully";
         }
         $folderaccess->manager_approval_date = Carbon::now();
@@ -354,6 +355,7 @@ class FolderAccessController extends Controller
             $folderaccess->final_status = 'IT Reject';
             $folderaccess->it_note = $request->it_note;
             $folderaccess->is_finish = 0;
+            $folderaccess->is_confirm = 0;
             $folderaccess->it_approve_by = Auth::user()->id;
             $return = "Reject Successfully";
         }
@@ -471,6 +473,7 @@ class FolderAccessController extends Controller
             $folderaccess->it_mgr_note = $request->it_mgr_note;
             $folderaccess->it_mgr_approve_by = Auth::user()->id;
             $folderaccess->is_finish = 0;
+            $folderaccess->is_confirm = 0;
             $return = "Reject Successfully";
         }
         $folderaccess->it_mgr_approval_date = Carbon::now();
@@ -562,6 +565,7 @@ class FolderAccessController extends Controller
             $return = "Progress Successfully";
         } else {
             $folderaccess->is_finish = 0;
+            $folderaccess->is_confirm = 0;
             $folderaccess->final_status = 'Rejected';
             $folderaccess->finish_note = $request->finish_note;
             $folderaccess->finish_by = Auth::user()->id;
