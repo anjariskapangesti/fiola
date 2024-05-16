@@ -23,10 +23,9 @@ class SubFolderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|regex:/^[^\s]+$/',
+            'name' => 'required',
             'folder_id' => 'required',
         ], [
-            'name.regex' => 'The name may not contain spaces.',
             'folder_id.required' => 'The folder name field is required.',
         ]);
         
