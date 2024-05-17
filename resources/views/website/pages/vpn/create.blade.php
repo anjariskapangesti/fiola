@@ -1,132 +1,157 @@
-@extends('website.layouts.main', ['title' => 'Form VPN'])
+@extends('website.layouts.main', ['title' => 'Create Form VPN'])
 
 @section('content')
-    <div class="pagetitle">
-        <h4>PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form VPN</a></li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-    <section class="section">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="py-1">PERMIT TO USE VIRTUAL PRIVATE NETWORK (VPN) (FRM-ITD-S13-035-00)</h4>
         <div class="row">
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Ooops..</strong>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            <form method="post" action="{{ route('website.vpn.store') }}" class="needs-validation" novalidate id="myForm">
-                @csrf
-                <div class="col-lg-12">                                        
-                    
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Applicant Information</h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk"
-                                        maxlength="6" required>
-                                    <div class="invalid-feedback">Please enter your NPK</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname"
-                                        maxlength="60" required onkeyup="formatFullName(this)">
-                                    <div class="invalid-feedback">Please enter your Full Name</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <select name="department" class="form-control" required>
-                                        <option selected disabled value="">-- Choose Department --</option>
-                                        @foreach ($departments as $department)
-                                            <option value="{{ $department->name }}">{{ $department->name }} </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">Please choose your department</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Phone Number" name="phone"
-                                        maxlength="14" required>
-                                    <div class="invalid-feedback">Please enter your phone number</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email@aiia.co.id" name="email" maxlength="60" required onkeyup="updateUsername(this)">
-                                    <div class="invalid-feedback">Please enter your email</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group has-validation">
-                                        <span class="input-group-text" id="inputGroupPrepend">AIIA\</span>
-                                        <input type="text" name="username" class="form-control" placeholder="username (automatically when typing email)" required readonly>
-                                        <div class="invalid-feedback">Please enter your username</div>
+            <div class="col-md-12">
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Ooops..</strong>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                <form method="post" action="{{ route('website.vpn.store') }}" class="needs-validation" id="myForm"
+                    novalidate>
+                    @csrf
+                    <div class="card mb-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-header">Applicant Information</h5>
+                        </div>
+                        <div class="card-body demo-vertical-spacing demo-only-element">
+                            <div class="row mb-3">
+                                <label class="col-sm-6 col-form-label" for="npk_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="npk_pic" name="npk_pic"
+                                            value="{{ Auth::user()->npk }}" placeholder="000000" disabled />
+                                        <label for="npk_pic">NPK <span class="text-danger">*</span></label>
                                     </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-floating mb-3">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"
-                                            name="purpose" maxlength="100" required></textarea>
-                                        <label for="floatingTextarea">Purpose</label>
-                                        <div class="invalid-feedback">Please fill your purpose</div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="name_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="name_pic" name="name_pic"
+                                            value="{{ Auth::user()->name }}" placeholder="Device Name" disabled />
+                                        <label for="name_pic">Name <span class="text-danger">*</span></label>
                                     </div>
-                                </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="department_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="department_pic" name="department_pic"
+                                            value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}"
+                                            placeholder="Department Name" disabled />
+                                        <label for="department_pic">Department <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="phone_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="phone_pic" name="phone_pic"
+                                            value="{{ Auth::user()->nohp }}" placeholder="081234567890" disabled />
+                                        <label for="phone_pic">Phone Number <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
                             </div>
                         </div>
-                    </div>   
+                    </div>
 
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Remarks</h5>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-12">
-                                    <b>1. Kami berkomitmen menjaga informasi rahasia berkaitan dengan dibukanya akses terhadap jaringan AIIA menggunakan VPN kepada pihak mana pun juga tanpa terkecuali, tanpa persetujuan tertulis dari Manajemen PT. Aisin Indonesia Automotive</b>
-                                    <br>We are committed to keep confidential information in access to  accordance with opened the access to AIIA networks using VPN to any party without exception, without the express written consent of the Management of PT. Aisin Indonesia Automotive.
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-12">
-                                    <b>2. Kami berkomitmen tidak membocorkan username dan password login VPN serta tidak menyalahgunakan hak akses yang diberikan kepada kami untuk kepentingan diluar kepentingan perusahaan.</b>
-                                    <br>We are committed not to leak username and password vpn account and we does not abuse the access rights for interests beyond the company's interests.
-                                </div>
-                            </div>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-12">
-                                    <b>3. Kami bersedia bertanggung jawab secara hukum bila terjadi kebocoran informasi rahasia dan/atau penyalahgunaan hak akses yang kami terima yang mengakibatkan kerugian bagi perusahaan baik selama menjadi karyawan ataupun setelah hubungan kerja dengan PT. Aisin Indonesia Automotive berakhir.</b>
-                                    <br>We are liable legally if there are leakage of confidential information and / or misuse of access rights that it can cause loss for the company either during as the employee or after have working relationship with PT. Aisin Indonesia Automotive is over.
-                                </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <b>4. Otorisasi penggunaan VPN ini secara umum hanya untuk Manager Up. Namun untuk kebutuhan khusus, manager diperbolehkan menunjuk staff untuk memperoleh otorisasi penggunaan VPN ini.</b>
-                                    <br>Commonly, this authorization is only for manager up. However for special purposes, manager is allowed to assign a staf to get authorization of using the VPN.
-                                </div>
+                    <div class="card mb-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-header">User Information</h5>
+                        </div>
+                        <div class="card-body demo-vertical-spacing demo-only-element">
+                            <div class="row mb-3">
+                                <label class="col-sm-6 col-form-label" for="npk">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="npk" name="npk"
+                                            value="{{ old('npk') }}" placeholder="000000" maxlength="6" />
+                                        <label for="npk">NPK <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="fullname">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="fullname" name="fullname"
+                                            value="{{ old('fullname') }}" placeholder="Full Name"
+                                            onkeyup="formatFullName(this)" />
+                                        <label for="fullname">Name <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="department">
+                                    <div class="form-floating form-floating-outline">
+                                        <select class="form-select" id="department" name="department" aria-label="Select">
+                                            <option selected disabled value="">-- Choose Department --</option>
+                                            @foreach ($departments as $department)
+                                                @php
+                                                    $selected = '';
+                                                    if (old('department') && old('department') == $department->name) {
+                                                        $selected = 'selected';
+                                                    }
+                                                @endphp
+                                                <option value="{{ $department->name }}" {{ $selected }}>
+                                                    {{ $department->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label for="department">Department Name <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="phone">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="phone" name="phone"
+                                            value="{{ old('phone') }}" placeholder="081234567890" maxlength="15" />
+                                        <label for="phone">Phone Number <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="email">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            value="{{ old('email') }}" placeholder="user@aiia.co.id"
+                                            onkeyup="updateUsername(this)" />
+                                        <label for="email">Email <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="username">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="username" name="username"
+                                            value="{{ old('username') }}" placeholder="user" readonly
+                                            style="background-color: #efeff0    ;" />
+                                        <label for="username">Username <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                                <label class="col-sm-12 col-form-label" for="purpose">
+                                    <div class="form-floating form-floating-outline">
+                                        <textarea class="form-control auto-resize" id="purpose" name="purpose" placeholder="Reason">{{ old('purpose') }}</textarea>
+                                        <label for="purpose">Purpose <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="card">
-                        <div class="card-body">
-                            @include('website.layouts.approval_flow')
-                        </div>
+
+                    @include('website.layouts.approval_flow')
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
                     </div>
-                    {{-- <input type="hidden" name="created_dept" value="{{ $userDepartment->id }}"> --}}
-                    <button class="btn btn-success" type="submit" id="submitButton">Save & Submit Request</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </section>
-
+    </div>
 @endsection
 
 @push('styles')
-    <link href="{{ asset('vendor/bs-step/bs-step.css') }}" rel="stylesheet">
 @endpush
 
 @push('scripts')
+    <script>
+        const textarea = document.querySelector('.auto-resize');
+
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
     <script>
         $(document).ready(function() {
 
@@ -146,6 +171,30 @@
             }
             element.value = words.join(" ");
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('myForm');
+            var submitButton = document.getElementById('submitButton');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    event.preventDefault();
+                } else {
+                    submitButton.setAttribute('disabled', 'true');
+                    submitButton.innerHTML = spinner + ' Submitting...';
+                }
+            });
+
+            form.addEventListener('input', function() {
+                if (form.checkValidity()) {
+                    submitButton.removeAttribute('disabled');
+                    submitButton.innerHTML = 'Submit';
+                }
+            });
+        });
     </script>
     <script>
         function updateUsername(emailInput) {

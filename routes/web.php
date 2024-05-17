@@ -333,6 +333,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'VpnController@list')->name('vpn.list');
                 Route::get('/list_ajax', 'VpnController@list_ajax')->name('vpn.list_ajax');   
                 Route::post('/approve_form', 'VpnController@approve_form')->name('vpn.approve_form');
+                Route::post('/delete_form', 'VpnController@delete_form')->name('vpn.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'VpnController@manager_approval')->name('vpn.manager_approval');
@@ -528,10 +529,9 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], fu
     Route::get('login', 'AuthController@showLoginPage')->name('auth.login');
     Route::post('login', 'AuthController@authenticate')->name('auth.authenticate');
 
-   Route::middleware('auth.admin')->group(function () {
-       Route::get('/', 'HomeController@index')->name('home');
-       Route::get('/home', 'HomeController@index')->name('auth.home');
-       Route::get('logout', 'AuthController@logout')->name('auth.logout');
-   });
-
+    Route::middleware('auth.admin')->group(function () {
+        Route::get('/', 'HomeController@index')->name('home');
+        Route::get('/home', 'HomeController@index')->name('auth.home');
+        Route::get('logout', 'AuthController@logout')->name('auth.logout');
+    });
 });

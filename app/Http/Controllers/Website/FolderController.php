@@ -30,7 +30,7 @@ class FolderController extends Controller
             Folder::create([
                 'name' => $request->name ,                
             ]);
-            return redirect('/folder/list')->with('success', 'Create Successfully');
+            return redirect()->route('website.folder.list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {

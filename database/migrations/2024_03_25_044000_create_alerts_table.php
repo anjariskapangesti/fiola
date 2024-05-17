@@ -23,9 +23,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('department')
-                  ->references('id')
-                  ->on('public.departments')
-                  ->onDelete('cascade');
+                    ->references('id')
+                    ->on('public.departments')
+                    ->onDelete('cascade');
         });
     }
 
