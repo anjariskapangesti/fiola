@@ -373,6 +373,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'NetworkController@list')->name('network.list');
                 Route::get('/list_ajax', 'NetworkController@list_ajax')->name('network.list_ajax');   
                 Route::post('/approve_form', 'NetworkController@approve_form')->name('network.approve_form');
+                Route::post('/delete_form', 'NetworkController@delete_form')->name('network.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'NetworkController@manager_approval')->name('network.manager_approval');

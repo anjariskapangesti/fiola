@@ -234,7 +234,7 @@
 
             xAxis: {
                 categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN', 'Project',
-                    'Fitur'
+                    'Fitur', 'Relayout', 'Network',
                 ]
             },
 
@@ -264,14 +264,16 @@
                 color: '#47c363',
                 data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }},
                     {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }},
-                    {{ $project_finished }}, {{ $fitur_finished }}
+                    {{ $project_finished }}, {{ $fitur_finished }}, {{ $relayout_finished }},
+                    {{ $network_finished }}
                 ],
             }, {
                 name: 'Rejected',
                 color: '#fc544b',
                 data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }},
                     {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }},
-                    {{ $project_rejected }}, {{ $fitur_rejected }}
+                    {{ $project_rejected }}, {{ $fitur_rejected }}, {{ $relayout_rejected }},
+                    {{ $network_rejected }}
                 ],
             }]
         });

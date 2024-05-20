@@ -17,6 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('no_reg')->unique();
             $table->string('project_name')->nullable();
+            $table->timestamp('date_access_start')->nullable();
+            $table->timestamp('date_access_end')->nullable();
+            $table->string('rack')->nullable();
+            $table->string('device')->nullable();
+            $table->string('down_time')->nullable();
             $table->string('lampiran')->nullable();
             $table->text('detail')->nullable();
             

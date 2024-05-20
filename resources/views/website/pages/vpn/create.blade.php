@@ -130,6 +130,51 @@
                         </div>
                     </div>
 
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Remarks</h5>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <b>1. Kami berkomitmen menjaga informasi rahasia berkaitan dengan dibukanya akses
+                                        terhadap jaringan AIIA menggunakan VPN kepada pihak mana pun juga tanpa terkecuali,
+                                        tanpa persetujuan tertulis dari Manajemen PT. Aisin Indonesia Automotive</b>
+                                    <br>We are committed to keep confidential information in access to accordance with
+                                    opened the access to AIIA networks using VPN to any party without exception, without the
+                                    express written consent of the Management of PT. Aisin Indonesia Automotive.
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <b>2. Kami berkomitmen tidak membocorkan username dan password login VPN serta tidak
+                                        menyalahgunakan hak akses yang diberikan kepada kami untuk kepentingan diluar
+                                        kepentingan perusahaan.</b>
+                                    <br>We are committed not to leak username and password vpn account and we does not abuse
+                                    the access rights for interests beyond the company's interests.
+                                </div>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <b>3. Kami bersedia bertanggung jawab secara hukum bila terjadi kebocoran informasi
+                                        rahasia dan/atau penyalahgunaan hak akses yang kami terima yang mengakibatkan
+                                        kerugian bagi perusahaan baik selama menjadi karyawan ataupun setelah hubungan kerja
+                                        dengan PT. Aisin Indonesia Automotive berakhir.</b>
+                                    <br>We are liable legally if there are leakage of confidential information and / or
+                                    misuse of access rights that it can cause loss for the company either during as the
+                                    employee or after have working relationship with PT. Aisin Indonesia Automotive is over.
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <b>4. Otorisasi penggunaan VPN ini secara umum hanya untuk Manager Up. Namun untuk
+                                        kebutuhan khusus, manager diperbolehkan menunjuk staff untuk memperoleh otorisasi
+                                        penggunaan VPN ini.</b>
+                                    <br>Commonly, this authorization is only for manager up. However for special purposes,
+                                    manager is allowed to assign a staf to get authorization of using the VPN.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     @include('website.layouts.approval_flow')
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-success" id="submitButton">Submit</button>

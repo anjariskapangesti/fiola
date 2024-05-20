@@ -11,6 +11,11 @@ class Network extends Model
     protected $fillable = [  
         'no_reg',
         'project_name',
+        'date_access_start',
+        'date_access_end',
+        'rack',
+        'device',
+        'down_time',
         'lampiran',
         'detail',
 

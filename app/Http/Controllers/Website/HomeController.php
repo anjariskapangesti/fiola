@@ -30,250 +30,62 @@ class HomeController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
         /// FINISHED ///
-        $account_create_finished = Account::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-
-        $folderaccess_create_finished = FolderAccess::where('created_by', Auth::user()->id)
-                                                ->where('final_status', 'Finished')
-                                                ->count();
-
-        $newfolder_create_finished = NewFolder::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-
-        $software_create_finished = Software::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-
-        $hardware_create_finished = Hardware::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-
-        $vpn_create_finished = Vpn::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-
-        $project_create_finished = Project::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-                                    
-        $fitur_create_finished = Fitur::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Finished')
-                                        ->count();
-
-        $total_form_finished = $account_create_finished + $folderaccess_create_finished + $newfolder_create_finished + $software_create_finished + $hardware_create_finished + $vpn_create_finished + $project_create_finished + $fitur_create_finished;
-        /// REJECTED ///
-        $account_create_rejected = Account::where('created_by', Auth::user()->id)
-                                          ->where(function ($query) {
-                                              $query->where('final_status', 'LIKE', '%Rejected%')
-                                                  ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                  ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                  ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                          })
-                                          ->count();
-
-        $folderaccess_create_rejected = FolderAccess::where('created_by', Auth::user()->id)
-                                                    ->where(function ($query) {
-                                                        $query->where('final_status', 'LIKE', '%Rejected%')
-                                                            ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                            ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                            ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                                    })
-                                                    ->count();
-
-        $newfolder_create_rejected = NewFolder::where('created_by', Auth::user()->id)
-                                              ->where(function ($query) {
-                                                  $query->where('final_status', 'LIKE', '%Rejected%')
-                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                              })
-                                              ->count();
-
-        $software_create_rejected = Software::where('created_by', Auth::user()->id)
-                                              ->where(function ($query) {
-                                                  $query->where('final_status', 'LIKE', '%Rejected%')
-                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                              })
-                                              ->count();
-                                              
-        $hardware_create_rejected = Hardware::where('created_by', Auth::user()->id)
-                                              ->where(function ($query) {
-                                                  $query->where('final_status', 'LIKE', '%Rejected%')
-                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                              })
-                                              ->count();
-
-        $vpn_create_rejected = Vpn::where('created_by', Auth::user()->id)
-                                              ->where(function ($query) {
-                                                  $query->where('final_status', 'LIKE', '%Rejected%')
-                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                              })
-                                              ->count();
-
-        $project_create_rejected = Project::where('created_by', Auth::user()->id)
-                                              ->where(function ($query) {
-                                                  $query->where('final_status', 'LIKE', '%Rejected%')
-                                                      ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                      ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                              })
-                                              ->count();
-
-        $fitur_create_rejected = Fitur::where('created_by', Auth::user()->id)
-                                            ->where(function ($query) {
-                                                $query->where('final_status', 'LIKE', '%Rejected%')
-                                                    ->orWhere('final_status', 'LIKE', '%Manager Reject%')
-                                                    ->orWhere('final_status', 'LIKE', '%IT Reject%')
-                                                    ->orWhere('final_status', 'LIKE', '%IT MGR Reject%');
-                                            })
-                                            ->count();
-
-        $total_form_rejected = $account_create_rejected + $folderaccess_create_rejected + $newfolder_create_rejected + $software_create_rejected + $hardware_create_rejected + $vpn_create_rejected + $project_create_rejected + $fitur_create_rejected;
-        /// MGR ///
-        $account_create_mgr = Account::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-
-        $folderaccess_create_mgr = FolderAccess::where('created_by', Auth::user()->id)
-                                                ->where('final_status', 'created')
-                                                ->count();
-
-        $newfolder_create_mgr = NewFolder::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-
-        $software_create_mgr = Software::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-                                        
-        $hardware_create_mgr = Hardware::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-                                        
-        $vpn_create_mgr = Vpn::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-
-        $project_create_mgr = Project::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-                                        
-        $fitur_create_mgr = Fitur::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'created')
-                                        ->count();
-
-        $total_form_mgr = $account_create_mgr + $folderaccess_create_mgr + $newfolder_create_mgr + $software_create_mgr + $hardware_create_mgr + $vpn_create_mgr + $project_create_mgr + $fitur_create_mgr;
-        /// IT ///
-        $account_create_it = Account::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $folderaccess_create_it = FolderAccess::where('created_by', Auth::user()->id)
-                                                ->where('final_status', 'Manager Approve')
-                                                ->count();
-
-        $newfolder_create_it = NewFolder::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $software_create_it = Software::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $hardware_create_it = Hardware::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $vpn_create_it = Vpn::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $project_create_it = Project::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $fitur_create_it = Fitur::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'Manager Approve')
-                                        ->count();
-
-        $total_form_it = $account_create_it + $folderaccess_create_it + $newfolder_create_it + $software_create_it + $hardware_create_it + $vpn_create_it + $project_create_it + $fitur_create_it;
-        /// IT MGR ///
-        $account_create_it_mgr = Account::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $folderaccess_create_it_mgr = FolderAccess::where('created_by', Auth::user()->id)
-                                                ->where('final_status', 'IT Approve')
-                                                ->count();
-
-        $newfolder_create_it_mgr = NewFolder::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $software_create_it_mgr = Software::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $hardware_create_it_mgr = Hardware::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $vpn_create_it_mgr = Vpn::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $project_create_it_mgr = Project::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $fitur_create_it_mgr = Fitur::where('created_by', Auth::user()->id)
-                                        ->where('final_status', 'IT Approve')
-                                        ->count();
-
-        $total_form_it_mgr = $account_create_it_mgr + $folderaccess_create_it_mgr + $newfolder_create_it_mgr + $software_create_it_mgr + $hardware_create_it_mgr + $vpn_create_it_mgr + $project_create_it_mgr + $fitur_create_it_mgr;
-        /// EXECUTION ///
-        $account_create_execution = Account::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $folderaccess_create_execution = FolderAccess::where('created_by', Auth::user()->id)
-                                                ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                                ->count();
-
-        $newfolder_create_execution = NewFolder::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $software_create_execution = Software::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $hardware_create_execution = Hardware::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $vpn_create_execution = Vpn::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $project_create_execution = Project::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $fitur_create_execution = Fitur::where('created_by', Auth::user()->id)
-                                        ->whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                                        ->count();
-
-        $total_form_execution = $account_create_execution + $folderaccess_create_execution + $newfolder_create_execution + $software_create_execution + $hardware_create_execution + $vpn_create_execution + $project_create_execution + $fitur_create_execution;
-
+        $models = [
+            'Account',
+            'FolderAccess',
+            'NewFolder',
+            'Software',
+            'Hardware',
+            'Vpn',
+            'Project',
+            'Fitur',
+            'Relayout',
+            'Network',
+        ];
+    
+        $finalStatusConditions = [
+            'Finished' => ['Finished'],
+            'Rejected' => ['%Rejected%', '%Manager Reject%', '%IT Reject%', '%IT MGR Reject%'],
+            'created' => ['created'],
+            'Manager Approve' => ['Manager Approve'],
+            'IT Approve' => ['IT Approve'],
+            'Execution' => ['IT MGR Approve', 'On Progress'],
+        ];
+    
+        $results = [];
+    
+        foreach ($finalStatusConditions as $statusKey => $conditions) {
+            $results[$statusKey] = 0;
+    
+            foreach ($models as $model) {
+                $modelClass = 'App\\Models\\' . $model;
+                $query = $modelClass::where('created_by', Auth::user()->id);
+    
+                if ($statusKey === 'Rejected') {
+                    $query->where(function ($query) use ($conditions) {
+                        foreach ($conditions as $condition) {
+                            $query->orWhere('final_status', 'LIKE', $condition);
+                        }
+                    });
+                } elseif ($statusKey === 'Execution') {
+                    $query->whereIn('final_status', $conditions);
+                } else {
+                    // Check if conditions is not empty
+                    if (!empty($conditions)) {
+                        $query->where('final_status', $conditions[0]);
+                    }
+                }
+    
+                $results[$statusKey] += $query->count();
+            }
+        }
+    
+        $total_form_finished = $results['Finished'];
+        $total_form_rejected = $results['Rejected'];
+        $total_form_mgr = $results['created'];
+        $total_form_it = $results['Manager Approve'];
+        $total_form_it_mgr = $results['IT Approve'];
+        $total_form_execution = $results['Execution'];
 
         /// MASTER ///
         $account_mgr_count = Account::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
@@ -457,56 +269,32 @@ class HomeController extends Controller
 
     public function home_ajax()
     {
-        $formAccountData = DB::table('form_account')
-                            ->select('form_account.no_reg', 'form_account.final_status', 'form_account.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                            ->join('public.users', 'form_account.created_by', 'public.users.id')
-                            ->join('public.departments', 'form_account.created_dept', 'public.departments.id')
-                            ->get();
-    
-        $formFolderAccessData = DB::table('form_folder_access')
-                                    ->select('form_folder_access.no_reg', 'form_folder_access.final_status', 'form_folder_access.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_folder_access.created_dept', 'public.departments.id')
-                                    ->get();
+        $tables = [
+            'form_account' => 'form_account',
+            'form_folder_access' => 'form_folder_access',
+            'form_new_folder' => 'form_new_folder',
+            'form_software' => 'form_software',
+            'form_hardware' => 'form_hardware',
+            'form_vpn' => 'form_vpn',
+            'form_project' => 'form_project',
+            'form_fitur' => 'form_fitur',
+            'form_relayout' => 'form_relayout',
+            'form_network' => 'form_network',
+        ];
 
-         $formNewFolderData = DB::table('form_new_folder')
-                                    ->select('form_new_folder.no_reg', 'form_new_folder.final_status', 'form_new_folder.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_new_folder.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_new_folder.created_dept', 'public.departments.id')
-                                    ->get();
+        $mergedData = collect();
 
-        $formSoftwareData = DB::table('form_software')
-                                    ->select('form_software.no_reg', 'form_software.final_status', 'form_software.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_software.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_software.created_dept', 'public.departments.id')
-                                    ->get();
+        foreach ($tables as $table) {
+            $data = DB::table($table)
+                ->select("$table.no_reg", "$table.final_status", "$table.created_at", 'users.name as created_by', 'departments.code as created_dept')
+                ->join('public.users', "$table.created_by", '=', 'public.users.id')
+                ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                ->get();
 
-        $formHardwareData = DB::table('form_hardware')
-                                    ->select('form_hardware.no_reg', 'form_hardware.final_status', 'form_hardware.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_hardware.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_hardware.created_dept', 'public.departments.id')
-                                    ->get();
+            $mergedData = $mergedData->concat($data);
+        }
 
-        $formVpnData = DB::table('form_vpn')
-                                    ->select('form_vpn.no_reg', 'form_vpn.final_status', 'form_vpn.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_vpn.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_vpn.created_dept', 'public.departments.id')
-                                    ->get();
-
-        $formProjectData = DB::table('form_project')
-                                    ->select('form_project.no_reg', 'form_project.final_status', 'form_project.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_project.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_project.created_dept', 'public.departments.id')
-                                    ->get();
-
-        $formFiturData = DB::table('form_fitur')
-                                    ->select('form_fitur.no_reg', 'form_fitur.final_status', 'form_fitur.created_at', 'users.name as created_by', 'departments.code as created_dept')
-                                    ->join('public.users', 'form_fitur.created_by', 'public.users.id')
-                                    ->join('public.departments', 'form_fitur.created_dept', 'public.departments.id')
-                                    ->get();
-    
-        $mergedData = $formAccountData->concat($formFolderAccessData)->concat($formNewFolderData)->concat($formSoftwareData)->concat($formHardwareData)->concat($formVpnData)->concat($formFiturData)->concat($formProjectData);
-    
         return response()->json(['data' => $mergedData]);
     }
+
 }
