@@ -63,6 +63,30 @@
     <li class="menu-item {{ Route::is('website.new-folder.' . $link) ? 'active' : '' }}">
         <a href="{{ route('website.new-folder.' . $link) }}" class="menu-link">
             <div data-i18n="New Folder">{{ $text }} New Folder</div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::newfolder_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="newfolder_mgr_count">{{ App\Models\AppHelper::newfolder_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::newfolder_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="newfolder_it_count">{{ App\Models\AppHelper::newfolder_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::newfolder_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="newfolder_it_mgr_count">{{ App\Models\AppHelper::newfolder_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::newfolder_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="newfolder_execution_count">{{ App\Models\AppHelper::newfolder_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::newfolder_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="newfolder_confirm_count">{{ App\Models\AppHelper::newfolder_confirm_count() }}</span>
+            @endif
         </a>
     </li>
 

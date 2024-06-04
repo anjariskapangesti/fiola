@@ -11,8 +11,7 @@ class NewFolder extends Model
     protected $table = 'form_new_folder';
     protected $fillable = [     
         'no_reg',   
-        'foldername',
-        'mainpath',
+        'form_type',
         'purpose',
         'final_status',
         'is_manager_approve',
@@ -32,9 +31,14 @@ class NewFolder extends Model
         'created_dept'
     ];
 
-    public function form_new_folder_access()
+    public function form_new_folder_path()
     {
-        return $this->hasMany(NewFolderAccess::class, 'new_folder_id', 'id');
+        return $this->hasMany(NewFolderPath::class, 'new_folder_id', 'id');
+    }
+
+    public function form_new_folder_user()
+    {
+        return $this->hasMany(NewFolderUser::class, 'new_folder_id', 'id');
     }
 
     public function createdBy()

@@ -152,11 +152,7 @@ class FolderAccessController extends Controller
 
     public function list()
     {
-        $departmetns = Department::all();
-        $folders = Folder::orderBy('name', 'ASC')->get();
-        $subfolders = SubFolder::orderBy('name', 'ASC')->get();
-
-        return view('website.pages.folder-access.list', compact(['departmetns', 'folders', 'subfolders']));
+        return view('website.pages.folder-access.list');
     }
 
     public function list_ajax(Request $request)
@@ -662,7 +658,7 @@ class FolderAccessController extends Controller
         $data['subfolders'] = SubFolder::where('folder_id', $request->folder_id)
                                     ->orderBy('id')
                                     ->get(['name']);
-  
+
         return response()->json($data);
     }
 }

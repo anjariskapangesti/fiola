@@ -18,7 +18,7 @@ class CreateFormNewFolder extends Migration
             $table->string('no_reg')->unique();
 
             $table->text('purpose')->nullable();
-            $table->string('final_status',30)->nullable();
+            $table->string('final_status', 30)->nullable();
             $table->boolean('is_manager_approve')->nullable();
             $table->boolean('is_it_approve')->nullable();
             $table->boolean('is_it_mgr_approve')->nullable();
