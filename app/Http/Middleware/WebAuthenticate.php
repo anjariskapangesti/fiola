@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
 
 class WebAuthenticate extends Authenticate
 {
@@ -15,10 +14,6 @@ class WebAuthenticate extends Authenticate
     */
     protected function redirectTo($request)
     {
-        if (!Auth::check()) {
-            return route('website.auth.login');
-        }
-
-        return $next($request);
+        return route('website.auth.login');
     }
 }
