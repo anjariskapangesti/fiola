@@ -26,6 +26,7 @@ class AuthController extends Controller
          */
         public function authenticate(LoginRequest $request)
         {
+            $company = $request->input('company');
             $login = $request->input('email');
             $password = $request->input('password');
             
@@ -34,7 +35,8 @@ class AuthController extends Controller
             
             $credentials = [
                 $field => $login,
-                'password' => $password
+                'password' => $password,
+                'company' => $company,
             ];
             
             if (Auth::attempt($credentials)) {

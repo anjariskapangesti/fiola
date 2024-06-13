@@ -80,6 +80,13 @@
                             action="{{ route('website.auth.authenticate') }}">
                             @csrf
                             <div class="form-floating form-floating-outline mb-3">
+                                <select name="company" id="company" class="form-control">
+                                    <option value="AIIA">AIIA</option>
+                                    <option value="AII">AII</option>
+                                </select>
+                                <label for="company">Company</label>
+                            </div>
+                            <div class="form-floating form-floating-outline mb-3">
                                 <input type="text" class="form-control" id="email" name="email"
                                     placeholder="Enter your email or username" autofocus />
                                 <label for="email">NPK or Email</label>
