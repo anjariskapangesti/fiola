@@ -50,6 +50,7 @@ class RelayoutController extends Controller
             'location' => 'required',
             'relayout_type' => 'required',
             'description' => 'required',
+            'lampiran' => 'required',
         ]);
 
         $year = date('y');
