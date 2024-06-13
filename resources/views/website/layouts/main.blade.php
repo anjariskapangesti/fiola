@@ -11,6 +11,7 @@
     <title>FIOLA &mdash; {{ $title }}</title>
 
     <meta name="description" content="" />
+    {{-- <meta http-equiv="refresh" content="2"> --}}
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('img/logo-fiola.png') }}" />

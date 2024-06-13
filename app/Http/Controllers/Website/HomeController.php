@@ -289,6 +289,7 @@ class HomeController extends Controller
                 ->select("$table.no_reg", "$table.final_status", "$table.created_at", 'users.name as created_by', 'departments.code as created_dept')
                 ->join('public.users', "$table.created_by", '=', 'public.users.id')
                 ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                ->whereNull("$table.is_finish")
                 ->get();
 
             $mergedData = $mergedData->concat($data);

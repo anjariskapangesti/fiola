@@ -14,23 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('form_relayout', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id', 191)->primary();
             $table->string('no_reg')->unique();
 
-            $table->string('npk', 6)->nullable();
-            $table->string('fullname', 100)->nullable();
-            $table->string('department', 60)->nullable();
-            $table->string('phone', 20)->nullable();
-            $table->string('email_address',80)->nullable();
-
             $table->string('budget_type', 20)->nullable();
-            $table->string('jenis_permohonan', 20)->nullable();
-            $table->date('rencana_diselesaikan')->nullable();
-            $table->string('lokasi')->nullable();
-            $table->string('tipe')->nullable();
-            $table->text('deskripsi')->nullable();
-            $table->strings('catatan')->nullable();
-
+            $table->string('request_type', 50)->nullable();
+            $table->string('project_name')->nullable();
+            $table->date('date_finish_plan')->nullable();
+            $table->string('location')->nullable();
+            $table->string('relayout_type')->nullable();
+            $table->text('description')->nullable();
+            $table->string('lampiran')->nullable();
 
             $table->text('purpose')->nullable();
             $table->string('final_status',30)->nullable();

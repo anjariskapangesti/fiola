@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'IT MGR Approved Network'])
+@extends('website.layouts.main', ['title' => 'IT MGR Approved Relayout'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Network Configuration Change (FRM-ITD-S13-007-01)</h5>
+                <h5 class="card-header">Form Permohonan IT Re-layout (FRM-ITD-S13-010-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -76,7 +76,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.network.it_mgr_approved_ajax') }}",
+                    url: "{{ route('website.relayout.it_mgr_approved_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -140,28 +140,32 @@
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
+                                <td>${d.budget_type} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Request Type</td>
+                                <td>${d.request_type} </td>
+                            </tr>
+                            <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Project Name</td>
                                 <td>${d.project_name} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Date Access</td>
-                                <td>Start : ${d.date_access_start}, End : ${d.date_access_end}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Date Finish Plan</td>
+                                <td>${d.date_finish_plan}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Rack that is accessed</td>
-                                <td>${d.rack} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Location</td>
+                                <td>${d.location} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Device is that is accessed</td>
-                                <td>${d.device}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Relayout Type</td>
+                                <td>${d.relayout_type}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Need Down Time</td>
-                                <td>${d.down_time}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Details</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.detail} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Description</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.description} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
@@ -169,7 +173,7 @@
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;"><a href="{{ asset('storage/lampiran/${d.lampiran}') }}" class="btn btn-success btn-sm"><i class="mdi mdi-file-download"></i> Download</a></td>
+                                <td style="max-width: 250px; white-space: pre-wrap;"><a href="{{ asset('storage/lampiran/${d.lampiran}') }}" target="_blank" class="btn btn-success btn-sm"><i class="mdi mdi-file-download"></i> Lihat / Download</a></td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">

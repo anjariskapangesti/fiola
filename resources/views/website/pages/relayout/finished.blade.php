@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'IT MGR Approved Network'])
+@extends('website.layouts.main', ['title' => 'Finished Relayout'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Network Configuration Change (FRM-ITD-S13-007-01)</h5>
+                <h5 class="card-header">Form Permohonan IT Re-layout (FRM-ITD-S13-010-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -23,31 +23,12 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
+                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to delete this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_delete">
-                    <input type="hidden" id="id_delete">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
-                </div>
             </div>
         </div>
     </div>
@@ -76,7 +57,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.network.it_mgr_approved_ajax') }}",
+                    url: "{{ route('website.relayout.finished_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -131,6 +112,34 @@
                             }
                         }
                     },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `
+                                <center>
+                                    <span class="badge bg-warning">Not Yet Confirmed</span>
+                                </center>
+                                `;
+                            } else if (data.is_confirm == '1') {
+                                return `
+                                <center>
+                                    <span class="badge bg-success">Confirmed</span>
+                                </center>
+                                `
+                            } else if (data.final_status == 'created') {
+                                return `
+                                <center>
+                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
+                                </center>
+                                `;
+                            } else {
+                                return `<center>Not yet</center>`;
+                            }
+                        }
+                    },
                 ],
             });
 
@@ -140,28 +149,32 @@
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Budget Type</td>
+                                <td>${d.budget_type} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Request Type</td>
+                                <td>${d.request_type} </td>
+                            </tr>
+                            <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Project Name</td>
                                 <td>${d.project_name} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Date Access</td>
-                                <td>Start : ${d.date_access_start}, End : ${d.date_access_end}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Date Finish Plan</td>
+                                <td>${d.date_finish_plan}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Rack that is accessed</td>
-                                <td>${d.rack} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Location</td>
+                                <td>${d.location} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Device is that is accessed</td>
-                                <td>${d.device}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Relayout Type</td>
+                                <td>${d.relayout_type}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Need Down Time</td>
-                                <td>${d.down_time}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Details</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.detail} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Description</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.description} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Purpose</td>
@@ -169,7 +182,7 @@
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;"><a href="{{ asset('storage/lampiran/${d.lampiran}') }}" class="btn btn-success btn-sm"><i class="mdi mdi-file-download"></i> Download</a></td>
+                                <td style="max-width: 250px; white-space: pre-wrap;"><a href="{{ asset('storage/lampiran/${d.lampiran}') }}" target="_blank" class="btn btn-success btn-sm"><i class="mdi mdi-file-download"></i> Lihat / Download</a></td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -183,7 +196,7 @@
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td>${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -197,7 +210,7 @@
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td>${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -211,7 +224,7 @@
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td>${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">

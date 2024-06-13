@@ -491,6 +491,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'RelayoutController@list')->name('relayout.list');
                 Route::get('/list_ajax', 'RelayoutController@list_ajax')->name('relayout.list_ajax');   
                 Route::post('/approve_form', 'RelayoutController@approve_form')->name('relayout.approve_form');
+                Route::post('/delete_form', 'RelayoutController@delete_form')->name('relayout.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'RelayoutController@manager_approval')->name('relayout.manager_approval');

@@ -23,7 +23,6 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
-                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -129,30 +128,6 @@
                                 return `<span class="badge bg-success">Finished</span>`;
                             } else {
                                 return `<span class="badge bg-danger">${data}</span>`;
-                            }
-                        }
-                    },
-                    {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            if (data.is_confirm == '0') {
-                                return `
-                                <center>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
-                                </center>
-                                `;
-                            } else if (data.is_confirm == '1') {
-                                return `Confirmed`
-                            } else if (data.final_status == 'created') {
-                                return `
-                                <center>
-                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
-                                </center>
-                                `;
-                            } else {
-                                return `<center>Not yet</center>`;
                             }
                         }
                     },

@@ -4,24 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Relayout extends Model
 {
+    use HasUuids;
+
     protected $table = 'form_relayout';
     protected $fillable = [  
+        'uuid',
         'no_reg',
-        'npk',
-        'fullname',
-        'department',
-        'phone',
-        'email_address',
         'budget_type',
-        'jenis_permohonan',
-        'rencana_diselesaikan',
-        'lokasi',
-        'tipe',
-        'deskripsi',
-        'catatan',
+        'request_type',
+        'project_name',
+        'date_finish_plan',
+        'location',
+        'relayout_type',
+        'description',
+        'lampiran',
 
         'purpose',
         'final_status',
