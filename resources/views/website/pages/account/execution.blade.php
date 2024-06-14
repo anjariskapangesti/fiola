@@ -351,25 +351,28 @@
 
                 approveButton.removeAttribute('disabled');
                 approveButton.innerHTML = 'Yes, Approve!';
-                $('#id_approve').val(id_approve)
-                $('#no_reg_approve').val(no_reg_approve)
+                $('#id_approve').val(id_approve);
+                $('#no_reg_approve').val(no_reg_approve);
                 // $('#finish_note_approve').val('');
 
                 var noteText =
                     'Form Account telah selesai dibuat Silahkan login windows pada Device dengan memilih Other user, dengan user : \n\nLogin Windows\nUsername\t: ' +
                     ad_name_approve + '@aiia.co.id\nPassword\t: Kiic' + currentYear + '\n\n';
 
+                // Extract the last 4 digits of npk_approve
+                var npk_last_four = npk_approve.slice(-4);
+
                 if (is_email_approve === true) {
                     noteText += 'Lisensi Microsoft Office\nUsername\t: ' + ad_name_approve +
                         '@Aisinaiia.onmicrosoft.com\nPassword\t: Kiic' + currentYear + '\n\n';
 
-                    noteText += 'Login Email Outlook\nUsername\t: ' + npk_approve +
-                        '-aiia@ap01.aisingroup.com\nPassword\t: P@55w0rd!' + npk_approve + '\n\n';
+                    noteText += 'Login Email Outlook\nUsername\t: ' + npk_last_four +
+                        '-aiia@ap01.aisingroup.com\nPassword\t: P@55w0rd!' + npk_last_four + '\n\n';
                 }
 
                 noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
                 $('#finish_note_approve').val(noteText);
-            })
+            });
 
             $('#btn-approve').on('click', function() {
                 let id_approve = $('#id_approve').val();

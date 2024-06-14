@@ -177,7 +177,7 @@
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" class="form-control" id="ad_name" name="ad_name"
                                                 value="{{ old('ad_name') }}" placeholder="namadepan.namabelakang"
-                                                onkeyup="convertToLowercase(this)" />
+                                                onkeyup="convertToLowercase(this); removeAtSymbol(this);" />
                                             <label for="ad_name">Username <span class="text-danger">*</span></label>
                                         </div>
                                     </label>
@@ -310,6 +310,13 @@
                 words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
             }
             element.value = words.join(" ");
+        }
+
+        function removeAtSymbol(input) {
+            const atIndex = input.value.indexOf('@');
+            if (atIndex !== -1) {
+                input.value = input.value.substring(0, atIndex);
+            }
         }
     </script>
     <script>
