@@ -46,6 +46,14 @@
         </li>
         <!-- Apps -->
         <!-- Pages -->
+        @if (auth()->user()->hasDepartment('ITD'))
+            <li class="menu-item {{ Route::is('website.ticket.it_approval') ? 'active' : '' }}">
+                <a href="{{ route('website.ticket.it_approval') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-ticket"></i>
+                    <div data-i18n="Basic">Tickets</div>
+                </a>
+            </li>
+        @endif
         @php
             $masterLink = [
                 'account',

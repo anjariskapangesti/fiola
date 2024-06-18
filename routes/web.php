@@ -23,11 +23,28 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
     Route::get('alert_view', 'AlertController@alert_view')->name('alert_view');
     Route::get('/email_manager', 'ReminderController@email_manager')->name('reminder.email_manager');
 
+    Route::get('/', 'HomeController@type')->name('type');
+    // TICKET
+    Route::group(['prefix' => 'ticket'], function(){
+        Route::get('/list', 'TicketController@list')->name('ticket.list');
+        Route::get('/list_ajax', 'TicketController@list_ajax')->name('ticket.list_ajax');
+        Route::get('/create', 'TicketController@create')->name('ticket.create');
+        Route::post('/store', 'TicketController@store')->name('ticket.store');
+
+        Route::group(['middleware' => ['can_dept:ITD']], function () {
+            Route::get('/it_approval', 'TicketController@it_approval')->name('ticket.it_approval');
+            Route::get('/it_approval_ajax', 'TicketController@it_approval_ajax')->name('ticket.it_approval_ajax');
+            Route::post('/it_approve', 'TicketController@it_approve')->name('ticket.it_approve');
+            Route::get('/it_approved', 'TicketController@it_approved')->name('ticket.it_approved');
+            Route::get('/it_approved_ajax', 'TicketController@it_approved_ajax')->name('ticket.it_approved_ajax');
+        });
+    });
+
     Route::middleware('auth.web')->group(function () {
         Route::group(['middleware' => ['permission:apps_fiola']], function () {
-            Route::get('/', 'HomeController@index')->name('home');
+            // Route::get('/', 'HomeController@index')->name('home');
             Route::get('/home_ajax', 'HomeController@home_ajax')->name('home_ajax');
-            Route::get('/home', 'HomeController@index')->name('auth.home');
+            Route::get('/home', 'HomeController@index')->name('home');
             Route::get('/mail', function () {
                 \Illuminate\Support\Facades\Mail::send(new \App\Mail\TaskReminder());
 

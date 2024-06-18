@@ -8,7 +8,7 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>FIOLA &mdash; Login</title>
+    <title>FIOLA</title>
 
     <meta name="description" content="" />
 
@@ -53,7 +53,7 @@
     <!-- Content -->
     <div class="position-relative">
         <div class="authentication-wrapper authentication-basic container-p-y">
-            <div class="authentication-inner py-4">
+            <div class="authentication-inner py-4" style="max-width: 700px !important;">
                 <!-- Login -->
                 <div class="card p-2">
                     <!-- Logo -->
@@ -66,7 +66,8 @@
                     <!-- /Logo -->
 
                     <div class="card-body mt-2">
-                        <h4 class="mb-5 text-center">Form ITD Online Application</h4>
+                        <h4 class="mb-4 text-center">Form & Ticket ITD Online Application</h4>
+                        <h5 class="mb-2 text-center">Pilih Type Support :</h5>
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -76,49 +77,58 @@
                                 </ul>
                             </div>
                         @endif
-                        <form id="formAuthentication" class="mb-3" method="post"
-                            action="{{ route('website.auth.authenticate') }}">
-                            @csrf
-                            <div class="form-floating form-floating-outline mb-3">
-                                <select name="company" id="company" class="form-control">
-                                    <option value="AIIA">AIIA</option>
-                                    <option value="AII">AII</option>
-                                </select>
-                                <label for="company">Company</label>
-                            </div>
-                            <div class="form-floating form-floating-outline mb-3">
-                                <input type="text" class="form-control" id="email" name="email"
-                                    placeholder="Enter your email or username" autofocus />
-                                <label for="email">NPK or Email</label>
-                            </div>
-                            <div class="mb-5">
-                                <div class="form-password-toggle">
-                                    <div class="input-group input-group-merge">
-                                        <div class="form-floating form-floating-outline">
-                                            <input type="password" id="password" class="form-control" name="password"
-                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                aria-describedby="password" />
-                                            <label for="password">Password</label>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('website.auth.login') }}" class="btn btn-primary btn-xl">FORM /
+                                REQUEST</a>
+                            <a href="{{ route('website.ticket.list') }}" class="btn btn-primary btn-xl">TICKET /
+                                PROBLEM</a>
+                        </div>
+                        <hr>
+                        <h5 class="mb-2 text-center">Tim ITD Support :</h5>
+                        <table class="table table-responsive table-bordered mt-3 text-center">
+                            <thead>
+                                <tr>
+                                    <th>Non Shift</th>
+                                    <th>Shift 2</th>
+                                    <th>Shift 3</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Rohmat Maulana Ishaq</td>
+                                    <td>Handika</td>
+                                    <td>Muhammad Diki Dwi Nugraha</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex justify-content-between">
+                                            <a href="https://wa.me/6282125008160" target="_blank"
+                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
+                                            <a href="wa.me/6282125008160" class="btn btn-info"><i
+                                                    class="mdi mdi-email"></i></a>
                                         </div>
-                                        <span class="input-group-text cursor-pointer"><i
-                                                class="mdi mdi-eye-off-outline"></i></span>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- <div class="mb-3 d-flex justify-content-between">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember-me" />
-                                    <label class="form-check-label" for="remember-me"> Remember Me </label>
-                                </div>
-                                <a href="auth-forgot-password-basic.html" class="float-end mb-1">
-                                    <span>Forgot Password?</span>
-                                </a>
-                            </div> --}}
-                            <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                            </div>
-                        </form>
-
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-between">
+                                            <a href="https://wa.me/6282125008160" target="_blank"
+                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
+                                            <a href="wa.me/6282125008160" class="btn btn-info"><i
+                                                    class="mdi mdi-email"></i></a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-between">
+                                            <a href="https://wa.me/6282125008160" target="_blank"
+                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
+                                            <a href="wa.me/6282125008160" class="btn btn-info"><i
+                                                    class="mdi mdi-email"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                         {{-- <p class="text-center">
                             <span>New on our platform?</span>
                             <a href="auth-register-basic.html">

@@ -95,7 +95,7 @@ class NetworkController extends Controller
             if ($request->hasFile('lampiran')) {
                 $lampiranExtension = $request->lampiran->getClientOriginalExtension();
                 $lampiranFileName = 'NCC_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $lampiranExtension;
-                $lampiramPath = $request->lampiran->storeAs('lampiran', $lampiranFileName, 'public');
+                $lampiranPath = $request->lampiran->storeAs('lampiran', $lampiranFileName, 'public');
             }
 
             $form_network = Network::create([

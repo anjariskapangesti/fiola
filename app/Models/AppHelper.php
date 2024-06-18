@@ -5,7 +5,7 @@ namespace App\Models;
 use Auth;
 
 class AppHelper
-{                 
+{
     public static function manager_approvals_count()
     {
         $userDepartments = Auth::user()->departments->pluck('id');

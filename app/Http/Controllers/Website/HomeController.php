@@ -298,4 +298,8 @@ class HomeController extends Controller
         return response()->json(['data' => $mergedData]);
     }
 
+    public function type()
+    {
+        return view('website.pages.type');
+    }
 }
