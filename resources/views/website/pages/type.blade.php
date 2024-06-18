@@ -104,9 +104,17 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex justify-content-between">
-                                            <a href="https://wa.me/6282125008160" target="_blank"
+                                            <a href="https://wa.me/6281223506433" target="_blank"
                                                 class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
-                                            <a href="wa.me/6282125008160" class="btn btn-info"><i
+                                            <a href="mailto: rohmat@aiia.co.id" class="btn btn-info"><i
+                                                    class="mdi mdi-email"></i></a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-between">
+                                            <a href="https://wa.me/6281280613890" target="_blank"
+                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
+                                            <a href="mailto: handika@aiia.co.id" class="btn btn-info"><i
                                                     class="mdi mdi-email"></i></a>
                                         </div>
                                     </td>
@@ -114,15 +122,7 @@
                                         <div class="d-flex justify-content-between">
                                             <a href="https://wa.me/6282125008160" target="_blank"
                                                 class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
-                                            <a href="wa.me/6282125008160" class="btn btn-info"><i
-                                                    class="mdi mdi-email"></i></a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-between">
-                                            <a href="https://wa.me/6282125008160" target="_blank"
-                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
-                                            <a href="wa.me/6282125008160" class="btn btn-info"><i
+                                            <a href="mailto: diki@aiia.co.id" class="btn btn-info"><i
                                                     class="mdi mdi-email"></i></a>
                                         </div>
                                     </td>
