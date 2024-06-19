@@ -30,6 +30,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
         Route::get('/list_ajax', 'TicketController@list_ajax')->name('ticket.list_ajax');
         Route::get('/create', 'TicketController@create')->name('ticket.create');
         Route::post('/store', 'TicketController@store')->name('ticket.store');
+        Route::get('/review/{id}', 'TicketController@review')->name('ticket.review');
+        Route::post('/rate/{id}', 'TicketController@rate')->name('ticket.rate');
 
         Route::group(['middleware' => ['can_dept:ITD']], function () {
             Route::get('/it_approval', 'TicketController@it_approval')->name('ticket.it_approval');

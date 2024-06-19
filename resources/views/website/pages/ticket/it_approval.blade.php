@@ -18,12 +18,12 @@
                     <thead>
                         <tr>
                             <th width="50px">No</th>
+                            <th>Status</th>
+                            {{-- <th width="150px">Option</th> --}}
                             <th width="200px">Requestor</th>
                             <th>Ticket</th>
                             <th>Support</th>
                             <th>Attachment</th>
-                            <th>Status</th>
-                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -46,8 +46,8 @@
                     <input type="hidden" id="id_finish">
                     <div class="form-floating form-floating-outline">
                         <textarea class="form-control auto-resize" id="it_note_finish" name="it_note_finish"
-                            placeholder="add note if there are additional">{{ old('it_note_finish') }}</textarea>
-                        <label for="it_note_finish">Solution</label>
+                            placeholder="add note if there are additional" required>{{ old('it_note_finish') }}</textarea>
+                        <label for="it_note_finish">Solution <span class="text-danger">*</span></label>
                     </div>
                     <label class="col-sm-6 col-form-label" for="notifikasi_finish">
                         <small class="text-light fw-medium d-block">Kirim Notifikasi Whatsapp?</small>
@@ -195,6 +195,89 @@
                     {
                         data: null,
                         render: function(data, type, row, meta) {
+                            let text = '';
+                            let className = '';
+
+                            switch (row.final_status) {
+                                case 'created':
+                                    text = 'Waiting for ITD to receive';
+                                    className = 'alert-warning';
+                                    break;
+                                case 'IT Approve':
+                                    text = 'Accepted by ITD, On Progress';
+                                    className = 'alert-info';
+                                    break;
+                                case 'Pending':
+                                    text = 'Pending';
+                                    className = 'alert-info';
+                                    break;
+                                case 'Finished':
+                                    text = 'Finished';
+                                    className = 'alert-success';
+                                    break;
+                                default:
+                                    text = row.final_status;
+                                    className = 'alert-danger';
+                            }
+
+                            let buttons = '';
+                            if (data.final_status == 'created') {
+                                buttons = `
+                                    <div>
+                                        <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Reject</button>
+                                        <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Approve</button>
+                                    </div>
+                                `;
+                            } else if (data.final_status == 'IT Approve' || data.final_status ==
+                                'Pending') {
+                                buttons = `
+                                    <div>
+                                        <button class="btn btn-warning btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Pending</button>
+                                        <button class="btn btn-success btn-sm btn-table-finish" data-bs-toggle="modal" data-bs-target="#finishModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Finish</button>
+                                    </div>
+                                `;
+                            } else {
+                                buttons = `<div></div>`;
+                            }
+
+                            return `
+                                <div>
+                                    <button class="alert ${className}">${text}</button>
+                                </div>
+                                ${buttons}
+                            `;
+                        },
+                        orderable: false,
+                        searchable: false
+                    },
+                    // {
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     data: null,
+                    //     render: function(data, type, row, meta) {
+                    //         if (data.final_status == 'created') {
+                    //             return `
+                //             <center>
+                //                 <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Reject</button>
+                //                 <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Approve</button>
+                //             </center>
+                //             `;
+                    //         } else if (data.final_status == 'IT Approve' || data.final_status ==
+                    //             'Pending') {
+                    //             return `
+                //             <center>
+                //                 <button class="btn btn-warning btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Pending</button>
+                //                 <button class="btn btn-success btn-sm btn-table-finish" data-bs-toggle="modal" data-bs-target="#finishModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Finish</button>
+                //             </center>
+                //             `;
+                    //         } else {
+                    //             return `<center>-</center>`;
+                    //         }
+                    //     }
+                    // },
+                    {
+                        data: null,
+                        render: function(data, type, row, meta) {
                             return `
                             <div class="label-container">
                                 <span class="label">Name&emsp;:</span> ${row.requestor_name}<br>
@@ -287,65 +370,7 @@
                             }
                         }
                     },
-                    {
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            let text = '';
-                            let className = '';
 
-                            switch (row.final_status) {
-                                case 'created':
-                                    text = 'Waiting for ITD to receive';
-                                    className = 'alert-warning';
-                                    break;
-                                case 'IT Approve':
-                                    text = 'Accepted by ITD, On Progress';
-                                    className = 'alert-info';
-                                    break;
-                                case 'Pending':
-                                    text = 'Pending';
-                                    className = 'alert-info';
-                                    break;
-                                case 'Finished':
-                                    text = 'Finished';
-                                    className = 'alert-success';
-                                    break;
-                                default:
-                                    text = row.final_status;
-                                    className = 'alert-danger';
-                            }
-
-                            return `
-                            <div>
-                                <button class="alert ${className}">${text}</button>
-                            </div>`;
-                        }
-                    },
-                    {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            if (data.final_status == 'created') {
-                                return `
-                                <center>
-                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Reject</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Approve</button>
-                                </center>
-                                `;
-                            } else if (data.final_status == 'IT Approve' || data.final_status ==
-                                'Pending') {
-                                return `
-                                <center>
-                                    <button class="btn btn-warning btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Pending</button>
-                                    <button class="btn btn-success btn-sm btn-table-finish" data-bs-toggle="modal" data-bs-target="#finishModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Finish</button>
-                                </center>
-                                `;
-                            } else {
-                                return `<center>-</center>`;
-                            }
-                        }
-                    },
                 ],
             });
             // FINISH
@@ -370,7 +395,7 @@
                     type: "POST",
                     data: {
                         id: id_finish,
-                        it_note: $('#it_note_finish').val(),
+                        finish_note: $('#it_note_finish').val(),
                         notifikasi: notifikasi_finish,
                         type: 'finish',
                         '_token': "{{ csrf_token() }}",

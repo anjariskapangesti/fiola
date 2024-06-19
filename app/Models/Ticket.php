@@ -19,4 +19,9 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketPhoto::class, 'ticket_id', 'id');
     }
+
+    public function accepted()
+    {
+        return $this->belongsTo(User::class, 'it_approve_by');
+    }
 }

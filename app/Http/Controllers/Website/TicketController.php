@@ -182,9 +182,14 @@ class TicketController extends Controller
             $isi .= "\n\nDetail Case : " . $ticket->detail_case;
 
             if ($type == 'finish') {
+                $isi .= "\nSolution : " . $request->finish_note;
                 $isi .= "\n\nNote : Dear User, Tiket anda sudah selesai.";
 
                 $isi .= "\n\nFinished by : " . Auth::user()->name;
+
+                $isi .= "\n\nMohon beri penilaian atas support dari Tim ITD dengan mengakses link berikut :";
+                $isi .= "\nhttps://fiola-qa.aiia.co.id/ticket/review/" . $ticket->id;
+                $isi .= "\n\nTerima Kasih.";
             } elseif ($type == 'approve') {
                 $isi .= "\n\nNote : Dear User, Tiket anda sudah diterima oleh Tim ITD.";
 
@@ -210,5 +215,24 @@ class TicketController extends Controller
             curl_close($curl);
         }
         return $return;
+    }
+
+    public function review($id)
+    {
+        $ticket = Ticket::with('ticket_photos')->findOrFail($id);
+
+        return view('website.pages.ticket.review', compact('ticket'));
+    }
+
+    public function rate(Request $request, $id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        $ticket->update([
+            'review' => $request->review,
+            'comment' => $request->comment,
+        ]);
+
+        return redirect()->back()->with('success', 'Update Successfully');
     }
 }
