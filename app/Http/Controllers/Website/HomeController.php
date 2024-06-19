@@ -18,6 +18,7 @@ use App\Models\Fitur;
 use App\Models\Relayout;
 use App\Models\Network;
 use App\Models\Alert;
+use App\Models\Ticket;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Carbon\Carbon;
@@ -26,6 +27,13 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
+        $now = Carbon::now();
+        $month = $now->month;
+        $year = $now->year;
+
+        $current_year = $request->filter_year ?? $year;
+        $current_month = $request->filter_month ?? $month;
+
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
@@ -196,53 +204,76 @@ class HomeController extends Controller
         $filterEnd = $request->input('filterEnd', $endOfMonth) ?? $endOfMonth;
 
         $account_total = Account::count();
-        $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $account_rejected = Account::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $account_rejected = Account::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $folderaccess_total = FolderAccess::count();
-        $folderaccess_finished = FolderAccess::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $folderaccess_finished = FolderAccess::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $newfolder_total = NewFolder::count();
-        $newfolder_finished = NewFolder::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();   
+        $newfolder_finished = NewFolder::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();   
 
         $software_total = Software::count();
-        $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $software_rejected = Software::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count(); 
+        $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $software_rejected = Software::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count(); 
 
         $hardware_total = Hardware::count();
-        $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count(); 
+        $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count(); 
 
         $vpn_total = Vpn::count();
-        $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count(); 
+        $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count(); 
 
         $project_total = Project::count();
-        $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $project_rejected = Project::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $project_rejected = Project::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $fitur_total = Fitur::count();
-        $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $relayout_total = Relayout::count();
-        $relayout_finished = Relayout::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $relayout_rejected = Relayout::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $relayout_finished = Relayout::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $relayout_rejected = Relayout::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $network_total = Network::count();
-        $network_finished = Network::where('final_status', 'LIKE', '%Finished%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
-        $network_rejected = Network::where('final_status', 'LIKE', '%Reject%')->whereBetween('created_at', [$filterFirst, $filterEnd])->count();
+        $network_finished = Network::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $network_rejected = Network::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
                                     ->count();   
 
+        $ticket_open = Ticket::where('final_status', 'created')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $ticket_finished = Ticket::where('final_status', 'Finished')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $ticket_on_progress = Ticket::where('final_status', 'IT Approve')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $ticket_pending = Ticket::where('final_status', 'Pending')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $ticket_rejected = Ticket::where('final_status', 'Rejected')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+
+        $ticket_total = [];
+        $ticket_solved = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $ticket_total[$month] = Ticket::whereYear('created_at', $current_year)
+                ->whereMonth('created_at', str_pad($month, 2, '0', STR_PAD_LEFT))
+                ->count();
+
+            $ticket_solved[$month] = Ticket::whereYear('created_at', $current_year)
+                ->whereMonth('created_at', str_pad($month, 2, '0', STR_PAD_LEFT))
+                ->where('final_status', 'Finished')
+                ->count();
+        } 
+
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else{
-            return view('website.pages.home', 
+            return view('website.pages.home', [
+                'ticket_total' => $ticket_total,
+                'ticket_solved' => $ticket_solved,
+            ], 
             compact('total_form_finished', 'total_form_rejected', 'total_form_mgr', 'total_form_it', 'total_form_it_mgr', 'total_form_execution',
                     'account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
                     'account_total', 'account_finished', 'account_rejected',
@@ -263,7 +294,8 @@ class HomeController extends Controller
                     'relayout_mgr_count', 'relayout_it_count', 'relayout_it_mgr_count', 'relayout_execution_count',
                     'relayout_total', 'relayout_finished', 'relayout_rejected',
                     'network_mgr_count', 'network_it_count', 'network_it_mgr_count', 'network_execution_count',
-                    'network_total', 'network_finished', 'network_rejected',));
+                    'network_total', 'network_finished', 'network_rejected',
+                    'ticket_open', 'ticket_finished', 'ticket_on_progress', 'ticket_pending', 'ticket_rejected',));
         }
     }    
 
