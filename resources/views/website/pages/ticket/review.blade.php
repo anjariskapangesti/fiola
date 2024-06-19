@@ -530,12 +530,12 @@
                                     <label class="col-sm-12 col-form-label" for="comment">
                                         <div class="form-floating form-floating-outline">
                                             @if ($ticket->review == null)
-                                                <textarea class="form-control auto-resize" id="comment" name="comment" placeholder="Komen untuk tim support ITD"
-                                                    rows="20" style="height: 150px;" required>{{ old('comment') }}</textarea>
+                                                <textarea class="form-control" id="comment" name="comment" placeholder="Komen untuk tim support ITD"
+                                                    rows="20" style="height: 150px;" required cols="30" rows="10">{{ old('comment') }}</textarea>
                                                 <label for="comment">Comment <span
                                                         class="text-danger">*</span></label>
                                             @else
-                                                <textarea class="form-control auto-resize" id="comment" rows="20" style="height: 150px;" disabled>{{ $ticket->comment }}</textarea>
+                                                <textarea class="form-control" id="comment" cols="30" rows="10" style="height: 150px;" disabled>{{ $ticket->comment }}</textarea>
                                                 <label for="comment">Comment <span
                                                         class="text-danger">*</span></label>
                                             @endif
