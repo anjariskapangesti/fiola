@@ -156,12 +156,16 @@
                                 <td>${d.fullname} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
-                            </tr>
-                            <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
                                 <td>${d.phone} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Job Rank</td>
+                                <td>${d.job_rank} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
+                                <td>${d.department} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username</td>

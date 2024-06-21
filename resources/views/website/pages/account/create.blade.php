@@ -112,19 +112,45 @@
                             </div>
                             <div class="card-body demo-vertical-spacing demo-only-element">
                                 <div class="row mb-3">
-                                    <label class="col-sm-6 col-form-label" for="npk">
+                                    <label class="col-sm-4 col-form-label" for="npk">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" class="form-control" id="npk" name="npk"
                                                 value="{{ old('npk') }}" placeholder="000000" maxlength="6" />
                                             <label for="npk">NPK <span class="text-danger">*</span></label>
                                         </div>
                                     </label>
-                                    <label class="col-sm-6 col-form-label" for="fullname">
+                                    <label class="col-sm-4 col-form-label" for="fullname">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" class="form-control" id="fullname" name="fullname"
                                                 value="{{ old('fullname') }}" placeholder="Full Name"
                                                 onkeyup="formatFullName(this)" />
                                             <label for="fullname">Name <span class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-4 col-form-label" for="phone">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="phone" name="phone"
+                                                value="{{ old('phone') }}" placeholder="081234567890" maxlength="15" />
+                                            <label for="phone">Phone Number <span class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label" for="job_rank">
+                                        <div class="form-floating form-floating-outline">
+                                            <select class="form-select" id="job_rank" name="job_rank"
+                                                aria-label="Select">
+                                                <option selected disabled value="">-- Choose Job Rank --</option>
+                                                @foreach ($job_ranks as $job_rank)
+                                                    @php
+                                                        $selected = '';
+                                                        if (old('job_rank') && old('job_rank') == $job_rank->name) {
+                                                            $selected = 'selected';
+                                                        }
+                                                    @endphp
+                                                    <option value="{{ $job_rank->name }}" {{ $selected }}>
+                                                        {{ $job_rank->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <label for="job_rank">Job Rank Name <span class="text-danger">*</span></label>
                                         </div>
                                     </label>
                                     <label class="col-sm-6 col-form-label" for="department">
@@ -148,13 +174,6 @@
                                             </select>
                                             <label for="department">Department Name <span
                                                     class="text-danger">*</span></label>
-                                        </div>
-                                    </label>
-                                    <label class="col-sm-6 col-form-label" for="phone">
-                                        <div class="form-floating form-floating-outline">
-                                            <input type="text" class="form-control" id="phone" name="phone"
-                                                value="{{ old('phone') }}" placeholder="081234567890" maxlength="15" />
-                                            <label for="phone">Phone Number <span class="text-danger">*</span></label>
                                         </div>
                                     </label>
                                     <label class="col-sm-12 col-form-label" for="purpose">

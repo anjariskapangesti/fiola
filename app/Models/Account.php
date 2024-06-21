@@ -14,6 +14,7 @@ class Account extends Model
         'npk',
         'fullname',
         'department',
+        'job_rank',
         'phone',
         'company',
         'expired_date',

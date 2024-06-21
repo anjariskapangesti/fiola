@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Account;
 use App\Models\Department;
+use App\Models\JobRank;
 use App\Models\User;
 use App\Models\Alert;
 
@@ -20,6 +21,7 @@ class AccountController extends Controller
     public function create()
     {
         $departments = Department::orderBy('name')->get();
+        $job_ranks = JobRank::orderBy('name')->get();
 
         $auth = User::where('id', Auth::user()->id)
             ->whereNull('nohp')
@@ -38,7 +40,7 @@ class AccountController extends Controller
         } else if ($data > 0) {
             return redirect()->route('website.account.list')->with('info', 'Please confirm!');
         } else {
-            return view('website.pages.account.create', compact('departments'));
+            return view('website.pages.account.create', compact('departments', 'job_ranks'));
         }
     }
 
@@ -51,6 +53,7 @@ class AccountController extends Controller
             'npk' => 'nullable|min:6|required_if:form_type,Registration|required_if:form_type,Change',
             'fullname' => 'required_if:form_type,Registration|required_if:form_type,Change',
             'department' => 'required_if:form_type,Registration|required_if:form_type,Change',
+            'job_rank' => 'required_if:form_type,Registration|required_if:form_type,Change',
             'phone' => 'required_if:form_type,Registration|required_if:form_type,Change',
             'purpose' => 'required_if:form_type,Registration',
             'ad_name' => 'required_if:form_type,Registration',
@@ -110,6 +113,7 @@ class AccountController extends Controller
                 'npk' => $request->npk,
                 'fullname' => $request->fullname,
                 'department' => $request->department,
+                'job_rank' => $request->job_rank,
                 'phone' => $request->phone,
                 'company' => $request->company,
                 'expired_date' => $request->expired_date,
@@ -184,6 +188,7 @@ class AccountController extends Controller
                 'npk' => $request->npk,
                 'fullname' => $request->fullname,
                 'department' => $request->department,
+                'job_rank' => $request->job_rank,
                 'phone' => $request->phone,
                 'company' => $request->company,
                 'expired_date' => $request->expired_date,
