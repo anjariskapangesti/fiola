@@ -229,7 +229,7 @@
                 type: 'pie'
             },
             title: {
-                text: 'TOTAL CREATED FORM BY {{ strtoupper(Auth::user()->name) }}',
+                text: 'PERSENTASE STATUS FORM BY {{ strtoupper(Auth::user()->name) }}',
                 align: 'center'
             },
             tooltip: {

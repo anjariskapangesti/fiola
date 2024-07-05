@@ -432,6 +432,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'ProjectController@list')->name('project.list');
                 Route::get('/list_ajax', 'ProjectController@list_ajax')->name('project.list_ajax');   
                 Route::post('/approve_form', 'ProjectController@approve_form')->name('project.approve_form');
+                Route::post('/delete_form', 'ProjectController@delete_form')->name('project.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'ProjectController@manager_approval')->name('project.manager_approval');
