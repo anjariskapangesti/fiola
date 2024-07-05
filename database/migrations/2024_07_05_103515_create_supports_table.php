@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('supports', function (Blueprint $table) {
             $table->uuid('id', 191)->primary();
             $table->string('name');
-            $table->string('no_hp');
+            $table->string('nohp');
             $table->string('email');
             $table->string('shift');
             $table->string('status')->nullable();
