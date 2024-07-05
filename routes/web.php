@@ -23,6 +23,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
     Route::get('alert_view', 'AlertController@alert_view')->name('alert_view');
     Route::get('/email_manager', 'ReminderController@email_manager')->name('reminder.email_manager');
 
+    Route::get('/update_status', 'SupportController@update_status')->name('support.update_status');
+
     Route::get('/', 'HomeController@type')->name('type');
     // TICKET
     Route::group(['prefix' => 'ticket'], function(){
@@ -65,7 +67,20 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/list_ajax', 'ReminderController@list_ajax')->name('reminder.list_ajax');
                 });
             });
-
+            
+            Route::group(['prefix' => 'support'], function(){
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/create', 'SupportController@create')->name('support.create');
+                    Route::post('/store', 'SupportController@store')->name('support.store');
+                    Route::post('/status', 'SupportController@status')->name('support.status');
+                    Route::get('/edit/{id}', 'SupportController@edit')->name('support.edit');
+                    Route::post('/update/{id}', 'SupportController@update')->name('support.update');
+                    Route::post('/destroy', 'SupportController@destroy')->name('support.destroy');
+                    Route::get('/list', 'SupportController@list')->name('support.list');
+                    Route::get('/list_ajax', 'SupportController@list_ajax')->name('support.list_ajax');
+                });
+            });
+            
             Route::group(['prefix' => 'alert'], function(){
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'AlertController@create')->name('alert.create');

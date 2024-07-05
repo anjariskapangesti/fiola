@@ -204,6 +204,16 @@
             <!-- Master -->
             <li class="menu-header fw-medium mt-4"><span class="menu-header-text">Master</span></li>
             @php
+                $supportRoutes = ['website.support.list', 'website.support.create', 'website.support.edit'];
+            @endphp
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $supportRoutes) ? 'active' : '' }}">
+                <a href="{{ route('website.support.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-face-agent"></i>
+                    <div data-i18n="Alert">Tim Support</div>
+                </a>
+            </li>
+
+            @php
                 $alertRoutes = ['website.alert.list', 'website.alert.create', 'website.alert.edit'];
             @endphp
             <li class="menu-item {{ in_array(Route::currentRouteName(), $alertRoutes) ? 'active' : '' }}">
@@ -212,6 +222,7 @@
                     <div data-i18n="Alert">Alert</div>
                 </a>
             </li>
+
             @php
                 $deviceRoutes = ['website.device.list', 'website.device.create', 'website.device.edit'];
             @endphp
@@ -221,6 +232,7 @@
                     <div data-i18n="Device">Device</div>
                 </a>
             </li>
+
             @php
                 $folderRoutes = ['website.folder.list', 'website.folder.create', 'website.folder.edit'];
                 $subfolderRoutes = ['website.subfolder.list', 'website.subfolder.create', 'website.subfolder.edit'];

@@ -19,6 +19,7 @@ use App\Models\Relayout;
 use App\Models\Network;
 use App\Models\Alert;
 use App\Models\Ticket;
+use App\Models\Support;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Carbon\Carbon;
@@ -332,6 +333,8 @@ class HomeController extends Controller
 
     public function type()
     {
-        return view('website.pages.type');
+        $supports = Support::orderBy('shift', 'ASC')->get();
+
+        return view('website.pages.type', compact('supports'));
     }
 }

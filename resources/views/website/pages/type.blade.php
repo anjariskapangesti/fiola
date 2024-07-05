@@ -47,6 +47,12 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('vendor/materio/assets/js/config.js') }}"></script>
+    <style>
+        .table th,
+        .table td {
+            width: calc(100% / {{ count($supports) }});
+        }
+    </style>
 </head>
 
 <body>
@@ -88,44 +94,48 @@
                         <table class="table table-responsive table-bordered mt-3 text-center">
                             <thead>
                                 <tr>
-                                    <th>Non Shift</th>
-                                    <th>Shift 2</th>
-                                    <th>Shift 3</th>
+                                    @foreach ($supports as $support)
+                                        <th>{{ $support->shift }}</th>
+                                    @endforeach
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Rohmat Maulana Ishaq</td>
-                                    <td>Handika</td>
-                                    <td>Muhammad Diki Dwi Nugraha</td>
+                                    @foreach ($supports as $support)
+                                        <td>{{ $support->name }}</td>
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                    @foreach ($supports as $support)
+                                        @if ($support->status == 'active')
+                                            <td><span class="badge bg-success">{{ $support->status }}</span></td>
+                                        @elseif($support->status == 'not active')
+                                            <td><span class="badge bg-warning">{{ $support->status }}</span></td>
+                                        @elseif($support->status == 'cuti')
+                                            <td><span class="badge bg-info">{{ $support->status }}</span></td>
+                                        @endif
+                                    @endforeach
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td>
-                                        <div class="d-flex justify-content-between">
-                                            <a href="https://wa.me/6281223506433" target="_blank"
-                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
-                                            <a href="mailto: rohmat@aiia.co.id" class="btn btn-info"><i
-                                                    class="mdi mdi-email"></i></a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-between">
-                                            <a href="https://wa.me/6281280613890" target="_blank"
-                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
-                                            <a href="mailto: handika@aiia.co.id" class="btn btn-info"><i
-                                                    class="mdi mdi-email"></i></a>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-between">
-                                            <a href="https://wa.me/6282125008160" target="_blank"
-                                                class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
-                                            <a href="mailto: diki@aiia.co.id" class="btn btn-info"><i
-                                                    class="mdi mdi-email"></i></a>
-                                        </div>
-                                    </td>
+                                    @foreach ($supports as $support)
+                                        @php
+                                            // Mengubah nomor telepon jika digit awalnya adalah '0'
+                                            $phone = $support->nohp;
+                                            if (substr($phone, 0, 1) === '0') {
+                                                $phone = '62' . substr($phone, 1);
+                                            }
+                                        @endphp
+                                        <td>
+                                            <div class="d-flex justify-content-between">
+                                                <a href="https://wa.me/{{ $phone }}" target="_blank"
+                                                    class="btn btn-success"><i class="mdi mdi-whatsapp"></i></a>
+                                                <a href="mailto:{{ $support->email }}" class="btn btn-info"><i
+                                                        class="mdi mdi-email"></i></a>
+                                            </div>
+                                        </td>
+                                    @endforeach
                                 </tr>
                             </tfoot>
                         </table>
