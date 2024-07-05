@@ -105,7 +105,7 @@ class AlertController extends Controller
             }
         }
     
-        return response()->json('success', 'email terkirim');
+        return response()->json(['success', 'Email terkirim']);
     }
 
     public function alert_view()
