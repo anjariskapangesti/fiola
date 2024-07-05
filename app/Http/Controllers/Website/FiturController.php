@@ -20,13 +20,20 @@ class FiturController extends Controller
     {
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
-                                    ->count();        
+                                    ->count(); 
 
-        $data = Fitur::where('created_by', Auth::user()->id)->where('final_status', 'Finished')->where('is_confirm', 0)->count();
+        $data = Fitur::where('created_by', Auth::user()->id)
+                            ->where(function($query) {
+                                    $query->where('final_status', 'LIKE', '%Reject%')
+                                        ->orWhere('final_status', 'Finished');
+                            })
+                            ->where('is_confirm', 0)
+                            ->count();
+        
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else if($data > 0){
-            return redirect()->route('website.fitur.show_data_form')->with('info', 'Please confirm!');
+            return redirect()->route('website.fitur.list')->with('info', 'Please confirm!');
         }else{
             return view('website.pages.fitur.create');
         }
@@ -36,20 +43,18 @@ class FiturController extends Controller
     {
         $request->validate([
             'no_reg' => 'unique',
-            'npk' => 'required' ,          
-            'fullname' => 'required' ,
-            'department' => 'required' ,
-            'phone' => 'required' ,
-            'aplikasi' => 'required' ,
+            'npk_pic' => 'required' ,          
+            'fullname_pic' => 'required' ,
+            'department_pic' => 'required' ,
+            'phone_pic' => 'required' ,
             'nama_fitur' => 'required' ,
         ]);
-
         $year = date('y');
         $month = date('m');
         $lastForm = DB::table('form_fitur')
-                      ->select('no_reg')
-                      ->orderBy('no_reg', 'desc')
-                      ->first();
+                        ->select('no_reg')
+                        ->orderBy('no_reg', 'desc')
+                        ->first();
         $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
         
         $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
@@ -87,17 +92,17 @@ class FiturController extends Controller
         try
         {
             if ($request->hasFile('lampiran')) {
-                    $photoExtension = $request->lampiran->getClientOriginalExtension();
-                    $photoFileName = 'FTR_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $photoExtension;
-                    $photoPath = $request->lampiran->storeAs('lampiran', $photoFileName, 'public');
+                $photoExtension = $request->lampiran->getClientOriginalExtension();
+                $photoFileName = 'FTR_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $photoExtension;
+                $photoPath = $request->lampiran->storeAs('lampiran', $photoFileName, 'public');
             }  
             
             $form_fitur = Fitur::create([
                 'no_reg' => $no_reg,
-                'npk' => $request->npk ,
-                'fullname' => $request->fullname ,
-                'department' => $request->department ,
-                'phone' => $request->phone ,
+                'npk' => $request->npk_pic ,
+                'fullname' => $request->fullname_pic ,
+                'department' => $request->department_pic ,
+                'phone' => $request->phone_pic ,
                 'aplikasi' => $request->aplikasi ,
                 'nama_fitur' => $request->nama_fitur ,
                 'lampiran' => $photoFileName,
@@ -112,11 +117,11 @@ class FiturController extends Controller
                 'is_it_mgr_approve' => $isItManagerApprove,
                 'manager_approval_date' => $managerApprovalDate,
                 'it_approval_date' => $itApprovalDate,
-                'it_mgr_approval_date' => $itManagerApprovalDate,           
+                'it_mgr_approval_date' => $itManagerApprovalDate,            
             ]);
             $form_fitur->save();
 
-            return redirect()->route('website.fitur.show_data_form')->with('success', 'Success Create Form');
+            return redirect()->route('website.fitur.list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {
@@ -124,280 +129,416 @@ class FiturController extends Controller
         }
     }
 
-    public function show_data_form()
+    public function list()
     {
-        return view('website.pages.fitur.show_data_form');
+        return view('website.pages.fitur.list');
     }
 
-    public function show_data_form_ajax(Request $request)
+    public function list_ajax(Request $request)
     {
-        $data = Fitur::orderBy('id', 'DESC')
-                        ->where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Fitur::where('created_by', Auth::user()->id)
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     public function approve_form(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $fitur = Fitur::findOrFail($id);
-        if($type=='ok'){
-            $fitur->is_confirm=1;
-        }else{
-            $fitur->is_confirm=0;
+
+        if ($type == 'confirm') {
+            $fitur->is_confirm = 1;
+        } else {
+            $fitur->is_confirm = 0;
         }
         $fitur->save();
-        return "Confirm is Saved!";
+
+        return "Confirm Successfully";
     }
 
     // MGR //
-    public function show_manager_approval()
+    public function manager_approval()
     {
-        return view('website.pages.fitur.approval_manager');
+        return view('website.pages.fitur.manager_approval');
     }
 
-    public function show_manager_approval_ajax(Request $request)
+    public function manager_approval_ajax(Request $request)
     {
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-        
-        $data = Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                            $query->where('created_dept', $firstDepartmentId)
-                                ->orWhere('created_dept', $lastDepartmentId);
-                        })
-                        ->where('final_status', 'created')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+
+        $data = Fitur::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'created')
+            ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function show_data_manager_approval()
+    public function manager_approve(Request $request)
     {
-        return view('website.pages.fitur.show_data_manager_approval');
-    }
+        $id = $request->id;
+        $type = $request->type;
 
-    public function show_data_manager_approval_ajax(Request $request)
-    {
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-        
-        $data = Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                            $query->where('created_dept', $firstDepartmentId)
-                                ->orWhere('created_dept', $lastDepartmentId);
-                        })
-                        ->where('is_manager_approve','1')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
-
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function approve_manager(Request $request)
-    {
-        $id=$request->id;
-        
-        $type=$request->type;
-        
         $fitur = Fitur::findOrFail($id);
-        
-        if($type=='ok'){
-            $fitur->is_manager_approve=1;
-            $fitur->final_status='Manager Approve';
-            $fitur->manager_note=$request->manager_note;
-        }else{
-            $fitur->is_manager_approve=0;
-            $fitur->final_status='Manager Reject';
-            $fitur->manager_note=$request->manager_note;
-            $fitur->is_finish=0;
+
+        if ($type == 'approve') {
+            $fitur->is_manager_approve = 1;
+            $fitur->final_status = 'Manager Approve';
+            $fitur->manager_note = $request->manager_note;
+            $fitur->manager_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $fitur->is_manager_approve = 0;
+            $fitur->final_status = 'Manager Reject';
+            $fitur->manager_note = $request->manager_note;
+            $fitur->manager_approve_by = Auth::user()->id;
+            $fitur->is_finish = 0;
+            $fitur->is_confirm = 0;
+            $return = "Reject Successfully";
         }
-        $fitur->manager_approval_date= Carbon::now();
+        $fitur->manager_approval_date = Carbon::now();
         $fitur->save();
-        return "Request is Saved!";        
+        return $return;
+    }
+
+    public function manager_approved()
+    {
+        return view('website.pages.fitur.manager_approved');
+    }
+
+    public function manager_approved_ajax(Request $request)
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        $data = Fitur::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->whereNotNull('is_manager_approve')
+            ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+            ->orderBy('manager_approval_date', 'DESC');
+
+        return DataTables::eloquent($data)->make(true);
     }
 
     /// ITD APPROVE ///
-    public function show_it_approval()
+
+    public function it_approval()
     {
-        return view('website.pages.fitur.approval_it');
+        return view('website.pages.fitur.it_approval');
     }
 
-    public function show_it_approval_ajax(Request $request)
+    public function it_approval_ajax(Request $request)
     {
-        $data = Fitur::where('final_status','Manager Approve')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Fitur::where('final_status', 'Manager Approve')
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function show_data_it_approval()
+    public function it_approve(Request $request)
     {
-        return view('website.pages.fitur.show_data_it_approval');
-    }
+        $id = $request->id;
+        $type = $request->type;
 
-    public function show_data_it_approval_ajax(Request $request)
-    {
-        $data = Fitur::where('is_it_approve','1')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
-        
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function approve_it(Request $request)
-    {
-        $id=$request->id;
-        $type=$request->type;
         $fitur = Fitur::findOrFail($id);
-        if($type=='ok'){
-            $isi = "FORM Request Fitur\n";
+        
+        if ($type == 'approve') {
+            $fitur->is_it_approve = 1;
+            $fitur->final_status = 'IT Approve';
+            $fitur->it_note = $request->it_note;
+            $fitur->it_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $fitur->is_it_approve = 0;
+            $fitur->is_confirm = 0;
+            $fitur->final_status = 'IT Reject';
+            $fitur->it_note = $request->it_note;
+            $fitur->is_finish = 0;
+            $fitur->it_approve_by = Auth::user()->id;
+            $return = "Reject Successfully";
+        }
+        $fitur->it_approval_date = Carbon::now();
+        $fitur->save();
+        
+        if ($request->notifikasi == 'Ya') {
+            $isi = "FORM FITUR\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
+            $isi .= "\n\nNama Aplikasi : *" . $fitur->aplikasi . "*";
+            $isi .= "\nNama Fitur : *" . $fitur->nama_fitur . "*";
             $isi .= "\n\nREQUESTOR";
-            $isi .= "\nNama : *" . $fitur->fullname ."*";        
-            
-            $isi .= "\nDepartment : " . $fitur->department;
-            $isi .= "\n\nNama Aplikasi : " . $fitur->aplikasi;
-            $isi .= "\nNama Fitur : " . $fitur->nama_fitur;
-            $isi .= "\nKondisi Sebelum Improvement : " . $fitur->kondisi_sebelum;
-            $isi .= "\nKondisi yang diharapkan : " . $fitur->kondisi_target;
-            $isi .= "\nBenefit yang didapat : " . $fitur->benefit;
-            $isi .= "\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
+            $isi .= "\nNama : *" . $fitur->createdBy->name . "*";
+            $isi .= "\nDepartment : *" . $fitur->createdBy->departments->pluck('code')->implode(', ') . "*";
+            $isi .= "\n\nNote : Dear Pak Ferry, Mohon untuk dicek tunggu approve pada FIOLA. Terimakasih";
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
-            
-            $nomorhpModel = new Alert();
-            $nomorhp = $nomorhpModel->getNoHpItMgr();
 
-            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $nomors = Alert::where('role', 'IT Manager')->get();
+
+            foreach ($nomors as $nomor) {
+                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomorhp.'&message='.$message,
+                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
                 ));
+
                 $response = curl_exec($curl);
                 curl_close($curl);
-
-            $fitur->is_it_approve=1;
-            $fitur->final_status='IT Approve';
-            $fitur->it_note=$request->it_note;
-        }else{
-            $fitur->is_it_approve=0;
-            $fitur->final_status='IT Reject';
-            $fitur->it_note=$request->it_note;
-            $fitur->is_finish=0;
+            }
         }
-        $fitur->it_approval_date= Carbon::now();
-        $fitur->save();
-        return "Request is Saved!";
+        return $return;
     }
 
-    /// IT MGR ///
-    public function show_it_mgr_approval()
+    public function it_approved()
     {
-        return view('website.pages.fitur.approval_it_mgr');
+        return view('website.pages.fitur.it_approved');
     }
 
-    public function show_it_mgr_approval_ajax(Request $request)
+    public function it_approved_ajax(Request $request)
     {
-        $data = Fitur::where('final_status','IT Approve')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
+        $data = Fitur::whereNotNull('is_it_approve')
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('manager_approval_date', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_it_mgr(Request $request)
+    /// IT MGR ///
+    public function it_mgr_approval()
     {
-        $id=$request->id;
-        $type=$request->type;
+        return view('website.pages.fitur.it_mgr_approval');
+    }
+
+    public function it_mgr_approval_ajax(Request $request)
+    {
+        $data = Fitur::where('final_status', 'IT Approve')
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function it_mgr_approve(Request $request)
+    {
+        $id = $request->id;
+        $type = $request->type;
+
         $fitur = Fitur::findOrFail($id);
-        if($type=='ok'){
-            $fitur->is_it_mgr_approve=1;
-            $fitur->final_status='IT MGR Approve';
-            $fitur->it_mgr_note=$request->it_mgr_note;
-        }else{
-            $fitur->is_it_mgr_approve=0;
-            $fitur->final_status='IT MGR Reject';
-            $fitur->it_mgr_note=$request->it_mgr_note;
-            $fitur->is_finish=0;
+
+        if ($type == 'approve') {
+            $fitur->is_it_mgr_approve = 1;
+            $fitur->final_status = 'IT MGR Approve';
+            $fitur->it_mgr_note = $request->it_mgr_note;
+            $fitur->it_mgr_approve_by = Auth::user()->id;
+            $return = "Approve Successfully";
+        } else {
+            $fitur->is_it_mgr_approve = 0;
+            $fitur->final_status = 'IT MGR Reject';
+            $fitur->it_mgr_note = $request->it_mgr_note;
+            $fitur->it_mgr_approve_by = Auth::user()->id;
+            $fitur->is_finish = 0;
+            $fitur->is_confirm = 0;
+            $return = "Reject Successfully";
         }
-        $fitur->it_mgr_approval_date= Carbon::now();
+        $fitur->it_mgr_approval_date = Carbon::now();
         $fitur->save();
-        return "Request is Saved!";
+        return $return;
     }
 
-    public function show_data_it_mgr_approval()
+    public function it_mgr_approved()
     {
-        return view('website.pages.fitur.show_data_it_mgr_approval');
+        return view('website.pages.fitur.it_mgr_approved');
     }
 
-    public function show_data_it_mgr_approval_ajax(Request $request)
+    public function it_mgr_approved_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
-        $data = Fitur::where('is_it_mgr_approve','1')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');;
-        // return $data;
+        $data = Fitur::whereNotNull('is_it_mgr_approve')
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
     /// EXECUTION ///
-    public function show_execution()
+    public function execution()
     {
-        return view('website.pages.fitur.approval_execution');
+        return view('website.pages.fitur.execution');
     }
 
-    public function show_execution_ajax(Request $request)
+    public function execution_ajax(Request $request)
     {
-        $data = Fitur::whereIn('final_status', ['IT MGR Approve', 'Delay'])
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
-                        
+        $data = Fitur::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'ASC');
+
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function approve_execution(Request $request)
+    public function execution_approve(Request $request)
     {
-        $id=$request->id;
-        $type=$request->type;
+        $id = $request->id;
+        $type = $request->type;
+
         $fitur = Fitur::findOrFail($id);
-        
+
         $user = $fitur->createdBy;
 
-        if($type=='ok'){
-            $isi = "FORM Request Fitur\n";
-        
-            $isi .= "\nNPK : *" . $fitur->npk ."*";
-            $isi .= "\nName : *" . $fitur->fullname ."*";
-            $isi .= "\nDepartment : " . $fitur->department;
-            $isi .= "\nPhone : " . $fitur->phone;            
-    
-            $isi .= "\n\nStatus : Finished";
-    
+        if ($type == 'approve') {
+            $fitur->is_finish = 1;
+            $fitur->is_confirm = 0;
+            $fitur->finish_by = Auth::user()->id;
+            $fitur->final_status = 'Finished';
+            $fitur->finish_note = $request->finish_note;
+            $fitur->finish_date = Carbon::now();
+            $return = "Approve Successfully";
+        } else if ($type == 'progress') {
+            $fitur->is_on_progress = 1;
+            $fitur->final_status = 'On Progress';
+            $fitur->on_progress_note = $request->on_progress_note;
+            $fitur->on_progress_by = Auth::user()->id;
+            $fitur->on_progress_date = Carbon::now();
+            $return = "Progress Successfully";
+        } else {
+            $fitur->is_finish = 0;
+            $fitur->is_confirm = 0;
+            $fitur->final_status = 'Rejected';
+            $fitur->finish_note = $request->finish_note;
+            $fitur->finish_by = Auth::user()->id;
+            $fitur->finish_date = Carbon::now();
+            $return = "Reject Successfully";
+        }
+        $fitur->save();
+
+        if ($request->notifikasi == 'Ya') {
+            $isi = "FORM FITUR\n\n";
+
+            $isi .= "Nama Aplikasi : *" . $fitur->aplikasi . "*";
+            $isi .= "\nFitur Name : *" . $fitur->nama_fitur . "*";
+            
+            $isi .= "\n\nStatus : *Finished*";
+            
             $isi .= "\n\nManager Note : " . $fitur->manager_note;
             $isi .= "\nITD Note : " . $fitur->it_note;
             $isi .= "\nITD Manager Note : " . $fitur->it_mgr_note;
-            $isi .= "\n\nNote : " . $request->finish_note;
-    
+            $isi .= "\n\nFinish Note : " . $request->finish_note;
+            
+            $isi .= "\n\nExecution by : " . Auth::user()->name;
+            
             $nomor = $user->nohp;
-    
+            
             $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
+            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -406,42 +547,37 @@ class FiturController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token='.$token.'&number='.$nomor.'&message='.$message,
-                ));
-                $response = curl_exec($curl);
-                curl_close($curl);
-                
-            $fitur->is_finish=1;
-            $fitur->is_confirm=0;
-            $fitur->final_status='Finished';
-            $fitur->finish_note=$request->finish_note;
-        } else if($type=='delay'){
-            $fitur->is_delay=1;
-            $fitur->final_status='Delay';
-            $fitur->delay_note=$request->delay_note;            
-        } else {
-            $fitur->is_finish=0;
-            $fitur->final_status='Rejected';
-            $fitur->finish_note=$request->finish_note;
+                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
         }
-        $fitur->finish_date= Carbon::now();
-        $fitur->save();
 
-        return "Request is Saved!";
+        return $return;
     }
 
-    public function show_data_execution()
+    public function finished()
     {
-        return view('website.pages.fitur.show_data_execution');
+        return view('website.pages.fitur.finished');
     }
 
-    public function show_data_execution_ajax(Request $request)
+    public function finished_ajax(Request $request)
     {
-        // return Auth::user()->dept_id;
-        $data = Fitur::where('is_finish','1')->orWhere('is_finish','0')
-                        ->join('users', 'form_fitur.created_by', '=', 'users.id')
-                        ->select('form_fitur.*', 'users.name as user_name');
-        // return $data;
+        $data = Fitur::whereNotNull('is_finish')
+                        ->join('public.users', 'form_fitur.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_fitur.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_fitur.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_fitur.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_fitur.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_fitur.finish_by', 'finish.id')
+                        ->select('form_fitur.*', 'users.name as requestor',
+                                    'manager.name as manager_name',
+                                    'it.name as it_name',
+                                    'it_mgr.name as it_mgr_name',
+                                    'on_progress.name as on_progress_name',
+                                    'finish.name as finish_name')
+                        ->orderBy('created_at', 'DESC');
+
         return DataTables::eloquent($data)->make(true);
     }
 }

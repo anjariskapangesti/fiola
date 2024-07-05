@@ -472,6 +472,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 Route::get('/list', 'FiturController@list')->name('fitur.list');
                 Route::get('/list_ajax', 'FiturController@list_ajax')->name('fitur.list_ajax');   
                 Route::post('/approve_form', 'FiturController@approve_form')->name('fitur.approve_form');
+                Route::post('/delete_form', 'FiturController@delete_form')->name('fitur.delete_form');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'FiturController@manager_approval')->name('fitur.manager_approval');

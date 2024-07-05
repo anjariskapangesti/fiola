@@ -28,14 +28,16 @@
                                 <label class="col-sm-6 col-form-label" for="npk_pic">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="npk_pic" name="npk_pic"
-                                            value="{{ Auth::user()->npk }}" placeholder="000000" readonly />
+                                            value="{{ Auth::user()->npk }}" placeholder="000000" readonly
+                                            style="background-color: #efeff0;" />
                                         <label for="npk_pic">NPK <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
                                 <label class="col-sm-6 col-form-label" for="fullname_pic">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="fullname_pic" name="fullname_pic"
-                                            value="{{ Auth::user()->name }}" placeholder="Device Name" readonly />
+                                            value="{{ Auth::user()->name }}" placeholder="Device Name" readonly
+                                            style="background-color: #efeff0;" />
                                         <label for="fullname_pic">Name <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
@@ -43,28 +45,29 @@
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="department_pic" name="department_pic"
                                             value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}"
-                                            placeholder="Department Name" readonly />
+                                            placeholder="Department Name" readonly style="background-color: #efeff0;" />
                                         <label for="department_pic">Department <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
                                 <label class="col-sm-6 col-form-label" for="phone_pic">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="phone_pic" name="phone_pic"
-                                            value="{{ Auth::user()->nohp }}" placeholder="081234567890" readonly />
+                                            value="{{ Auth::user()->nohp }}" placeholder="081234567890" readonly
+                                            style="background-color: #efeff0;" />
                                         <label for="phone_pic">Phone Number <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
                             </div>
                         </div>
                     </div>
-                    {{-- USER INFORMATION --}}
+                    {{-- PROJECT INFORMATION --}}
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
                             <h5 class="card-header">Project Information</h5>
                         </div>
                         <div class="card-body demo-vertical-spacing demo-only-element">
                             <div class="user-information">
-                                <div class="row" id="div-username">
+                                <div class="row" id="div-project">
                                     <label class="col-sm-12 col-form-label" for="nama_project">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" class="form-control" id="nama_project" name="nama_project"

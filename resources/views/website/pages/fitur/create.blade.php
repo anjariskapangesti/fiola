@@ -1,134 +1,211 @@
-@extends('website.layouts.main', ['title' => 'Form Request Fitur'])
+@extends('website.layouts.main', ['title' => 'Create Form Fitur'])
 
 @section('content')
-    <div class="pagetitle">
-        <h4>Request Fitur for Application</h4>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item "><a href="#">Forms</a></li>
-                <li class="breadcrumb-item active"><a href="#">Form Request Fitur</a></li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-    <section class="section">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="py-1">Request Fitur for Application</h4>
         <div class="row">
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Ooops..</strong>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            <form method="post" enctype="multipart/form-data" action="{{ route('website.fitur.store') }}" class="needs-validation" novalidate id="myForm">
-                @csrf
-                <div class="col-lg-12">                                        
-                    
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Applicant Information</h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="npk"><b>NPK</b></label>
-                                    <input type="text" class="form-control" placeholder="NPK" name="npk" style="background: #dbdbdb;"
-                                        id="npk" maxlength="6" value="{{ Auth::user()->npk }}" readonly required>
-                                    <div class="invalid-feedback">Please enter your NPK</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="fullname"><b>Nama</b></label>
-                                    <input type="text" class="form-control" placeholder="Full Name" name="fullname" style="background: #dbdbdb;"
-                                        id="fullname" maxlength="60" value="{{ Auth::user()->name }}" readonly required
-                                        onkeyup="formatFullName(this)">
-                                    <div class="invalid-feedback">Please enter your Full Name</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="phone"><b>No. Handphone</b></label>
-                                    <input type="text" class="form-control" placeholder="No Handphone" name="phone" style="background: #dbdbdb;"
-                                        id="phone" maxlength="60" value="{{ Auth::user()->nohp }}" readonly required
-                                        onkeyup="formatFullName(this)">
-                                    <div class="invalid-feedback">Please enter your Full Name</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="department"><b>Department</b></label>
-                                    <input type="text" class="form-control" placeholder="Department" name="department" style="background: #dbdbdb;"
-                                        id="department" maxlength="14"
-                                        value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}" readonly
-                                        required>
-                                    <div class="invalid-feedback">Please enter your Department</div>
-                                </div>
-
-                                <hr style="margin-bottom: 0rem; opacity: 100%;">
-                                
-                                <div class="col-md-6">
-                                    <label for="aplikasi"><b>Nama Aplikasi</b></label>
-                                    <input type="text" class="form-control" placeholder="Nama Aplikasi" name="aplikasi"
-                                        value="{{ old('aplikasi') }}" required>
-                                    <div class="invalid-feedback">Please enter your Nama Aplikasi</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="nama_fitur"><b>Nama Fitur</b></label>
-                                    <input type="text" class="form-control" placeholder="Nama Fitur" name="nama_fitur"
-                                        value="{{ old('nama_fitur') }}" required>
-                                    <div class="invalid-feedback">Please enter your Nama Fitur</div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="lampiran"><b>File PDF Konsep</b></label>
-                                    <input type="file" class="form-control" placeholder="Lampiran" name="lampiran"
-                                        id="lampiran" accept=".pdf">
-                                    <div class="invalid-feedback">Please enter your File PDF Konsep</div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="kondisi_sebelum" style="height: 100px;"
-                                            name="kondisi_sebelum" required>{{ old('kondisi_sebelum') }}</textarea>
-                                        <label for="kondisi_sebelum"><b>Kondisi Sebelum Improvement</b></label>
-                                        <div class="invalid-feedback">Please fill your Kondisi Sebelum Improvement</div>
+            <div class="col-md-12">
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Ooops..</strong>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                <form method="post" enctype="multipart/form-data" action="{{ route('website.fitur.store') }}"
+                    class="needs-validation" id="myForm" novalidate>
+                    @csrf
+                    <div class="card mb-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-header">Applicant Information</h5>
+                        </div>
+                        <div class="card-body demo-vertical-spacing demo-only-element">
+                            <div class="row mb-3">
+                                <label class="col-sm-6 col-form-label" for="npk_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="npk_pic" name="npk_pic"
+                                            value="{{ Auth::user()->npk }}" placeholder="000000" readonly
+                                            style="background-color: #efeff0;" />
+                                        <label for="npk_pic">NPK <span class="text-danger">*</span></label>
                                     </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="kondisi_target" style="height: 100px;"
-                                            name="kondisi_target" required>{{ old('kondisi_target') }}</textarea>
-                                        <label for="kondisi_target"><b>Kondisi yang diharapkan</b></label>
-                                        <div class="invalid-feedback">Please fill your Kondisi yang diharapkan</div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="fullname_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="fullname_pic" name="fullname_pic"
+                                            value="{{ Auth::user()->name }}" placeholder="Device Name" readonly
+                                            style="background-color: #efeff0;" />
+                                        <label for="fullname_pic">Name <span class="text-danger">*</span></label>
                                     </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a comment here" id="benefit" style="height: 100px;"
-                                            name="benefit" required>{{ old('benefit') }}</textarea>
-                                        <label for="benefit"><b>Benefit yang didapat</b></label>
-                                        <div class="invalid-feedback">Please fill your Benefit</div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="department_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="department_pic" name="department_pic"
+                                            value="{{ Auth::user()->departments->pluck('name')->implode(', ') }}"
+                                            placeholder="Department Name" readonly style="background-color: #efeff0;" />
+                                        <label for="department_pic">Department <span class="text-danger">*</span></label>
                                     </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="phone_pic">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="phone_pic" name="phone_pic"
+                                            value="{{ Auth::user()->nohp }}" placeholder="081234567890" readonly
+                                            style="background-color: #efeff0;" />
+                                        <label for="phone_pic">Phone Number <span class="text-danger">*</span></label>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- FITUR INFORMATION --}}
+                    <div class="card mb-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-header">Fitur Information</h5>
+                        </div>
+                        <div class="card-body demo-vertical-spacing demo-only-element">
+                            <div class="user-information">
+                                <div class="row" id="div-fitur">
+                                    <label class="col-sm-12 col-form-label" for="aplikasi">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="aplikasi" name="aplikasi"
+                                                value="{{ old('aplikasi') }}" placeholder="" required />
+                                            <label for="aplikasi">Nama Aplikasi <span class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Nama Aplikasi</div>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="nama_fitur">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="nama_fitur" name="nama_fitur"
+                                                value="{{ old('nama_fitur') }}" placeholder="" required />
+                                            <label for="nama_fitur">Nama Fitur <span class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Nama Fitur</div>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="lampiran">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="file" class="form-control" id="lampiran" name="lampiran"
+                                                value="{{ old('lampiran') }}" placeholder="" accept=".pdf" required />
+                                            <label for="lampiran">File PDF Konsep <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi File PDF Konsep</div>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="kondisi_sebelum">
+                                        <div class="form-floating form-floating-outline">
+                                            <textarea class="form-control auto-resize" id="kondisi_sebelum" name="kondisi_sebelum" placeholder="" required>{{ old('kondisi_sebelum') }}</textarea>
+                                            <label for="kondisi_sebelum">Kondisi Sebelum Improvement <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Kondisi Sebelum Improvement</div>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="kondisi_target">
+                                        <div class="form-floating form-floating-outline">
+                                            <textarea class="form-control auto-resize" id="kondisi_target" name="kondisi_target" placeholder="" required>{{ old('kondisi_target') }}</textarea>
+                                            <label for="kondisi_target">Kondisi yang diharapkan <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Kondisi yang diharapkan</div>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="benefit">
+                                        <div class="form-floating form-floating-outline">
+                                            <textarea class="form-control auto-resize" id="benefit" name="benefit" placeholder="" required>{{ old('benefit') }}</textarea>
+                                            <label for="benefit">Benefit yang didapat <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Benefit yang didapat</div>
+                                        </div>
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="card">
-                        <div class="card-body">
-                            @include('website.layouts.approval_flow')
-                        </div>
+
+                    @include('website.layouts.approval_flow')
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
                     </div>
-                    <button class="btn btn-success" type="submit" id="submitButton">Save & Submit Request</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <div class="modal fade" id="alatModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>List Alat dan Harga</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="search-input" placeholder="Search...">
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="text-center">
+                                <th>No</th>
+                                <th>Alat</th>
+                                <th>Harga</th>
+                                <th>Spesifikasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="device-table-body">
+                            <!-- Rows will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="previous-button" onclick="previousPage()"
+                        disabled>Previous</button>
+                    <button type="button" class="btn btn-primary" id="next-button" onclick="nextPage()">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
 @push('styles')
-    <link href="{{ asset('vendor/bs-step/bs-step.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 @endpush
 
 @push('scripts')
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            @if (session()->has('success'))
+                toastr['success']("{{ Session('success') }}")
+            @endif
+        })
+    </script>
+    <script>
+        const kondisi_target = document.querySelector('#kondisi_target');
+
+        kondisi_target.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        const kondisi_sebelum = document.querySelector('#kondisi_sebelum');
+
+        kondisi_sebelum.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        const benefit = document.querySelector('#benefit');
+
+        benefit.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
     <script>
         $(document).ready(function() {
 
@@ -150,18 +227,27 @@
         }
     </script>
     <script>
-        function updateUsername(emailInput) {
-            const emailValue = emailInput.value.toLowerCase();
-            emailInput.value = emailValue;
-            const atIndex = emailValue.indexOf('@');
-            const usernameInput = document.getElementsByName('username')[0];
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('myForm');
+            var submitButton = document.getElementById('submitButton');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
 
-            if (atIndex !== -1) {
-                const username = emailValue.substring(0, atIndex);
-                usernameInput.value = username;
-            } else {
-                usernameInput.value = '';
-            }
-        }
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    event.preventDefault();
+                } else {
+                    submitButton.setAttribute('disabled', 'true');
+                    submitButton.innerHTML = spinner + ' Submitting...';
+                }
+            });
+
+            form.addEventListener('input', function() {
+                if (form.checkValidity()) {
+                    submitButton.removeAttribute('disabled');
+                    submitButton.innerHTML = 'Submit';
+                }
+            });
+        });
     </script>
 @endpush
