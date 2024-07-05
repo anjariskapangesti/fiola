@@ -15,17 +15,19 @@ class AlertMail extends Mailable
 
     public $data;
     public $subject;
+    public $role;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($data, $subject, $url)
+    public function __construct($data, $subject, $url, $role)
     {
         $this->data = $data;
         $this->subject = $subject;
         $this->url = $url;
+        $this->role = $role;
     }
 
     public function content()
@@ -46,7 +48,7 @@ class AlertMail extends Mailable
 
     public function build()
     {
-        return $this->with(['data' => $this->data, 'subject' => $this->subject, 'url' => $this->url])
+        return $this->with(['data' => $this->data, 'subject' => $this->subject, 'url' => $this->url, 'role' => $this->role])
                     ->markdown('website.pages.emails.alert'); // Anda perlu membuat view untuk email ini, gantilah 'emails.email_sample' dengan nama view yang sesuai.
     }
 }

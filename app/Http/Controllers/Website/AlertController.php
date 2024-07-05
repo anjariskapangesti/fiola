@@ -69,11 +69,12 @@ class AlertController extends Controller
     
             if ($alertManager) {
                 $to = $alertManager->email;
+                $role = 'Manager';
                 $subject = 'FIOLA (Form ITD Online Application)';
                 $data = 'tunggu approve Manager';
                 $url = 'https://fiola.aiia.co.id';
     
-                Mail::to($to)->send(new AlertMail($data, $subject, $url));
+                Mail::to($to)->send(new AlertMail($data, $subject, $url, $role));
             }
         }
 
@@ -83,11 +84,12 @@ class AlertController extends Controller
     
             if ($alertIt) {
                 $to = $alertIt->email;
+                $role = 'ITD';
                 $subject = 'FIOLA (Form ITD Online Application)';
                 $data = 'tunggu approve IT';
                 $url = 'https://fiola.aiia.co.id';
     
-                Mail::to($to)->send(new AlertMail($data, $subject, $url));
+                Mail::to($to)->send(new AlertMail($data, $subject, $url, $role));
             }
         }
 
@@ -97,11 +99,12 @@ class AlertController extends Controller
     
             if ($alertItMgr) {
                 $to = $alertItMgr->email;
+                $role = 'Manager ITD';
                 $subject = 'FIOLA (Form ITD Online Application)';
                 $data = 'tunggu approve IT Manager';
                 $url = 'https://fiola.aiia.co.id';
     
-                Mail::to($to)->send(new AlertMail($data, $subject, $url));
+                Mail::to($to)->send(new AlertMail($data, $subject, $url, $role));
             }
         }
     

@@ -8,7 +8,7 @@
 
 <body>
     *ini adalah pesan otomatis <br><br>
-    Dear Manager Department, <br>
+    Dear {{ $role }} Department, <br>
     <strong>Reminder</strong><br><br>
 
     Terkait Form ITD, terdapat {{ $data }}. Mohon diapprove/bisa tekan tombol More Details untuk masuk ke
