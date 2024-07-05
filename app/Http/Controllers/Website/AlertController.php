@@ -34,6 +34,7 @@ class AlertController extends Controller
         $models = ['Account', 'FolderAccess', 'NewFolder', 'Software', 'Hardware', 'Vpn', 'Project', 'Fitur', 'Relayout'];
         $waitingManagers = collect([]);
         $waitingIts = collect([]);
+        $waitingItMgrs = collect([]);
     
         // Ambil semua departemen yang memiliki data 'created' pada tiap model
         foreach ($models as $model) {
@@ -47,13 +48,20 @@ class AlertController extends Controller
             $waitingIt = $modelClass::where('final_status', 'Manager Approve')->pluck('final_status')->unique();
             $waitingIts = $waitingIts->merge($waitingIt);
         }
+
+        foreach ($models as $model) {
+            $modelClass = 'App\\Models\\' . $model;
+            $waitingItMgr = $modelClass::where('final_status', 'IT Approve')->pluck('final_status')->unique();
+            $waitingItMgrs = $waitingItMgrs->merge($waitingItMgr);
+        }
         // Ambil nilai unik dari koleksi departemen
         $waitingManagers = $waitingManagers->unique();
         $waitingIts = $waitingIts->unique();
+        $waitingItMgrs = $waitingItMgrs->unique();
 
-        if ($waitingManagers->isEmpty() && $waitingIts->isEmpty()) {
-            return "Tidak ada reminder";
-        }
+        // if ($waitingManagers->isEmpty() && $waitingIts->isEmpty()) {
+        //     return "Tidak ada reminder";
+        // }
 
         foreach ($waitingManagers as $waitingManager) {
             // Ambil user dari tabel Alert berdasarkan department
@@ -82,8 +90,22 @@ class AlertController extends Controller
                 Mail::to($to)->send(new AlertMail($data, $subject, $url));
             }
         }
+
+        foreach ($waitingItMgrs as $waitingItMgr) {
+            // Ambil user dari tabel Alert berdasarkan department
+            $alertItMgr = Alert::where('role', 'IT Manager')->first();
     
-        return "Email terkirim!";
+            if ($alertItMgr) {
+                $to = $alertItMgr->email;
+                $subject = 'FIOLA (Form ITD Online Application)';
+                $data = 'tunggu approve IT Manager';
+                $url = 'https://fiola.aiia.co.id';
+    
+                Mail::to($to)->send(new AlertMail($data, $subject, $url));
+            }
+        }
+    
+        return response()->json('success', 'email terkirim');
     }
 
     public function alert_view()
