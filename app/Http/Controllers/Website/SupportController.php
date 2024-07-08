@@ -135,7 +135,13 @@ class SupportController extends Controller
     {
         $now = Carbon::now();
         if ($now->isWeekday() && $now->hour == 7) {
-            Support::where('shift', 'Non Shift')->where('status', 'not active')->update(['status' => 'active']);
+            if ($now->dayOfWeek == Carbon::MONDAY) {
+                Support::where('shift', 'Shift 2')->where('status', 'not active')->update(['status' => 'active', 'shift' => 'Non Shift']);
+                Support::where('shift', 'Shift 3')->where('status', 'not active')->update(['shift' => 'Shift 2']);
+                Support::where('shift', 'Non Shift')->where('status', 'not active')->update(['shift' => 'Shift 3']);
+            } else {
+                Support::where('shift', 'Non Shift')->where('status', 'not active')->update(['status' => 'active']);
+            }
             return response()->json(['success', 'Update Successfully']);
         } else if ($now->isWeekday() && $now->hour == 14) {
             Support::where('shift', 'Shift 2')->where('status', 'not active')->update(['status' => 'active']);
@@ -151,7 +157,7 @@ class SupportController extends Controller
             Support::where('shift', 'Shift 3')->where('status', 'active')->update(['status' => 'not active']);
             return response()->json(['success', 'Update Successfully']);
         } else {
-            return response()->json(['error', 'You are not authorized to update this item.']);
+            return response()->json(['error', 'Nothing to do.']);
         }
     }
 }
