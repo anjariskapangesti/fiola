@@ -66,6 +66,7 @@
                 'fitur',
                 'relayout',
                 'network',
+                'akses_sistem',
             ];
             $createRoutes = [];
             $editRoutes = [];
@@ -127,6 +128,55 @@
                     <div data-i18n="Manager History">Manager History</div>
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
+            </li>
+        @endcan
+        {{-- GM --}}
+        @php
+            $masterLink = ['akses_sistem'];
+            $createRoutes = [];
+            $editRoutes = [];
+            $listRoutes = [];
+
+            foreach ($masterLink as $link) {
+                $createRoutes[] = 'website.' . $link . '.create';
+                $editRoutes[] = 'website.' . $link . '.edit';
+                $listRoutes[] = 'website.' . $link . '.list';
+                $gm_approval_routes[] = 'website.' . $link . '.gm_approval';
+                $gm_approved_routes[] = 'website.' . $link . '.gm_approved';
+            }
+
+        @endphp
+        @can('approve_gm')
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $gm_approval_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="GM Approval">GM Approval
+                        @if (App\Models\AppHelper::gm_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="gm_approvals_count">{{ App\Models\AppHelper::gm_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                {{-- @include('website.layouts.sidebar_items', ['link' => 'gm_approval', 'text' => 'Form']) --}}
+                <ul class="menu-sub">
+                    <li
+                        class="menu-item {{ Route::is('website.akses_sistem.gm_approval') || Route::is('website.akses_sistem.edit') ? 'active' : '' }}">
+                        <a href="{{ route('website.akses_sistem.gm_approval') }}" class="menu-link">
+                            <div data-i18n="Akses Sistem">Form Akses Sistem</div>
+                            @if (App\Models\AppHelper::akses_sistem_gm_count() > 0)
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="akses_sistem_gm_count">{{ App\Models\AppHelper::akses_sistem_gm_count() }}</span>
+                            @endif
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $gm_approved_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="GM History">GM History</div>
+                </a>
+                {{-- @include('website.layouts.sidebar_items', ['link' => 'gm_approved', 'text' => 'Form']) --}}
             </li>
         @endcan
         {{-- ITD --}}

@@ -305,6 +305,37 @@
             @endif
         </a>
     </li>
+
+    <li class="menu-item {{ Route::is('website.akses_sistem.' . $link) ? 'active' : '' }}">
+        <a href="{{ route('website.akses_sistem.' . $link) }}" class="menu-link">
+            <div data-i18n="Akses Sistem">{{ $text }} Akses Sistem
+            </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::akses_sistem_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="akses_sistem_mgr_count">{{ App\Models\AppHelper::akses_sistem_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::akses_sistem_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="akses_sistem_it_count">{{ App\Models\AppHelper::akses_sistem_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::akses_sistem_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="akses_sistem_it_mgr_count">{{ App\Models\AppHelper::akses_sistem_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::akses_sistem_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="akses_sistem_execution_count">{{ App\Models\AppHelper::akses_sistem_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::akses_sistem_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="akses_sistem_confirm_count">{{ App\Models\AppHelper::akses_sistem_confirm_count() }}</span>
+            @endif
+        </a>
+    </li>
 </ul>
 
 {{-- <ul id="forms-nav"

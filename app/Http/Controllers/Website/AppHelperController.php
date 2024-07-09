@@ -71,6 +71,12 @@ class AppHelperController extends Controller
         $network_it_mgr_count = AppHelper::network_it_mgr_count();
         $network_execution_count = AppHelper::network_execution_count();
         $network_confirm_count = AppHelper::network_confirm_count();
+        // FORM AKSES SISTEM //
+        $akses_sistem_mgr_count = AppHelper::akses_sistem_mgr_count();
+        $akses_sistem_it_count = AppHelper::akses_sistem_it_count();
+        $akses_sistem_it_mgr_count = AppHelper::akses_sistem_it_mgr_count();
+        $akses_sistem_execution_count = AppHelper::akses_sistem_execution_count();
+        $akses_sistem_confirm_count = AppHelper::akses_sistem_confirm_count();
         // ALL FORM //
         $manager_approvals_count = AppHelper::manager_approvals_count();
         $confirms_count = AppHelper::confirms_count();
@@ -138,6 +144,12 @@ class AppHelperController extends Controller
             'network_it_mgr_count' => $network_it_mgr_count,
             'network_execution_count' => $network_execution_count,
             'network_confirm_count' => $network_confirm_count,
+
+            'akses_sistem_mgr_count' => $akses_sistem_mgr_count,
+            'akses_sistem_it_count' => $akses_sistem_it_count,
+            'akses_sistem_it_mgr_count' => $akses_sistem_it_mgr_count,
+            'akses_sistem_execution_count' => $akses_sistem_execution_count,
+            'akses_sistem_confirm_count' => $akses_sistem_confirm_count,
             
             'manager_approvals_count' => $manager_approvals_count,
             'confirms_count' => $confirms_count,

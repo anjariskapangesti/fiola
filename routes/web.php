@@ -559,6 +559,60 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/finished_ajax', 'RelayoutController@finished_ajax')->name('relayout.finished_ajax');
                 });
             });
+            // FORM AKSES SISTEM //
+            Route::group(['prefix' => 'akses_sistem'], function(){
+                Route::get('/create', 'AksesSistemController@create')->name('akses_sistem.create');
+                Route::post('/store', 'AksesSistemController@store')->name('akses_sistem.store');
+                Route::get('/subfolder_ajax', 'AksesSistemController@subfolder_ajax')->name('akses_sistem.subfolder_ajax');
+                Route::get('/list', 'AksesSistemController@list')->name('akses_sistem.list');
+                Route::get('/list_ajax', 'AksesSistemController@list_ajax')->name('akses_sistem.list_ajax');   
+                Route::post('/approve_form', 'AksesSistemController@approve_form')->name('akses_sistem.approve_form');
+                Route::post('/delete_form', 'AksesSistemController@delete_form')->name('akses_sistem.delete_form');
+
+                Route::group(['middleware' => ['can:approve_mgr']], function () {
+                    Route::get('/manager_approval', 'AksesSistemController@manager_approval')->name('akses_sistem.manager_approval');
+                    Route::get('/manager_approval_ajax', 'AksesSistemController@manager_approval_ajax')->name('akses_sistem.manager_approval_ajax');
+                    Route::post('/manager_approve', 'AksesSistemController@manager_approve')->name('akses_sistem.manager_approve');
+                    Route::get('/manager_approved', 'AksesSistemController@manager_approved')->name('akses_sistem.manager_approved');
+                    Route::get('/manager_approved_ajax', 'AksesSistemController@manager_approved_ajax')->name('akses_sistem.manager_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can:approve_gm']], function () {
+                    Route::get('/gm_approval', 'AksesSistemController@gm_approval')->name('akses_sistem.gm_approval');
+                    Route::get('/gm_approval_ajax', 'AksesSistemController@gm_approval_ajax')->name('akses_sistem.gm_approval_ajax');
+                    Route::post('/gm_approve', 'AksesSistemController@gm_approve')->name('akses_sistem.gm_approve');
+                    Route::get('/gm_approved', 'AksesSistemController@gm_approved')->name('akses_sistem.gm_approved');
+                    Route::get('/gm_approved_ajax', 'AksesSistemController@gm_approved_ajax')->name('akses_sistem.gm_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can:approve_dir']], function () {
+                    Route::get('/dir_approval', 'AksesSistemController@dir_approval')->name('akses_sistem.dir_approval');
+                    Route::get('/dir_approval_ajax', 'AksesSistemController@dir_approval_ajax')->name('akses_sistem.dir_approval_ajax');
+                    Route::post('/dir_approve', 'AksesSistemController@dir_approve')->name('akses_sistem.dir_approve');
+                    Route::get('/dir_approved', 'AksesSistemController@dir_approved')->name('akses_sistem.dir_approved');
+                    Route::get('/dir_approved_ajax', 'AksesSistemController@dir_approved_ajax')->name('akses_sistem.dir_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/it_approval', 'AksesSistemController@it_approval')->name('akses_sistem.it_approval');
+                    Route::get('/it_approval_ajax', 'AksesSistemController@it_approval_ajax')->name('akses_sistem.it_approval_ajax');
+                    Route::post('/it_approve', 'AksesSistemController@it_approve')->name('akses_sistem.it_approve');
+                    Route::get('/it_approved', 'AksesSistemController@it_approved')->name('akses_sistem.it_approved');
+                    Route::get('/it_approved_ajax', 'AksesSistemController@it_approved_ajax')->name('akses_sistem.it_approved_ajax');
+                });
+                Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
+                    Route::get('/it_mgr_approval', 'AksesSistemController@it_mgr_approval')->name('akses_sistem.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'AksesSistemController@it_mgr_approval_ajax')->name('akses_sistem.it_mgr_approval_ajax');
+                    Route::post('/it_mgr_approve', 'AksesSistemController@it_mgr_approve')->name('akses_sistem.it_mgr_approve');
+                    Route::get('/it_mgr_approved', 'AksesSistemController@it_mgr_approved')->name('akses_sistem.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'AksesSistemController@it_mgr_approved_ajax')->name('akses_sistem.it_mgr_approved_ajax');
+                });
+
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/execution', 'AksesSistemController@execution')->name('akses_sistem.execution');
+                    Route::get('/execution_ajax', 'AksesSistemController@execution_ajax')->name('akses_sistem.execution_ajax');
+                    Route::post('/execution_approve', 'AksesSistemController@execution_approve')->name('akses_sistem.execution_approve');
+                    Route::get('/finished', 'AksesSistemController@finished')->name('akses_sistem.finished');
+                    Route::get('/finished_ajax', 'AksesSistemController@finished_ajax')->name('akses_sistem.finished_ajax');
+                });
+            });
         });
     });
 });
