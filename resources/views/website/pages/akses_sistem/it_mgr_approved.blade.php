@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'IT MGR Approved Network'])
+@extends('website.layouts.main', ['title' => 'IT MGR Approved Akses Sistem'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Network Configuration Change (FRM-ITD-S13-007-01)</h5>
+                <h5 class="card-header">Akses Sistem</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -76,7 +76,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.network.it_mgr_approved_ajax') }}",
+                    url: "{{ route('website.akses_sistem.it_mgr_approved_ajax') }}",
                 },
                 columns: [{
                         data: null,

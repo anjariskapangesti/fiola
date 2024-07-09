@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'IT Approval Network'])
+@extends('website.layouts.main', ['title' => 'IT Approval Akses Sistem'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Network Configuration Change (FRM-ITD-S13-007-01)</h5>
+                <h5 class="card-header">Akses Sistem</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -121,7 +121,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.network.it_approval_ajax') }}",
+                    url: "{{ route('website.akses_sistem.it_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -261,7 +261,7 @@
                 let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
                     'Tidak';
                 $.ajax({
-                    url: "{{ route('website.network.it_approve') }}",
+                    url: "{{ route('website.akses_sistem.it_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
@@ -303,7 +303,7 @@
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.network.it_approve') }}",
+                    url: "{{ route('website.akses_sistem.it_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,

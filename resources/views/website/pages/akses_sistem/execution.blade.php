@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'Execution Network'])
+@extends('website.layouts.main', ['title' => 'Execution Akses Sistem'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Network Configuration Change (FRM-ITD-S13-007-01)</h5>
+                <h5 class="card-header">Akses Sistem</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -146,7 +146,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.network.execution_ajax') }}",
+                    url: "{{ route('website.akses_sistem.execution_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -328,7 +328,7 @@
                 // $('#finish_note_approve').val('');
 
                 var noteText =
-                    'Form network telah selesai.\n\n';
+                    'Form akses_sistem telah selesai.\n\n';
 
                 noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
                 $('#finish_note_approve').val(noteText);
@@ -339,7 +339,7 @@
                 let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
                     'Tidak';
                 $.ajax({
-                    url: "{{ route('website.network.execution_approve') }}",
+                    url: "{{ route('website.akses_sistem.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
@@ -381,7 +381,7 @@
             $('#btn-progress').on('click', function() {
                 let id_progress = $('#id_progress').val();
                 $.ajax({
-                    url: "{{ route('website.network.execution_approve') }}",
+                    url: "{{ route('website.akses_sistem.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_progress,
@@ -422,7 +422,7 @@
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.network.execution_approve') }}",
+                    url: "{{ route('website.akses_sistem.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,
