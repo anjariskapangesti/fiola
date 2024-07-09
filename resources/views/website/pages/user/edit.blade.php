@@ -36,7 +36,8 @@
                             @method('PUT')
                             <div class="form-floating form-floating-outline mb-4">
                                 <input type="text" class="form-control" id="npk" name="npk"
-                                    value="{{ old('npk', $user->npk) }}" placeholder="000000" />
+                                    value="{{ old('npk', $user->npk) }}" placeholder="000000" readonly
+                                    style="background-color: #efeff0; opacity: 1;" />
                                 <label for="npk">NPK <span class="text-danger">*</span></label>
                             </div>
                             <div class="form-floating form-floating-outline mb-4">
