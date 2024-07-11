@@ -84,7 +84,7 @@
                             </div>
                         @endif
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('website.auth.login') }}" class="btn btn-primary btn-xl">FORM /
+                            <a href="{{ route('website.home') }}" class="btn btn-primary btn-xl">FORM /
                                 REQUEST</a>
                             <a href="{{ route('website.ticket.list') }}" class="btn btn-primary btn-xl">TICKET /
                                 PROBLEM</a>
