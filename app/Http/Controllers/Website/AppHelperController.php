@@ -11,6 +11,7 @@ class AppHelperController extends Controller
 {
     public function getApprovalCount()
     {
+        $ticket_count = AppHelper::ticket_count();
         // FORM ACCOUNT //
         $account_mgr_count = AppHelper::account_mgr_count();
         $account_it_count = AppHelper::account_it_count();
@@ -85,6 +86,8 @@ class AppHelperController extends Controller
         $execution_count = AppHelper::execution_count();
         
         return response()->json([
+            'ticket_count' => $ticket_count,
+
             'account_mgr_count' => $account_mgr_count,
             'account_it_count' => $account_it_count,
             'account_it_mgr_count' => $account_it_mgr_count,

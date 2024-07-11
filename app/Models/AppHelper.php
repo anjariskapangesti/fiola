@@ -66,6 +66,11 @@ class AppHelper
         return $totalCount;
     }
 
+    public static function ticket_count()
+    {
+        return Ticket::whereNull('is_finish')->count();
+    }
+
     public static function confirms_count()
     {
         $models = [

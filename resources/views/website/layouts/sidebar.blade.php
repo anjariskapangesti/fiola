@@ -51,6 +51,10 @@
                 <a href="{{ route('website.ticket.it_approval') }}" class="menu-link">
                     <i class="menu-icon tf-icons mdi mdi-ticket"></i>
                     <div data-i18n="Basic">Tickets</div>
+                    @if (App\Models\AppHelper::ticket_count() > 0)
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                            id="ticket_count">{{ App\Models\AppHelper::ticket_count() }}</span>
+                    @endif
                 </a>
             </li>
         @endif
