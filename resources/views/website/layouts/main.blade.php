@@ -56,6 +56,45 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* Ensure layout-menu is visible by default */
+        .layout-menu {
+            display: block;
+        }
+
+        /* Ensure the button is visible only on large screens */
+        @media (min-width: 1200px) {
+            .d-xl-block {
+                display: block !important;
+            }
+
+            .d-none.d-xl-block {
+                display: none;
+            }
+        }
+
+        /* Hide sidebar when sidebar-collapsed class is applied */
+        .layout-container.sidebar-collapsed .layout-menu {
+            display: none;
+        }
+
+        /* Adjust layout when sidebar is hidden */
+        .layout-container.sidebar-collapsed .layout-page {
+            padding-left: 0;
+            /* Remove padding when sidebar is hidden */
+        }
+
+        /* Adjust content wrapper to occupy full width */
+        .layout-container.sidebar-collapsed .content-wrapper {
+            margin-left: 0;
+            /* Remove margin when sidebar is hidden */
+        }
+
+        /* Ensure the layout-page adjusts when sidebar is hidden */
+        .layout-container.sidebar-collapsed .layout-menu-fixed:not(.layout-menu-collapsed) .layout-page,
+        .layout-container.sidebar-collapsed .layout-menu-fixed-offcanvas:not(.layout-menu-collapsed) .layout-page {
+            padding-left: 0rem;
+        }
     </style>
     @stack('styles')
     <!-- Helpers -->
@@ -173,6 +212,12 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        document.getElementById('largeScreenToggle').addEventListener('click', function() {
+            document.querySelector('.layout-container').classList.toggle('sidebar-collapsed');
+        });
     </script>
 
     @stack('scripts')

@@ -6,6 +6,12 @@
         </a>
     </div>
 
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-none d-xl-block">
+        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)" id="largeScreenToggle">
+            <i class="mdi mdi-menu mdi-24px"></i>
+        </a>
+    </div>
+
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Place this tag where you want the button to render. -->
@@ -59,3 +65,27 @@
         </ul>
     </div>
 </nav>
+
+@push('styles')
+    <style>
+        @media (min-width: 1200px) {
+            #layout-menu {
+                display: block;
+                /* Initially visible on large screens */
+            }
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script>
+        document.getElementById('largeScreenToggle').addEventListener('click', function() {
+            var layoutMenu = document.getElementById('layout-menu');
+            if (layoutMenu.style.display === 'none') {
+                layoutMenu.style.display = 'block';
+            } else {
+                layoutMenu.style.display = 'none';
+            }
+        });
+    </script>
+@endpush

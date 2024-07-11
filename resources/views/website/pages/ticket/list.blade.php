@@ -19,6 +19,15 @@
             /* Warna putih untuk teks */
         }
     </style>
+    <style>
+        .detail_case_container {
+            max-width: 200px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            box-sizing: border-box;
+        }
+    </style>
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="{{ asset('img/logo-fiola.png') }}" />
     <link href="{{ asset('vendor/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -92,8 +101,8 @@
                                 <thead>
                                     <tr>
                                         <th width="50px">No</th>
-                                        <th width="200px">Requestor</th>
-                                        <th>Ticket</th>
+                                        <th style="max-width: 200px;">Requestor</th>
+                                        <th style="max-width: 200px;">Ticket</th>
                                         <th>Support</th>
                                         <th>Attachment</th>
                                         <th>Status</th>
@@ -172,9 +181,17 @@
                         render: function(data, type, row, meta) {
                             return `
                             <div class="label-container">
-                                <span class="label">Name&emsp;:</span> ${row.requestor_name}<br>
-                                <span class="label">Phone&emsp;:</span> ${row.requestor_phone}<br>
-                                <span class="label">Dept.&emsp;:</span> ${row.requestor_department}
+                                <div class="mb-1">
+                                    <b>Name : </b><br>
+                                    <span class="detail_case_container">${row.requestor_name}</span>
+                                </div>
+                                    <b>Phone : </b><br>
+                                    <span class="detail_case_container">${row.requestor_phone}</span>
+                                </div>
+                                </div>
+                                    <b>Department : </b><br>
+                                    <span class="detail_case_container">${row.requestor_department}</span>
+                                </div>
                             </div>`;
                         }
                     },
@@ -192,7 +209,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <b>Detail Problem : </b><br>
-                                    <span>${row.detail_case}</span>
+                                    <span class="detail_case_container">${row.detail_case}</span>
                                 </div>
                                 <div>
                                     <b>Location&emsp;: </b>${row.location}
@@ -201,7 +218,8 @@
                                     <b>Priority&emsp;: </b>${row.sla}
                                 </div>
                                 <div class="mb-3">
-                                    <b>Solution&emsp;: </b>${row.solution ? row.solution : 'Tunggu Selesai'}
+                                    <b>Solution&emsp;: </b><br>
+                                    <span class="detail_case_container">${row.solution ? row.solution : '<span class="badge btn-primary">Tunggu Selesai</span>'}</span>
                                 </div>
                                 <div>
                                     <b>Reported Date&emsp;: </b>${created_at}
@@ -214,17 +232,18 @@
                         render: function(data, type, row, meta) {
                             return `
                             <div>
-                                <div>
-                                    <b>PIC&emsp;: </b>${row.it_name ? row.it_name : 'Tunggu Approve'}
+                                <div class="mb-1">
+                                    <b>PIC&emsp;: </b>${row.it_name ? row.it_name : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
-                                <div>
-                                    <b>Phone&emsp;: </b>${row.it_phone ? row.it_phone : 'Tunggu Approve'}
-                                </div>
-                                <div class="mb-3">
-                                    <b>IT Note&emsp;: </b>${row.it_note ? row.it_note : 'Tunggu Approve'}
+                                <div class="mb-1">
+                                    <b>Phone&emsp;: </b>${row.it_phone ? row.it_phone : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
                                 <div class="mb-3">
-                                    <b>Accepted Date&emsp;: </b>${row.it_approval_date ? row.it_approval_date : 'Tunggu Approve'}
+                                    <b>IT Note&emsp;: </b>${row.it_name ? (row.it_note ? row.it_note : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}
+                                </div>
+
+                                <div class="mb-3">
+                                    <b>Accepted Date&emsp;: </b>${row.it_approval_date ? row.it_approval_date : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
 
                                 <div>

@@ -152,6 +152,15 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
+    <style>
+        .detail_case_container {
+            max-width: 200px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            box-sizing: border-box;
+        }
+    </style>
 @endpush
 
 @push('scripts')
@@ -280,9 +289,17 @@
                         render: function(data, type, row, meta) {
                             return `
                             <div class="label-container">
-                                <span class="label">Name&emsp;:</span> ${row.requestor_name}<br>
-                                <span class="label">Phone&emsp;:</span> ${row.requestor_phone}<br>
-                                <span class="label">Dept.&emsp;:</span> ${row.requestor_department}
+                                <div class="mb-1">
+                                    <b>Name : </b><br>
+                                    <span class="detail_case_container">${row.requestor_name}</span>
+                                </div>
+                                    <b>Phone : </b><br>
+                                    <span class="detail_case_container">${row.requestor_phone}</span>
+                                </div>
+                                </div>
+                                    <b>Department : </b><br>
+                                    <span class="detail_case_container">${row.requestor_department}</span>
+                                </div>
                             </div>`;
                         }
                     },
@@ -300,7 +317,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <b>Detail Problem : </b><br>
-                                    <span>${row.detail_case}</span>
+                                    <span class="detail_case_container">${row.detail_case}</span>
                                 </div>
                                 <div>
                                     <b>Location&emsp;: </b>${row.location}
@@ -309,7 +326,8 @@
                                     <b>Priority&emsp;: </b>${row.sla}
                                 </div>
                                 <div class="mb-3">
-                                    <b>Solution&emsp;: </b>${row.solution ? row.solution : 'Tunggu Selesai'}
+                                    <b>Solution&emsp;: </b><br>
+                                    <span class="detail_case_container">${row.solution ? row.solution : '<span class="badge btn-primary">Tunggu Selesai</span>'}</span>
                                 </div>
                                 <div>
                                     <b>Reported Date&emsp;: </b>${created_at}
