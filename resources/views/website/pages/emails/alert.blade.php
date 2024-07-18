@@ -11,10 +11,10 @@
     Dear {{ $role }} Department, <br>
     <strong>Reminder</strong><br><br>
 
-    Terkait Form ITD, terdapat {{ $data }}. Mohon diapprove/bisa tekan tombol More Details untuk masuk ke
+    Terkait Form ITD, terdapat {{ $data }}. Mohon dicek/bisa tekan tombol More Details untuk masuk ke
     website FIOLA. <br><br>
 
-    @component('mail::button', ['url' => 'https://fiola.aiia.co.id'])
+    @component('mail::button', ['url' => 'https://fiola.aiia.co.id/login'])
         More Details
     @endcomponent
     Terima kasih,<br>

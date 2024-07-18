@@ -31,7 +31,7 @@ class AlertController extends Controller
     public function alert()
     {
         // Daftar model yang ingin diambil departemennya
-        $models = ['Account', 'FolderAccess', 'NewFolder', 'Software', 'Hardware', 'Vpn', 'Project', 'Fitur', 'Relayout'];
+        $models = ['Account', 'FolderAccess', 'NewFolder', 'Software', 'Hardware', 'Vpn', 'Project', 'Fitur', 'Relayout', 'Network'];
         $waitingManagers = collect([]);
         $waitingIts = collect([]);
         $waitingItMgrs = collect([]);
@@ -62,11 +62,10 @@ class AlertController extends Controller
         // if ($waitingManagers->isEmpty() && $waitingIts->isEmpty()) {
         //     return "Tidak ada reminder";
         // }
-
         foreach ($waitingManagers as $waitingManager) {
             // Ambil user dari tabel Alert berdasarkan department
             $alertManager = Alert::where('department', $waitingManager)->where('role', 'Manager')->first();
-    
+
             if ($alertManager) {
                 $to = $alertManager->email;
                 $role = 'Manager';
@@ -79,7 +78,6 @@ class AlertController extends Controller
         }
 
         foreach ($waitingIts as $waitingIt) {
-            // Ambil user dari tabel Alert berdasarkan department
             $alertIt = Alert::where('role', 'IT')->first();
     
             if ($alertIt) {
@@ -94,7 +92,6 @@ class AlertController extends Controller
         }
 
         foreach ($waitingItMgrs as $waitingItMgr) {
-            // Ambil user dari tabel Alert berdasarkan department
             $alertItMgr = Alert::where('role', 'IT Manager')->first();
     
             if ($alertItMgr) {
