@@ -148,7 +148,7 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             @if (session()->has('success'))
@@ -219,7 +219,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <b>Solution&emsp;: </b><br>
-                                    <span class="detail_case_container">${row.solution ? row.solution : '<span class="badge btn-primary">Tunggu Selesai</span>'}</span>
+                                    <span class="detail_case_container">${row.it_name ? (row.solution ? row.solution : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}</span>
                                 </div>
                                 <div>
                                     <b>Reported Date&emsp;: </b>${created_at}

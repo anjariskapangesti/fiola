@@ -487,16 +487,6 @@
         });
     </script>
 
-    @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
-        <script>
-            document.getElementById('resetButton').addEventListener('click', function() {
-                document.getElementById('filterFirst').value = "{{ $startOfMonth }}";
-                document.getElementById('filterEnd').value = "{{ $endOfMonth }}";
-                document.getElementById('dateFilterForm').submit();
-            });
-        </script>
-    @endif
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var urlParams = new URLSearchParams(window.location.search);

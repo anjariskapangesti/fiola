@@ -122,7 +122,7 @@
 
 @push('scripts')
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
     <script>
         const textarea = document.querySelector('.auto-resize');
 

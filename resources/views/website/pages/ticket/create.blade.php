@@ -235,7 +235,7 @@
 
         <!-- Place this tag in your head or just before your close body tag. -->
         <script async defer src="https://buttons.github.io/buttons.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
         <script src="{{ asset('vendor/plugins/toastr/toastr.min.js') }}"></script>
         <script>
             $(document).ready(function() {

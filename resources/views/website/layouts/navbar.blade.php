@@ -82,7 +82,7 @@
         document.getElementById('largeScreenToggle').addEventListener('click', function() {
             var layoutMenu = document.getElementById('layout-menu');
             if (layoutMenu.style.display === 'none') {
-                layoutMenu.style.display = 'block';
+                layoutMenu.style.display = 'flex';
             } else {
                 layoutMenu.style.display = 'none';
             }

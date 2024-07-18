@@ -17,10 +17,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('img/logo-fiola.png') }}" />
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
-        rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('fonts/inter/fonts.css') }}" />
 
     <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/fonts/materialdesignicons.css') }}" />
 
@@ -38,7 +35,7 @@
     <link rel="stylesheet"
         href="{{ asset('vendor/materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/toastr/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/bs-step/bs-step.css') }}">
 
     <!-- Page CSS -->
@@ -58,9 +55,9 @@
         }
 
         /* Ensure layout-menu is visible by default */
-        .layout-menu {
-            display: block;
-        }
+        /* .layout-menu {
+            display: relative;
+        } */
 
         /* Ensure the button is visible only on large screens */
         @media (min-width: 1200px) {

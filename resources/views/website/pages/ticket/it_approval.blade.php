@@ -165,7 +165,7 @@
 
 @push('scripts')
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
     <script>
         const textarea = document.querySelector('.auto-resize');
 
@@ -327,7 +327,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <b>Solution&emsp;: </b><br>
-                                    <span class="detail_case_container">${row.solution ? row.solution : '<span class="badge btn-primary">Tunggu Selesai</span>'}</span>
+                                    <span class="detail_case_container">${row.it_name ? (row.solution ? row.solution : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}</span>
                                 </div>
                                 <div>
                                     <b>Reported Date&emsp;: </b>${created_at}
