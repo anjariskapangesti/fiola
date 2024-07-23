@@ -155,15 +155,19 @@
 @endsection
 
 @push('styles')
-    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('vendor/datatables/css/datatables.min.css') }}">
 @endpush
 
 @push('scripts')
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
+    <script src="{{ asset('vendor/highcharts/highcharts.js') }}"></script>
+    <script src="{{ asset('vendor/highcharts/exporting.js') }}"></script>
+    <script src="{{ asset('vendor/highcharts/export-data.js') }}"></script>
+    <script src="{{ asset('vendor/highcharts/accessibility.js') }}"></script>
+    {{-- <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script> --}}
 
     <script>
         $(document).ready(function() {
