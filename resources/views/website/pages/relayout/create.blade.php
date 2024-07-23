@@ -2,7 +2,11 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="py-1">Form Permohonan IT Re-layout (FRM-ITD-S13-010-00)</h4>
+        <div class="d-flex justify-content-between mb-2">
+            <h4 class="py-1">Form Permohonan IT Re-layout (FRM-ITD-S13-010-00)</h4>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#guideModal"><i
+                    class="menu-icon tf-icons mdi mdi-book-information-variant"></i>Guide</button>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 @if ($errors->any())
@@ -84,8 +88,9 @@
                                     <small class="text-light fw-medium d-block">Request Type <span
                                             class="text-danger">*</span></small>
                                     <div class="form-check form-check-inline mt-3">
-                                        <input class="form-check-input" type="radio" name="request_type" id="Additional"
-                                            value="Additional" {{ old('request_type') == 'Additional' ? 'checked' : '' }} />
+                                        <input class="form-check-input" type="radio" name="request_type"
+                                            id="Additional" value="Additional"
+                                            {{ old('request_type') == 'Additional' ? 'checked' : '' }} />
                                         <label class="form-check-label" for="Additional">Additional</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -189,12 +194,65 @@
             </div>
         </div>
     </div>
+
+    {{-- GUIDE MODAL --}}
+    <div class="modal fade" id="guideModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>GUIDE</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @php
+                        $guide = App\Models\Guide::where('form_name', 'form_relayout')->first();
+                        $imageUrl = $guide ? asset('storage/' . $guide->lampiran) : null;
+                    @endphp
+                    @if ($imageUrl)
+                        <img src="{{ $imageUrl }}" alt="Guide Image" id="zoomable-image">
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var image = document.getElementById('zoomable-image');
+                                var viewer = new Viewer(image, {
+                                    // Viewer options
+                                    zoomable: true,
+                                    scalable: true,
+                                    rotatable: false,
+                                    transition: false,
+                                    toolbar: true,
+                                });
+                            });
+                        </script>
+                    @else
+                        <p><b>Belum ada guide</b></p>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- END GUIDE MODAL --}}
 @endsection
 
 @push('styles')
+    {{-- STYLE GUIDE MODAL --}}
+    <link rel="stylesheet" href="{{ asset('vendor/viewer/viewer.min.css') }}">
+    <style>
+        #zoomable-image {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
+    </style>
+    {{-- END STYLE GUIDE MODAL --}}
 @endpush
 
 @push('scripts')
+    {{-- SCRIPT GUIDE MODAL --}}
+    <script src="{{ asset('vendor/viewer/viewer.min.js') }}"></script>
+    {{-- END SCRIPT GUIDE MODAL --}}
     <script>
         const purpose = document.querySelector('#purpose');
 

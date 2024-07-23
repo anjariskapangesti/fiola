@@ -347,7 +347,8 @@
                                     <b>Phone&emsp;: </b>${row.it_phone ? row.it_phone : 'Tunggu Approve'}
                                 </div>
                                 <div class="mb-3">
-                                    <b>IT Note&emsp;: </b>${row.it_note ? row.it_note : 'Tunggu Approve'}
+                                    <b>IT Note&emsp;: </b><br>
+                                    <span class="detail_case_container">${row.it_name ? (row.it_note ? row.it_note : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}</span>
                                 </div>
                                 <div class="mb-3">
                                     <b>Accepted Date&emsp;: </b>${row.it_approval_date ? row.it_approval_date : 'Tunggu Approve'}

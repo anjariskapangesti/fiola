@@ -258,16 +258,6 @@
             <!-- Master -->
             <li class="menu-header fw-medium mt-4"><span class="menu-header-text">Master</span></li>
             @php
-                $supportRoutes = ['website.support.list', 'website.support.create', 'website.support.edit'];
-            @endphp
-            <li class="menu-item {{ in_array(Route::currentRouteName(), $supportRoutes) ? 'active' : '' }}">
-                <a href="{{ route('website.support.list') }}" class="menu-link">
-                    <i class="menu-icon tf-icons mdi mdi-face-agent"></i>
-                    <div data-i18n="Alert">Tim Support</div>
-                </a>
-            </li>
-
-            @php
                 $alertRoutes = ['website.alert.list', 'website.alert.create', 'website.alert.edit'];
             @endphp
             <li class="menu-item {{ in_array(Route::currentRouteName(), $alertRoutes) ? 'active' : '' }}">
@@ -311,7 +301,27 @@
                 </ul>
             </li>
 
-            <!-- Icons -->
+            @php
+                $guideRoutes = ['website.guide.list', 'website.guide.create', 'website.guide.edit'];
+            @endphp
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $guideRoutes) ? 'active' : '' }}">
+                <a href="{{ route('website.guide.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-book-information-variant"></i>
+                    <div data-i18n="Guide">Guide</div>
+                </a>
+            </li>
+
+            @php
+                $supportRoutes = ['website.support.list', 'website.support.create', 'website.support.edit'];
+            @endphp
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $supportRoutes) ? 'active' : '' }}">
+                <a href="{{ route('website.support.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-face-agent"></i>
+                    <div data-i18n="Alert">Tim Support</div>
+                </a>
+            </li>
+
+            <!-- Users -->
             <li class="menu-item {{ Route::is('website.user.list') ? 'active' : '' }}">
                 <a href="{{ route('website.user.list') }}" class="menu-link">
                     <i class="menu-icon tf-icons mdi mdi-account-multiple"></i>

@@ -239,7 +239,8 @@
                                     <b>Phone&emsp;: </b>${row.it_phone ? row.it_phone : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
                                 <div class="mb-3">
-                                    <b>IT Note&emsp;: </b>${row.it_name ? (row.it_note ? row.it_note : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}
+                                    <b>IT Note&emsp;: </b><br>
+                                    <span class="detail_case_container">${row.it_name ? (row.it_note ? row.it_note : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}</span>
                                 </div>
 
                                 <div class="mb-3">

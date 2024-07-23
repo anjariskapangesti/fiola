@@ -5,34 +5,38 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Device;
+use App\Models\Guide;
 use Carbon\Carbon;
 use DataTables;
 use Auth;
 
-class DeviceController extends Controller
+class GuideController extends Controller
 {
     public function create()
     {
-        return view('website.pages.device.create');
+        return view('website.pages.guide.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'cost' => 'required',
-            'spesifikasi' => 'required',         
+            'form_name' => 'required',
+            'lampiran' => 'required',
         ]);
         
         try
         {
-            Device::create([
-                'name' => $request->name,            
-                'cost' => $request->cost,            
-                'spesifikasi' => $request->spesifikasi,
+            if ($request->hasFile('lampiran')) {
+                $lampiranExtension = $request->lampiran->getClientOriginalExtension();
+                $lampiranFileName = 'guide_' . $request->form_name . '.' . $lampiranExtension;
+                $lampiranPath = $request->lampiran->storeAs('guide', $lampiranFileName, 'public');
+            }
+
+            Guide::create([
+                'form_name' => $request->form_name,            
+                'lampiran' => 'guide/' . $lampiranFileName,            
             ]);
-            return redirect('/device/list')->with('success', 'Create Successfully');
+            return redirect('/guide/list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {
@@ -42,12 +46,12 @@ class DeviceController extends Controller
 
     public function list()
     {
-        return view('website.pages.device.list');
+        return view('website.pages.guide.list');
     }
 
     public function list_ajax(Request $request)
     {
-        $data = Device::orderBy('name', 'ASC');
+        $data = Guide::orderBy('form_name', 'ASC');
         
         return DataTables::eloquent($data)->make(true);
     }
@@ -56,9 +60,9 @@ class DeviceController extends Controller
     {
         $id = $request->id;
 
-        $devices = Device::find($id);
+        $guides = Guide::find($id);
         if (Auth::user()->can('can_master')) {
-            $devices->update([
+            $guides->update([
                 'name' => $request->name,            
                 'cost' => $request->cost,            
                 'spesifikasi' => $request->spesifikasi,
@@ -74,9 +78,10 @@ class DeviceController extends Controller
     {
         $id = $request->id;
 
-        $devices = Device::find($id);
+        $guides = Guide::findOrFail($id);
+
         if (Auth::user()->can('apps_fiola')) {
-            $devices->delete();
+            $guides->delete();
             
             return "Delete Successfully";
         }

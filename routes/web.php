@@ -139,6 +139,17 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
+            Route::group(['prefix' => 'guide'], function(){
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/create', 'GuideController@create')->name('guide.create');
+                    Route::post('/store', 'GuideController@store')->name('guide.store');
+                    Route::post('/edit', 'GuideController@edit')->name('guide.edit');
+                    Route::post('/destroy', 'GuideController@destroy')->name('guide.destroy');
+                    Route::get('/list', 'GuideController@list')->name('guide.list');
+                    Route::get('/list_ajax', 'GuideController@list_ajax')->name('guide.list_ajax');
+                });
+            });
+
             Route::group(['prefix' => 'user'], function(){
                 Route::get('/edit', 'UserController@edit')->name('user.edit');
                 Route::put('/update', 'UserController@update')->name('user.update');
