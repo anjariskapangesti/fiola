@@ -170,61 +170,6 @@
     <script src="https://code.highcharts.com/modules/accessibility.js"></script> --}}
 
     <script>
-        $(document).ready(function() {
-            var table = $('#app_table').DataTable({
-                'lengthChange': true,
-                'processing': true,
-                'serverSide': false,
-                'orderable': true,
-                ajax: {
-                    url: "{{ route('website.home_ajax') }}",
-                },
-                columns: [{
-                        data: 'created_at',
-                        name: 'created_at',
-                    },
-                    {
-                        data: 'no_reg',
-                        name: 'no_reg',
-                    },
-                    {
-                        data: 'created_by',
-                        name: 'created_by',
-                    },
-                    {
-                        data: 'created_dept',
-                        name: 'created_dept',
-                    },
-                    {
-                        data: 'final_status',
-                        name: 'final_status',
-                        render: function(data, type, row, meta) {
-                            if (data == 'created') {
-                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Manager Approve</span>`;
-                            } else if (data == 'Manager Approve') {
-                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD Approve</span>`;
-                            } else if (data == 'IT Approve') {
-                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD MGR Approve</span>`;
-                            } else if (data == 'IT MGR Approve') {
-                                return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Execution</span>`;
-                            } else if (data == 'On Progress') {
-                                return `<span class="badge bg-info" style="font-size: 15px;">On Progress</span>`;
-                            } else if (data == 'Finished') {
-                                return `<span class="badge bg-success" style="font-size: 15px;">Finished</span>`;
-                            } else {
-                                return `<span class="badge bg-danger" style="font-size: 15px;">${data}</span>`;
-                            }
-                        }
-                    },
-                ],
-                "order": [0, 'desc'],
-            });
-        });
-    </script>
-
-
-
-    <script>
         Highcharts.chart('piechart', {
             chart: {
                 plotBackgroundColor: null,
@@ -288,223 +233,282 @@
         });
     </script>
 
-    <script>
-        Highcharts.chart('chart', {
+    @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
+        <script>
+            $(document).ready(function() {
+                var table = $('#app_table').DataTable({
+                    'lengthChange': true,
+                    'processing': true,
+                    'serverSide': false,
+                    'orderable': true,
+                    ajax: {
+                        url: "{{ route('website.home_ajax') }}",
+                    },
+                    columns: [{
+                            data: 'created_at',
+                            name: 'created_at',
+                        },
+                        {
+                            data: 'no_reg',
+                            name: 'no_reg',
+                        },
+                        {
+                            data: 'created_by',
+                            name: 'created_by',
+                        },
+                        {
+                            data: 'created_dept',
+                            name: 'created_dept',
+                        },
+                        {
+                            data: 'final_status',
+                            name: 'final_status',
+                            render: function(data, type, row, meta) {
+                                if (data == 'created') {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Manager Approve</span>`;
+                                } else if (data == 'Manager Approve') {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD Approve</span>`;
+                                } else if (data == 'IT Approve') {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD MGR Approve</span>`;
+                                } else if (data == 'IT MGR Approve') {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Execution</span>`;
+                                } else if (data == 'On Progress') {
+                                    return `<span class="badge bg-info" style="font-size: 15px;">On Progress</span>`;
+                                } else if (data == 'Finished') {
+                                    return `<span class="badge bg-success" style="font-size: 15px;">Finished</span>`;
+                                } else {
+                                    return `<span class="badge bg-danger" style="font-size: 15px;">${data}</span>`;
+                                }
+                            }
+                        },
+                    ],
+                    "order": [0, 'desc'],
+                });
+            });
+        </script>
 
-            chart: {
-                type: 'column'
-            },
 
-            title: {
-                text: '',
-                align: 'center'
-            },
 
-            xAxis: {
-                categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN', 'Project',
-                    'Fitur', 'Relayout', 'Network',
-                ]
-            },
 
-            yAxis: {
-                allowDecimals: false,
-                min: 0,
+
+        <script>
+            Highcharts.chart('chart', {
+
+                chart: {
+                    type: 'column'
+                },
+
                 title: {
-                    text: 'Total Forms'
-                }
-            },
+                    text: '',
+                    align: 'center'
+                },
 
-            tooltip: {
-                format: '<b>{key}</b><br/>{series.name}: {y}<br/>' +
-                    'Total: {point.stackTotal}'
-            },
+                xAxis: {
+                    categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN', 'Project',
+                        'Fitur', 'Relayout', 'Network',
+                    ]
+                },
 
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-
-            series: [{
-                name: 'Finished',
-                color: '#47c363',
-                data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }},
-                    {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }},
-                    {{ $project_finished }}, {{ $fitur_finished }}, {{ $relayout_finished }},
-                    {{ $network_finished }}
-                ],
-            }, {
-                name: 'Rejected',
-                color: '#fc544b',
-                data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }},
-                    {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }},
-                    {{ $project_rejected }}, {{ $fitur_rejected }}, {{ $relayout_rejected }},
-                    {{ $network_rejected }}
-                ],
-            }]
-        });
-    </script>
-
-    <script>
-        Highcharts.chart('pie_ticket', {
-            chart: {
-                type: 'pie',
-                options3d: {
-                    enabled: true,
-                    alpha: 45,
-                    beta: 0
-                }
-            },
-            title: {
-                text: 'PERSENTASE STATUS TICKET BULAN {{ strtoupper($bulanIndonesia) }} {{ $filter_year }}',
-                align: 'center'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    depth: 35,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.name}'
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: 'Total Forms'
                     }
                 },
-            },
-            series: [{
-                type: 'pie',
-                name: 'Share',
-                data: [{
-                        name: 'OPEN',
-                        y: {{ $ticket_open }},
-                        color: 'grey',
-                    }, {
-                        name: 'ON PROGRESS',
-                        y: {{ $ticket_on_progress }},
-                        color: '#3380FF',
-                    },
-                    {
-                        name: 'PENDING',
-                        y: {{ $ticket_pending }},
-                        color: 'yellow',
-                    },
-                    {
-                        name: 'SOLVED',
-                        y: {{ $ticket_finished }},
-                        sliced: true,
-                        selected: true,
-                        color: '#198754',
-                    },
-                    {
-                        name: 'REJECTED',
-                        y: {{ $ticket_rejected }},
-                        color: 'red',
-                    },
-                ]
-            }]
-        });
-    </script>
 
-    <script>
-        Highcharts.chart('column_ticket', {
+                tooltip: {
+                    format: '<b>{key}</b><br/>{series.name}: {y}<br/>' +
+                        'Total: {point.stackTotal}'
+                },
 
-            chart: {
-                type: 'column'
-            },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
 
-            title: {
-                text: 'TOTAL TICKET TAHUN {{ $filter_year }}',
-                align: 'center'
-            },
+                series: [{
+                    name: 'Finished',
+                    color: '#47c363',
+                    data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }},
+                        {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }},
+                        {{ $project_finished }}, {{ $fitur_finished }}, {{ $relayout_finished }},
+                        {{ $network_finished }}
+                    ],
+                }, {
+                    name: 'Rejected',
+                    color: '#fc544b',
+                    data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }},
+                        {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }},
+                        {{ $project_rejected }}, {{ $fitur_rejected }}, {{ $relayout_rejected }},
+                        {{ $network_rejected }}
+                    ],
+                }]
+            });
+        </script>
 
-            xAxis: {
-                categories: ['Januari', 'Februari', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September',
-                    'October', 'November', 'December'
-                ]
-            },
-
-            yAxis: {
-                allowDecimals: false,
-                min: 0,
+        <script>
+            Highcharts.chart('pie_ticket', {
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45,
+                        beta: 0
+                    }
+                },
                 title: {
-                    text: 'Count WOS'
+                    text: 'PERSENTASE STATUS TICKET BULAN {{ strtoupper($bulanIndonesia) }} {{ $filter_year }}',
+                    align: 'center'
+                },
+                accessibility: {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        depth: 35,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}'
+                        }
+                    },
+                },
+                series: [{
+                    type: 'pie',
+                    name: 'Share',
+                    data: [{
+                            name: 'OPEN',
+                            y: {{ $ticket_open }},
+                            color: 'grey',
+                        }, {
+                            name: 'ON PROGRESS',
+                            y: {{ $ticket_on_progress }},
+                            color: '#3380FF',
+                        },
+                        {
+                            name: 'PENDING',
+                            y: {{ $ticket_pending }},
+                            color: 'yellow',
+                        },
+                        {
+                            name: 'SOLVED',
+                            y: {{ $ticket_finished }},
+                            sliced: true,
+                            selected: true,
+                            color: '#198754',
+                        },
+                        {
+                            name: 'REJECTED',
+                            y: {{ $ticket_rejected }},
+                            color: 'red',
+                        },
+                    ]
+                }]
+            });
+        </script>
+
+        <script>
+            Highcharts.chart('column_ticket', {
+
+                chart: {
+                    type: 'column'
+                },
+
+                title: {
+                    text: 'TOTAL TICKET TAHUN {{ $filter_year }}',
+                    align: 'center'
+                },
+
+                xAxis: {
+                    categories: ['Januari', 'Februari', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September',
+                        'October', 'November', 'December'
+                    ]
+                },
+
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: 'Count WOS'
+                    }
+                },
+
+                tooltip: {
+                    format: '<b>{key}</b><br/>{series.name}: {y}<br/>' +
+                        'Total: {point.stackTotal}'
+                },
+
+                plotOptions: {
+                    column: {
+                        stacking: 'normal'
+                    }
+                },
+
+                series: [{
+                    name: 'Total Ticket',
+                    data: [
+                        {{ $ticket_total[1] }},
+                        {{ $ticket_total[2] }},
+                        {{ $ticket_total[3] }},
+                        {{ $ticket_total[4] }},
+                        {{ $ticket_total[5] }},
+                        {{ $ticket_total[6] }},
+                        {{ $ticket_total[7] }},
+                        {{ $ticket_total[8] }},
+                        {{ $ticket_total[9] }},
+                        {{ $ticket_total[10] }},
+                        {{ $ticket_total[11] }},
+                        {{ $ticket_total[12] }},
+                    ],
+                    stack: 'Plan',
+                    color: '#012970'
+                }, {
+                    name: 'Total Solved',
+                    data: [
+                        {{ $ticket_solved[1] }},
+                        {{ $ticket_solved[2] }},
+                        {{ $ticket_solved[3] }},
+                        {{ $ticket_solved[4] }},
+                        {{ $ticket_solved[5] }},
+                        {{ $ticket_solved[6] }},
+                        {{ $ticket_solved[7] }},
+                        {{ $ticket_solved[8] }},
+                        {{ $ticket_solved[9] }},
+                        {{ $ticket_solved[10] }},
+                        {{ $ticket_solved[11] }},
+                        {{ $ticket_solved[12] }},
+                    ],
+                    stack: 'Progress',
+                    color: 'green'
+                }]
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var filter_month = urlParams.get('filter_month');
+                var filter_year = urlParams.get('filter_year');
+
+                $('#filter_year').val(filter_year);
+                $('#filter_month').val(filter_month);
+
+                if (!filter_month && !filter_year) {
+                    document.getElementById('filter_month').value = (new Date().getMonth() + 1).toString().padStart(2,
+                        '0');
+                    document.getElementById('filter_year').value = new Date().getFullYear();
                 }
-            },
-
-            tooltip: {
-                format: '<b>{key}</b><br/>{series.name}: {y}<br/>' +
-                    'Total: {point.stackTotal}'
-            },
-
-            plotOptions: {
-                column: {
-                    stacking: 'normal'
-                }
-            },
-
-            series: [{
-                name: 'Total Ticket',
-                data: [
-                    {{ $ticket_total[1] }},
-                    {{ $ticket_total[2] }},
-                    {{ $ticket_total[3] }},
-                    {{ $ticket_total[4] }},
-                    {{ $ticket_total[5] }},
-                    {{ $ticket_total[6] }},
-                    {{ $ticket_total[7] }},
-                    {{ $ticket_total[8] }},
-                    {{ $ticket_total[9] }},
-                    {{ $ticket_total[10] }},
-                    {{ $ticket_total[11] }},
-                    {{ $ticket_total[12] }},
-                ],
-                stack: 'Plan',
-                color: '#012970'
-            }, {
-                name: 'Total Solved',
-                data: [
-                    {{ $ticket_solved[1] }},
-                    {{ $ticket_solved[2] }},
-                    {{ $ticket_solved[3] }},
-                    {{ $ticket_solved[4] }},
-                    {{ $ticket_solved[5] }},
-                    {{ $ticket_solved[6] }},
-                    {{ $ticket_solved[7] }},
-                    {{ $ticket_solved[8] }},
-                    {{ $ticket_solved[9] }},
-                    {{ $ticket_solved[10] }},
-                    {{ $ticket_solved[11] }},
-                    {{ $ticket_solved[12] }},
-                ],
-                stack: 'Progress',
-                color: 'green'
-            }]
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var filter_month = urlParams.get('filter_month');
-            var filter_year = urlParams.get('filter_year');
-
-            $('#filter_year').val(filter_year);
-            $('#filter_month').val(filter_month);
-
-            if (!filter_month && !filter_year) {
-                document.getElementById('filter_month').value = (new Date().getMonth() + 1).toString().padStart(2,
-                    '0');
-                document.getElementById('filter_year').value = new Date().getFullYear();
-            }
-        });
-    </script>
+            });
+        </script>
+    @endif
 @endpush

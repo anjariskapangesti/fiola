@@ -11,7 +11,10 @@
             <i class="mdi mdi-menu mdi-24px"></i>
         </a>
     </div>
-
+    <!-- Search Bar -->
+    <div class="search-bar col-10">
+        <input type="text" id="search-bar" placeholder="Search..." class="form-control">
+    </div>
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Place this tag where you want the button to render. -->
