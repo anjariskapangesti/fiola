@@ -158,7 +158,7 @@
     <script src="{{ asset('vendor/materio/assets/js/dashboards-analytics.js') }}"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async defer src="{{ asset('vendor/github/buttons.js') }}"></script>
     <script src="{{ asset('vendor/plugins/toastr/toastr.min.js') }}"></script>
     <script>
         function getApprovalCount() {

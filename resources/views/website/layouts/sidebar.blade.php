@@ -13,7 +13,7 @@
                                 <stop offset="1" style="stop-color: rgb(32.907% 12.624% 76.34%)" />
                             </radialGradient>
                             <style bx:fonts="Agbalumo">
-                                @import url(https://fonts.googleapis.com/css2?family=Agbalumo%3Aital%2Cwght%400%2C400&amp;display=swap);
+                                @import url('{{ asset('fonts/agbalumo/fonts.css') }}');
                             </style>
                         </defs>
                         <text

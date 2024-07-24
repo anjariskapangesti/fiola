@@ -157,11 +157,11 @@
     <link href="{{ asset('vendor/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
-        rel="stylesheet" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('fonts/inter/fonts.css') }}" />
+
+    <!-- Toastr -->
+    {{-- <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" /> --}}
+    <link rel="stylesheet" href="{{ asset('vendor/plugins/toastr/toastr.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/fonts/materialdesignicons.css') }}">
 
@@ -578,7 +578,7 @@
     <script src="{{ asset('vendor/plugins/toastr/toastr.min.js') }}"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script async defer src="{{ asset('vendor/github/buttons.js') }}"></script>
     <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
     <script>
         $(document).ready(function() {
