@@ -12,9 +12,14 @@
         </a>
     </div>
     <!-- Search Bar -->
-    <div class="search-bar col-10">
-        <input type="text" id="search-bar" placeholder="Search..." class="form-control">
+    <div class="search-bar col-3">
+        <input type="text" id="search-bar" placeholder="Search Form..." class="form-control">
+        <!-- Dropdown untuk menampilkan hasil pencarian -->
+        <div id="search-results" class="dropdown-menu col-3" style="display: none;">
+            <!-- Hasil pencarian akan ditambahkan di sini menggunakan JavaScript -->
+        </div>
     </div>
+
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- Place this tag where you want the button to render. -->
@@ -78,6 +83,16 @@
             }
         }
     </style>
+    <style>
+        #search-results .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #search-results .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
 @endpush
 
 @push('scripts')
@@ -89,6 +104,81 @@
             } else {
                 layoutMenu.style.display = 'none';
             }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            const pages = [{
+                    title: 'Form Account',
+                    url: '/account/create'
+                },
+                {
+                    title: 'Form Folder Access',
+                    url: '/folder-access/create'
+                },
+                {
+                    title: 'Form New Folder',
+                    url: '/new-folder/create'
+                },
+                {
+                    title: 'Form Software Installation',
+                    url: '/software/create'
+                },
+                {
+                    title: 'Form Request Device',
+                    url: '/hardware/create'
+                },
+                {
+                    title: 'Form VPN',
+                    url: '/vpn/create'
+                },
+                {
+                    title: 'Form Request Project',
+                    url: '/project/create'
+                },
+                {
+                    title: 'Form Request Fitur',
+                    url: '/fitur/create'
+                },
+                {
+                    title: 'Form Relayout',
+                    url: '/relayout/create'
+                },
+                {
+                    title: 'Form Network Change',
+                    url: '/network/create'
+                },
+                {
+                    title: 'Form Akses Sistem',
+                    url: '/akses_sistem/create'
+                },
+            ];
+
+            $('#search-bar').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                const results = pages.filter(page => page.title.toLowerCase().includes(query));
+
+                const resultsContainer = $('#search-results');
+                resultsContainer.empty();
+
+                if (results.length > 0) {
+                    results.forEach(result => {
+                        resultsContainer.append(`
+                    <a class="dropdown-item" href="${result.url}">${result.title}</a>
+                `);
+                    });
+                    resultsContainer.show();
+                } else {
+                    resultsContainer.hide();
+                }
+            });
+
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#search-bar').length) {
+                    $('#search-results').hide();
+                }
+            });
         });
     </script>
 @endpush
