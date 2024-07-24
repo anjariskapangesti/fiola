@@ -46,9 +46,13 @@ class AlertController extends Controller
         foreach ($models as $model) {
             $modelClass = 'App\\Models\\' . $model;
             $waitingIt = $modelClass::where('final_status', 'Manager Approve')->pluck('final_status')->unique();
+
+            if ($waitingIt->isEmpty()) {
+                $waitingIt = $modelClass::where('final_status', 'IT MGR Approve')->pluck('final_status')->unique();
+            }
+
             $waitingIts = $waitingIts->merge($waitingIt);
         }
-
         foreach ($models as $model) {
             $modelClass = 'App\\Models\\' . $model;
             $waitingItMgr = $modelClass::where('final_status', 'IT Approve')->pluck('final_status')->unique();
@@ -59,34 +63,36 @@ class AlertController extends Controller
         $waitingIts = $waitingIts->unique();
         $waitingItMgrs = $waitingItMgrs->unique();
 
-        // if ($waitingManagers->isEmpty() && $waitingIts->isEmpty()) {
-        //     return "Tidak ada reminder";
-        // }
-        foreach ($waitingManagers as $waitingManager) {
-            // Ambil user dari tabel Alert berdasarkan department
-            $alertManager = Alert::where('department', $waitingManager)->where('role', 'Manager')->first();
+        // foreach ($waitingManagers as $waitingManager) {
+        //     $alertManager = Alert::where('department', $waitingManager)->where('role', 'Manager')->first();
 
-            if ($alertManager) {
-                $to = $alertManager->email;
-                $role = 'Manager';
-                $subject = 'FIOLA (Form ITD Online Application)';
-                $data = 'tunggu approve Manager';
-                $url = 'https://fiola.aiia.co.id';
+        //     if ($alertManager) {
+        //         $to = $alertManager->email;
+        //         $role = 'Manager';
+        //         $subject = 'FIOLA (Form ITD Online Application)';
+        //         $data = 'tunggu approve Manager';
+        //         $url = 'https://fiola.aiia.co.id';
     
-                Mail::to($to)->send(new AlertMail($data, $subject, $url, $role));
-            }
-        }
+        //         Mail::to($to)->send(new AlertMail($data, $subject, $url, $role));
+        //     }
+        // }
 
         foreach ($waitingIts as $waitingIt) {
             $alertIt = Alert::where('role', 'IT')->first();
+
+            if ($waitingIt == 'Manager Approve') {
+                $text = 'approve IT';
+            } elseif ($waitingIt == 'IT MGR Approve') {
+                $text = 'execution';
+            }
     
             if ($alertIt) {
                 $to = $alertIt->email;
                 $role = 'ITD';
                 $subject = 'FIOLA (Form ITD Online Application)';
-                $data = 'tunggu approve IT';
+                $data = 'tunggu ' . $text;
                 $url = 'https://fiola.aiia.co.id';
-    
+
                 Mail::to($to)->send(new AlertMail($data, $subject, $url, $role));
             }
         }

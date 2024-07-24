@@ -9,13 +9,13 @@ use App\Http\Requests\Website\LoginRequest;
 
 class AuthController extends Controller
 {
-    	/**
+        /**
          * Get login page
          */
         public function showLoginPage()
         {
             if (auth()->user()) {
-                return redirect('/');
+                return redirect('/home');
             }
 
             return view('website.auth.login');
