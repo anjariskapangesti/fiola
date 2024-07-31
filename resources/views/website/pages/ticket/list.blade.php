@@ -18,8 +18,7 @@
             color: #fff !important;
             /* Warna putih untuk teks */
         }
-    </style>
-    <style>
+
         .detail_case_container {
             max-width: 200px;
             word-wrap: break-word;
@@ -27,7 +26,15 @@
             white-space: normal;
             box-sizing: border-box;
         }
+
+        #zoomable-image {
+            max-width: 100%;
+            max-height: 100%;
+            cursor: pointer;
+        }
     </style>
+
+    <link rel="stylesheet" href="{{ asset('vendor/viewer/viewer.min.css') }}">
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="{{ asset('img/logo-fiola.png') }}" />
     <link href="{{ asset('vendor/niceadmin/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -124,7 +131,22 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="guideModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>GUIDE</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="" alt="Ticket Image" id="zoomable-image">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- / Content -->
 
     <!-- Core JS -->
@@ -270,9 +292,9 @@
                             if (path !== 'No photo available') {
                                 return `
                                 <div>
-                                    <a href="/storage/lampiran/${path}" class="btn btn-info btn-sm" target="_blank">
-                                        <i class="mdi mdi-image"></i> View
-                                    </a>
+                                    <button type="button" class="btn btn-primary btn-sm btn-table-view" data-bs-toggle="modal" data-bs-target="#guideModal" data-path=${path}>
+                                        <i class="menu-icon tf-icons mdi mdi-image"></i>View
+                                    </button>
                                 </div>`;
                             } else {
                                 return `
@@ -319,8 +341,33 @@
                     },
                 ],
             });
+
+            $('#app_table').on('click', '.btn-table-view', function() {
+                var path_view = '/storage/lampiran/' + $(this).data('path');
+
+                // Set the image source
+                $('#zoomable-image').attr('src', path_view);
+
+                // Initialize Viewer.js after setting the image source
+                var image = document.getElementById('zoomable-image');
+                if (image.viewer) {
+                    image.viewer.destroy(); // Destroy previous instance if it exists
+                }
+                var viewer = new Viewer(image, {
+                    zoomable: true,
+                    scalable: true,
+                    rotatable: false,
+                    transition: false,
+                    toolbar: true,
+                });
+
+                // Show the modal
+                $('#guideModal').modal('show');
+            });
         });
     </script>
+    <script src="{{ asset('vendor/viewer/viewer.min.js') }}"></script>
+
 </body>
 
 </html>

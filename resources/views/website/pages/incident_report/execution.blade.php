@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'Execution Fitur'])
+@extends('website.layouts.main', ['title' => 'Execution Incident Report'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Request Fitur for Application</h5>
+                <h5 class="card-header">IT Disaster Incident Report Form (FRM-ITD-S13-035-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -114,23 +114,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="pdfModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>View PDF</b></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <iframe id="pdfViewer" src="" width="100%" height="600px"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('styles')
@@ -163,7 +146,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.fitur.execution_ajax') }}",
+                    url: "{{ route('website.incident_report.execution_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -230,44 +213,114 @@
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Applications Name</td>
-                                <td>${d.aplikasi} </td>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">General</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fitur Name</td>
-                                <td>${d.nama_fitur} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kategori</td>
+                                <td>${d.kategori} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
-                                <td>${d.npk} / ${d.fullname}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Penyebab</td>
+                                <td>${d.penyebab} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Aktual Keparahan</td>
+                                <td>${d.aktual_keparahan}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Penemu</td>
+                                <td>${d.penemu}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
+                                <td>${d.department}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
-                                <td>${d.phone}</td>
-                            </tr>
-                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="">
-                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
-                                        <i class="mdi mdi-file-download"></i> View
-                                    </button>
-                                </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Penemuan</td>
+                                <td>${d.tanggal_penemuan}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Device/System</td>
+                                <td>${d.device}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi yang diharapkan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Awal</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_awal} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Detail Insiden</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kronologi</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kronologi} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Luas</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_luas} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Root Cause</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.root_cause} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Potensi Kelemahan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.potensi_kelemahan} </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Corrective Action</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Staff/Dept.</td>
+                                <td>${d.staff_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Mulai</td>
+                                <td>${d.tanggal_mulai_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Berakhir</td>
+                                <td>${d.tanggal_berakhir_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Corrective Action</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.corrective_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Lanjutan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_lanjutan_corrective_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Bisnis</td>
+                                <td>${d.kondisi_bisnis_corrective_action}</td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Preventive Action</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Staff/Dept.</td>
+                                <td>${d.staff_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Mulai</td>
+                                <td>${d.tanggal_mulai_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Berakhir</td>
+                                <td>${d.tanggal_berakhir_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Preventive Action</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.preventive_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Lanjutan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_lanjutan_preventive_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Bisnis</td>
+                                <td>${d.kondisi_bisnis_preventive_action}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -340,13 +393,6 @@
                 );
             }
 
-            $(document).on('click', '.btn-lampiran', function() {
-                var lampiranUrl = $(this).data('lampiran');
-
-                // Set the source of the iframe to display the PDF
-                $('#pdfViewer').attr('src', lampiranUrl);
-            });
-
             $('#app_table tbody').on('click', 'td.detail', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
@@ -376,7 +422,7 @@
                 // $('#finish_note_approve').val('');
 
                 var noteText =
-                    'Form Fitur telah selesai.\n\n';
+                    'Form Incident Report telah selesai.\n\n';
 
                 noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
                 $('#finish_note_approve').val(noteText);
@@ -387,7 +433,7 @@
                 let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
                     'Tidak';
                 $.ajax({
-                    url: "{{ route('website.fitur.execution_approve') }}",
+                    url: "{{ route('website.incident_report.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
@@ -429,7 +475,7 @@
             $('#btn-progress').on('click', function() {
                 let id_progress = $('#id_progress').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.execution_approve') }}",
+                    url: "{{ route('website.incident_report.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_progress,
@@ -470,7 +516,7 @@
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.execution_approve') }}",
+                    url: "{{ route('website.incident_report.execution_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,

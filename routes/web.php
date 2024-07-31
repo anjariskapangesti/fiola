@@ -374,7 +374,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['prefix' => 'vpn'], function(){
                 Route::get('/create', 'VpnController@create')->name('vpn.create');
                 Route::post('/store', 'VpnController@store')->name('vpn.store');
-                Route::get('/subfolder_ajax', 'VpnController@subfolder_ajax')->name('vpn.subfolder_ajax');
                 Route::get('/list', 'VpnController@list')->name('vpn.list');
                 Route::get('/list_ajax', 'VpnController@list_ajax')->name('vpn.list_ajax');   
                 Route::post('/approve_form', 'VpnController@approve_form')->name('vpn.approve_form');
@@ -414,7 +413,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['prefix' => 'network'], function(){
                 Route::get('/create', 'NetworkController@create')->name('network.create');
                 Route::post('/store', 'NetworkController@store')->name('network.store');
-                Route::get('/subfolder_ajax', 'NetworkController@subfolder_ajax')->name('network.subfolder_ajax');
                 Route::get('/list', 'NetworkController@list')->name('network.list');
                 Route::get('/list_ajax', 'NetworkController@list_ajax')->name('network.list_ajax');   
                 Route::post('/approve_form', 'NetworkController@approve_form')->name('network.approve_form');
@@ -454,7 +452,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['prefix' => 'project'], function(){
                 Route::get('/create', 'ProjectController@create')->name('project.create');
                 Route::post('/store', 'ProjectController@store')->name('project.store');
-                Route::get('/subfolder_ajax', 'ProjectController@subfolder_ajax')->name('project.subfolder_ajax');
                 Route::get('/list', 'ProjectController@list')->name('project.list');
                 Route::get('/list_ajax', 'ProjectController@list_ajax')->name('project.list_ajax');   
                 Route::post('/approve_form', 'ProjectController@approve_form')->name('project.approve_form');
@@ -494,7 +491,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['prefix' => 'fitur'], function(){
                 Route::get('/create', 'FiturController@create')->name('fitur.create');
                 Route::post('/store', 'FiturController@store')->name('fitur.store');
-                Route::get('/subfolder_ajax', 'FiturController@subfolder_ajax')->name('fitur.subfolder_ajax');
                 Route::get('/list', 'FiturController@list')->name('fitur.list');
                 Route::get('/list_ajax', 'FiturController@list_ajax')->name('fitur.list_ajax');   
                 Route::post('/approve_form', 'FiturController@approve_form')->name('fitur.approve_form');
@@ -534,7 +530,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['prefix' => 'relayout'], function(){
                 Route::get('/create', 'RelayoutController@create')->name('relayout.create');
                 Route::post('/store', 'RelayoutController@store')->name('relayout.store');
-                Route::get('/subfolder_ajax', 'RelayoutController@subfolder_ajax')->name('relayout.subfolder_ajax');
                 Route::get('/list', 'RelayoutController@list')->name('relayout.list');
                 Route::get('/list_ajax', 'RelayoutController@list_ajax')->name('relayout.list_ajax');   
                 Route::post('/approve_form', 'RelayoutController@approve_form')->name('relayout.approve_form');
@@ -574,7 +569,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::group(['prefix' => 'akses_sistem'], function(){
                 Route::get('/create', 'AksesSistemController@create')->name('akses_sistem.create');
                 Route::post('/store', 'AksesSistemController@store')->name('akses_sistem.store');
-                Route::get('/subfolder_ajax', 'AksesSistemController@subfolder_ajax')->name('akses_sistem.subfolder_ajax');
                 Route::get('/list', 'AksesSistemController@list')->name('akses_sistem.list');
                 Route::get('/list_ajax', 'AksesSistemController@list_ajax')->name('akses_sistem.list_ajax');   
                 Route::post('/approve_form', 'AksesSistemController@approve_form')->name('akses_sistem.approve_form');
@@ -622,6 +616,60 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::post('/execution_approve', 'AksesSistemController@execution_approve')->name('akses_sistem.execution_approve');
                     Route::get('/finished', 'AksesSistemController@finished')->name('akses_sistem.finished');
                     Route::get('/finished_ajax', 'AksesSistemController@finished_ajax')->name('akses_sistem.finished_ajax');
+                });
+            });
+            // FORM INCIDENT REPORT //
+            Route::group(['prefix' => 'incident_report'], function(){
+                Route::get('/create', 'IncidentReportController@create')->name('incident_report.create');
+                Route::post('/store', 'IncidentReportController@store')->name('incident_report.store');
+                Route::get('/subfolder_ajax', 'IncidentReportController@subfolder_ajax')->name('incident_report.subfolder_ajax');
+                Route::get('/list', 'IncidentReportController@list')->name('incident_report.list');
+                Route::get('/list_ajax', 'IncidentReportController@list_ajax')->name('incident_report.list_ajax');   
+                Route::post('/approve_form', 'IncidentReportController@approve_form')->name('incident_report.approve_form');
+                Route::post('/delete_form', 'IncidentReportController@delete_form')->name('incident_report.delete_form');
+
+                Route::group(['middleware' => ['can:approve_mgr']], function () {
+                    Route::get('/manager_approval', 'IncidentReportController@manager_approval')->name('incident_report.manager_approval');
+                    Route::get('/manager_approval_ajax', 'IncidentReportController@manager_approval_ajax')->name('incident_report.manager_approval_ajax');
+                    Route::post('/manager_approve', 'IncidentReportController@manager_approve')->name('incident_report.manager_approve');
+                    Route::get('/manager_approved', 'IncidentReportController@manager_approved')->name('incident_report.manager_approved');
+                    Route::get('/manager_approved_ajax', 'IncidentReportController@manager_approved_ajax')->name('incident_report.manager_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can:approve_gm']], function () {
+                    Route::get('/gm_approval', 'IncidentReportController@gm_approval')->name('incident_report.gm_approval');
+                    Route::get('/gm_approval_ajax', 'IncidentReportController@gm_approval_ajax')->name('incident_report.gm_approval_ajax');
+                    Route::post('/gm_approve', 'IncidentReportController@gm_approve')->name('incident_report.gm_approve');
+                    Route::get('/gm_approved', 'IncidentReportController@gm_approved')->name('incident_report.gm_approved');
+                    Route::get('/gm_approved_ajax', 'IncidentReportController@gm_approved_ajax')->name('incident_report.gm_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can:approve_dir']], function () {
+                    Route::get('/dir_approval', 'IncidentReportController@dir_approval')->name('incident_report.dir_approval');
+                    Route::get('/dir_approval_ajax', 'IncidentReportController@dir_approval_ajax')->name('incident_report.dir_approval_ajax');
+                    Route::post('/dir_approve', 'IncidentReportController@dir_approve')->name('incident_report.dir_approve');
+                    Route::get('/dir_approved', 'IncidentReportController@dir_approved')->name('incident_report.dir_approved');
+                    Route::get('/dir_approved_ajax', 'IncidentReportController@dir_approved_ajax')->name('incident_report.dir_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/it_approval', 'IncidentReportController@it_approval')->name('incident_report.it_approval');
+                    Route::get('/it_approval_ajax', 'IncidentReportController@it_approval_ajax')->name('incident_report.it_approval_ajax');
+                    Route::post('/it_approve', 'IncidentReportController@it_approve')->name('incident_report.it_approve');
+                    Route::get('/it_approved', 'IncidentReportController@it_approved')->name('incident_report.it_approved');
+                    Route::get('/it_approved_ajax', 'IncidentReportController@it_approved_ajax')->name('incident_report.it_approved_ajax');
+                });
+                Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
+                    Route::get('/it_mgr_approval', 'IncidentReportController@it_mgr_approval')->name('incident_report.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'IncidentReportController@it_mgr_approval_ajax')->name('incident_report.it_mgr_approval_ajax');
+                    Route::post('/it_mgr_approve', 'IncidentReportController@it_mgr_approve')->name('incident_report.it_mgr_approve');
+                    Route::get('/it_mgr_approved', 'IncidentReportController@it_mgr_approved')->name('incident_report.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'IncidentReportController@it_mgr_approved_ajax')->name('incident_report.it_mgr_approved_ajax');
+                });
+
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/execution', 'IncidentReportController@execution')->name('incident_report.execution');
+                    Route::get('/execution_ajax', 'IncidentReportController@execution_ajax')->name('incident_report.execution_ajax');
+                    Route::post('/execution_approve', 'IncidentReportController@execution_approve')->name('incident_report.execution_approve');
+                    Route::get('/finished', 'IncidentReportController@finished')->name('incident_report.finished');
+                    Route::get('/finished_ajax', 'IncidentReportController@finished_ajax')->name('incident_report.finished_ajax');
                 });
             });
         });

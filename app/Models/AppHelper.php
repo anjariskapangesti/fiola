@@ -24,6 +24,7 @@ class AppHelper
             Relayout::class,
             Network::class,
             AksesSistem::class,
+            IncidentReport::class,
         ];
     
         $totalCount = 0;
@@ -113,6 +114,7 @@ class AppHelper
             Relayout::class,
             Network::class,
             AksesSistem::class,
+            IncidentReport::class,
         ];
     
         $totalCount = 0;
@@ -140,6 +142,7 @@ class AppHelper
             Relayout::class,
             Network::class,
             AksesSistem::class,
+            IncidentReport::class,
         ];
     
         $totalCount = 0;
@@ -167,6 +170,7 @@ class AppHelper
             Relayout::class,
             Network::class,
             AksesSistem::class,
+            IncidentReport::class,
         ];
     
         $totalCount = 0;
@@ -589,5 +593,66 @@ class AppHelper
     public static function akses_sistem_execution_count()
     {
         return AksesSistem::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+    }
+
+    /// FORM INCIDENT REPORT ///
+    public static function incident_report_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function incident_report_gm_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function incident_report_dir_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%GM Approve%')->count();
+    }
+
+    public static function incident_report_confirm_count()
+    {
+        return IncidentReport::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'false')->count();
+    }
+
+    public static function incident_report_it_count()
+    {
+        return IncidentReport::where('final_status', 'LIKE', '%DIR Approve%')->count();
+    }
+
+    public static function incident_report_it_mgr_count()
+    {
+        return IncidentReport::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function incident_report_execution_count()
+    {
+        return IncidentReport::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
     }
 }

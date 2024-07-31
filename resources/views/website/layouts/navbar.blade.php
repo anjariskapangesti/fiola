@@ -153,6 +153,10 @@
                     title: 'Form Akses Sistem',
                     url: '/akses_sistem/create'
                 },
+                {
+                    title: 'Form Incident Report',
+                    url: '/incident_report/create'
+                },
             ];
 
             $('#search-bar').on('input', function() {

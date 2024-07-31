@@ -32,6 +32,23 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="pdfModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>View PDF</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="pdfViewer" src="" width="100%" height="600px"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -168,9 +185,13 @@
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
                                 <td>${d.phone}</td>
                             </tr>
-                            <tr>
+                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;"><a href="{{ asset('storage/lampiran/${d.lampiran}') }}" target="_blank" class="btn btn-success btn-sm"><i class="mdi mdi-file-download"></i> Download</a></td>
+                                <td style="">
+                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
+                                        <i class="mdi mdi-file-download"></i> View
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
@@ -259,6 +280,13 @@
                     `
                 );
             }
+
+            $(document).on('click', '.btn-lampiran', function() {
+                var lampiranUrl = $(this).data('lampiran');
+
+                // Set the source of the iframe to display the PDF
+                $('#pdfViewer').attr('src', lampiranUrl);
+            });
 
             $('#app_table tbody').on('click', 'td.dt-control', function() {
                 var tr = $(this).closest('tr');

@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'Execution Fitur'])
+@extends('website.layouts.main', ['title' => 'IT Approval Incident Report'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Request Fitur for Application</h5>
+                <h5 class="card-header">IT Disaster Incident Report Form (FRM-ITD-S13-035-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -44,9 +44,9 @@
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
                     <input type="hidden" id="id_approve">
                     <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="finish_note_approve" name="finish_note_approve"
-                            placeholder="add note if there are additional" style="height: 115px;">{{ old('finish_note_approve') }}</textarea>
-                        <label for="finish_note_approve">Finish Note</label>
+                        <textarea class="form-control auto-resize" id="it_note_approve" name="it_note_approve"
+                            placeholder="add note if there are additional">{{ old('it_note_approve') }}</textarea>
+                        <label for="it_note_approve">ITD Note</label>
                     </div>
                     <label class="col-sm-6 col-form-label" for="notifikasi_approve">
                         <small class="text-light fw-medium d-block">Kirim Notifikasi Whatsapp?</small>
@@ -65,31 +65,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="progressModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Progress Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to progress this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_progress">
-                    <input type="hidden" id="id_progress">
-                    <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="on_progress_note_progress" name="on_progress_note_progress"
-                            placeholder="add note if there are additional">{{ old('on_progress_note_progress') }}</textarea>
-                        <label for="on_progress_note_progress">Progress Note</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-info" id="btn-progress" disabled>Yes, Progress!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="rejectModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -102,31 +77,14 @@
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
                     <input type="hidden" id="id_reject">
                     <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="finish_note_reject" name="finish_note_reject"
-                            placeholder="add note if there are additional">{{ old('finish_note_reject') }}</textarea>
-                        <label for="finish_note_reject">Reject Note</label>
+                        <textarea class="form-control auto-resize" id="it_note_reject" name="it_note_reject"
+                            placeholder="add note if there are additional">{{ old('it_note_reject') }}</textarea>
+                        <label for="it_note_reject">ITD Note</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-danger" id="btn-reject" disabled>Yes, Reject!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="pdfModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>View PDF</b></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <iframe id="pdfViewer" src="" width="100%" height="600px"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -163,7 +121,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.fitur.execution_ajax') }}",
+                    url: "{{ route('website.incident_report.it_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -230,44 +188,114 @@
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Applications Name</td>
-                                <td>${d.aplikasi} </td>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">General</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fitur Name</td>
-                                <td>${d.nama_fitur} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kategori</td>
+                                <td>${d.kategori} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
-                                <td>${d.npk} / ${d.fullname}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Penyebab</td>
+                                <td>${d.penyebab} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Aktual Keparahan</td>
+                                <td>${d.aktual_keparahan}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Penemu</td>
+                                <td>${d.penemu}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
+                                <td>${d.department}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
-                                <td>${d.phone}</td>
-                            </tr>
-                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="">
-                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
-                                        <i class="mdi mdi-file-download"></i> View
-                                    </button>
-                                </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Penemuan</td>
+                                <td>${d.tanggal_penemuan}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Device/System</td>
+                                <td>${d.device}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi yang diharapkan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Awal</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_awal} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Detail Insiden</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kronologi</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kronologi} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Luas</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_luas} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Root Cause</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.root_cause} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Potensi Kelemahan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.potensi_kelemahan} </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Corrective Action</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Staff/Dept.</td>
+                                <td>${d.staff_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Mulai</td>
+                                <td>${d.tanggal_mulai_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Berakhir</td>
+                                <td>${d.tanggal_berakhir_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Corrective Action</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.corrective_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Lanjutan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_lanjutan_corrective_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Bisnis</td>
+                                <td>${d.kondisi_bisnis_corrective_action}</td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Preventive Action</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Staff/Dept.</td>
+                                <td>${d.staff_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Mulai</td>
+                                <td>${d.tanggal_mulai_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Berakhir</td>
+                                <td>${d.tanggal_berakhir_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Preventive Action</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.preventive_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Lanjutan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_lanjutan_preventive_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Bisnis</td>
+                                <td>${d.kondisi_bisnis_preventive_action}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -284,54 +312,11 @@
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>ITD Approval Date</td>
-                                <td>${d.it_approval_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Approval By</td>
-                                <td>${d.it_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
-                            </tr>  
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>ITD Manager Approval Date</td>
-                                <td>${d.it_mgr_approval_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Manager Approval By</td>
-                                <td>${d.it_mgr_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>On Progress Date</td>
-                                <td>${d.on_progress_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>On Progress By</td>
-                                <td>${d.on_progress_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>On Progress Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="2" class="text-end">
                                     <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
-                                    <button class="btn btn-info btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Progress</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}" data-ad_name="${d.ad_name}" data-is_email="${d.is_email}" data-npk="${d.npk}">Approve</button>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
                                 </th>
                             </tr>    
                         </tfoot>
@@ -339,13 +324,6 @@
                     `
                 );
             }
-
-            $(document).on('click', '.btn-lampiran', function() {
-                var lampiranUrl = $(this).data('lampiran');
-
-                // Set the source of the iframe to display the PDF
-                $('#pdfViewer').attr('src', lampiranUrl);
-            });
 
             $('#app_table tbody').on('click', 'td.detail', function() {
                 var tr = $(this).closest('tr');
@@ -363,23 +341,13 @@
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_approve = $(this).data('id');
                 var no_reg_approve = $(this).data('no_reg');
-                var ad_name_approve = $(this).data('ad_name');
-                var npk_approve = $(this).data('npk');
-                var is_email_approve = $(this).data('is_email');
                 var approveButton = document.getElementById('btn-approve');
-                var currentYear = new Date().getFullYear();
 
                 approveButton.removeAttribute('disabled');
                 approveButton.innerHTML = 'Yes, Approve!';
                 $('#id_approve').val(id_approve)
                 $('#no_reg_approve').val(no_reg_approve)
-                // $('#finish_note_approve').val('');
-
-                var noteText =
-                    'Form Fitur telah selesai.\n\n';
-
-                noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
-                $('#finish_note_approve').val(noteText);
+                $('#it_note_approve').val('');
             })
 
             $('#btn-approve').on('click', function() {
@@ -387,11 +355,11 @@
                 let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
                     'Tidak';
                 $.ajax({
-                    url: "{{ route('website.fitur.execution_approve') }}",
+                    url: "{{ route('website.incident_report.it_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
-                        finish_note: $('#finish_note_approve').val(),
+                        it_note: $('#it_note_approve').val(),
                         notifikasi: notifikasi_approve,
                         type: 'approve',
                         '_token': "{{ csrf_token() }}",
@@ -407,49 +375,8 @@
                     }
                 });
             });
-            // ON PROGRESS
-            $('#on_progress_note_progress').on('keyup', function() {
-                if ($(this).val() != "")
-                    $('#btn-progress').removeAttr('disabled');
-                else
-                    $('#btn-progress').attr('disabled', 'disabled');
-            });
-
-            $('#app_table').on('click', '.btn-table-progress', function() {
-                var id_progress = $(this).data('id');
-                var no_reg_progress = $(this).data('no_reg');
-                var approveButton = document.getElementById('btn-progress');
-
-                approveButton.innerHTML = 'Yes, Progress!';
-                $('#id_progress').val(id_progress)
-                $('#no_reg_progress').val(no_reg_progress)
-                $('#on_progress_note_progress').val('');
-            })
-
-            $('#btn-progress').on('click', function() {
-                let id_progress = $('#id_progress').val();
-                $.ajax({
-                    url: "{{ route('website.fitur.execution_approve') }}",
-                    type: "POST",
-                    data: {
-                        id: id_progress,
-                        on_progress_note: $('#on_progress_note_progress').val(),
-                        type: 'progress',
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        getApprovalCount();
-                        $('#progressModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
             // REJECT
-            $('#finish_note_reject').on('keyup', function() {
+            $('#it_note_reject').on('keyup', function() {
                 if ($(this).val() != "")
                     $('#btn-reject').removeAttr('disabled');
                 else
@@ -464,17 +391,17 @@
                 approveButton.innerHTML = 'Yes, Reject!';
                 $('#id_reject').val(id_reject)
                 $('#no_reg_reject').val(no_reg_reject)
-                $('#finish_note_reject').val('');
+                $('#it_note_reject').val('');
             })
 
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.fitur.execution_approve') }}",
+                    url: "{{ route('website.incident_report.it_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,
-                        finish_note: $('#finish_note_reject').val(),
+                        it_note: $('#it_note_reject').val(),
                         type: 'reject',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -499,17 +426,6 @@
             approveButton.addEventListener('click', function() {
                 approveButton.setAttribute('disabled', 'true');
                 approveButton.innerHTML = spinner + ' Approving...';
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var progressButton = document.getElementById('btn-progress');
-            var spinner = '<i class="mdi mdi-loading spin"></i>';
-
-            progressButton.addEventListener('click', function() {
-                progressButton.setAttribute('disabled', 'true');
-                progressButton.innerHTML = spinner + ' Progressing...';
             });
         });
     </script>

@@ -1,17 +1,19 @@
-@extends('website.layouts.main', ['title' => 'Track Forms Fitur'])
+@extends('website.layouts.main', ['title' => 'IT Approved Incident Report'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Request Fitur for Application</h5>
+                <h5 class="card-header">IT Disaster Incident Report Form (FRM-ITD-S13-035-00)</h5>
             </div>
-            <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
+            <div class="row">
                 @if (Session::get('info'))
                     <div class="alert alert-info">
                         {{ Session::get('info') }}
                     </div>
                 @endif
+            </div>
+            <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                 <table class="table table-bordered" id="app_table" width="100%">
                     <thead>
                         <tr>
@@ -21,7 +23,6 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
-                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -30,27 +31,7 @@
             </div>
         </div>
     </div>
-    {{-- CONFIRM MODAL --}}
-    <div class="modal fade" id="confirmModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Finish Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to confirm this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_confirm">
-                    <input type="hidden" id="id_confirm">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="btn-confirm">Yes, Confirm!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- DELETE MODAL --}}
+
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -66,23 +47,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="pdfModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b>View PDF</b></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <iframe id="pdfViewer" src="" width="100%" height="600px"></iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -112,7 +76,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.fitur.list_ajax') }}",
+                    url: "{{ route('website.incident_report.it_approved_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -167,30 +131,6 @@
                             }
                         }
                     },
-                    {
-                        orderable: false,
-                        searchable: false,
-                        data: null,
-                        render: function(data, type, row, meta) {
-                            if (data.is_confirm == '0') {
-                                return `
-                                <center>
-                                    <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
-                                </center>
-                                `;
-                            } else if (data.is_confirm == '1') {
-                                return `<center><span class="badge bg-success">Confrimed</span></center>`
-                            } else if (data.final_status == 'created') {
-                                return `
-                                <center>
-                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
-                                </center>
-                                `;
-                            } else {
-                                return `<center>Not yet</center>`;
-                            }
-                        }
-                    },
                 ],
             });
 
@@ -200,44 +140,114 @@
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Applications Name</td>
-                                <td>${d.aplikasi} </td>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">General</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fitur Name</td>
-                                <td>${d.nama_fitur} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kategori</td>
+                                <td>${d.kategori} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
-                                <td>${d.npk} / ${d.fullname}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Penyebab</td>
+                                <td>${d.penyebab} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Aktual Keparahan</td>
+                                <td>${d.aktual_keparahan}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Penemu</td>
+                                <td>${d.penemu}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
+                                <td>${d.department}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
-                                <td>${d.phone}</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Penemuan</td>
+                                <td>${d.tanggal_penemuan}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="">
-                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
-                                        <i class="mdi mdi-file-download"></i> View
-                                    </button>
-                                </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Device/System</td>
+                                <td>${d.device}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Awal</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_awal} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi yang diharapkan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target} </td>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Detail Insiden</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kronologi</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kronologi} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Luas</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_luas} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Root Cause</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.root_cause} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Potensi Kelemahan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.potensi_kelemahan} </td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Corrective Action</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Staff/Dept.</td>
+                                <td>${d.staff_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Mulai</td>
+                                <td>${d.tanggal_mulai_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Berakhir</td>
+                                <td>${d.tanggal_berakhir_corrective_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Corrective Action</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.corrective_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Lanjutan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_lanjutan_corrective_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Bisnis</td>
+                                <td>${d.kondisi_bisnis_corrective_action}</td>
+                            </tr>
+
+                            <tr>
+                                <td style="width: 30px; font-weight: bold;" colspan="2">Preventive Action</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Staff/Dept.</td>
+                                <td>${d.staff_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Mulai</td>
+                                <td>${d.tanggal_mulai_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Tanggal Berakhir</td>
+                                <td>${d.tanggal_berakhir_preventive_action}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Preventive Action</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.preventive_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Dampak Lanjutan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dampak_lanjutan_preventive_action} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Bisnis</td>
+                                <td>${d.kondisi_bisnis_preventive_action}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -315,13 +325,6 @@
                 );
             }
 
-            $(document).on('click', '.btn-lampiran', function() {
-                var lampiranUrl = $(this).data('lampiran');
-
-                // Set the source of the iframe to display the PDF
-                $('#pdfViewer').attr('src', lampiranUrl);
-            });
-
             $('#app_table tbody').on('click', 'td.dt-control', function() {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
@@ -333,94 +336,6 @@
                     row.child(format(row.data())).show();
                     tr.addClass('shown');
                 }
-            });
-
-            // DELETE MODAL
-            $('#app_table').on('click', '.btn-table-delete', function() {
-                var id_delete = $(this).data('id');
-                var no_reg_delete = $(this).data('no_reg');
-
-                $('#id_delete').val(id_delete)
-                $('#no_reg_delete').val(no_reg_delete)
-            })
-
-            $('#btn-delete').on('click', function() {
-                let id_delete = $('#id_delete').val();
-                $.ajax({
-                    url: "{{ route('website.fitur.delete_form') }}",
-                    type: "POST",
-                    data: {
-                        id: id_delete,
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        $('#deleteModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
-            // END DELETE MODAL
-
-            // CONFIRM MODAL
-            $('#app_table').on('click', '.btn-table-confirm', function() {
-                var id_confirm = $(this).data('id');
-                var no_reg_confirm = $(this).data('no_reg');
-                var confirmButton = document.getElementById('btn-confirm');
-
-                confirmButton.removeAttribute('disabled');
-                confirmButton.innerHTML = 'Yes, Confirm!';
-                $('#id_confirm').val(id_confirm)
-                $('#no_reg_confirm').val(no_reg_confirm)
-                $('#it_mgr_note_confirm').val('');
-            })
-
-            $('#btn-confirm').on('click', function() {
-                let id_confirm = $('#id_confirm').val();
-                $.ajax({
-                    url: "{{ route('website.fitur.approve_form') }}",
-                    type: "POST",
-                    data: {
-                        id: id_confirm,
-                        type: 'confirm',
-                        '_token': "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        getApprovalCount();
-                        $('#confirmModal').modal('hide')
-                    },
-                    error: function(xhr, status, error) {
-                        alert(error);
-                    }
-                });
-            });
-            // END CONFIRM MODAL
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var confirmButton = document.getElementById('btn-confirm');
-            var spinner = '<i class="mdi mdi-loading spin"></i>';
-
-            confirmButton.addEventListener('click', function() {
-                confirmButton.setAttribute('disabled', 'true');
-                confirmButton.innerHTML = spinner + ' Confirming...';
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var deleteButton = document.getElementById('btn-delete');
-            var spinner = '<i class="mdi mdi-loading spin"></i>';
-
-            deleteButton.addEventListener('click', function() {
-                deleteButton.setAttribute('disabled', 'true');
-                deleteButton.innerHTML = spinner + ' Deleting...';
             });
         });
     </script>

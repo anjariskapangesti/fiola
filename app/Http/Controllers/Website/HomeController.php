@@ -17,6 +17,9 @@ use App\Models\Project;
 use App\Models\Fitur;
 use App\Models\Relayout;
 use App\Models\Network;
+use App\Models\AksesSistem;
+use App\Models\IncidentReport;
+
 use App\Models\Alert;
 use App\Models\Ticket;
 use App\Models\Support;
@@ -50,6 +53,8 @@ class HomeController extends Controller
             'Fitur',
             'Relayout',
             'Network',
+            'AksesSistem',
+            'IncidentReport',
         ];
     
         $finalStatusConditions = [
@@ -197,6 +202,26 @@ class HomeController extends Controller
         $network_it_mgr_count = Network::where('final_status', 'LIKE', 'IT Approve%')->count();
         $network_execution_count = Network::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
+        $akses_sistem_mgr_count = AksesSistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+                ->where('final_status', 'LIKE', '%created%')->count();
+                
+        $akses_sistem_it_count = AksesSistem::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $akses_sistem_it_mgr_count = AksesSistem::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $akses_sistem_execution_count = AksesSistem::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
+        $incident_report_mgr_count = IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+                ->where('final_status', 'LIKE', '%created%')->count();
+                
+        $incident_report_it_count = IncidentReport::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $incident_report_it_mgr_count = IncidentReport::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $incident_report_execution_count = IncidentReport::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
         /// DIAGRAM BATANG ///
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
@@ -243,6 +268,14 @@ class HomeController extends Controller
         $network_total = Network::count();
         $network_finished = Network::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
         $network_rejected = Network::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        
+        $akses_sistem_total = AksesSistem::count();
+        $akses_sistem_finished = AksesSistem::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $akses_sistem_rejected = AksesSistem::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        
+        $incident_report_total = IncidentReport::count();
+        $incident_report_finished = IncidentReport::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $incident_report_rejected = IncidentReport::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
@@ -296,6 +329,10 @@ class HomeController extends Controller
                     'relayout_total', 'relayout_finished', 'relayout_rejected',
                     'network_mgr_count', 'network_it_count', 'network_it_mgr_count', 'network_execution_count',
                     'network_total', 'network_finished', 'network_rejected',
+                    'akses_sistem_mgr_count', 'akses_sistem_it_count', 'akses_sistem_it_mgr_count', 'akses_sistem_execution_count',
+                    'akses_sistem_total', 'akses_sistem_finished', 'akses_sistem_rejected',
+                    'incident_report_mgr_count', 'incident_report_it_count', 'incident_report_it_mgr_count', 'incident_report_execution_count',
+                    'incident_report_total', 'incident_report_finished', 'incident_report_rejected',
                     'ticket_open', 'ticket_finished', 'ticket_on_progress', 'ticket_pending', 'ticket_rejected',));
         }
     }    
@@ -313,6 +350,8 @@ class HomeController extends Controller
             'form_fitur' => 'form_fitur',
             'form_relayout' => 'form_relayout',
             'form_network' => 'form_network',
+            'form_akses_sistem' => 'form_akses_sistem',
+            'form_incident_report' => 'form_incident_report',
         ];
 
         $mergedData = collect();

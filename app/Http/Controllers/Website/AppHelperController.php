@@ -78,6 +78,12 @@ class AppHelperController extends Controller
         $akses_sistem_it_mgr_count = AppHelper::akses_sistem_it_mgr_count();
         $akses_sistem_execution_count = AppHelper::akses_sistem_execution_count();
         $akses_sistem_confirm_count = AppHelper::akses_sistem_confirm_count();
+        // FORM INCIDENT REPORT //
+        $incident_report_mgr_count = AppHelper::incident_report_mgr_count();
+        $incident_report_it_count = AppHelper::incident_report_it_count();
+        $incident_report_it_mgr_count = AppHelper::incident_report_it_mgr_count();
+        $incident_report_execution_count = AppHelper::incident_report_execution_count();
+        $incident_report_confirm_count = AppHelper::incident_report_confirm_count();
         // ALL FORM //
         $manager_approvals_count = AppHelper::manager_approvals_count();
         $confirms_count = AppHelper::confirms_count();
@@ -153,6 +159,12 @@ class AppHelperController extends Controller
             'akses_sistem_it_mgr_count' => $akses_sistem_it_mgr_count,
             'akses_sistem_execution_count' => $akses_sistem_execution_count,
             'akses_sistem_confirm_count' => $akses_sistem_confirm_count,
+
+            'incident_report_mgr_count' => $incident_report_mgr_count,
+            'incident_report_it_count' => $incident_report_it_count,
+            'incident_report_it_mgr_count' => $incident_report_it_mgr_count,
+            'incident_report_execution_count' => $incident_report_execution_count,
+            'incident_report_confirm_count' => $incident_report_confirm_count,
             
             'manager_approvals_count' => $manager_approvals_count,
             'confirms_count' => $confirms_count,

@@ -336,6 +336,37 @@
             @endif
         </a>
     </li>
+
+    <li class="menu-item {{ Route::is('website.incident_report.' . $link) ? 'active' : '' }}">
+        <a href="{{ route('website.incident_report.' . $link) }}" class="menu-link">
+            <div data-i18n="Incident Report">{{ $text }} Incident Report
+            </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::incident_report_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="incident_report_mgr_count">{{ App\Models\AppHelper::incident_report_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::incident_report_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="incident_report_it_count">{{ App\Models\AppHelper::incident_report_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::incident_report_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="incident_report_it_mgr_count">{{ App\Models\AppHelper::incident_report_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::incident_report_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="incident_report_execution_count">{{ App\Models\AppHelper::incident_report_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::incident_report_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="incident_report_confirm_count">{{ App\Models\AppHelper::incident_report_confirm_count() }}</span>
+            @endif
+        </a>
+    </li>
 </ul>
 
 {{-- <ul id="forms-nav"

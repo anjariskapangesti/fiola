@@ -71,6 +71,7 @@
                 'relayout',
                 'network',
                 'akses_sistem',
+                'incident_report',
             ];
             $createRoutes = [];
             $editRoutes = [];

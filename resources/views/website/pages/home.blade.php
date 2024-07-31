@@ -287,10 +287,6 @@
             });
         </script>
 
-
-
-
-
         <script>
             Highcharts.chart('chart', {
 
@@ -305,7 +301,7 @@
 
                 xAxis: {
                     categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN', 'Project',
-                        'Fitur', 'Relayout', 'Network',
+                        'Fitur', 'Relayout', 'Network', 'Akses Sistem', 'Incident Report',
                     ]
                 },
 
@@ -336,7 +332,8 @@
                     data: [{{ $account_finished }}, {{ $folderaccess_finished }}, {{ $newfolder_finished }},
                         {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }},
                         {{ $project_finished }}, {{ $fitur_finished }}, {{ $relayout_finished }},
-                        {{ $network_finished }}
+                        {{ $network_finished }}, {{ $akses_sistem_finished }},
+                        {{ $incident_report_finished }}
                     ],
                 }, {
                     name: 'Rejected',
@@ -344,7 +341,8 @@
                     data: [{{ $account_rejected }}, {{ $folderaccess_rejected }}, {{ $newfolder_rejected }},
                         {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }},
                         {{ $project_rejected }}, {{ $fitur_rejected }}, {{ $relayout_rejected }},
-                        {{ $network_rejected }}
+                        {{ $network_rejected }}, {{ $akses_sistem_rejected }},
+                        {{ $incident_report_rejected }}
                     ],
                 }]
             });

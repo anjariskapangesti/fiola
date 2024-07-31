@@ -39,6 +39,22 @@
     <!-- Page -->
     <link rel="stylesheet" href="{{ asset('vendor/materio/assets/vendor/css/pages/page-auth.css') }}" />
 
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
     <!-- Helpers -->
     <script src="{{ asset('vendor/materio/assets/vendor/js/helpers.js') }}"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
@@ -112,7 +128,8 @@
                                 </a>
                             </div> --}}
                             <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                                <button class="btn btn-primary d-grid w-100" id="loginButton" type="submit">Sign
+                                    in</button>
                             </div>
                         </form>
 
@@ -159,6 +176,30 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="{{ asset('vendor/github/buttons.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('formAuthentication');
+            var loginButton = document.getElementById('loginButton');
+            var spinner = '<i class="mdi mdi-loading spin"></i>';
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    event.preventDefault();
+                } else {
+                    loginButton.setAttribute('disabled', 'true');
+                    loginButton.innerHTML = spinner;
+                }
+            });
+
+            form.addEventListener('input', function() {
+                if (form.checkValidity()) {
+                    loginButton.removeAttribute('disabled');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

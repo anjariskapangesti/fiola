@@ -43,6 +43,7 @@
                                     (object) ['id' => 9, 'name' => 'form_relayout'],
                                     (object) ['id' => 10, 'name' => 'form_network'],
                                     (object) ['id' => 11, 'name' => 'form_akses_sistem'],
+                                    (object) ['id' => 12, 'name' => 'form_incident_report'],
                                 ];
                             @endphp
 
