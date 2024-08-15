@@ -11,6 +11,7 @@ class Account extends Model
         'no_reg',
         'budget_type',
         'form_type',
+        'account_type',
         'npk',
         'fullname',
         'department',

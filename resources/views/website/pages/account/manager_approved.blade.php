@@ -148,6 +148,10 @@
                                 <td>${d.form_type} </td>
                             </tr>
                             <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Account Type</td>
+                                <td>${d.account_type} </td>
+                            </tr>
+                            <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
                                 <td>${d.npk}</td>
                             </tr>

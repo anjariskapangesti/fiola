@@ -105,6 +105,23 @@
                                         <label class="form-check-label" for="Deletion">Deletion</label>
                                     </div>
                                 </div>
+                                <div class="col-md p-1">
+                                    <small class="text-light fw-medium d-block">Account Type <span
+                                            class="text-danger">*</span></small>
+                                    <div class="form-check form-check-inline mt-3">
+                                        <input class="form-check-input" type="radio" name="account_type"
+                                            id="AD (Active Directory)" value="AD (Active Directory)"
+                                            {{ old('account_type') == 'AD (Active Directory)' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="AD (Active Directory)">AD (Active
+                                            Directory)</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="account_type"
+                                            id="SAP" value="SAP"
+                                            {{ old('account_type') == 'SAP' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="SAP">SAP</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
