@@ -23,8 +23,9 @@ class AppHelper
             Fitur::class,
             Relayout::class,
             Network::class,
-            AksesSistem::class,
+            Sistem::class,
             IncidentReport::class,
+            Izin::class,
         ];
     
         $totalCount = 0;
@@ -49,7 +50,7 @@ class AppHelper
         $lastDepartmentId = $userDepartments->last();
     
         $models = [
-            AksesSistem::class,
+            Sistem::class,
         ];
     
         $totalCount = 0;
@@ -85,7 +86,9 @@ class AppHelper
             Fitur::class,
             Relayout::class,
             Network::class,
-            AksesSistem::class,
+            Sistem::class,
+            IncidentReport::class,
+            Izin::class,
         ];
     
         $totalCount = 0;
@@ -113,8 +116,9 @@ class AppHelper
             Fitur::class,
             Relayout::class,
             Network::class,
-            AksesSistem::class,
+            Sistem::class,
             IncidentReport::class,
+            Izin::class,
         ];
     
         $totalCount = 0;
@@ -141,8 +145,9 @@ class AppHelper
             Fitur::class,
             Relayout::class,
             Network::class,
-            AksesSistem::class,
+            Sistem::class,
             IncidentReport::class,
+            Izin::class,
         ];
     
         $totalCount = 0;
@@ -169,8 +174,9 @@ class AppHelper
             Fitur::class,
             Relayout::class,
             Network::class,
-            AksesSistem::class,
+            Sistem::class,
             IncidentReport::class,
+            Izin::class,
         ];
     
         $totalCount = 0;
@@ -541,7 +547,7 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return AksesSistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+        return Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                 $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
@@ -554,7 +560,7 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return AksesSistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+        return Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                 $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
@@ -567,7 +573,7 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return AksesSistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+        return Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
                                 $query->where('created_dept', $firstDepartmentId)
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
@@ -576,23 +582,23 @@ class AppHelper
 
     public static function akses_sistem_confirm_count()
     {
-        return AksesSistem::where('created_by', Auth::user()->id)
+        return Sistem::where('created_by', Auth::user()->id)
                         ->where('is_confirm', 'false')->count();
     }
 
     public static function akses_sistem_it_count()
     {
-        return AksesSistem::where('final_status', 'LIKE', '%DIR Approve%')->count();
+        return Sistem::where('final_status', 'LIKE', '%DIR Approve%')->count();
     }
 
     public static function akses_sistem_it_mgr_count()
     {
-        return AksesSistem::where('final_status', 'LIKE', 'IT Approve%')->count();
+        return Sistem::where('final_status', 'LIKE', 'IT Approve%')->count();
     }
 
     public static function akses_sistem_execution_count()
     {
-        return AksesSistem::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        return Sistem::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
     }
 
     /// FORM INCIDENT REPORT ///
@@ -654,5 +660,40 @@ class AppHelper
     public static function incident_report_execution_count()
     {
         return IncidentReport::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+    }
+
+    /// FORM IZIN ///
+    public static function izin_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return Izin::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+                                $query->where('created_dept', $firstDepartmentId)
+                                    ->orWhere('created_dept', $lastDepartmentId);
+                            })
+                                    ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function izin_confirm_count()
+    {
+        return Izin::where('created_by', Auth::user()->id)
+                        ->where('is_confirm', 'false')->count();
+    }
+
+    public static function izin_it_count()
+    {
+        return Izin::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function izin_it_mgr_count()
+    {
+        return Izin::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function izin_execution_count()
+    {
+        return Izin::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
     }
 }

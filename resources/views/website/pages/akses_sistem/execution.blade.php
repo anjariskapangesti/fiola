@@ -4,7 +4,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Akses Sistem</h5>
+                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -45,7 +45,7 @@
                     <input type="hidden" id="id_approve">
                     <div class="form-floating form-floating-outline">
                         <textarea class="form-control auto-resize" id="finish_note_approve" name="finish_note_approve"
-                            placeholder="add note if there are additional" style="height: 115px;">{{ old('finish_note_approve') }}</textarea>
+                            placeholder="add note if there are additional" style="height: 170px;">{{ old('finish_note_approve') }}</textarea>
                         <label for="finish_note_approve">Finish Note</label>
                     </div>
                     <label class="col-sm-6 col-form-label" for="notifikasi_approve">
@@ -207,117 +207,150 @@
                 ],
             });
 
+            var detailsRow = [];
+
+            $('.table tbody').on('click', 'tr td.detail', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var idx = $.inArray(tr.attr('id'), detailsRow);
+
+                if (row.child.isShown()) {
+                    tr.removeClass('details')
+                    row.child.hide()
+                    detailsRow.splice(idx, 1)
+                } else {
+                    tr.addClass('details')
+                    row.child(format(row.data())).show()
+                    if (idx === -1) {
+                        detailsRow.push(tr.attr('id'))
+                    }
+                }
+            })
+
+            table.on('draw', function() {
+                $.each(detailsRow, function(i, id) {
+                    $('#' + id + ' td.detail').trigger('click')
+                })
+            })
+
             function format(d) {
-                return (
+                var html = `
+                    <table class="table table-sm table-bordered">
+                        <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
+                            <tr>
+                                <td colspan="1" class="text-center">NPK / No. Identitas</td>    
+                                <td colspan="1" class="text-center">Nama</td>    
+                                <td colspan="1" class="text-center">Email</td>    
+                                <td colspan="1" class="text-center">Department</td>    
+                            </tr>    
+                        `
+
+                for (let i = 0; i < d.form_sistem_user.length; i++) {
+                    html += `
+                            <tr style="background-color: #ebf1f2;">
+                                <td colspan="1">${d.form_sistem_user[i].npk}</td>
+                                <td colspan="1">${d.form_sistem_user[i].name}</td>
+                                <td colspan="1">${d.form_sistem_user[i].email}</td>
+                                <td colspan="1">${d.form_sistem_user[i].department}</td>
+                                `
+                    html += `</tr>
                     `
-                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
-                        <tbody style="border: 2px solid black;">
+                }
+
+                html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
+                            <td colspan="4" class="text-center">Nama Aplikasi</td>    
+                        </tr>
+                        `
+                for (let i = 0; i < d.form_sistem_app.length; i++) {
+                    html += `<tr style="background-color: #ebf1f2;">
+                                <td colspan="4">${d.form_sistem_app[i].app_name ?? '-'}</td>
+                                `
+                    html += `</tr>
+                            
+                    `
+                }
+
+                html += `
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Nama Pemohon</td>
-                                <td>${d.nama} </td>
+                                <td colspan="4" class="text-center">Purpose</td>    
                             </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Asal Instansi</td>
-                                <td>${d.asal_instansi}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Keperluan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.keperluan} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Akses</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.akses} </td>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="4" >${d.purpose}</td>   
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Manager Approval Date</td>
-                                <td>${d.manager_approval_date ?? '-'}</td>
+                                <td colspan="8">${d.manager_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Approval By</td>
-                                <td>${d.manager_name ?? '-'}</td>
+                                <td colspan="8">${d.manager_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Approval Date</td>
-                                <td>${d.it_approval_date ?? '-'}</td>
+                                <td colspan="8">${d.it_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Approval By</td>
-                                <td>${d.it_name ?? '-'}</td>
+                                <td colspan="8">${d.it_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Manager Approval Date</td>
-                                <td>${d.it_mgr_approval_date ?? '-'}</td>
+                                <td colspan="8">${d.it_mgr_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Approval By</td>
-                                <td>${d.it_mgr_name ?? '-'}</td>
+                                <td colspan="8">${d.it_mgr_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>On Progress Date</td>
-                                <td>${d.on_progress_date ?? '-'}</td>
+                                <td colspan="8">${d.on_progress_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress By</td>
-                                <td>${d.on_progress_name ?? '-'}</td>
+                                <td colspan="8">${d.on_progress_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="2" class="text-end">
+                                <th colspan="8" class="text-end">
                                     <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
                                     <button class="btn btn-info btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Progress</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}" data-ad_name="${d.ad_name}" data-is_email="${d.is_email}" data-npk="${d.npk}">Approve</button>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
                                 </th>
                             </tr>    
                         </tfoot>
-                    </table>
-                    `
-                );
+                        </table>`
+
+                return html
             }
-
-            $('#app_table tbody').on('click', 'td.detail', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
             // APPROVE
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_approve = $(this).data('id');
                 var no_reg_approve = $(this).data('no_reg');
-                var ad_name_approve = $(this).data('ad_name');
-                var npk_approve = $(this).data('npk');
-                var is_email_approve = $(this).data('is_email');
                 var approveButton = document.getElementById('btn-approve');
                 var currentYear = new Date().getFullYear();
 
@@ -328,9 +361,9 @@
                 // $('#finish_note_approve').val('');
 
                 var noteText =
-                    'Form akses_sistem telah selesai.\n\n';
+                    'Form Akses Sistem telah di Approve.\nSilahkan melakukan akses pada area. Mohon bijak mengikuti aturan pada tiap area dan di dampingi oleh PIC pendamping.';
 
-                noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
+                noteText += '\n\nJika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
                 $('#finish_note_approve').val(noteText);
             })
 

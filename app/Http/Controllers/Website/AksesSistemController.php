@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\AksesSistem;
+use App\Models\Sistem;
+use App\Models\SistemUser;
+use App\Models\SistemApp;
 use App\Models\User;
+use App\Models\App;
+use App\Models\Department;
 use App\Models\Alert;
 
 use Illuminate\Support\Facades\DB;
@@ -19,51 +23,31 @@ class AksesSistemController extends Controller
     public function create()
     {
         $auth = User::where('id', Auth::user()->id)
-            ->whereNull('nohp')
-            ->count();
+                                    ->whereNull('nohp')
+                                    ->count(); 
 
-        $data = AksesSistem::where('created_by', Auth::user()->id)
-                        ->where(function($query) {
-                                $query->where('final_status', 'LIKE', '%Reject%')
-                                    ->orWhere('final_status', 'Finished');
-                        })
-                        ->where('is_confirm', 0)
-                        ->count();
+        $apps = App::orderBy('name', 'ASC')->get();
+        $departments = Department::orderBy('name')->get();
 
+        $data = Sistem::where('created_by', Auth::user()->id)
+                            ->where(function($query) {
+                                    $query->where('final_status', 'LIKE', '%Reject%')
+                                        ->orWhere('final_status', 'Finished');
+                            })
+                            ->where('is_confirm', 0)
+                            ->count();
+        
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
-        } else if ($data > 0) {
+        } else if($data > 0){
             return redirect()->route('website.akses_sistem.list')->with('info', 'Please confirm!');
-        } else {
-            return view('website.pages.akses_sistem.create');
+        }else{
+            return view('website.pages.akses_sistem.create', compact('apps', 'departments'));
         }
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'no_reg' => 'unique',
-            'nama' => 'required',
-            'asal_instansi' => 'required',
-            'keperluan' => 'required',
-            'akses' => 'required',
-        ]);
-
-        $year = date('y');
-        $month = date('m');
-        $lastForm = DB::table('form_akses_sistem')
-            ->select('no_reg')
-            ->orderBy('no_reg', 'desc')
-            ->first();
-        $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
-
-        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';
-        if ($lastMonth !== $month) {
-            $lastNumber = '000';
-        }
-        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);
-        $no_reg = 'SAC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
-
         $isManagerApprove = null;
         $managerApprovalDate = null;
         $isItApprove = null;
@@ -90,88 +74,64 @@ class AksesSistemController extends Controller
         }
 
         try {
-            $form_akses_sistem = AksesSistem::create([
-                'no_reg' => $no_reg,
-                'nama' => $request->nama,
-                'asal_instansi' => $request->asal_instansi,
-                'keperluan' => $request->keperluan,
-                'akses' => $request->akses,
-                'created_by' => Auth::user()->id,
-                'created_dept' => Auth::user()->departments->pluck('id')->first(),
-                'final_status' => $finalStatus,
-                'is_manager_approve' => $isManagerApprove,
-                'is_it_approve' => $isItApprove,
-                'is_it_mgr_approve' => $isItManagerApprove,
-                'manager_approval_date' => $managerApprovalDate,
-                'it_approval_date' => $itApprovalDate,
-                'it_mgr_approval_date' => $itManagerApprovalDate,
+            $request->validate([
+                'no_reg' => 'unique',
+                'name' => 'required',
+                'app_name' => 'required',
+                'purpose' => 'required',
             ]);
-            $form_akses_sistem->save();
+    
+            $year = date('y');
+            $month = date('m');
+            $lastForm = DB::table('form_sistem')
+                        ->select('no_reg')
+                        ->orderBy('no_reg', 'desc')
+                        ->first();
+            $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
+            
+            $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
+            if ($lastMonth !== $month){
+                $lastNumber = '000';
+            }            
+            $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+            $no_reg = 'SAC/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+    
+            $user = Auth::user();
+    
+            $akses_sistem = new Sistem();
+            $akses_sistem->no_reg = $no_reg;
+            $akses_sistem->purpose = $request->purpose;
+            $akses_sistem->created_by = $user->id;
+            $akses_sistem->created_dept = $user->departments->pluck('id')->first();
+            $akses_sistem->final_status = $finalStatus;
+            $akses_sistem->is_manager_approve = $isManagerApprove;
+            $akses_sistem->is_it_approve = $isItApprove;
+            $akses_sistem->is_it_mgr_approve = $isItManagerApprove;
+            $akses_sistem->manager_approval_date = $managerApprovalDate;
+            $akses_sistem->it_approval_date = $itApprovalDate;
+            $akses_sistem->it_mgr_approval_date = $itManagerApprovalDate;
+            $akses_sistem->save();
+    
+            for ($i = 0; $i < count($request->npk ); $i++) {
+                SistemUser::create([
+                    'sistem_id' => $akses_sistem->id,
+                    'npk' => $request->npk[$i],
+                    'name' => $request->name[$i],
+                    'email' => $request->email[$i],
+                    'department' => $request->department[$i],
+                ]);
+            }
 
+            for ($i = 0; $i < count($request->app_name ); $i++) {
+                SistemApp::create([
+                    'sistem_id' => $akses_sistem->id,
+                    'app_name' => $request->app_name[$i],
+                ]);
+            }
+    
             return redirect()->route('website.akses_sistem.list')->with('success', 'Create Successfully');
-        } catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function edit($id)
-    {
-        $akses_sistem = AksesSistem::findOrFail($id);
-
-        return view('website.pages.akses_sistem.edit', compact('akses_sistem'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'budget_type' => 'required',
-            'form_type' => 'required',
-            'npk' => 'required|min:6',
-            'fullname' => 'required',
-            'department' => 'required',
-            'phone' => 'required',
-            'purpose' => 'required',
-            'ad_name' => 'required',
-        ]);
-
-        $form_akses_sistem = AksesSistem::findOrFail($id);
-
-        if (Auth::user()->can('can_approve_mgr')) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->can('can_approve_executives')) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } else {
-            $finalStatus = 'created';
-            $isManagerApprove = null;
-            $managerApprovalDate = null;
-        }
-
-        try {
-            $form_akses_sistem->update([
-                'budget_type' => $request->budget_type,
-                'form_type' => $request->form_type,
-                'npk' => $request->npk,
-                'fullname' => $request->fullname,
-                'department' => $request->department,
-                'phone' => $request->phone,
-                'company' => $request->company,
-                'expired_date' => $request->expired_date,
-                'purpose' => $request->purpose,
-                'ad_name' => $request->ad_name,
-                'created_by' => Auth::user()->id,
-                'created_dept' => Auth::user()->departments->pluck('id')->first(),
-                'final_status' => $finalStatus,
-                'is_manager_approve' => $isManagerApprove,
-                'manager_approval_date' => $managerApprovalDate,
-            ]);
-
-            return redirect()->route('website.akses_sistem.list')->with('success', 'Success Edit Form');
-        } catch (\Exception $e) {
-            return $e->getMessage();
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 
@@ -182,30 +142,32 @@ class AksesSistemController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = AksesSistem::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::where('created_by', Auth::user()->id)
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
+                        ->orderBy('created_at', 'DESC')
+                        ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
-
+    
     public function approve_form(Request $request)
     {
         $id = $request->id;
         $type = $request->type;
 
-        $akses_sistem = AksesSistem::findOrFail($id);
+        $akses_sistem = Sistem::findOrFail($id);
 
         if ($type == 'confirm') {
             $akses_sistem->is_confirm = 1;
@@ -221,14 +183,13 @@ class AksesSistemController extends Controller
     {
         $id = $request->id;
 
-        $akses_sistem = AksesSistem::findOrFail($id);
+        $akses_sistem = Sistem::findOrFail($id);
         $akses_sistem->delete();
 
         return "Delete Successfully";
     }
-
+    
     // MGR //
-
     public function manager_approval()
     {
         return view('website.pages.akses_sistem.manager_approval');
@@ -240,24 +201,26 @@ class AksesSistemController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = AksesSistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+        $data = Sistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
             ->where('final_status', 'created')
-            ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+            ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-            ->orderBy('created_at', 'ASC');
+            ->orderBy('created_at', 'ASC')
+            ->with('form_sistem_app')
+            ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -267,7 +230,7 @@ class AksesSistemController extends Controller
         $id = $request->id;
         $type = $request->type;
 
-        $akses_sistem = AksesSistem::findOrFail($id);
+        $akses_sistem = Sistem::findOrFail($id);
 
         if ($type == 'approve') {
             $akses_sistem->is_manager_approve = 1;
@@ -300,119 +263,26 @@ class AksesSistemController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = AksesSistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+        $data = Sistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
             ->whereNotNull('is_manager_approve')
-            ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+            ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-            ->orderBy('manager_approval_date', 'DESC');
-
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    // MGR //
-
-    public function gm_approval()
-    {
-        return view('website.pages.akses_sistem.gm_approval');
-    }
-
-    public function gm_approval_ajax(Request $request)
-    {
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-
-        $data = AksesSistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
-            $query->where('created_dept', $firstDepartmentId)
-                ->orWhere('created_dept', $lastDepartmentId);
-        })
-            ->where('final_status', 'created')
-            ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-            ->orderBy('created_at', 'ASC');
-
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function gm_approve(Request $request)
-    {
-        $id = $request->id;
-        $type = $request->type;
-
-        $akses_sistem = AksesSistem::findOrFail($id);
-
-        if ($type == 'approve') {
-            $akses_sistem->is_gm_approve = 1;
-            $akses_sistem->final_status = 'Manager Approve';
-            $akses_sistem->gm_note = $request->gm_note;
-            $akses_sistem->gm_approve_by = Auth::user()->id;
-            $return = "Approve Successfully";
-        } else {
-            $akses_sistem->is_gm_approve = 0;
-            $akses_sistem->final_status = 'Manager Reject';
-            $akses_sistem->gm_note = $request->gm_note;
-            $akses_sistem->gm_approve_by = Auth::user()->id;
-            $akses_sistem->is_finish = 0;
-            $akses_sistem->is_confirm = 0;
-            $return = "Reject Successfully";
-        }
-        $akses_sistem->gm_approval_date = Carbon::now();
-        $akses_sistem->save();
-        return $return;
-    }
-
-    public function gm_approved()
-    {
-        return view('website.pages.akses_sistem.gm_approved');
-    }
-
-    public function gm_approved_ajax(Request $request)
-    {
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-
-        $data = AksesSistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
-            $query->where('created_dept', $firstDepartmentId)
-                ->orWhere('created_dept', $lastDepartmentId);
-        })
-            ->whereNotNull('is_manager_approve')
-            ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-            ->orderBy('manager_approval_date', 'DESC');
+            ->orderBy('manager_approval_date', 'DESC')
+            ->with('form_sistem_app')
+            ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -426,20 +296,22 @@ class AksesSistemController extends Controller
 
     public function it_approval_ajax(Request $request)
     {
-        $data = AksesSistem::where('final_status', 'Manager Approve')
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::where('final_status', 'Manager Approve')
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'ASC');
+                        ->orderBy('created_at', 'ASC')
+                        ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -449,7 +321,7 @@ class AksesSistemController extends Controller
         $id = $request->id;
         $type = $request->type;
 
-        $akses_sistem = AksesSistem::findOrFail($id);
+        $akses_sistem = Sistem::findOrFail($id);
         
         if ($type == 'approve') {
             $akses_sistem->is_it_approve = 1;
@@ -459,10 +331,10 @@ class AksesSistemController extends Controller
             $return = "Approve Successfully";
         } else {
             $akses_sistem->is_it_approve = 0;
-            $akses_sistem->is_confirm = 0;
             $akses_sistem->final_status = 'IT Reject';
             $akses_sistem->it_note = $request->it_note;
             $akses_sistem->is_finish = 0;
+            $akses_sistem->is_confirm = 0;
             $akses_sistem->it_approve_by = Auth::user()->id;
             $return = "Reject Successfully";
         }
@@ -470,9 +342,8 @@ class AksesSistemController extends Controller
         $akses_sistem->save();
         
         if ($request->notifikasi == 'Ya') {
-            $isi = "FORM NETWORK\n";
+            $isi = "FORM IZIN MEMASUKI AREA LEVEL 3\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
-            $isi .= "\n\nType : " . $akses_sistem->form_type;
             $isi .= "\n\nREQUESTOR";
             $isi .= "\nNama : *" . $akses_sistem->createdBy->name . "*";
             $isi .= "\nDepartment : *" . $akses_sistem->createdBy->departments->pluck('code')->implode(', ') . "*";
@@ -513,25 +384,28 @@ class AksesSistemController extends Controller
 
     public function it_approved_ajax(Request $request)
     {
-        $data = AksesSistem::whereNotNull('is_it_approve')
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::whereNotNull('is_it_approve')
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('manager_approval_date', 'DESC');
+                        ->orderBy('manager_approval_date', 'DESC')
+                         ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
 
-    /// IT MGR ///
+    /// ITD MGR APPROVE ///
+
     public function it_mgr_approval()
     {
         return view('website.pages.akses_sistem.it_mgr_approval');
@@ -539,20 +413,22 @@ class AksesSistemController extends Controller
 
     public function it_mgr_approval_ajax(Request $request)
     {
-        $data = AksesSistem::where('final_status', 'IT Approve')
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::where('final_status', 'IT Approve')
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'ASC');
+                        ->orderBy('created_at', 'ASC')
+                         ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -562,7 +438,7 @@ class AksesSistemController extends Controller
         $id = $request->id;
         $type = $request->type;
 
-        $akses_sistem = AksesSistem::findOrFail($id);
+        $akses_sistem = Sistem::findOrFail($id);
 
         if ($type == 'approve') {
             $akses_sistem->is_it_mgr_approve = 1;
@@ -591,25 +467,28 @@ class AksesSistemController extends Controller
 
     public function it_mgr_approved_ajax(Request $request)
     {
-        $data = AksesSistem::whereNotNull('is_it_mgr_approve')
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::whereNotNull('is_it_mgr_approve')
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
+                        ->orderBy('created_at', 'DESC')
+                         ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
 
     /// EXECUTION ///
+
     public function execution()
     {
         return view('website.pages.akses_sistem.execution');
@@ -617,20 +496,22 @@ class AksesSistemController extends Controller
 
     public function execution_ajax(Request $request)
     {
-        $data = AksesSistem::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'ASC');
+                        ->orderBy('created_at', 'ASC')
+                        ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -640,7 +521,9 @@ class AksesSistemController extends Controller
         $id = $request->id;
         $type = $request->type;
 
-        $akses_sistem = AksesSistem::findOrFail($id);
+        $akses_sistem = Sistem::findOrFail($id);
+        $akses_sistemusers = SistemUser::where('sistem_id', $id)->get();
+        $akses_sistembarangs = SistemBarang::where('sistem_id', $id)->get();
 
         $user = $akses_sistem->createdBy;
 
@@ -671,13 +554,17 @@ class AksesSistemController extends Controller
         $akses_sistem->save();
 
         if ($request->notifikasi == 'Ya') {
-            $isi = "FORM NETWORK\n\n";
+            $isi = "FORM IZIN MEMASUKI AREA LEVEL 3\n\n";
+
+            $isi .= "User : \n";
+            $nouser = 1;
+            foreach($akses_sistemusers as $akses_sistemuser)
+            {
+                $isi .= $nouser++ . ". " . $akses_sistemuser->npk . " - " . $akses_sistemuser->name . "\n";
+            }
             
-            $isi .= "Project Name : *" . $akses_sistem->project_name . "*";
-            $isi .= "\nDate Access : " . $akses_sistem->date_access_start . " - " . $akses_sistem->date_access_end;
-            $isi .= "\nRack that is accessed : " . $akses_sistem->rack;
-            $isi .= "\nDevice that is accessed : " . $akses_sistem->device;
-            $isi .= "\nNeed Down Time : " . $akses_sistem->down_time;
+            $isi .= "\nLokasi : " . $akses_sistem->lokasi;
+            $isi .= "\nWaktu Akses : " . $akses_sistem->date_access_start . " - " . $akses_sistem->date_access_end;
             $isi .= "\nPurpose : " . $akses_sistem->purpose;
             
             $isi .= "\n\nStatus : *Finished*";
@@ -719,20 +606,22 @@ class AksesSistemController extends Controller
 
     public function finished_ajax(Request $request)
     {
-        $data = AksesSistem::whereNotNull('is_finish')
-                        ->join('public.users', 'form_akses_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_akses_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_akses_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_akses_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_akses_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_akses_sistem.finish_by', 'finish.id')
-                        ->select('form_akses_sistem.*', 'users.name as requestor',
+        $data = Sistem::whereNotNull('is_finish')
+                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
+                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
+                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
+                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
+                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
+                        ->select('form_sistem.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
                                     'it_mgr.name as it_mgr_name',
                                     'on_progress.name as on_progress_name',
                                     'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
+                        ->orderBy('created_at', 'DESC')
+                        ->with('form_sistem_app')
+                        ->with('form_sistem_user');
 
         return DataTables::eloquent($data)->make(true);
     }

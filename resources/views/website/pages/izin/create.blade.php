@@ -1,9 +1,9 @@
-@extends('website.layouts.main', ['title' => 'Create Form Akses Sistem'])
+@extends('website.layouts.main', ['title' => 'Create Form Izin Memasuki Area Level 3'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between mb-2">
-            <h4 class="py-1">Form Akses Sistem (FRM-HRD-S5-030-00)</h4>
+            <h4 class="py-1">Form Izin Memasuki Area Level 3 (FRM-HRD-S5-030-00)</h4>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#guideModal"><i
                     class="menu-icon tf-icons mdi mdi-book-information-variant"></i>Guide</button>
         </div>
@@ -20,8 +20,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                <form method="post" action="{{ route('website.akses_sistem.store') }}" class="needs-validation"
-                    id="myForm" novalidate>
+                <form method="post" action="{{ route('website.izin.store') }}" class="needs-validation" id="myForm"
+                    novalidate>
                     @csrf
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
@@ -64,17 +64,18 @@
                     {{-- USER INFORMATION --}}
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-header">User Information</h5>
+                            <h5 class="card-header">INFORMASI PEMOHON</h5>
                         </div>
                         <div class="card-body demo-vertical-spacing demo-only-element">
                             <div class="user-information">
                                 <div class="row">
-                                    <label class="col-md-2 col-sm-2 col-form-label" for="npk">
+                                    <label class="col-md-3 col-sm-3 col-form-label" for="npk">
                                         <div class="form-floating form-floating-outline">
                                             <input type="text" class="form-control" id="npk" name="npk[]"
                                                 {{ old('npk') }} placeholder="" required />
-                                            <label for="npk">NPK <span class="text-danger">*</span></label>
-                                            <div class="invalid-feedback">*Mohon isi NPK</div>
+                                            <label for="npk">NPK / No. Identitas <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi NPK / No. Identitas</div>
                                         </div>
                                     </label>
 
@@ -88,37 +89,23 @@
                                         </div>
                                     </label>
 
-                                    <label class="col-md-2 col-sm-2 col-form-label" for="email">
+                                    <label class="col-md-3 col-sm-3 col-form-label" for="asal_perusahaan">
                                         <div class="form-floating form-floating-outline">
-                                            <input type="text" class="form-control" id="email" name="email[]"
-                                                {{ old('email') }} placeholder="(Opsional Jika Ada)" />
-                                            <label for="email">Email</label>
-                                            <div class="invalid-feedback">*Mohon isi Email</div>
+                                            <input type="text" class="form-control" id="asal_perusahaan"
+                                                name="asal_perusahaan[]" {{ old('asal_perusahaan') }} placeholder=""
+                                                required />
+                                            <label for="asal_perusahaan">Asal Perusahaan <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Asal Perusahaan</div>
                                         </div>
                                     </label>
 
-                                    <label class="col-md-4 col-sm-4 col-form-label" for="department">
+                                    <label class="col-md-2 col-sm-2 col-form-label" for="no_hp">
                                         <div class="form-floating form-floating-outline">
-                                            <select class="form-select" id="department" name="department[]"
-                                                aria-label="Select" required>
-                                                <option selected disabled value="">-- Choose Department --</option>
-                                                @foreach ($departments as $department)
-                                                    @php
-                                                        $selected = '';
-                                                        if (
-                                                            old('department') &&
-                                                            old('department') == $department->name
-                                                        ) {
-                                                            $selected = 'selected';
-                                                        }
-                                                    @endphp
-                                                    <option value="{{ $department->name }}" {{ $selected }}>
-                                                        {{ $department->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <label for="department">Department Name <span
-                                                    class="text-danger">*</span></label>
-                                            <div class="invalid-feedback">*Mohon isi Department</div>
+                                            <input type="text" class="form-control" id="no_hp" name="no_hp[]"
+                                                {{ old('no_hp') }} placeholder="" required />
+                                            <label for="no_hp">No. HP <span class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi No. HP</div>
                                         </div>
                                     </label>
 
@@ -133,29 +120,62 @@
                     {{-- DEVICE INFORMATION --}}
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-header">System / Application Information</h5>
+                            <h5 class="card-header">INFORMASI BARANG YANG AKAN DIBAWA MASUK</h5>
                         </div>
                         <div class="card-body demo-vertical-spacing demo-only-element">
                             <div class="barang-information">
                                 <div class="row">
-                                    <label class="col-md-11 col-sm-11 col-form-label" for="app_name">
+                                    <label class="col-md-2 col-sm-2 col-form-label" for="nama_barang">
                                         <div class="form-floating form-floating-outline">
-                                            <select class="form-select" id="app_name" name="app_name[]"
-                                                aria-label="Select" required>
-                                                <option selected disabled value="">-- Choose App --</option>
-                                                @foreach ($apps as $app)
-                                                    @php
-                                                        $selected = '';
-                                                        if (old('app_name') && old('app_name') == $app->name) {
-                                                            $selected = 'selected';
-                                                        }
-                                                    @endphp
-                                                    <option value="{{ $app->name }}" {{ $selected }}>
-                                                        {{ $app->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <label for="app_name">App Name <span class="text-danger">*</span></label>
-                                            <div class="invalid-feedback">*Mohon isi App</div>
+                                            <input type="text" class="form-control" id="nama_barang"
+                                                name="nama_barang[]" {{ old('nama_barang') }} placeholder="" />
+                                            <label for="nama_barang">Nama Barang</label>
+                                            <div class="invalid-feedback">*Mohon isi Nama Barang</div>
+                                        </div>
+                                    </label>
+
+                                    <label class="col-md-2 col-sm-2 col-form-label" for="no_device">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="no_device" name="no_device[]"
+                                                {{ old('no_device') }} placeholder="" />
+                                            <label for="no_device">No Device</label>
+                                            <div class="invalid-feedback">*Mohon isi No Device</div>
+                                        </div>
+                                    </label>
+
+                                    <label class="col-md-2 col-sm-2 col-form-label" for="merk">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="merk" name="merk[]"
+                                                {{ old('merk') }} placeholder="" />
+                                            <label for="merk">Merk</label>
+                                            <div class="invalid-feedback">*Mohon isi Merk</div>
+                                        </div>
+                                    </label>
+
+                                    <label class="col-md-1 col-sm-1 col-form-label" for="jumlah">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="jumlah" name="jumlah[]"
+                                                {{ old('jumlah') }} placeholder="" />
+                                            <label for="jumlah">Jumlah</label>
+                                            <div class="invalid-feedback">*Mohon isi Jumlah</div>
+                                        </div>
+                                    </label>
+
+                                    <label class="col-md-2 col-sm-2 col-form-label" for="satuan">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="satuan" name="satuan[]"
+                                                {{ old('satuan') }} placeholder="" />
+                                            <label for="satuan">Satuan</label>
+                                            <div class="invalid-feedback">*Mohon isi Satuan</div>
+                                        </div>
+                                    </label>
+
+                                    <label class="col-md-2 col-sm-2 col-form-label" for="keterangan">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="keterangan"
+                                                name="keterangan[]" {{ old('keterangan') }} placeholder="" />
+                                            <label for="keterangan">Keterangan</label>
+                                            <div class="invalid-feedback">*Mohon isi Keterangan</div>
                                         </div>
                                     </label>
 
@@ -166,6 +186,32 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <label class="col-sm-12 col-form-label" for="lokasi">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="lokasi" name="lokasi"
+                                            {{ old('lokasi') }} placeholder="" required />
+                                        <label for="lokasi">Lokasi <span class="text-danger">*</span></label>
+                                        <div class="invalid-feedback">*Mohon isi Lokasi</div>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="date_access_start">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="datetime-local" class="form-control" id="date_access_start"
+                                            name="date_access_start" value="{{ old('date_access_start') }}" required />
+                                        <label for="date_access_start">Date Access Start <span
+                                                class="text-danger">*</span></label>
+                                        <div class="invalid-feedback">*Mohon isi Date Access Start</div>
+                                    </div>
+                                </label>
+                                <label class="col-sm-6 col-form-label" for="date_access_end">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="datetime-local" class="form-control" id="date_access_end"
+                                            name="date_access_end" value="{{ old('date_access_end') }}" required />
+                                        <label for="date_access_end">Date Access End <span
+                                                class="text-danger">*</span></label>
+                                        <div class="invalid-feedback">*Mohon isi Date Access End</div>
+                                    </div>
+                                </label>
                                 <label class="col-sm-12 col-form-label" for="purpose">
                                     <div class="form-floating form-floating-outline">
                                         <textarea class="form-control auto-resize" id="purpose" name="purpose" placeholder="Reason" required>{{ old('purpose') }}</textarea>
@@ -238,21 +284,9 @@
         }
     </style>
     {{-- END STYLE GUIDE MODAL --}}
-    {{-- <link href="{{ asset('vendor/select2/select2.min.css') }}" rel="stylesheet" /> --}}
 @endpush
 
 @push('scripts')
-    {{-- <script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#app_name').select2({
-                maximumSelectionLength: 2,
-                // placeholder: '-- Select --',
-                // allowClear: true,
-                // theme: 'bootstrap5'
-            });
-        });
-    </script> --}}
     {{-- SCRIPT GUIDE MODAL --}}
     <script src="{{ asset('vendor/viewer/viewer.min.js') }}"></script>
     {{-- END SCRIPT GUIDE MODAL --}}

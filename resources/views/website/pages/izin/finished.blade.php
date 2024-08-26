@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'IT Approved Akses Sistem'])
+@extends('website.layouts.main', ['title' => 'Finished Izin Memasuki Area Level 3'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
+                <h5 class="card-header">Form Izin Memasuki Area Level 3 (FRM-HRD-S5-030-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -23,31 +23,12 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
+                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to delete this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_delete">
-                    <input type="hidden" id="id_delete">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
-                </div>
             </div>
         </div>
     </div>
@@ -76,7 +57,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.akses_sistem.it_approved_ajax') }}",
+                    url: "{{ route('website.izin.finished_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -131,6 +112,34 @@
                             }
                         }
                     },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `
+                                <center>
+                                    <span class="badge bg-warning">Not Yet Confirmed</span>
+                                </center>
+                                `;
+                            } else if (data.is_confirm == '1') {
+                                return `
+                                <center>
+                                    <span class="badge bg-success">Confirmed</span>
+                                </center>
+                                `
+                            } else if (data.final_status == 'created') {
+                                return `
+                                <center>
+                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
+                                </center>
+                                `;
+                            } else {
+                                return `<center>Not yet</center>`;
+                            }
+                        }
+                    },
                 ],
             });
 
@@ -166,31 +175,41 @@
                         <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
                             <tr>
                                 <td colspan="1" class="text-center">NPK / No. Identitas</td>    
-                                <td colspan="1" class="text-center">Nama</td>    
-                                <td colspan="1" class="text-center">Email</td>    
-                                <td colspan="1" class="text-center">Department</td>    
+                                <td colspan="3" class="text-center">Nama</td>    
+                                <td colspan="2" class="text-center">Asal Perusahaan</td>    
+                                <td colspan="2" class="text-center">No. HP</td>    
                             </tr>    
                         `
 
-                for (let i = 0; i < d.form_sistem_user.length; i++) {
+                for (let i = 0; i < d.form_izin_user.length; i++) {
                     html += `
                             <tr style="background-color: #ebf1f2;">
-                                <td colspan="1">${d.form_sistem_user[i].npk}</td>
-                                <td colspan="1">${d.form_sistem_user[i].name}</td>
-                                <td colspan="1">${d.form_sistem_user[i].email}</td>
-                                <td colspan="1">${d.form_sistem_user[i].department}</td>
+                                <td colspan="1">${d.form_izin_user[i].npk}</td>
+                                <td colspan="3">${d.form_izin_user[i].name}</td>
+                                <td colspan="2">${d.form_izin_user[i].asal_perusahaan}</td>
+                                <td colspan="2">${d.form_izin_user[i].no_hp}</td>
                                 `
                     html += `</tr>
                     `
                 }
 
                 html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
-                            <td colspan="4" class="text-center">Nama Aplikasi</td>    
+                            <td colspan="2" class="text-center">Nama Barang</td>    
+                            <td colspan="2" class="text-center">No Device</td>    
+                            <td colspan="1" class="text-center">Merk</td>    
+                            <td colspan="1" class="text-center">Jumlah</td> 
+                            <td colspan="1" class="text-center">Satuan</td> 
+                            <td colspan="2" class="text-center">Keterangan</td> 
                         </tr>
                         `
-                for (let i = 0; i < d.form_sistem_app.length; i++) {
+                for (let i = 0; i < d.form_izin_barang.length; i++) {
                     html += `<tr style="background-color: #ebf1f2;">
-                                <td colspan="4">${d.form_sistem_app[i].app_name ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].nama_barang ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].no_device ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].merk ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].jumlah ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].satuan ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].keterangan ?? '-'}</td>
                                 `
                     html += `</tr>
                             
@@ -199,10 +218,22 @@
 
                 html += `
                             <tr>
-                                <td colspan="4" class="text-center">Purpose</td>    
+                                <td colspan="8" class="text-center">Lokasi</td>    
                             </tr>
                             <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
-                                <td colspan="4" >${d.purpose}</td>   
+                                <td colspan="8" >${d.lokasi}</td>   
+                            </tr>
+                            <tr>
+                                <td colspan="8" class="text-center">Waktu Akses</td>    
+                            </tr>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="8" >${d.date_access_start} s/d ${d.date_access_end}</td>   
+                            </tr>
+                            <tr>
+                                <td colspan="8" class="text-center">Purpose</td>    
+                            </tr>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="8" >${d.purpose}</td>   
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">

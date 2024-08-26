@@ -72,6 +72,7 @@
                 'network',
                 'akses_sistem',
                 'incident_report',
+                'izin',
             ];
             $createRoutes = [];
             $editRoutes = [];
@@ -265,6 +266,16 @@
                 <a href="{{ route('website.alert.list') }}" class="menu-link">
                     <i class="menu-icon tf-icons mdi mdi-message-alert"></i>
                     <div data-i18n="Alert">Alert</div>
+                </a>
+            </li>
+
+            @php
+                $appRoutes = ['website.app.list', 'website.app.create', 'website.app.edit'];
+            @endphp
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $appRoutes) ? 'active' : '' }}">
+                <a href="{{ route('website.app.list') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-apps"></i>
+                    <div data-i18n="Apps / System">Apps / System</div>
                 </a>
             </li>
 

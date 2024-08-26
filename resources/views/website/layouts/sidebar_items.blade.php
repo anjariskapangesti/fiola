@@ -367,6 +367,37 @@
             @endif
         </a>
     </li>
+
+    <li class="menu-item {{ Route::is('website.izin.' . $link) ? 'active' : '' }}">
+        <a href="{{ route('website.izin.' . $link) }}" class="menu-link">
+            <div data-i18n="Izin Memasuki Area Level 3">{{ $text }} Izin Memasuki Area Level 3
+            </div>
+            @if ($link == 'manager_approval' && App\Models\AppHelper::izin_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="izin_mgr_count">{{ App\Models\AppHelper::izin_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'it_approval' && App\Models\AppHelper::izin_it_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="izin_it_count">{{ App\Models\AppHelper::izin_it_count() }}</span>
+            @endif
+
+            @if ($link == 'it_mgr_approval' && App\Models\AppHelper::izin_it_mgr_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="izin_it_mgr_count">{{ App\Models\AppHelper::izin_it_mgr_count() }}</span>
+            @endif
+
+            @if ($link == 'execution' && App\Models\AppHelper::izin_execution_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="izin_execution_count">{{ App\Models\AppHelper::izin_execution_count() }}</span>
+            @endif
+
+            @if ($link == 'list' && App\Models\AppHelper::izin_confirm_count() > 0)
+                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                    id="izin_confirm_count">{{ App\Models\AppHelper::izin_confirm_count() }}</span>
+            @endif
+        </a>
+    </li>
 </ul>
 
 {{-- <ul id="forms-nav"

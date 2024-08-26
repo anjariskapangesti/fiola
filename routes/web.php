@@ -93,11 +93,22 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
+            Route::group(['prefix' => 'app'], function(){
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::post('/store', 'AppController@store')->name('app.store');
+                    Route::post('/update', 'AppController@update')->name('app.update');
+                    Route::post('/destroy', 'AppController@destroy')->name('app.destroy');
+                    Route::get('/list', 'AppController@list')->name('app.list');
+                    Route::get('/list_ajax', 'AppController@list_ajax')->name('app.list_ajax');
+                });
+            });
+
             Route::group(['prefix' => 'device'], function(){
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'DeviceController@create')->name('device.create');
                     Route::post('/store', 'DeviceController@store')->name('device.store');
-                    Route::post('/edit', 'DeviceController@edit')->name('device.edit');
+                    Route::get('/edit/{id}', 'DeviceController@edit')->name('device.edit');
+                    Route::post('/update/{id}', 'DeviceController@update')->name('device.update');
                     Route::post('/destroy', 'DeviceController@destroy')->name('device.destroy');
                     Route::get('/list', 'DeviceController@list')->name('device.list');
                     Route::get('/list_ajax', 'DeviceController@list_ajax')->name('device.list_ajax');
@@ -670,6 +681,46 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::post('/execution_approve', 'IncidentReportController@execution_approve')->name('incident_report.execution_approve');
                     Route::get('/finished', 'IncidentReportController@finished')->name('incident_report.finished');
                     Route::get('/finished_ajax', 'IncidentReportController@finished_ajax')->name('incident_report.finished_ajax');
+                });
+            });
+            // FORM IZIN //
+            Route::group(['prefix' => 'izin'], function(){
+                Route::get('/create', 'IzinController@create')->name('izin.create');
+                Route::post('/store', 'IzinController@store')->name('izin.store');
+                Route::get('/subfolder_ajax', 'IzinController@subfolder_ajax')->name('izin.subfolder_ajax');
+                Route::get('/list', 'IzinController@list')->name('izin.list');
+                Route::get('/list_ajax', 'IzinController@list_ajax')->name('izin.list_ajax');   
+                Route::post('/approve_form', 'IzinController@approve_form')->name('izin.approve_form');
+                Route::post('/delete_form', 'IzinController@delete_form')->name('izin.delete_form');
+
+                Route::group(['middleware' => ['can:approve_mgr']], function () {
+                    Route::get('/manager_approval', 'IzinController@manager_approval')->name('izin.manager_approval');
+                    Route::get('/manager_approval_ajax', 'IzinController@manager_approval_ajax')->name('izin.manager_approval_ajax');
+                    Route::post('/manager_approve', 'IzinController@manager_approve')->name('izin.manager_approve');
+                    Route::get('/manager_approved', 'IzinController@manager_approved')->name('izin.manager_approved');
+                    Route::get('/manager_approved_ajax', 'IzinController@manager_approved_ajax')->name('izin.manager_approved_ajax');                
+                });
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/it_approval', 'IzinController@it_approval')->name('izin.it_approval');
+                    Route::get('/it_approval_ajax', 'IzinController@it_approval_ajax')->name('izin.it_approval_ajax');
+                    Route::post('/it_approve', 'IzinController@it_approve')->name('izin.it_approve');
+                    Route::get('/it_approved', 'IzinController@it_approved')->name('izin.it_approved');
+                    Route::get('/it_approved_ajax', 'IzinController@it_approved_ajax')->name('izin.it_approved_ajax');
+                });
+                Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
+                    Route::get('/it_mgr_approval', 'IzinController@it_mgr_approval')->name('izin.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'IzinController@it_mgr_approval_ajax')->name('izin.it_mgr_approval_ajax');
+                    Route::post('/it_mgr_approve', 'IzinController@it_mgr_approve')->name('izin.it_mgr_approve');
+                    Route::get('/it_mgr_approved', 'IzinController@it_mgr_approved')->name('izin.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'IzinController@it_mgr_approved_ajax')->name('izin.it_mgr_approved_ajax');
+                });
+
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/execution', 'IzinController@execution')->name('izin.execution');
+                    Route::get('/execution_ajax', 'IzinController@execution_ajax')->name('izin.execution_ajax');
+                    Route::post('/execution_approve', 'IzinController@execution_approve')->name('izin.execution_approve');
+                    Route::get('/finished', 'IzinController@finished')->name('izin.finished');
+                    Route::get('/finished_ajax', 'IzinController@finished_ajax')->name('izin.finished_ajax');
                 });
             });
         });

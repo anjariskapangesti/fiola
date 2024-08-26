@@ -4,7 +4,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Akses Sistem</h5>
+                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -134,115 +134,151 @@
                 ],
             });
 
+            var detailsRow = [];
+
+            $('.table tbody').on('click', 'tr td.dt-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var idx = $.inArray(tr.attr('id'), detailsRow);
+
+                if (row.child.isShown()) {
+                    tr.removeClass('details')
+                    row.child.hide()
+                    detailsRow.splice(idx, 1)
+                } else {
+                    tr.addClass('details')
+                    row.child(format(row.data())).show()
+                    if (idx === -1) {
+                        detailsRow.push(tr.attr('id'))
+                    }
+                }
+            })
+
+            table.on('draw', function() {
+                $.each(detailsRow, function(i, id) {
+                    $('#' + id + ' td.dt-control').trigger('click')
+                })
+            })
+
             function format(d) {
-                return (
+                var html = `
+                    <table class="table table-sm table-bordered">
+                        <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
+                            <tr>
+                                <td colspan="1" class="text-center">NPK / No. Identitas</td>    
+                                <td colspan="1" class="text-center">Nama</td>    
+                                <td colspan="1" class="text-center">Email</td>    
+                                <td colspan="1" class="text-center">Department</td>    
+                            </tr>    
+                        `
+
+                for (let i = 0; i < d.form_sistem_user.length; i++) {
+                    html += `
+                            <tr style="background-color: #ebf1f2;">
+                                <td colspan="1">${d.form_sistem_user[i].npk}</td>
+                                <td colspan="1">${d.form_sistem_user[i].name}</td>
+                                <td colspan="1">${d.form_sistem_user[i].email}</td>
+                                <td colspan="1">${d.form_sistem_user[i].department}</td>
+                                `
+                    html += `</tr>
                     `
-                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
-                        <tbody style="border: 2px solid black;">
+                }
+
+                html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
+                            <td colspan="4" class="text-center">Nama Aplikasi</td>    
+                        </tr>
+                        `
+                for (let i = 0; i < d.form_sistem_app.length; i++) {
+                    html += `<tr style="background-color: #ebf1f2;">
+                                <td colspan="4">${d.form_sistem_app[i].app_name ?? '-'}</td>
+                                `
+                    html += `</tr>
+                            
+                    `
+                }
+
+                html += `
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Nama Pemohon</td>
-                                <td>${d.nama} </td>
+                                <td colspan="4" class="text-center">Purpose</td>    
                             </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Asal Instansi</td>
-                                <td>${d.asal_instansi}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Keperluan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.keperluan} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Akses</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.akses} </td>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="4" >${d.purpose}</td>   
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Manager Approval Date</td>
-                                <td>${d.manager_approval_date ?? '-'}</td>
+                                <td colspan="8">${d.manager_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Approval By</td>
-                                <td>${d.manager_name ?? '-'}</td>
+                                <td colspan="8">${d.manager_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Approval Date</td>
-                                <td>${d.it_approval_date ?? '-'}</td>
+                                <td colspan="8">${d.it_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Approval By</td>
-                                <td>${d.it_name ?? '-'}</td>
+                                <td colspan="8">${d.it_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Manager Approval Date</td>
-                                <td>${d.it_mgr_approval_date ?? '-'}</td>
+                                <td colspan="8">${d.it_mgr_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Approval By</td>
-                                <td>${d.it_mgr_name ?? '-'}</td>
+                                <td colspan="8">${d.it_mgr_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>On Progress Date</td>
-                                <td>${d.on_progress_date ?? '-'}</td>
+                                <td colspan="8">${d.on_progress_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress By</td>
-                                <td>${d.on_progress_name ?? '-'}</td>
+                                <td colspan="8">${d.on_progress_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Finish Date</td>
-                                <td>${d.finish_date ?? '-'}</td>
+                                <td colspan="8">${d.finish_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish By</td>
-                                <td>${d.finish_name ?? '-'}</td>
+                                <td colspan="8">${d.finish_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
                             </tr>
-                        </tbody>
-                    </table>
-                    `
-                );
+                        </tbody>   
+                        </table>`
+
+                return html
             }
-
-            $('#app_table tbody').on('click', 'td.dt-control', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    row.child.hide();
-                    tr.removeClass('shown');
-                } else {
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
         });
     </script>
 @endpush

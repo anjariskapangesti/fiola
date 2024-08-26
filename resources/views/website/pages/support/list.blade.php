@@ -191,7 +191,7 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `<div class="text-center">
-                                        <a href="{{ url('support/edit/') }}/${row.id}" class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="{{ url('support/edit/') }}/${row.id}" class="btn btn-sm btn-primary disabled">Edit</a>
                                         <button class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-name="${data.name}">Delete</button>
                                     </div>
                             `;

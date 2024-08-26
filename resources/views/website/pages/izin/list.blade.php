@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'Track Forms Akses Sistem'])
+@extends('website.layouts.main', ['title' => 'Track Forms Izin Memasuki Area Level 3'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
+                <h5 class="card-header">Form Izin Memasuki Area Level 3 (FRM-HRD-S5-030-00)</h5>
             </div>
             <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                 @if (Session::get('info'))
@@ -95,7 +95,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.akses_sistem.list_ajax') }}",
+                    url: "{{ route('website.izin.list_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -209,31 +209,41 @@
                         <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
                             <tr>
                                 <td colspan="1" class="text-center">NPK / No. Identitas</td>    
-                                <td colspan="1" class="text-center">Nama</td>    
-                                <td colspan="1" class="text-center">Email</td>    
-                                <td colspan="1" class="text-center">Department</td>    
+                                <td colspan="3" class="text-center">Nama</td>    
+                                <td colspan="2" class="text-center">Asal Perusahaan</td>    
+                                <td colspan="2" class="text-center">No. HP</td>    
                             </tr>    
                         `
 
-                for (let i = 0; i < d.form_sistem_user.length; i++) {
+                for (let i = 0; i < d.form_izin_user.length; i++) {
                     html += `
                             <tr style="background-color: #ebf1f2;">
-                                <td colspan="1">${d.form_sistem_user[i].npk}</td>
-                                <td colspan="1">${d.form_sistem_user[i].name}</td>
-                                <td colspan="1">${d.form_sistem_user[i].email}</td>
-                                <td colspan="1">${d.form_sistem_user[i].department}</td>
+                                <td colspan="1">${d.form_izin_user[i].npk}</td>
+                                <td colspan="3">${d.form_izin_user[i].name}</td>
+                                <td colspan="2">${d.form_izin_user[i].asal_perusahaan}</td>
+                                <td colspan="2">${d.form_izin_user[i].no_hp}</td>
                                 `
                     html += `</tr>
                     `
                 }
 
                 html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
-                            <td colspan="4" class="text-center">Nama Aplikasi</td>    
+                            <td colspan="2" class="text-center">Nama Barang</td>    
+                            <td colspan="2" class="text-center">No Device</td>    
+                            <td colspan="1" class="text-center">Merk</td>    
+                            <td colspan="1" class="text-center">Jumlah</td> 
+                            <td colspan="1" class="text-center">Satuan</td> 
+                            <td colspan="2" class="text-center">Keterangan</td> 
                         </tr>
                         `
-                for (let i = 0; i < d.form_sistem_app.length; i++) {
+                for (let i = 0; i < d.form_izin_barang.length; i++) {
                     html += `<tr style="background-color: #ebf1f2;">
-                                <td colspan="4">${d.form_sistem_app[i].app_name ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].nama_barang ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].no_device ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].merk ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].jumlah ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].satuan ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].keterangan ?? '-'}</td>
                                 `
                     html += `</tr>
                             
@@ -242,80 +252,92 @@
 
                 html += `
                             <tr>
-                                <td colspan="4" class="text-center">Purpose</td>    
+                                <td colspan="8" class="text-center">Lokasi</td>    
                             </tr>
                             <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
-                                <td colspan="4" >${d.purpose}</td>   
+                                <td colspan="8" >${d.lokasi}</td>   
+                            </tr>
+                            <tr>
+                                <td colspan="8" class="text-center">Waktu Akses</td>    
+                            </tr>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="8" >${d.date_access_start} s/d ${d.date_access_end}</td>   
+                            </tr>
+                            <tr>
+                                <td colspan="8" class="text-center">Purpose</td>    
+                            </tr>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="8" >${d.purpose}</td>   
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Manager Approval Date</td>
-                                <td colspan="4">${d.manager_approval_date ?? '-'}</td>
+                                <td colspan="7">${d.manager_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Approval By</td>
-                                <td colspan="4">${d.manager_name ?? '-'}</td>
+                                <td colspan="7">${d.manager_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td colspan="4" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td colspan="7" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Approval Date</td>
-                                <td colspan="4">${d.it_approval_date ?? '-'}</td>
+                                <td colspan="7">${d.it_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Approval By</td>
-                                <td colspan="4">${d.it_name ?? '-'}</td>
+                                <td colspan="7">${d.it_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td colspan="4" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td colspan="7" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Manager Approval Date</td>
-                                <td colspan="4">${d.it_mgr_approval_date ?? '-'}</td>
+                                <td colspan="7">${d.it_mgr_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Approval By</td>
-                                <td colspan="4">${d.it_mgr_name ?? '-'}</td>
+                                <td colspan="7">${d.it_mgr_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td colspan="4" style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td colspan="7" style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>On Progress Date</td>
-                                <td colspan="4">${d.on_progress_date ?? '-'}</td>
+                                <td colspan="7">${d.on_progress_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress By</td>
-                                <td colspan="4">${d.on_progress_name ?? '-'}</td>
+                                <td colspan="7">${d.on_progress_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress Note</td>
-                                <td colspan="4" style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
+                                <td colspan="7" style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Finish Date</td>
-                                <td colspan="4">${d.finish_date ?? '-'}</td>
+                                <td colspan="7">${d.finish_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish By</td>
-                                <td colspan="4">${d.finish_name ?? '-'}</td>
+                                <td colspan="7">${d.finish_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish Note</td>
-                                <td colspan="4" style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
+                                <td colspan="7" style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
                             </tr>
                         </tbody>   
                         </table>`
@@ -335,7 +357,7 @@
             $('#btn-delete').on('click', function() {
                 let id_delete = $('#id_delete').val();
                 $.ajax({
-                    url: "{{ route('website.akses_sistem.delete_form') }}",
+                    url: "{{ route('website.izin.delete_form') }}",
                     type: "POST",
                     data: {
                         id: id_delete,
@@ -369,7 +391,7 @@
             $('#btn-confirm').on('click', function() {
                 let id_confirm = $('#id_confirm').val();
                 $.ajax({
-                    url: "{{ route('website.akses_sistem.approve_form') }}",
+                    url: "{{ route('website.izin.approve_form') }}",
                     type: "POST",
                     data: {
                         id: id_confirm,

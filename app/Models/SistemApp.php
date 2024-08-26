@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SistemApp extends Model
+{
+    protected $table = 'form_sistem_app';
+    protected $guarded = ['id'];
+
+    public function Sistem()
+    {
+        return $this->belongsTo(Sistem::class);
+    }
+}

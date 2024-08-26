@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'IT Approved Akses Sistem'])
+@extends('website.layouts.main', ['title' => 'Finished Akses Sistem'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
+                <h5 class="card-header">Akses Sistem</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -23,31 +23,12 @@
                             <th>Requestor</th>
                             <th>Created Date</th>
                             <th>Status</th>
+                            <th width="150px">Option</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to delete this item?
-                    <input type="text" readonly class="form-control-plaintext" id="no_reg_delete">
-                    <input type="hidden" id="id_delete">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="btn-delete">Yes, Delete!</button>
-                </div>
             </div>
         </div>
     </div>
@@ -76,7 +57,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.akses_sistem.it_approved_ajax') }}",
+                    url: "{{ route('website.akses_sistem.finished_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -131,154 +112,146 @@
                             }
                         }
                     },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            if (data.is_confirm == '0') {
+                                return `
+                                <center>
+                                    <span class="badge bg-warning">Not Yet Confirmed</span>
+                                </center>
+                                `;
+                            } else if (data.is_confirm == '1') {
+                                return `
+                                <center>
+                                    <span class="badge bg-success">Confirmed</span>
+                                </center>
+                                `
+                            } else if (data.final_status == 'created') {
+                                return `
+                                <center>
+                                    <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
+                                </center>
+                                `;
+                            } else {
+                                return `<center>Not yet</center>`;
+                            }
+                        }
+                    },
                 ],
             });
 
-            var detailsRow = [];
-
-            $('.table tbody').on('click', 'tr td.dt-control', function() {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-                var idx = $.inArray(tr.attr('id'), detailsRow);
-
-                if (row.child.isShown()) {
-                    tr.removeClass('details')
-                    row.child.hide()
-                    detailsRow.splice(idx, 1)
-                } else {
-                    tr.addClass('details')
-                    row.child(format(row.data())).show()
-                    if (idx === -1) {
-                        detailsRow.push(tr.attr('id'))
-                    }
-                }
-            })
-
-            table.on('draw', function() {
-                $.each(detailsRow, function(i, id) {
-                    $('#' + id + ' td.dt-control').trigger('click')
-                })
-            })
-
             function format(d) {
-                var html = `
-                    <table class="table table-sm table-bordered">
-                        <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
-                            <tr>
-                                <td colspan="1" class="text-center">NPK / No. Identitas</td>    
-                                <td colspan="1" class="text-center">Nama</td>    
-                                <td colspan="1" class="text-center">Email</td>    
-                                <td colspan="1" class="text-center">Department</td>    
-                            </tr>    
-                        `
-
-                for (let i = 0; i < d.form_sistem_user.length; i++) {
-                    html += `
-                            <tr style="background-color: #ebf1f2;">
-                                <td colspan="1">${d.form_sistem_user[i].npk}</td>
-                                <td colspan="1">${d.form_sistem_user[i].name}</td>
-                                <td colspan="1">${d.form_sistem_user[i].email}</td>
-                                <td colspan="1">${d.form_sistem_user[i].department}</td>
-                                `
-                    html += `</tr>
+                return (
                     `
-                }
-
-                html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
-                            <td colspan="4" class="text-center">Nama Aplikasi</td>    
-                        </tr>
-                        `
-                for (let i = 0; i < d.form_sistem_app.length; i++) {
-                    html += `<tr style="background-color: #ebf1f2;">
-                                <td colspan="4">${d.form_sistem_app[i].app_name ?? '-'}</td>
-                                `
-                    html += `</tr>
-                            
-                    `
-                }
-
-                html += `
+                    <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
+                        <tbody style="border: 2px solid black;">
                             <tr>
-                                <td colspan="4" class="text-center">Purpose</td>    
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Nama Pemohon</td>
+                                <td>${d.nama} </td>
                             </tr>
-                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
-                                <td colspan="4" >${d.purpose}</td>   
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Asal Instansi</td>
+                                <td>${d.asal_instansi}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Keperluan</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.keperluan} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Akses</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.akses} </td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Manager Approval Date</td>
-                                <td colspan="8">${d.manager_approval_date ?? '-'}</td>
+                                <td>${d.manager_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Approval By</td>
-                                <td colspan="8">${d.manager_name ?? '-'}</td>
+                                <td>${d.manager_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Manager Note</td>
-                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                                <td>${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Approval Date</td>
-                                <td colspan="8">${d.it_approval_date ?? '-'}</td>
+                                <td>${d.it_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Approval By</td>
-                                <td colspan="8">${d.it_name ?? '-'}</td>
+                                <td>${d.it_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Note</td>
-                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                                <td>${d.it_note ?? '-'}</td>
                             </tr>  
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Manager Approval Date</td>
-                                <td colspan="8">${d.it_mgr_approval_date ?? '-'}</td>
+                                <td>${d.it_mgr_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Approval By</td>
-                                <td colspan="8">${d.it_mgr_name ?? '-'}</td>
+                                <td>${d.it_mgr_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>ITD Manager Note</td>
-                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
+                                <td>${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>On Progress Date</td>
-                                <td colspan="8">${d.on_progress_date ?? '-'}</td>
+                                <td>${d.on_progress_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress By</td>
-                                <td colspan="8">${d.on_progress_name ?? '-'}</td>
+                                <td>${d.on_progress_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>On Progress Note</td>
-                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Finish Date</td>
-                                <td colspan="8">${d.finish_date ?? '-'}</td>
+                                <td>${d.finish_date ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish By</td>
-                                <td colspan="8">${d.finish_name ?? '-'}</td>
+                                <td>${d.finish_name ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td>Finish Note</td>
-                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
                             </tr>
-                        </tbody>   
-                        </table>`
-
-                return html
+                        </tbody>
+                    </table>
+                    `
+                );
             }
+
+            $('#app_table tbody').on('click', 'td.dt-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
         });
     </script>
 @endpush

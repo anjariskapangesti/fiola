@@ -84,6 +84,12 @@ class AppHelperController extends Controller
         $incident_report_it_mgr_count = AppHelper::incident_report_it_mgr_count();
         $incident_report_execution_count = AppHelper::incident_report_execution_count();
         $incident_report_confirm_count = AppHelper::incident_report_confirm_count();
+        // FORM IZIN //
+        $izin_mgr_count = AppHelper::izin_mgr_count();
+        $izin_it_count = AppHelper::izin_it_count();
+        $izin_it_mgr_count = AppHelper::izin_it_mgr_count();
+        $izin_execution_count = AppHelper::izin_execution_count();
+        $izin_confirm_count = AppHelper::izin_confirm_count();
         // ALL FORM //
         $manager_approvals_count = AppHelper::manager_approvals_count();
         $confirms_count = AppHelper::confirms_count();
@@ -165,6 +171,12 @@ class AppHelperController extends Controller
             'incident_report_it_mgr_count' => $incident_report_it_mgr_count,
             'incident_report_execution_count' => $incident_report_execution_count,
             'incident_report_confirm_count' => $incident_report_confirm_count,
+
+            'izin_mgr_count' => $izin_mgr_count,
+            'izin_it_count' => $izin_it_count,
+            'izin_it_mgr_count' => $izin_it_mgr_count,
+            'izin_execution_count' => $izin_execution_count,
+            'izin_confirm_count' => $izin_confirm_count,
             
             'manager_approvals_count' => $manager_approvals_count,
             'confirms_count' => $confirms_count,

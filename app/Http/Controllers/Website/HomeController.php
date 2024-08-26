@@ -19,6 +19,7 @@ use App\Models\Relayout;
 use App\Models\Network;
 use App\Models\AksesSistem;
 use App\Models\IncidentReport;
+use App\Models\Izin;
 
 use App\Models\Alert;
 use App\Models\Ticket;
@@ -55,6 +56,7 @@ class HomeController extends Controller
             'Network',
             'AksesSistem',
             'IncidentReport',
+            'Izin',
         ];
     
         $finalStatusConditions = [
@@ -222,6 +224,16 @@ class HomeController extends Controller
         $incident_report_it_mgr_count = IncidentReport::where('final_status', 'LIKE', 'IT Approve%')->count();
         $incident_report_execution_count = IncidentReport::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
+        $izin_mgr_count = Izin::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+                ->where('final_status', 'LIKE', '%created%')->count();
+                
+        $izin_it_count = Izin::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $izin_it_mgr_count = Izin::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $izin_execution_count = Izin::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+
         /// DIAGRAM BATANG ///
         $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
         $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
@@ -276,6 +288,10 @@ class HomeController extends Controller
         $incident_report_total = IncidentReport::count();
         $incident_report_finished = IncidentReport::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
         $incident_report_rejected = IncidentReport::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+
+        $izin_total = Izin::count();
+        $izin_finished = Izin::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $izin_rejected = Izin::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
@@ -333,6 +349,8 @@ class HomeController extends Controller
                     'akses_sistem_total', 'akses_sistem_finished', 'akses_sistem_rejected',
                     'incident_report_mgr_count', 'incident_report_it_count', 'incident_report_it_mgr_count', 'incident_report_execution_count',
                     'incident_report_total', 'incident_report_finished', 'incident_report_rejected',
+                    'izin_mgr_count', 'izin_it_count', 'izin_it_mgr_count', 'izin_execution_count',
+                    'izin_total', 'izin_finished', 'izin_rejected',
                     'ticket_open', 'ticket_finished', 'ticket_on_progress', 'ticket_pending', 'ticket_rejected',));
         }
     }    
@@ -352,6 +370,7 @@ class HomeController extends Controller
             'form_network' => 'form_network',
             'form_akses_sistem' => 'form_akses_sistem',
             'form_incident_report' => 'form_incident_report',
+            'form_izin' => 'form_izin',
         ];
 
         $mergedData = collect();

@@ -1,10 +1,10 @@
-@extends('website.layouts.main', ['title' => 'Manager Approval Akses Sistem'])
+@extends('website.layouts.main', ['title' => 'IT MGR Approval Izin Memasuki Area Level 3'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
+                <h5 class="card-header">Form Izin Memasuki Area Level 3 (FRM-HRD-S5-030-00)</h5>
             </div>
             <div class="row">
                 @if (Session::get('info'))
@@ -44,9 +44,9 @@
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
                     <input type="hidden" id="id_approve">
                     <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="manager_note_approve" name="manager_note_approve"
-                            placeholder="add note if there are additional">{{ old('manager_note_approve') }}</textarea>
-                        <label for="manager_note_approve">Manager Note</label>
+                        <textarea class="form-control auto-resize" id="it_mgr_note_approve" name="it_mgr_note_approve"
+                            placeholder="add note if there are additional">{{ old('it_mgr_note_approve') }}</textarea>
+                        <label for="it_mgr_note_approve">ITD MGR Note</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -69,9 +69,9 @@
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
                     <input type="hidden" id="id_reject">
                     <div class="form-floating form-floating-outline">
-                        <textarea class="form-control auto-resize" id="manager_note_reject" name="manager_note_reject"
-                            placeholder="add note if there are additional">{{ old('manager_note_reject') }}</textarea>
-                        <label for="manager_note_reject">Manager Note</label>
+                        <textarea class="form-control auto-resize" id="it_mgr_note_reject" name="it_mgr_note_reject"
+                            placeholder="add note if there are additional">{{ old('it_mgr_note_reject') }}</textarea>
+                        <label for="it_mgr_note_reject">ITD MGR Note</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -113,7 +113,7 @@
                 'serverSide': false,
                 'orderable': true,
                 ajax: {
-                    url: "{{ route('website.akses_sistem.manager_approval_ajax') }}",
+                    url: "{{ route('website.izin.it_mgr_approval_ajax') }}",
                 },
                 columns: [{
                         data: null,
@@ -206,31 +206,41 @@
                         <tbody style="background-color: #66a7e3; width: 30px; font-weight: bold; border: 2px solid black;">
                             <tr>
                                 <td colspan="1" class="text-center">NPK / No. Identitas</td>    
-                                <td colspan="1" class="text-center">Nama</td>    
-                                <td colspan="1" class="text-center">Email</td>    
-                                <td colspan="1" class="text-center">Department</td>    
+                                <td colspan="3" class="text-center">Nama</td>    
+                                <td colspan="2" class="text-center">Asal Perusahaan</td>    
+                                <td colspan="2" class="text-center">No. HP</td>    
                             </tr>    
                         `
 
-                for (let i = 0; i < d.form_sistem_user.length; i++) {
+                for (let i = 0; i < d.form_izin_user.length; i++) {
                     html += `
                             <tr style="background-color: #ebf1f2;">
-                                <td colspan="1">${d.form_sistem_user[i].npk}</td>
-                                <td colspan="1">${d.form_sistem_user[i].name}</td>
-                                <td colspan="1">${d.form_sistem_user[i].email}</td>
-                                <td colspan="1">${d.form_sistem_user[i].department}</td>
+                                <td colspan="1">${d.form_izin_user[i].npk}</td>
+                                <td colspan="3">${d.form_izin_user[i].name}</td>
+                                <td colspan="2">${d.form_izin_user[i].asal_perusahaan}</td>
+                                <td colspan="2">${d.form_izin_user[i].no_hp}</td>
                                 `
                     html += `</tr>
                     `
                 }
 
                 html += `<tr style="background-color: #66a7e3; width: 30px; font-weight: bold;">
-                            <td colspan="4" class="text-center">Nama Aplikasi</td>    
+                            <td colspan="2" class="text-center">Nama Barang</td>    
+                            <td colspan="2" class="text-center">No Device</td>    
+                            <td colspan="1" class="text-center">Merk</td>    
+                            <td colspan="1" class="text-center">Jumlah</td> 
+                            <td colspan="1" class="text-center">Satuan</td> 
+                            <td colspan="2" class="text-center">Keterangan</td> 
                         </tr>
                         `
-                for (let i = 0; i < d.form_sistem_app.length; i++) {
+                for (let i = 0; i < d.form_izin_barang.length; i++) {
                     html += `<tr style="background-color: #ebf1f2;">
-                                <td colspan="4">${d.form_sistem_app[i].app_name ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].nama_barang ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].no_device ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].merk ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].jumlah ?? '-'}</td>
+                                <td colspan="1">${d.form_izin_barang[i].satuan ?? '-'}</td>
+                                <td colspan="2">${d.form_izin_barang[i].keterangan ?? '-'}</td>
                                 `
                     html += `</tr>
                             
@@ -239,11 +249,51 @@
 
                 html += `
                             <tr>
-                                <td colspan="4" class="text-center">Purpose</td>    
+                                <td colspan="8" class="text-center">Lokasi</td>    
                             </tr>
                             <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
-                                <td colspan="4" >${d.purpose}</td>   
+                                <td colspan="8" >${d.lokasi}</td>   
                             </tr>
+                            <tr>
+                                <td colspan="8" class="text-center">Waktu Akses</td>    
+                            </tr>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="8" >${d.date_access_start} s/d ${d.date_access_end}</td>   
+                            </tr>
+                            <tr>
+                                <td colspan="8" class="text-center">Purpose</td>    
+                            </tr>
+                            <tr style="background-color: #ebf1f2; max-width: 250px; white-space: pre-wrap;">
+                                <td colspan="8" >${d.purpose}</td>   
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>Manager Approval Date</td>
+                                <td colspan="8">${d.manager_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Approval By</td>
+                                <td colspan="8">${d.manager_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>Manager Note</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                            </tr>
+                        </tbody>
+                        <tbody style="border: 2px solid black;">
+                            <tr>
+                                <td>ITD Approval Date</td>
+                                <td colspan="8">${d.it_approval_date ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Approval By</td>
+                                <td colspan="8">${d.it_name ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td>ITD Note</td>
+                                <td colspan="8" style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
+                            </tr>  
                         </tbody>
                         <tfoot>
                             <tr>
@@ -267,17 +317,17 @@
                 approveButton.innerHTML = 'Yes, Approve!';
                 $('#id_approve').val(id_approve)
                 $('#no_reg_approve').val(no_reg_approve)
-                $('#manager_note_approve').val('');
+                $('#it_mgr_note_approve').val('');
             })
 
             $('#btn-approve').on('click', function() {
                 let id_approve = $('#id_approve').val();
                 $.ajax({
-                    url: "{{ route('website.akses_sistem.manager_approve') }}",
+                    url: "{{ route('website.izin.it_mgr_approve') }}",
                     type: "POST",
                     data: {
                         id: id_approve,
-                        manager_note: $('#manager_note_approve').val(),
+                        it_mgr_note: $('#it_mgr_note_approve').val(),
                         type: 'approve',
                         '_token': "{{ csrf_token() }}",
                     },
@@ -293,7 +343,7 @@
                 });
             });
             // REJECT
-            $('#manager_note_reject').on('keyup', function() {
+            $('#it_mgr_note_reject').on('keyup', function() {
                 if ($(this).val() != "")
                     $('#btn-reject').removeAttr('disabled');
                 else
@@ -308,17 +358,17 @@
                 approveButton.innerHTML = 'Yes, Reject!';
                 $('#id_reject').val(id_reject)
                 $('#no_reg_reject').val(no_reg_reject)
-                $('#manager_note_reject').val('');
+                $('#it_mgr_note_reject').val('');
             })
 
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
                 $.ajax({
-                    url: "{{ route('website.akses_sistem.manager_approve') }}",
+                    url: "{{ route('website.izin.it_mgr_approve') }}",
                     type: "POST",
                     data: {
                         id: id_reject,
-                        manager_note: $('#manager_note_reject').val(),
+                        it_mgr_note: $('#it_mgr_note_reject').val(),
                         type: 'reject',
                         '_token': "{{ csrf_token() }}",
                     },
