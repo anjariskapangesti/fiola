@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row gy-4">
-            @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
+            @if (auth()->check())
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="d-flex justify-content-between">
@@ -292,7 +292,7 @@
         });
     </script>
 
-    @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
+    @if (auth()->check())
         <script>
             $(document).ready(function() {
                 var table = $('#app_table').DataTable({

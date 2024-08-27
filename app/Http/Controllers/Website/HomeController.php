@@ -549,23 +549,44 @@ class HomeController extends Controller
         ];
     
         $mergedData = collect();
-    
-        foreach ($tables as $table => $displayName) {
-            $data = DB::table($table)
-                ->select(
-                    "$table.no_reg",
-                    "$table.final_status",
-                    "$table.created_at",
-                    'users.name as created_by',
-                    'departments.code as created_dept',
-                    DB::raw("'$displayName' as form_name")
-                )
-                ->join('public.users', "$table.created_by", '=', 'public.users.id')
-                ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
-                ->whereNull("$table.is_finish")
-                ->get();
-    
-            $mergedData = $mergedData->concat($data);
+        
+        if (Auth::user()->hasDepartment('ITD')) {
+            foreach ($tables as $table => $displayName) {
+                $data = DB::table($table)
+                    ->select(
+                        "$table.no_reg",
+                        "$table.final_status",
+                        "$table.created_at",
+                        'users.name as created_by',
+                        'departments.code as created_dept',
+                        DB::raw("'$displayName' as form_name")
+                    )
+                    ->join('public.users', "$table.created_by", '=', 'public.users.id')
+                    ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                    ->whereNull("$table.is_finish")
+                    ->get();
+                    
+                $mergedData = $mergedData->concat($data);
+            }
+        } else {
+            foreach ($tables as $table => $displayName) {
+                $data = DB::table($table)
+                    ->select(
+                        "$table.no_reg",
+                        "$table.final_status",
+                        "$table.created_at",
+                        'users.name as created_by',
+                        'departments.code as created_dept',
+                        DB::raw("'$displayName' as form_name")
+                    )
+                    ->join('public.users', "$table.created_by", '=', 'public.users.id')
+                    ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                    ->whereNull("$table.is_finish")
+                    ->where("$table.created_by", Auth::user()->id)
+                    ->get();
+                    
+                $mergedData = $mergedData->concat($data);
+            }
         }
         
         return response()->json(['data' => $mergedData]);
