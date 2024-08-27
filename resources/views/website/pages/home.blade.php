@@ -42,7 +42,7 @@
             @php
                 $filter_month = request()->get('filter_month');
                 $filter_year = request()->get('filter_year');
-
+                $currentYear = date('Y');
                 if ($filter_month && $filter_year) {
                     $bulanIndonesia = [
                         '00' => '',
