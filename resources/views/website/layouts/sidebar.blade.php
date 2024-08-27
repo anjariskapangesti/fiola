@@ -137,7 +137,7 @@
             </li>
         @endcan
         {{-- GM --}}
-        @php
+        {{-- @php
             $masterLink = ['akses_sistem'];
             $createRoutes = [];
             $editRoutes = [];
@@ -151,8 +151,8 @@
                 $gm_approved_routes[] = 'website.' . $link . '.gm_approved';
             }
 
-        @endphp
-        @can('approve_gm')
+        @endphp --}}
+        {{-- @can('approve_gm')
             <li class="menu-item {{ in_array(Route::currentRouteName(), $gm_approval_routes) ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
@@ -163,7 +163,6 @@
                         @endif
                     </div>
                 </a>
-                {{-- @include('website.layouts.sidebar_items', ['link' => 'gm_approval', 'text' => 'Form']) --}}
                 <ul class="menu-sub">
                     <li
                         class="menu-item {{ Route::is('website.akses_sistem.gm_approval') || Route::is('website.akses_sistem.edit') ? 'active' : '' }}">
@@ -182,9 +181,8 @@
                     <i class="menu-icon tf-icons mdi mdi-history"></i>
                     <div data-i18n="GM History">GM History</div>
                 </a>
-                {{-- @include('website.layouts.sidebar_items', ['link' => 'gm_approved', 'text' => 'Form']) --}}
             </li>
-        @endcan
+        @endcan --}}
         {{-- ITD --}}
         @if (auth()->user()->hasDepartment('ITD'))
             <li class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
