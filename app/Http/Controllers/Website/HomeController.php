@@ -30,6 +30,27 @@ use Carbon\Carbon;
 
 class HomeController extends Controller
 {
+    // private function getModelCounts($model, $current_year, $current_month) {
+    //     $query = $model::query();
+
+    //     if ($current_year != '0000') {
+    //         $query->whereYear('created_at', $current_year);
+    //     }
+    //     if ($current_month != '00') {
+    //         $query->whereMonth('created_at', $current_month);
+    //     }
+
+    //     $total = $query->count();
+        
+    //     $finishedQuery = clone $query;
+    //     $finished = $finishedQuery->where('final_status', 'ILIKE', '%Finished%')->count();
+        
+    //     $rejectedQuery = clone $query;
+    //     $rejected = $rejectedQuery->where('final_status', 'ILIKE', '%Reject%')->count();
+        
+    //     return compact('total', 'finished', 'rejected');
+    // }
+
     public function index(Request $request)
     {
         $now = Carbon::now();
@@ -241,57 +262,211 @@ class HomeController extends Controller
         $filterFirst = $request->input('filterFirst', $startOfMonth) ?? $startOfMonth;
         $filterEnd = $request->input('filterEnd', $endOfMonth) ?? $endOfMonth;
 
-        $account_total = Account::count();
-        $account_finished = Account::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $account_rejected = Account::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        // $models = [
+        //     'Account' => 'account',
+        //     'FolderAccess' => 'folderaccess',
+        //     'NewFolder' => 'newfolder',
+        //     'Software' => 'software',
+        //     'Hardware' => 'hardware',
+        //     'Vpn' => 'vpn',
+        //     'Project' => 'project',
+        //     'Fitur' => 'fitur',
+        //     'Relayout' => 'relayout',
+        //     'Network' => 'network',
+        //     'Sistem' => 'akses_sistem',
+        //     'IncidentReport' => 'incident_report',
+        //     'Izin' => 'izin',
+        // ];
 
-        $folderaccess_total = FolderAccess::count();
-        $folderaccess_finished = FolderAccess::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $folderaccess_rejected = FolderAccess::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        // $results = [];
 
-        $newfolder_total = NewFolder::count();
-        $newfolder_finished = NewFolder::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $newfolder_rejected = NewFolder::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();   
+        // foreach ($models as $modelName => $variableName) {
+        //     $model = "App\\Models\\$modelName";
+        //     $results[$variableName] = $this->getModelCounts($model, $current_year, $current_month);
+        // }
+        // extract($results);
 
-        $software_total = Software::count();
-        $software_finished = Software::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $software_rejected = Software::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count(); 
+        /// ACCOUNT ///
+        $account_query = Account::query();
+        if ($current_year != '0000') {
+            $account_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $account_query->whereMonth('created_at', $current_month);
+        }
+        $account_total = $account_query->count();
+        $account_finished = clone $account_query;
+        $account_finished = $account_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $account_rejected = clone $account_query;
+        $account_rejected = $account_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $hardware_total = Hardware::count();
-        $hardware_finished = Hardware::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $hardware_rejected = Hardware::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count(); 
+        /// FOLDER ACCESS ///
+        $folderaccess_query = FolderAccess::query();
+        if ($current_year != '0000') {
+            $folderaccess_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $folderaccess_query->whereMonth('created_at', $current_month);
+        }
+        $folderaccess_total = $folderaccess_query->count();
+        $folderaccess_finished = clone $folderaccess_query;
+        $folderaccess_finished = $folderaccess_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $folderaccess_rejected = clone $folderaccess_query;
+        $folderaccess_rejected = $folderaccess_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $vpn_total = Vpn::count();
-        $vpn_finished = Vpn::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $vpn_rejected = Vpn::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count(); 
+        /// NEW FOLDER ///
+        $newfolder_query = NewFolder::query();
+        if ($current_year != '0000') {
+            $newfolder_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $newfolder_query->whereMonth('created_at', $current_month);
+        }
+        $newfolder_total = $newfolder_query->count();
+        $newfolder_finished = clone $newfolder_query;
+        $newfolder_finished = $newfolder_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $newfolder_rejected = clone $newfolder_query;
+        $newfolder_rejected = $newfolder_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $project_total = Project::count();
-        $project_finished = Project::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $project_rejected = Project::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        /// SOFTWARE ///
+        $software_query = Software::query();
+        if ($current_year != '0000') {
+            $software_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $software_query->whereMonth('created_at', $current_month);
+        }
+        $software_total = $software_query->count();
+        $software_finished = clone $software_query;
+        $software_finished = $software_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $software_rejected = clone $software_query;
+        $software_rejected = $software_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $fitur_total = Fitur::count();
-        $fitur_finished = Fitur::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $fitur_rejected = Fitur::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        /// HARDWARE ///
+        $hardware_query = Hardware::query();
+        if ($current_year != '0000') {
+            $hardware_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $hardware_query->whereMonth('created_at', $current_month);
+        }
+        $hardware_total = $hardware_query->count();
+        $hardware_finished = clone $hardware_query;
+        $hardware_finished = $hardware_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $hardware_rejected = clone $hardware_query;
+        $hardware_rejected = $hardware_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $relayout_total = Relayout::count();
-        $relayout_finished = Relayout::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $relayout_rejected = Relayout::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        /// VPN ///
+        $vpn_query = Vpn::query();
+        if ($current_year != '0000') {
+            $vpn_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $vpn_query->whereMonth('created_at', $current_month);
+        }
+        $vpn_total = $vpn_query->count();
+        $vpn_finished = clone $vpn_query;
+        $vpn_finished = $vpn_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $vpn_rejected = clone $vpn_query;
+        $vpn_rejected = $vpn_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $network_total = Network::count();
-        $network_finished = Network::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $network_rejected = Network::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        
-        $akses_sistem_total = Sistem::count();
-        $akses_sistem_finished = Sistem::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $akses_sistem_rejected = Sistem::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        
-        $incident_report_total = IncidentReport::count();
-        $incident_report_finished = IncidentReport::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $incident_report_rejected = IncidentReport::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        /// PROJECT ///
+        $project_query = Project::query();
+        if ($current_year != '0000') {
+            $project_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $project_query->whereMonth('created_at', $current_month);
+        }
+        $project_total = $project_query->count();
+        $project_finished = clone $project_query;
+        $project_finished = $project_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $project_rejected = clone $project_query;
+        $project_rejected = $project_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
-        $izin_total = Izin::count();
-        $izin_finished = Izin::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $izin_rejected = Izin::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        /// FITUR ///
+        $fitur_query = Fitur::query();
+        if ($current_year != '0000') {
+            $fitur_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $fitur_query->whereMonth('created_at', $current_month);
+        }
+        $fitur_total = $fitur_query->count();
+        $fitur_finished = clone $fitur_query;
+        $fitur_finished = $fitur_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $fitur_rejected = clone $fitur_query;
+        $fitur_rejected = $fitur_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
+
+        /// RELAYOUT ///
+        $relayout_query = Relayout::query();
+        if ($current_year != '0000') {
+            $relayout_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $relayout_query->whereMonth('created_at', $current_month);
+        }
+        $relayout_total = $relayout_query->count();
+        $relayout_finished = clone $relayout_query;
+        $relayout_finished = $relayout_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $relayout_rejected = clone $relayout_query;
+        $relayout_rejected = $relayout_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
+
+        /// NETWORK ///
+        $network_query = Network::query();
+        if ($current_year != '0000') {
+            $network_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $network_query->whereMonth('created_at', $current_month);
+        }
+        $network_total = $network_query->count();
+        $network_finished = clone $network_query;
+        $network_finished = $network_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $network_rejected = clone $network_query;
+        $network_rejected = $network_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
+
+        /// AKSES SISTEM ///
+        $akses_sistem_query = Sistem::query();
+        if ($current_year != '0000') {
+            $akses_sistem_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $akses_sistem_query->whereMonth('created_at', $current_month);
+        }
+        $akses_sistem_total = $akses_sistem_query->count();
+        $akses_sistem_finished = clone $akses_sistem_query;
+        $akses_sistem_finished = $akses_sistem_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $akses_sistem_rejected = clone $akses_sistem_query;
+        $akses_sistem_rejected = $akses_sistem_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
+
+        /// INCIDENT REPORT ///
+        $incident_report_query = IncidentReport::query();
+        if ($current_year != '0000') {
+            $incident_report_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $incident_report_query->whereMonth('created_at', $current_month);
+        }
+        $incident_report_total = $incident_report_query->count();
+        $incident_report_finished = clone $incident_report_query;
+        $incident_report_finished = $incident_report_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $incident_report_rejected = clone $incident_report_query;
+        $incident_report_rejected = $incident_report_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
+
+        /// IZIN AREA LEVEL 3 ///
+        $izin_query = Izin::query();
+        if ($current_year != '0000') {
+            $izin_query->whereYear('created_at', $current_year);
+        }
+        if ($current_month != '00') {
+            $izin_query->whereMonth('created_at', $current_month);
+        }
+        $izin_total = $izin_query->count();
+        $izin_finished = clone $izin_query;
+        $izin_finished = $izin_finished->where('final_status', 'ILIKE', '%Finished%')->count();
+        $izin_rejected = clone $izin_query;
+        $izin_rejected = $izin_rejected->where('final_status', 'ILIKE', '%Reject%')->count();
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')

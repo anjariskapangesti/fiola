@@ -554,32 +554,6 @@ class AppHelper
                                     ->where('final_status', 'LIKE', '%created%')->count();
     }
 
-    public static function akses_sistem_gm_count()
-    {
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-
-        return Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%Manager Approve%')->count();
-    }
-
-    public static function akses_sistem_dir_count()
-    {
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-
-        return Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%GM Approve%')->count();
-    }
-
     public static function akses_sistem_confirm_count()
     {
         return Sistem::where('created_by', Auth::user()->id)
@@ -588,7 +562,7 @@ class AppHelper
 
     public static function akses_sistem_it_count()
     {
-        return Sistem::where('final_status', 'LIKE', '%DIR Approve%')->count();
+        return Sistem::where('final_status', 'LIKE', '%Manager Approve%')->count();
     }
 
     public static function akses_sistem_it_mgr_count()

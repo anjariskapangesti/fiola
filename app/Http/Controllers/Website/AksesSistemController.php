@@ -523,7 +523,7 @@ class AksesSistemController extends Controller
 
         $akses_sistem = Sistem::findOrFail($id);
         $akses_sistemusers = SistemUser::where('sistem_id', $id)->get();
-        $akses_sistembarangs = SistemBarang::where('sistem_id', $id)->get();
+        $akses_sistemapps = SistemApp::where('sistem_id', $id)->get();
 
         $user = $akses_sistem->createdBy;
 

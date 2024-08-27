@@ -7,7 +7,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-header">Form Queue</h5>
+                            <h5 class="card-header">FORM QUEUE</h5>
                         </div>
                         <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                             <table class="table table-bordered" id="app_table" width="100%">
@@ -45,6 +45,7 @@
 
                 if ($filter_month && $filter_year) {
                     $bulanIndonesia = [
+                        '00' => '',
                         '01' => 'Januari',
                         '02' => 'Februari',
                         '03' => 'Maret',
@@ -77,8 +78,14 @@
                         'December' => 'Desember',
                     ];
                     $filter_year = now()->format('Y');
+
                     $bulanIndonesia = $bulanIndonesia[$bulanInggris];
                 }
+
+                if ($filter_year == '0000') {
+                    $filter_year = '';
+                }
+
             @endphp
 
             @if (auth()->check() && auth()->user()->hasDepartment('ITD'))
@@ -97,7 +104,9 @@
                                 <div class="row">
                                     <div class="col-md-2 mb-3">
                                         <label for="filter_month"><b>Filter Bulan :</b></label>
-                                        <select id="filter_month" name="filter_month" class="form-control">
+                                        <select id="filter_month" name="filter_month" class="form-control"
+                                            onchange="handleMonthChange()">
+                                            <option value="00">Semua</option>
                                             <option value="01">Januari</option>
                                             <option value="02">Februari</option>
                                             <option value="03">Maret</option>
@@ -115,6 +124,7 @@
                                     <div class="col-md-2 mb-3">
                                         <label for="filter_year"><b>Filter Tahun :</b></label>
                                         <select id="filter_year" name="filter_year" class="form-control">
+                                            <option value="0000" disabled>Semua</option>
                                             <!-- Generate options for years from 2020 to current year -->
                                             <?php
                                             $currentYear = date('Y');
@@ -169,6 +179,54 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script> --}}
+    <script>
+        function handleMonthChange() {
+            const monthSelect = document.getElementById('filter_month');
+            const yearSelect = document.getElementById('filter_year');
+            const allYearsOption = yearSelect.querySelector('option[value="0000"]');
+
+            if (monthSelect.value === "00") {
+                allYearsOption.disabled = false;
+            } else {
+                allYearsOption.disabled = true;
+                if (yearSelect.value === "0000") {
+                    yearSelect.value = "<?php echo $currentYear; ?>";
+                }
+            }
+        }
+
+        function checkURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const month = urlParams.get('filter_month');
+            const year = urlParams.get('filter_year');
+            const monthSelect = document.getElementById('filter_month');
+            const yearSelect = document.getElementById('filter_year');
+            const allYearsOption = yearSelect.querySelector('option[value="0000"]');
+
+            if (month === '00') {
+                allYearsOption.disabled = false;
+            } else {
+                allYearsOption.disabled = true;
+                if (year === '0000') {
+                    yearSelect.value = "<?php echo $currentYear; ?>";
+                }
+            }
+
+            // Set the selected values in the dropdowns based on the URL parameters
+            if (month) {
+                monthSelect.value = month;
+            }
+            if (year) {
+                yearSelect.value = year;
+            }
+        }
+
+        // Run the check on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkURLParams();
+            handleMonthChange(); // Ensure correct state if values are changed on load
+        });
+    </script>
 
     <script>
         Highcharts.chart('piechart', {
@@ -306,7 +364,7 @@
 
                 xAxis: {
                     categories: ['Account', 'Folder Access', 'New Folder', 'Software', 'Hardware', 'VPN', 'Project',
-                        'Fitur', 'Relayout', 'Network', 'Akses Sistem', 'Incident Report',
+                        'Fitur', 'Relayout', 'Network', 'Akses Sistem', 'Incident Report', 'Izin Level 3',
                     ]
                 },
 
@@ -338,7 +396,25 @@
                         {{ $software_finished }}, {{ $hardware_finished }}, {{ $vpn_finished }},
                         {{ $project_finished }}, {{ $fitur_finished }}, {{ $relayout_finished }},
                         {{ $network_finished }}, {{ $akses_sistem_finished }},
-                        {{ $incident_report_finished }}
+                        {{ $incident_report_finished }}, {{ $izin_finished }},
+                    ],
+                }, {
+                    name: 'On Progress',
+                    color: '#ffc107',
+                    data: [
+                        {{ $account_total - $account_finished - $account_rejected }},
+                        {{ $folderaccess_total - $folderaccess_finished - $folderaccess_rejected }},
+                        {{ $newfolder_total - $newfolder_finished - $newfolder_rejected }},
+                        {{ $software_total - $software_finished - $software_rejected }},
+                        {{ $hardware_total - $hardware_finished - $hardware_rejected }},
+                        {{ $vpn_total - $vpn_finished - $vpn_rejected }},
+                        {{ $project_total - $project_finished - $project_rejected }},
+                        {{ $fitur_total - $fitur_finished - $fitur_rejected }},
+                        {{ $relayout_total - $relayout_finished - $relayout_rejected }},
+                        {{ $network_total - $network_finished - $network_rejected }},
+                        {{ $akses_sistem_total - $akses_sistem_finished - $akses_sistem_rejected }},
+                        {{ $incident_report_total - $incident_report_finished - $incident_report_rejected }},
+                        {{ $izin_total - $izin_finished - $izin_rejected }},
                     ],
                 }, {
                     name: 'Rejected',
@@ -347,7 +423,7 @@
                         {{ $software_rejected }}, {{ $hardware_rejected }}, {{ $vpn_rejected }},
                         {{ $project_rejected }}, {{ $fitur_rejected }}, {{ $relayout_rejected }},
                         {{ $network_rejected }}, {{ $akses_sistem_rejected }},
-                        {{ $incident_report_rejected }}
+                        {{ $incident_report_rejected }}, {{ $izin_rejected }},
                     ],
                 }]
             });
@@ -364,7 +440,7 @@
                     }
                 },
                 title: {
-                    text: 'PERSENTASE STATUS TICKET BULAN {{ strtoupper($bulanIndonesia) }} {{ $filter_year }}',
+                    text: 'PERSENTASE STATUS TICKET {{ strtoupper($bulanIndonesia) }} {{ $filter_year }}',
                     align: 'center'
                 },
                 accessibility: {
@@ -428,7 +504,7 @@
                 },
 
                 title: {
-                    text: 'TOTAL TICKET TAHUN {{ $filter_year }}',
+                    text: 'TOTAL TICKET {{ $filter_year }}',
                     align: 'center'
                 },
 
@@ -442,7 +518,7 @@
                     allowDecimals: false,
                     min: 0,
                     title: {
-                        text: 'Count WOS'
+                        text: 'Count Ticket'
                     }
                 },
 
