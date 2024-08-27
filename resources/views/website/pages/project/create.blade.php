@@ -263,6 +263,8 @@
                                 });
                             });
                         </script>
+                        <i class="menu-icon tf-icons mdi mdi-cursor-pointer">Klik gambar untuk memperbesar</i><i
+                            class="menu-icon tf-icons mdi mdi-magnify-plus"></i>
                     @else
                         <p><b>Belum ada guide</b></p>
                     @endif

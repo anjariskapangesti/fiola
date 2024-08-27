@@ -117,9 +117,15 @@
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="account_type"
-                                            id="SAP" value="SAP"
-                                            {{ old('account_type') == 'SAP' ? 'checked' : '' }} />
-                                        <label class="form-check-label" for="SAP">SAP</label>
+                                            id="SAP Administrator" value="SAP Administrator"
+                                            {{ old('account_type') == 'SAP Administrator' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="SAP Administrator">SAP Administrator</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="account_type"
+                                            id="SAP User" value="SAP User"
+                                            {{ old('account_type') == 'SAP User' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="SAP User">SAP User</label>
                                     </div>
                                 </div>
                             </div>
@@ -280,6 +286,8 @@
                                 });
                             });
                         </script>
+                        <i class="menu-icon tf-icons mdi mdi-cursor-pointer">Klik gambar untuk memperbesar</i><i
+                            class="menu-icon tf-icons mdi mdi-magnify-plus"></i>
                     @else
                         <p><b>Belum ada guide</b></p>
                     @endif

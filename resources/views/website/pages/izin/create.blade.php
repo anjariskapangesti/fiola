@@ -242,7 +242,7 @@
                 </div>
                 <div class="modal-body">
                     @php
-                        $guide = App\Models\Guide::where('form_name', 'form_folder_access')->first();
+                        $guide = App\Models\Guide::where('form_name', 'form_izin')->first();
                         $imageUrl = $guide ? asset('storage/' . $guide->lampiran) : null;
                     @endphp
                     @if ($imageUrl)
@@ -260,6 +260,10 @@
                                 });
                             });
                         </script>
+                        <i class="menu-icon tf-icons mdi mdi-cursor-pointer">Klik gambar untuk memperbesar</i><i
+                            class="menu-icon tf-icons mdi mdi-magnify-plus"></i>
+                        <i class="menu-icon tf-icons mdi mdi-cursor-pointer">Klik gambar untuk memperbesar</i><i
+                            class="menu-icon tf-icons mdi mdi-magnify-plus"></i>
                     @else
                         <p><b>Belum ada guide</b></p>
                     @endif

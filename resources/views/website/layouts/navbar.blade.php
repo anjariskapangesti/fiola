@@ -157,6 +157,10 @@
                     title: 'Form Incident Report',
                     url: '/incident_report/create'
                 },
+                {
+                    title: 'Form Izin Memasuki Area Level 3',
+                    url: '/izin/create'
+                },
             ];
 
             $('#search-bar').on('input', function() {

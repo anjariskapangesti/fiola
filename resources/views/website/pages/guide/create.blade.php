@@ -44,6 +44,7 @@
                                     (object) ['id' => 10, 'name' => 'form_network'],
                                     (object) ['id' => 11, 'name' => 'form_akses_sistem'],
                                     (object) ['id' => 12, 'name' => 'form_incident_report'],
+                                    (object) ['id' => 13, 'name' => 'form_izin'],
                                 ];
                             @endphp
 
