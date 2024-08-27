@@ -17,7 +17,7 @@ use App\Models\Project;
 use App\Models\Fitur;
 use App\Models\Relayout;
 use App\Models\Network;
-use App\Models\AksesSistem;
+use App\Models\Sistem;
 use App\Models\IncidentReport;
 use App\Models\Izin;
 
@@ -54,7 +54,7 @@ class HomeController extends Controller
             'Fitur',
             'Relayout',
             'Network',
-            'AksesSistem',
+            'Sistem',
             'IncidentReport',
             'Izin',
         ];
@@ -204,15 +204,15 @@ class HomeController extends Controller
         $network_it_mgr_count = Network::where('final_status', 'LIKE', 'IT Approve%')->count();
         $network_execution_count = Network::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
-        $akses_sistem_mgr_count = AksesSistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
+        $akses_sistem_mgr_count = Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
                 ->orWhere('created_dept', $lastDepartmentId);
         })
                 ->where('final_status', 'LIKE', '%created%')->count();
                 
-        $akses_sistem_it_count = AksesSistem::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $akses_sistem_it_mgr_count = AksesSistem::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $akses_sistem_execution_count = AksesSistem::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $akses_sistem_it_count = Sistem::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        $akses_sistem_it_mgr_count = Sistem::where('final_status', 'LIKE', 'IT Approve%')->count();
+        $akses_sistem_execution_count = Sistem::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
 
         $incident_report_mgr_count = IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
@@ -281,9 +281,9 @@ class HomeController extends Controller
         $network_finished = Network::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
         $network_rejected = Network::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
         
-        $akses_sistem_total = AksesSistem::count();
-        $akses_sistem_finished = AksesSistem::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
-        $akses_sistem_rejected = AksesSistem::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $akses_sistem_total = Sistem::count();
+        $akses_sistem_finished = Sistem::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
+        $akses_sistem_rejected = Sistem::where('final_status', 'LIKE', '%Reject%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
         
         $incident_report_total = IncidentReport::count();
         $incident_report_finished = IncidentReport::where('final_status', 'LIKE', '%Finished%')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
@@ -358,36 +358,44 @@ class HomeController extends Controller
     public function home_ajax()
     {
         $tables = [
-            'form_account' => 'form_account',
-            'form_folder_access' => 'form_folder_access',
-            'form_new_folder' => 'form_new_folder',
-            'form_software' => 'form_software',
-            'form_hardware' => 'form_hardware',
-            'form_vpn' => 'form_vpn',
-            'form_project' => 'form_project',
-            'form_fitur' => 'form_fitur',
-            'form_relayout' => 'form_relayout',
-            'form_network' => 'form_network',
-            'form_akses_sistem' => 'form_akses_sistem',
-            'form_incident_report' => 'form_incident_report',
-            'form_izin' => 'form_izin',
+            'form_account' => 'Form Account',
+            'form_folder_access' => 'Form Folder Access',
+            'form_new_folder' => 'Form New Folder',
+            'form_software' => 'Form Software Installation',
+            'form_hardware' => 'Form Request Device',
+            'form_vpn' => 'Form VPN',
+            'form_project' => 'Form Request Project',
+            'form_fitur' => 'Form Request Fitur',
+            'form_relayout' => 'Form Relayout',
+            'form_network' => 'Form Network Change',
+            'form_sistem' => 'Form Akses Sistem',
+            'form_incident_report' => 'Form Incident Report',
+            'form_izin' => 'Form Izin Memasuki Area Level 3',
         ];
-
+    
         $mergedData = collect();
-
-        foreach ($tables as $table) {
+    
+        foreach ($tables as $table => $displayName) {
             $data = DB::table($table)
-                ->select("$table.no_reg", "$table.final_status", "$table.created_at", 'users.name as created_by', 'departments.code as created_dept')
+                ->select(
+                    "$table.no_reg",
+                    "$table.final_status",
+                    "$table.created_at",
+                    'users.name as created_by',
+                    'departments.code as created_dept',
+                    DB::raw("'$displayName' as form_name")
+                )
                 ->join('public.users', "$table.created_by", '=', 'public.users.id')
                 ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
                 ->whereNull("$table.is_finish")
                 ->get();
-
+    
             $mergedData = $mergedData->concat($data);
         }
-
+        
         return response()->json(['data' => $mergedData]);
     }
+    
 
     public function type()
     {

@@ -15,6 +15,7 @@
                                     <tr>
                                         <th width="50px">Tanggal</th>
                                         <th>No Registrasi</th>
+                                        <th>Form Name</th>
                                         <th>Requestor</th>
                                         <th>Department</th>
                                         <th>Status</th>
@@ -251,6 +252,10 @@
                         {
                             data: 'no_reg',
                             name: 'no_reg',
+                        },
+                        {
+                            data: 'form_name',
+                            name: 'form_name',
                         },
                         {
                             data: 'created_by',
