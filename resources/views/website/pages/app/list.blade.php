@@ -14,7 +14,7 @@
                         <tr>
                             <th width="50px">No</th>
                             <th>Name</th>
-                            <th>Harga</th>
+                            <th>URL</th>
                             <th>Description</th>
                             <th width="150px">Option</th>
                         </tr>
