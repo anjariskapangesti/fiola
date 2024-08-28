@@ -19,6 +19,7 @@
                                         <th>Requestor</th>
                                         <th>Department</th>
                                         <th>Status</th>
+                                        <th>Option</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">
@@ -316,8 +317,8 @@
                             name: 'form_name',
                         },
                         {
-                            data: 'created_by',
-                            name: 'created_by',
+                            data: 'created_name',
+                            name: 'created_name',
                         },
                         {
                             data: 'created_dept',
@@ -344,6 +345,45 @@
                                 }
                             }
                         },
+                        {
+                            data: null,
+                            render: function(data, type, row) {
+                                // Periksa izin di sisi klien
+                                var userCanApprove =
+                                    {{ Auth::user()->can('approve_mgr') ? 'true' : 'false' }};
+                                var createdBy =
+                                    {{ Auth::user()->id }};
+                                var itMgr =
+                                    {{ Auth::user()->hasDepartment('ITD') ? 'true' : 'false' }}
+
+                                if (userCanApprove && itMgr && data.final_status == 'IT Approve') {
+                                    return `
+                                        <center>
+                                            <a href="/${row.form_url}/it_mgr_approval" class="btn btn-primary">
+                                                <span class="mdi mdi-open-in-new"></span>
+                                            </a>
+                                        </center>
+                                    `;
+                                } else if (userCanApprove && data.final_status == 'created' && !itMgr) {
+                                    return `
+                                        <center>
+                                            <a href="/${row.form_url}/manager_approval" class="btn btn-primary">
+                                                <span class="mdi mdi-open-in-new"></span>
+                                            </a>
+                                        </center>
+                                    `;
+                                } else if (data.created_by == createdBy) {
+                                    return `
+                                        <center>
+                                            <a href="/${row.form_url}/list" class="btn btn-info">
+                                                <span class="mdi mdi-eye"></span>
+                                            </a>
+                                        </center>
+                                    `;
+                                }
+                                return ''; // Tidak menampilkan apa-apa jika tidak punya izin
+                            }
+                        }
                     ],
                     "order": [0, 'desc'],
                 });

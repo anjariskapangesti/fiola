@@ -533,58 +533,92 @@ class HomeController extends Controller
     public function home_ajax()
     {
         $tables = [
-            'form_account' => 'Form Account',
-            'form_folder_access' => 'Form Folder Access',
-            'form_new_folder' => 'Form New Folder',
-            'form_software' => 'Form Software Installation',
-            'form_hardware' => 'Form Request Device',
-            'form_vpn' => 'Form VPN',
-            'form_project' => 'Form Request Project',
-            'form_fitur' => 'Form Request Fitur',
-            'form_relayout' => 'Form Relayout',
-            'form_network' => 'Form Network Change',
-            'form_sistem' => 'Form Akses Sistem',
-            'form_incident_report' => 'Form Incident Report',
-            'form_izin' => 'Form Izin Memasuki Area Level 3',
+            'form_account' => ['display' => 'Form Account', 'url' => 'account'],
+            'form_folder_access' => ['display' => 'Form Folder Access', 'url' => 'folder_access'],
+            'form_new_folder' => ['display' => 'Form New Folder', 'url' => 'new_folder'],
+            'form_software' => ['display' => 'Form Software Installation', 'url' => 'software'],
+            'form_hardware' => ['display' => 'Form Request Device', 'url' => 'hardware'],
+            'form_vpn' => ['display' => 'Form VPN', 'url' => 'vpn'],
+            'form_project' => ['display' => 'Form Request Project', 'url' => 'project'],
+            'form_fitur' => ['display' => 'Form Request Fitur', 'url' => 'fitur'],
+            'form_relayout' => ['display' => 'Form Relayout', 'url' => 'relayout'],
+            'form_network' => ['display' => 'Form Network Change', 'url' => 'network'],
+            'form_sistem' => ['display' => 'Form Akses Sistem', 'url' => 'akses_sistem'],
+            'form_incident_report' => ['display' => 'Form Incident Report', 'url' => 'incident_report'],
+            'form_izin' => ['display' => 'Form Izin Memasuki Area Level 3', 'url' => 'izin'],
         ];
-    
+        
         $mergedData = collect();
         
         if (Auth::user()->hasDepartment('ITD')) {
-            foreach ($tables as $table => $displayName) {
+            foreach ($tables as $table => $config) {
                 $data = DB::table($table)
                     ->select(
                         "$table.no_reg",
                         "$table.final_status",
                         "$table.created_at",
-                        'users.name as created_by',
+                        'users.name as created_name',
                         'departments.code as created_dept',
-                        DB::raw("'$displayName' as form_name")
+                        DB::raw("'{$config['display']}' as form_name"),
+                        DB::raw("'{$config['url']}' as form_url")
                     )
                     ->join('public.users', "$table.created_by", '=', 'public.users.id')
                     ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
                     ->whereNull("$table.is_finish")
                     ->get();
-                    
+        
+                $mergedData = $mergedData->concat($data);
+            }
+        } elseif (Auth::user()->can('approve_mgr')) {
+            $userDepartments = Auth::user()->departments->pluck('id');
+            $firstDepartmentId = $userDepartments->first();
+            $lastDepartmentId = $userDepartments->last();
+        
+            foreach ($tables as $table => $config) {
+                $data = DB::table($table)
+                    ->select(
+                        "$table.no_reg",
+                        "$table.final_status",
+                        "$table.created_at",
+                        "$table.created_by",
+                        'users.name as created_name',
+                        'departments.code as created_dept',
+                        DB::raw("'$table' as table_name"),
+                        DB::raw("'{$config['display']}' as form_name"),
+                        DB::raw("'{$config['url']}' as form_url")
+                    )
+                    ->join('public.users', "$table.created_by", '=', 'public.users.id')
+                    ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                    ->where(function($query) use ($firstDepartmentId, $lastDepartmentId, $table) {
+                        $query->where("$table.created_dept", $firstDepartmentId)
+                                ->orWhere("$table.created_dept", $lastDepartmentId);
+                    })
+                    ->whereNull("$table.is_finish")
+                    ->where("$table.final_status", 'created')
+                    ->orWhere("$table.created_by", Auth::user()->id)
+                    ->get();
+        
                 $mergedData = $mergedData->concat($data);
             }
         } else {
-            foreach ($tables as $table => $displayName) {
+            foreach ($tables as $table => $config) {
                 $data = DB::table($table)
                     ->select(
                         "$table.no_reg",
                         "$table.final_status",
                         "$table.created_at",
-                        'users.name as created_by',
+                        "$table.created_by",
+                        'users.name as created_name',
                         'departments.code as created_dept',
-                        DB::raw("'$displayName' as form_name")
+                        DB::raw("'{$config['display']}' as form_name"),
+                        DB::raw("'{$config['url']}' as form_url")
                     )
                     ->join('public.users', "$table.created_by", '=', 'public.users.id')
                     ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
-                    ->whereNull("$table.is_finish")
                     ->where("$table.created_by", Auth::user()->id)
+                    ->whereNull("$table.is_finish")
                     ->get();
-                    
+        
                 $mergedData = $mergedData->concat($data);
             }
         }
