@@ -534,8 +534,8 @@ class HomeController extends Controller
     {
         $tables = [
             'form_account' => ['display' => 'Form Account', 'url' => 'account'],
-            'form_folder_access' => ['display' => 'Form Folder Access', 'url' => 'folder_access'],
-            'form_new_folder' => ['display' => 'Form New Folder', 'url' => 'new_folder'],
+            'form_folder_access' => ['display' => 'Form Folder Access', 'url' => 'folder-access'],
+            'form_new_folder' => ['display' => 'Form New Folder', 'url' => 'new-folder'],
             'form_software' => ['display' => 'Form Software Installation', 'url' => 'software'],
             'form_hardware' => ['display' => 'Form Request Device', 'url' => 'hardware'],
             'form_vpn' => ['display' => 'Form VPN', 'url' => 'vpn'],
