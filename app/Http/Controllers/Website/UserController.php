@@ -101,16 +101,7 @@ class UserController extends Controller
 
     public function list()
     {
-        $users = User::whereHas('permissions', function ($query) {
-            $query->where('permissions.name', 'apps_fiola');
-        })->select('users.*', DB::raw('STRING_AGG(departments.name, \', \') as department_names'))
-            ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
-            ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
-            ->groupBy('users.id')
-            ->orderBy('users.name', 'ASC')
-            ->get();
-        // dd($users);
-        return view('website.pages.user.list', compact('users'));
+        return view('website.pages.user.list');
     }
 
     public function list_ajax(Request $request)

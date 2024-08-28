@@ -41,7 +41,7 @@ class AuthController extends Controller
             
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
-                
+                $user->update(['last_online' => now()]);
                 if ($user->profileIncomplete()) {
                     return redirect()->route('website.user.edit');
                 }
@@ -62,9 +62,16 @@ class AuthController extends Controller
         /**
          * Logout
          */
-        public function logout()
+        public function logout(Request $request)
         {
+            $user = Auth::user();
+            if ($user) {
+                $user->update(['last_online' => now()]);
+            }
+        
             Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
             return redirect()->route('website.auth.login');
         }

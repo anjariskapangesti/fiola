@@ -14,6 +14,7 @@
                             <th>Email</th>
                             <th>Department Code</th>
                             <th>No HP</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
@@ -71,6 +72,27 @@
                         data: 'nohp',
                         name: 'nohp',
                     },
+                    {
+                        data: 'last_online',
+                        name: 'last_online',
+                        render: function(data, type, row) {
+                            if (row.last_online) {
+                                var lastOnlineDate = new Date(row.last_online);
+                                var currentTime = new Date();
+                                var timeDiff = currentTime - lastOnlineDate;
+
+                                // Check if the user is online (e.g., within the last 5 minutes)
+                                if (timeDiff < 5 * 60 * 1000) {
+                                    return "Online";
+                                } else {
+                                    return "Terakhir dilihat pada " + lastOnlineDate
+                                        .toLocaleString();
+                                }
+                            } else {
+                                return "Belum pernah online";
+                            }
+                        },
+                    }
                 ],
             });
         });
