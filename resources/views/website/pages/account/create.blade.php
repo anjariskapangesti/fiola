@@ -117,9 +117,10 @@
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="account_type"
-                                            id="SAP Administrator" value="SAP Administrator"
-                                            {{ old('account_type') == 'SAP Administrator' ? 'checked' : '' }} />
-                                        <label class="form-check-label" for="SAP Administrator">SAP Administrator</label>
+                                            id="Administrator (Sectona)" value="Administrator (Sectona)"
+                                            {{ old('account_type') == 'Administrator (Sectona)' ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="Administrator (Sectona)">Administrator
+                                            (Sectona)</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="account_type"
