@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="d-flex justify-content-between mb-2">
-            <h4 class="py-1">Form Akses Sistem (FRM-HRD-S5-030-00)</h4>
+            <h4 class="py-1">Form Akses Sistem (FRM-ITD-S13-046-00)</h4>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#guideModal"><i
                     class="menu-icon tf-icons mdi mdi-book-information-variant"></i>Guide</button>
         </div>
