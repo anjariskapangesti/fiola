@@ -4,7 +4,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="d-flex justify-content-between">
-                <h5 class="card-header">Form Akses Sistem (FRM-HRD-S5-030-00)</h5>
+                <h5 class="card-header">Form Akses Sistem (FRM-ITD-S13-046-00)</h5>
             </div>
             <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                 @if (Session::get('info'))
