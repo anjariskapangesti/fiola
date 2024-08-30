@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use Illuminate\Support\Facades\Storage;
+
 class GuideController extends Controller
 {
     public function create()
@@ -21,26 +23,29 @@ class GuideController extends Controller
     {
         $request->validate([
             'form_name' => 'required',
-            'lampiran' => 'required',
+            'lampiran' => 'required|image|max:10240', // max size in kilobytes (10MB = 10240KB)
         ]);
         
         try
         {
+            $lampiranFileName = null;
+    
             if ($request->hasFile('lampiran')) {
                 $lampiranExtension = $request->lampiran->getClientOriginalExtension();
                 $lampiranFileName = 'guide_' . $request->form_name . '.' . $lampiranExtension;
                 $lampiranPath = $request->lampiran->storeAs('guide', $lampiranFileName, 'public');
             }
-
+    
             Guide::create([
                 'form_name' => $request->form_name,            
-                'lampiran' => 'guide/' . $lampiranFileName,            
+                'lampiran' => $lampiranPath,  // Store the path returned by storeAs method            
             ]);
+    
             return redirect('/guide/list')->with('success', 'Create Successfully');
         }
         catch(\Exception $e)
         {
-            return $e->getMessage();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
@@ -77,15 +82,21 @@ class GuideController extends Controller
     public function destroy(Request $request)
     {
         $id = $request->id;
-
-        $guides = Guide::findOrFail($id);
-
+        
+        $guide = Guide::findOrFail($id);
+    
         if (Auth::user()->can('apps_fiola')) {
-            $guides->delete();
+            $filePath = $guide->lampiran;
+    
+            if (!is_null($filePath)) {
+                Storage::delete('public/' . $filePath);
+            }
             
-            return "Delete Successfully";
+            $guide->delete();
+            
+            return response()->json(['message' => 'Delete Successfully'], 200);
         }
-
-        return "Error";
+    
+        return response()->json(['message' => 'Error: Unauthorized'], 403);
     }
 }
