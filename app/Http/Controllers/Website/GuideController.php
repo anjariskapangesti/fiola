@@ -94,9 +94,9 @@ class GuideController extends Controller
             
             $guide->delete();
             
-            return response()->json(['message' => 'Delete Successfully'], 200);
+            return "Delete Successfully";
         }
     
-        return response()->json(['message' => 'Error: Unauthorized'], 403);
+        return "Error";
     }
 }
