@@ -5,8 +5,14 @@
         <div class="card">
             <div class="d-flex justify-content-between">
                 <h5 class="card-header">List Subfolder</h5>
-                <a href="{{ route('website.subfolder.create') }}" class="btn btn-success" style="margin: 1.25rem;">Create</a>
+                <div class="d-flex">
+                    <a href="{{ route('website.subfolder.export') }}" class="btn btn-primary ml-auto"
+                        style="margin: 1.25rem 0 1.25rem 0;">Export</a>
+                    <a href="{{ route('website.subfolder.create') }}" class="btn btn-success mr-0"
+                        style="margin: 1.25rem;">Create</a>
+                </div>
             </div>
+
             <div class="table-responsive text-nowrap" style="padding: 0 1.25rem 0 1.25rem;">
                 <table class="table table-bordered" id="app_table" width="100%">
                     <thead>

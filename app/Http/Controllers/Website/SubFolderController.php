@@ -11,6 +11,9 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Exports\SubFolderExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class SubFolderController extends Controller
 {
     public function create()
@@ -103,5 +106,10 @@ class SubFolderController extends Controller
         } else {
             return response()->json(['error' => 'You are not authorized to delete this item.'], 403);
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new SubFolderExport, 'subfolders.xlsx');
     }
 }

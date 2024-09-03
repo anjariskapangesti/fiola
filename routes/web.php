@@ -147,6 +147,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::post('/destroy', 'SubFolderController@destroy')->name('subfolder.destroy');
                     Route::get('/list', 'SubFolderController@list')->name('subfolder.list');
                     Route::get('/list_ajax', 'SubFolderController@list_ajax')->name('subfolder.list_ajax');
+                    Route::get('/export', 'SubFolderController@export')->name('subfolder.export');
                 });
             });
 
