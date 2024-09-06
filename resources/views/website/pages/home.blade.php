@@ -99,7 +99,8 @@
                         <div class="card-body">
                             <center>
                                 <h5 style="color: black;"><b>TOTAL FORM {{ strtoupper($bulanIndonesia) }}
-                                        {{ $filter_year }}</b></h5>
+                                        {{ $filter_year }} :
+                                        {{ $semua }} FORM</b></h5>
                             </center>
                             <form action="{{ route('website.home') }}" method="GET" id="dateFilterForm">
                                 <div class="row">

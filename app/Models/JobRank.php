@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class JobRank extends Model
 {
     protected $table = 'public.job_ranks';
@@ -12,4 +14,9 @@ class JobRank extends Model
         'code',
         'name'
     ];
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'model_has_job_ranks', 'job_rank_id', 'model_id');
+    }
 }

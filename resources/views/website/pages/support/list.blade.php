@@ -48,6 +48,26 @@
         </div>
     </div>
 
+    <div class="modal fade" id="notActiveModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Not Active Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to not active this item?
+                    <input type="text" readonly class="form-control-plaintext" id="name_not_active">
+                    <input type="hidden" id="id_not_active">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="btn-approve-not-active">Yes, Confirm!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="cutiModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -174,12 +194,14 @@
                                 `;
                             } else if (data.status === 'active') {
                                 buttons = `
+                                    <button class="btn btn-warning btn-sm btn-not-active" data-bs-toggle="modal" data-bs-target="#notActiveModal" data-id="${data.id}" data-name="${data.name}">Not Active</button>
                                     <button class="btn btn-info btn-sm btn-cuti" data-bs-toggle="modal" data-bs-target="#cutiModal" data-id="${data.id}" data-name="${data.name}">Cuti</button>
                                 `;
                             } else if (data.status === 'cuti') {
                                 buttons = `
                                     <button class="btn btn-success btn-sm btn-active" data-bs-toggle="modal" data-bs-target="#activeModal" data-id="${data.id}" data-name="${data.name}">Active</button>
-                                `;
+                                    <button class="btn btn-warning btn-sm btn-not-active" data-bs-toggle="modal" data-bs-target="#notActiveModal" data-id="${data.id}" data-name="${data.name}">Not Active</button>
+                                    `;
                             }
 
                             return `<div class="text-center">${buttons}</div>`;
@@ -225,6 +247,36 @@
                     error: function(xhr, status, error, response) {
                         toastr.error(xhr.responseJSON.error);
                         $('#activeModal').modal('hide')
+                    }
+                });
+            });
+
+            // NOT ACTIVE
+            $('#app_table').on('click', '.btn-not-active', function() {
+                var id_not_active = $(this).data('id');
+                var name_not_active = $(this).data('name');
+                $('#id_not_active').val(id_not_active)
+                $('#name_not_active').val(name_not_active)
+            })
+
+            $('#btn-approve-not-active').on('click', function() {
+                let id_not_active = $('#id_not_active').val();
+                $.ajax({
+                    url: "{{ route('website.support.status') }}",
+                    type: "POST",
+                    data: {
+                        id: id_not_active,
+                        type: 'not_active',
+                        '_token': "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        toastr['success'](response)
+                        table.ajax.reload();
+                        $('#notActiveModal').modal('hide')
+                    },
+                    error: function(xhr, status, error, response) {
+                        toastr.error(xhr.responseJSON.error);
+                        $('#notActiveModal').modal('hide')
                     }
                 });
             });

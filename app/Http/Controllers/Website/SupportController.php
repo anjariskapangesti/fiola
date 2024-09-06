@@ -120,6 +120,12 @@ class SupportController extends Controller
             ]);
             
             return 'Update Successfully';
+        } else if ($type == 'not_active') {
+            $support->update([
+                'status' => 'not active',
+            ]);
+            
+            return 'Update Successfully';
         } else if ($type == 'cuti') {
             $support->update([
                 'status' => 'cuti',

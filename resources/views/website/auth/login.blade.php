@@ -101,7 +101,7 @@
                             </div>
                             <div class="form-floating form-floating-outline mb-3">
                                 <input type="text" class="form-control" id="email" name="email"
-                                    placeholder="Enter your email or username" autofocus />
+                                    placeholder="NPK 6 digit / email anda" autofocus />
                                 <label for="email">NPK or Email</label>
                             </div>
                             <div class="mb-5">

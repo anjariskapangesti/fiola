@@ -701,6 +701,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approved', 'IzinController@manager_approved')->name('izin.manager_approved');
                     Route::get('/manager_approved_ajax', 'IzinController@manager_approved_ajax')->name('izin.manager_approved_ajax');                
                 });
+
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'IzinController@it_approval')->name('izin.it_approval');
                     Route::get('/it_approval_ajax', 'IzinController@it_approval_ajax')->name('izin.it_approval_ajax');
@@ -708,6 +709,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved', 'IzinController@it_approved')->name('izin.it_approved');
                     Route::get('/it_approved_ajax', 'IzinController@it_approved_ajax')->name('izin.it_approved_ajax');
                 });
+
                 Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
                     Route::get('/it_mgr_approval', 'IzinController@it_mgr_approval')->name('izin.it_mgr_approval');
                     Route::get('/it_mgr_approval_ajax', 'IzinController@it_mgr_approval_ajax')->name('izin.it_mgr_approval_ajax');
@@ -722,6 +724,48 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::post('/execution_approve', 'IzinController@execution_approve')->name('izin.execution_approve');
                     Route::get('/finished', 'IzinController@finished')->name('izin.finished');
                     Route::get('/finished_ajax', 'IzinController@finished_ajax')->name('izin.finished_ajax');
+                });
+            });
+            // FORM CCTV //
+            Route::group(['prefix' => 'cctv'], function(){
+                Route::get('/create', 'CctvController@create')->name('cctv.create');
+                Route::post('/store', 'CctvController@store')->name('cctv.store');
+                Route::get('/subfolder_ajax', 'CctvController@subfolder_ajax')->name('cctv.subfolder_ajax');
+                Route::get('/list', 'CctvController@list')->name('cctv.list');
+                Route::get('/list_ajax', 'CctvController@list_ajax')->name('cctv.list_ajax');   
+                Route::post('/approve_form', 'CctvController@approve_form')->name('cctv.approve_form');
+                Route::post('/delete_form', 'CctvController@delete_form')->name('cctv.delete_form');
+
+                Route::group(['middleware' => ['can:approve_mgr']], function () {
+                    Route::get('/manager_approval', 'CctvController@manager_approval')->name('cctv.manager_approval');
+                    Route::get('/manager_approval_ajax', 'CctvController@manager_approval_ajax')->name('cctv.manager_approval_ajax');
+                    Route::post('/manager_approve', 'CctvController@manager_approve')->name('cctv.manager_approve');
+                    Route::get('/manager_approved', 'CctvController@manager_approved')->name('cctv.manager_approved');
+                    Route::get('/manager_approved_ajax', 'CctvController@manager_approved_ajax')->name('cctv.manager_approved_ajax');                
+                });
+
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/it_approval', 'CctvController@it_approval')->name('cctv.it_approval');
+                    Route::get('/it_approval_ajax', 'CctvController@it_approval_ajax')->name('cctv.it_approval_ajax');
+                    Route::post('/it_approve', 'CctvController@it_approve')->name('cctv.it_approve');
+                    Route::get('/it_approved', 'CctvController@it_approved')->name('cctv.it_approved');
+                    Route::get('/it_approved_ajax', 'CctvController@it_approved_ajax')->name('cctv.it_approved_ajax');
+                });
+                
+                Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
+                    Route::get('/it_mgr_approval', 'CctvController@it_mgr_approval')->name('cctv.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'CctvController@it_mgr_approval_ajax')->name('cctv.it_mgr_approval_ajax');
+                    Route::post('/it_mgr_approve', 'CctvController@it_mgr_approve')->name('cctv.it_mgr_approve');
+                    Route::get('/it_mgr_approved', 'CctvController@it_mgr_approved')->name('cctv.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'CctvController@it_mgr_approved_ajax')->name('cctv.it_mgr_approved_ajax');
+                });
+
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/execution', 'CctvController@execution')->name('cctv.execution');
+                    Route::get('/execution_ajax', 'CctvController@execution_ajax')->name('cctv.execution_ajax');
+                    Route::post('/execution_approve', 'CctvController@execution_approve')->name('cctv.execution_approve');
+                    Route::get('/finished', 'CctvController@finished')->name('cctv.finished');
+                    Route::get('/finished_ajax', 'CctvController@finished_ajax')->name('cctv.finished_ajax');
                 });
             });
         });

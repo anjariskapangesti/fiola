@@ -81,12 +81,20 @@
                                 var currentTime = new Date();
                                 var timeDiff = currentTime - lastOnlineDate;
 
-                                // Check if the user is online (e.g., within the last 5 minutes)
-                                if (timeDiff < 5 * 60 * 1000) {
-                                    return "Online";
+                                if (timeDiff < 10 * 60 * 1000) {
+                                    return `<span class="text-success">Online</span>`;
                                 } else {
                                     return "Terakhir dilihat pada " + lastOnlineDate
-                                        .toLocaleString();
+                                        .toLocaleDateString('id-ID', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        }) + ", " + lastOnlineDate
+                                        .toLocaleTimeString('id-ID', {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit'
+                                        });
                                 }
                             } else {
                                 return "Belum pernah online";

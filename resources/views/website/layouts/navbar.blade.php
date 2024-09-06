@@ -43,8 +43,27 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0">{{ Auth::user()->name }}</h6>
-                                    <small
-                                        class="text-muted">{{ Auth::user()->departments->pluck('code')->implode(', ') }}</small>
+                                    @if (Auth::user()->job_ranks->pluck('code')->implode(', ') == 'PRESDIR')
+                                        <small class="text-muted">
+                                            {{ Auth::user()->job_ranks->pluck('name')->implode(', ') }}
+                                        </small>
+                                    @elseif (Auth::user()->job_ranks->pluck('code')->implode(', ') == 'VP')
+                                        <small class="text-muted">
+                                            {{ Auth::user()->job_ranks->pluck('name')->implode(', ') }}
+                                        </small>
+                                    @elseif (Auth::user()->job_ranks->pluck('code')->implode(', ') == 'DIR')
+                                        <small class="text-muted">
+                                            {{ Auth::user()->job_ranks->pluck('name')->implode(', ') }}
+                                        </small>
+                                    @elseif (Auth::user()->job_ranks->pluck('code')->implode(', ') == 'GM')
+                                        <small class="text-muted">
+                                            {{ Auth::user()->divisions->pluck('name')->implode(', ') }}
+                                        </small>
+                                    @else
+                                        <small class="text-muted">
+                                            {{ Auth::user()->departments->pluck('code')->implode(', ') }}
+                                        </small>
+                                    @endif
                                 </div>
                             </div>
                         </a>

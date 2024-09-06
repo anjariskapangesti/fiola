@@ -65,4 +65,14 @@ class User extends Authenticatable
     // Jika profil belum lengkap, kembalikan true, jika sudah lengkap, kembalikan false.
     return empty($this->name) || empty($this->email) || empty($this->nohp) || empty($this->npk);
     }
+
+    public function job_ranks()
+    {
+        return $this->belongsToMany(JobRank::class, 'public.model_has_job_ranks', 'model_id', 'job_rank_id');
+    }
+
+    public function divisions()
+    {
+        return $this->belongsToMany(Division::class, 'public.model_has_divisions', 'model_id', 'division_id');
+    }
 }

@@ -116,7 +116,8 @@ class HomeController extends Controller
                 $results[$statusKey] += $query->count();
             }
         }
-    
+
+        
         $total_form_finished = $results['Finished'];
         $total_form_rejected = $results['Rejected'];
         $total_form_mgr = $results['created'];
@@ -285,6 +286,36 @@ class HomeController extends Controller
         //     $results[$variableName] = $this->getModelCounts($model, $current_year, $current_month);
         // }
         // extract($results);
+        
+        $semua = 0; 
+        // Loop untuk menghitung total count dari setiap model
+        foreach ($models as $model) {
+            $modelClass = 'App\\Models\\' . $model;
+        
+            // Pastikan class model yang dibangun benar-benar ada sebelum melakukan query
+            if (class_exists($modelClass)) {
+                // Membuat query untuk model
+                $total_query = $modelClass::query();
+            
+                // Filter berdasarkan tahun jika diatur
+                if ($current_year != '0000') {
+                    $total_query->whereYear('created_at', $current_year);
+                }
+            
+                // Filter berdasarkan bulan jika diatur
+                if ($current_month != '00') {
+                    $total_query->whereMonth('created_at', $current_month);
+                }
+            
+                // Tambahkan hasil count dari query ke variabel $semua
+                $semua += $total_query->count();
+            } else {
+                // Handle jika model tidak ditemukan
+                throw new Exception("Model class {$modelClass} does not exist.");
+            }
+        }
+
+        // Tampilkan total count
 
         /// ACCOUNT ///
         $account_query = Account::query();
@@ -526,7 +557,8 @@ class HomeController extends Controller
                     'incident_report_total', 'incident_report_finished', 'incident_report_rejected',
                     'izin_mgr_count', 'izin_it_count', 'izin_it_mgr_count', 'izin_execution_count',
                     'izin_total', 'izin_finished', 'izin_rejected',
-                    'ticket_open', 'ticket_finished', 'ticket_on_progress', 'ticket_pending', 'ticket_rejected',));
+                    'ticket_open', 'ticket_finished', 'ticket_on_progress', 'ticket_pending', 'ticket_rejected',
+                    'semua'));
         }
     }    
 

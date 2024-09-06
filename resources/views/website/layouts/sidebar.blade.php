@@ -136,6 +136,107 @@
                 @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
             </li>
         @endcan
+
+        {{-- GROUP MANAGER --}}
+        @can('approve_gm')
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="GM Approval">GM Approval
+                        @if (App\Models\AppHelper::manager_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form'])
+            </li>
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="GM History">GM History</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
+            </li>
+        @endcan
+
+        {{-- DIRECTOR --}}
+        @can('approve_dir')
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="Director Approval">Director Approval
+                        @if (App\Models\AppHelper::manager_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form'])
+            </li>
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="Director History">Director History</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
+            </li>
+        @endcan
+
+        {{-- VP --}}
+        @can('approve_vp')
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="VP Approval">VP Approval
+                        @if (App\Models\AppHelper::manager_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form'])
+            </li>
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="VP History">VP History</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
+            </li>
+        @endcan
+
+        {{-- PRESDIR --}}
+        @can('approve_pres')
+            <li
+                class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                    <div data-i18n="PD Approval">PD Approval
+                        @if (App\Models\AppHelper::manager_approvals_count() > 0)
+                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                        @endif
+                    </div>
+                </a>
+                @include('website.layouts.sidebar_items', [
+                    'link' => 'manager_approval',
+                    'text' => 'Form',
+                ])
+            </li>
+            <li
+                class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="PD History">PD History</div>
+                </a>
+                @include('website.layouts.sidebar_items', [
+                    'link' => 'manager_approved',
+                    'text' => 'Form',
+                ])
+            </li>
+        @endcan
+
         {{-- GM --}}
         {{-- @php
             $masterLink = ['akses_sistem'];
