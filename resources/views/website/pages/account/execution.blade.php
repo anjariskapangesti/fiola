@@ -257,7 +257,7 @@
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
                                 <td>
-                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.npk + '-aiia@ap01.aisingroup.com') : '')}
+                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.npk.slice(-4) + '-aiia@ap01.aisingroup.com') : '')}
                                 </td>
                             </tr>
                             <tr>
