@@ -95,13 +95,12 @@
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type" id="Change"
-                                            value="Change" {{ old('form_type') == 'Change' ? 'checked' : '' }} disabled />
+                                            value="Change" {{ old('form_type') == 'Change' ? 'checked' : '' }} />
                                         <label class="form-check-label" for="Change">Change</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="form_type" id="Deletion"
-                                            value="Deletion" {{ old('form_type') == 'Deletion' ? 'checked' : '' }}
-                                            disabled />
+                                            value="Deletion" {{ old('form_type') == 'Deletion' ? 'checked' : '' }} />
                                         <label class="form-check-label" for="Deletion">Deletion</label>
                                     </div>
                                 </div>
@@ -250,6 +249,163 @@
                         </div>
                     </div>
 
+                    <div class="change-section form-section" style="display: none;">
+                        <div class="card mb-4">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-header">Email & Active Directory</h5>
+                            </div>
+                            <div class="card-body demo-vertical-spacing demo-only-element">
+                                <div class="row mb-3">
+                                    <label class="col-sm-6 col-form-label" for="ad_name_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="ad_name_change"
+                                                name="ad_name_change" value="{{ old('ad_name_change') }}"
+                                                placeholder="namadepan.namabelakang"
+                                                onkeyup="convertToLowercase(this); removeAtSymbol(this);" />
+                                            <label for="ad_name_change">Username Before <span
+                                                    class="text-danger">*</span></label>
+                                            <div>example :
+                                                <br>
+                                                <span class="text-success">username = aisin.bisa</span> ✅
+                                                <br>
+                                                email = aisin.bisa@aiia.co.id
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label" for="ad_name_after">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="ad_name_after"
+                                                name="ad_name_after" value="{{ old('ad_name_after') }}"
+                                                placeholder="namadepan.namabelakang"
+                                                onkeyup="convertToLowercase(this); removeAtSymbol(this);" />
+                                            <label for="ad_name_after">Username After <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                </div>
+                                <h6 style="color: red;">Note : Username may change depending on the availability on the
+                                    server
+                                    (Mail address will be decided by ITD) maximum 5 working days when it is in progress
+                                    status.
+                                </h6>
+
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-header">User Information</h5>
+                            </div>
+                            <div class="card-body demo-vertical-spacing demo-only-element">
+                                <div class="row mb-3">
+                                    <label class="col-sm-4 col-form-label" for="npk_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="npk_change" name="npk_change"
+                                                value="{{ old('npk_change') }}" placeholder="000000" maxlength="6" />
+                                            <label for="npk_change">NPK <span class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-4 col-form-label" for="fullname_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="fullname_change"
+                                                name="fullname_change" value="{{ old('fullname_change') }}"
+                                                placeholder="Full Name" onkeyup="formatFullName(this)" />
+                                            <label for="fullname_change">Name <span class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-4 col-form-label" for="phone_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="phone_change"
+                                                name="phone_change" value="{{ old('phone_change') }}"
+                                                placeholder="081234567890" maxlength="15" />
+                                            <label for="phone_change">Phone Number <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label" for="job_rank_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <select class="form-select" id="job_rank_change" name="job_rank_change"
+                                                aria-label="Select">
+                                                <option selected disabled value="">-- Choose Job Rank --</option>
+                                                @foreach ($job_ranks as $job_rank)
+                                                    @php
+                                                        $selected = '';
+                                                        if (old('job_rank') && old('job_rank') == $job_rank->name) {
+                                                            $selected = 'selected';
+                                                        }
+                                                    @endphp
+                                                    <option value="{{ $job_rank->name }}" {{ $selected }}>
+                                                        {{ $job_rank->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <label for="job_rank">Job Rank Name <span class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-6 col-form-label" for="department_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <select class="form-select" id="department_change" name="department_change"
+                                                aria-label="Select">
+                                                <option selected disabled value="">-- Choose Department --</option>
+                                                @foreach ($departments as $department)
+                                                    @php
+                                                        $selected = '';
+                                                        if (
+                                                            old('department') &&
+                                                            old('department') == $department->name
+                                                        ) {
+                                                            $selected = 'selected';
+                                                        }
+                                                    @endphp
+                                                    <option value="{{ $department->name }}" {{ $selected }}>
+                                                        {{ $department->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <label for="department">Department Name <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="purpose_change">
+                                        <div class="form-floating form-floating-outline">
+                                            <textarea class="form-control auto-resize" id="purpose_change" name="purpose_change" placeholder="Reason">{{ old('purpose_change') }}</textarea>
+                                            <label for="purpose_change">Purpose <span class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deletion-section form-section" style="display: none;">
+                        <div class="card mb-4">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-header">Email & Active Directory</h5>
+                            </div>
+                            <div class="card-body demo-vertical-spacing demo-only-element">
+                                <div class="row mb-3">
+                                    <label class="col-sm-12 col-form-label" for="ad_name_deletion">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="text" class="form-control" id="ad_name_deletion"
+                                                name="ad_name_deletion" value="{{ old('ad_name_deletion') }}"
+                                                placeholder="namadepan.namabelakang"
+                                                onkeyup="convertToLowercase(this); removeAtSymbol(this);" />
+                                            <label for="ad_name_deletion">Username <span
+                                                    class="text-danger">*</span></label>
+                                            username that will be deleted
+                                        </div>
+                                    </label>
+                                    <label class="col-sm-12 col-form-label" for="purpose_deletion">
+                                        <div class="form-floating form-floating-outline">
+                                            <textarea class="form-control auto-resize" id="purpose_deletion" name="purpose_deletion" placeholder="Reason">{{ old('purpose_deletion') }}</textarea>
+                                            <label for="purpose_deletion">Purpose <span
+                                                    class="text-danger">*</span></label>
+                                        </div>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                     @include('website.layouts.approval_flow')
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
@@ -387,9 +543,19 @@
         });
     </script>
     <script>
-        const textarea = document.querySelector('.auto-resize');
+        const purpose = document.querySelector('#purpose');
+        const purpose_change = document.querySelector('#purpose_change');
+        const purpose_deletion = document.querySelector('#purpose_deletion');
 
-        textarea.addEventListener('input', function() {
+        purpose.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        purpose_change.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        purpose_deletion.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });

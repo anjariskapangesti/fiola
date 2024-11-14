@@ -224,40 +224,48 @@
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Account Type</td>
                                 <td>${d.account_type} </td>
                             </tr>
+                                ${d.form_type !== "Deletion" ? `
+                                        <tr>
+                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
+                                        <td>${d.npk}</td>
+                                    </tr>
+                                    <tr>
+                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
+                                    <td>${d.fullname} </td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
+                                    <td>${d.phone} </td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Job Rank</td>
+                                    <td>${d.job_rank} </td>
+                                </tr>
+                                <tr>
+                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
+                                    <td>${d.department} </td>
+                                </tr>` : ""}
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
-                                <td>${d.npk}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
-                                <td>${d.fullname} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
-                                <td>${d.phone} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Job Rank</td>
-                                <td>${d.job_rank} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username ${d.form_type === "Change" ? `
+                                                                            Before Change` : ""}</td>
                                 <td>AIIA\\${d.ad_name}</td>
                             </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
-                                <td>
-                                    ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
-                                </td>
-                            </tr>
+                            ${d.form_type === "Change" ? `
+                                <tr>
+                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username After Change</td>
+                                    <td>AIIA\\${d.ad_name_after}</td>
+                                </tr>` : ""}
+                            ${d.form_type !== "Deletion" ? `
+                                            <tr>
+                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
+                                    <td>
+                                        ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
+                                    </td>
+                                </tr>` : ""}
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
                                 <td>
-                                    ${d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.npk.slice(-4) + '-aiia@ap01.aisingroup.com') : '')}
+                                    ${d.form_type === "Deletion" ? `${d.ad_name}@aiia.co.id` : (d.is_email === false ? 'Tidak butuh email' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.email_address) : ''))}
                                 </td>
                             </tr>
                             <tr>

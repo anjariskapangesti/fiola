@@ -13,6 +13,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Department Code</th>
+                            <th>Permissions</th>
                             <th>No HP</th>
                             <th>Status</th>
                         </tr>
@@ -67,6 +68,10 @@
                     {
                         data: 'department_codes',
                         name: 'department_codes',
+                    },
+                    {
+                        data: 'permission_names',
+                        name: 'permission_names',
                     },
                     {
                         data: 'nohp',

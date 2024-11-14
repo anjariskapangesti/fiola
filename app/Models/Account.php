@@ -20,6 +20,7 @@ class Account extends Model
         'company',
         'expired_date',
         'ad_name',
+        'ad_name_after',
         'is_email',
         'email_address',
 

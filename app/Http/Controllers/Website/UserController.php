@@ -107,13 +107,20 @@ class UserController extends Controller
     public function list_ajax(Request $request)
     {
         $data = User::whereHas('permissions', function ($query) {
-            $query->where('permissions.name', 'apps_fiola');
-        })->select('users.*', DB::raw('STRING_AGG(departments.code, \', \') as department_codes'))
+                $query->where('permissions.name', 'apps_fiola');
+            })
+            ->select(
+                'users.*',
+                DB::raw('STRING_AGG(DISTINCT departments.code, \', \') as department_codes'),
+                DB::raw('STRING_AGG(permissions.name, \', \') as permission_names')
+            )
             ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
             ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
+            ->join('public.model_has_permissions', 'public.users.id', 'public.model_has_permissions.model_id')
+            ->join('public.permissions', 'public.model_has_permissions.permission_id', 'permissions.id')
             ->groupBy('users.id')
             ->orderBy('users.name', 'ASC');
-
+    
         return DataTables::eloquent($data)->make(true);
     }
 
