@@ -128,8 +128,9 @@ class TicketController extends Controller
         $data = Ticket::select('tickets.*', 'users.name as it_name', 'users.nohp as it_phone')
                         ->leftJoin('public.users', 'tickets.it_approve_by', 'public.users.id')
                         ->with('ticket_photos')
+                        ->orderByRaw('is_finish IS NOT NULL, is_finish ASC') // Prioritaskan NULL di atas
                         ->orderBy('created_at', 'DESC');
-
+    
         return DataTables::eloquent($data)->make(true);
     }
 
