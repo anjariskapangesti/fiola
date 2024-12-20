@@ -342,7 +342,7 @@ class AksesSistemController extends Controller
         $akses_sistem->save();
         
         if ($request->notifikasi == 'Ya') {
-            $isi = "FORM IZIN MEMASUKI AREA LEVEL 3\n";
+            $isi = "FORM AKSES SISTEM\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
             $isi .= "\n\nREQUESTOR";
             $isi .= "\nNama : *" . $akses_sistem->createdBy->name . "*";
@@ -554,7 +554,7 @@ class AksesSistemController extends Controller
         $akses_sistem->save();
 
         if ($request->notifikasi == 'Ya') {
-            $isi = "FORM IZIN MEMASUKI AREA LEVEL 3\n\n";
+            $isi = "FORM AKSES SISTEM\n\n";
 
             $isi .= "User : \n";
             $nouser = 1;
