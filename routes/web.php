@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
+
+Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
     Route::get('login', 'AuthController@showLoginPage')->name('auth.login');
     Route::post('login', 'AuthController@authenticate')->name('auth.authenticate');
     Route::get('register', 'RegisterController@showRegisterForm')->name('auth.register');
@@ -27,13 +28,14 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
 
     Route::get('/', 'HomeController@type')->name('type');
     // TICKET
-    Route::group(['prefix' => 'ticket'], function(){
+    Route::group(['prefix' => 'ticket'], function () {
         Route::get('/list', 'TicketController@list')->name('ticket.list');
         Route::get('/list_ajax', 'TicketController@list_ajax')->name('ticket.list_ajax');
         Route::get('/create', 'TicketController@create')->name('ticket.create');
         Route::post('/store', 'TicketController@store')->name('ticket.store');
         Route::get('/review/{id}', 'TicketController@review')->name('ticket.review');
         Route::post('/rate/{id}', 'TicketController@rate')->name('ticket.rate');
+        Route::get('/reminder', 'TicketController@reminder')->name('ticket.reminder');
 
         Route::group(['middleware' => ['can_dept:ITD']], function () {
             Route::get('/it_approval', 'TicketController@it_approval')->name('ticket.it_approval');
@@ -52,12 +54,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
             Route::get('/mail', function () {
                 \Illuminate\Support\Facades\Mail::send(new \App\Mail\TaskReminder());
 
-                return view ('website.pages.home');
+                return view('website.pages.home');
             });
             Route::get('/get_approval_count', 'AppHelperController@getApprovalCount')->name('get_approval_count');
-
             // MASTER //
-            Route::group(['prefix' => 'reminder'], function(){
+            Route::group(['prefix' => 'reminder'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'ReminderController@create')->name('reminder.create');
                     Route::post('/store', 'ReminderController@store')->name('reminder.store');
@@ -67,8 +68,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/list_ajax', 'ReminderController@list_ajax')->name('reminder.list_ajax');
                 });
             });
-            
-            Route::group(['prefix' => 'support'], function(){
+
+            Route::group(['prefix' => 'support'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'SupportController@create')->name('support.create');
                     Route::post('/store', 'SupportController@store')->name('support.store');
@@ -80,8 +81,8 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/list_ajax', 'SupportController@list_ajax')->name('support.list_ajax');
                 });
             });
-            
-            Route::group(['prefix' => 'alert'], function(){
+
+            Route::group(['prefix' => 'alert'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'AlertController@create')->name('alert.create');
                     Route::post('/store', 'AlertController@store')->name('alert.store');
@@ -93,7 +94,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'app'], function(){
+            Route::group(['prefix' => 'app'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::post('/store', 'AppController@store')->name('app.store');
                     Route::post('/update', 'AppController@update')->name('app.update');
@@ -103,7 +104,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'device'], function(){
+            Route::group(['prefix' => 'device'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'DeviceController@create')->name('device.create');
                     Route::post('/store', 'DeviceController@store')->name('device.store');
@@ -115,7 +116,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'department'], function(){
+            Route::group(['prefix' => 'department'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'DepartmentController@create')->name('department.create');
                     Route::post('/store', 'DepartmentController@store')->name('department.store');
@@ -126,7 +127,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'folder'], function(){
+            Route::group(['prefix' => 'folder'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'FolderController@create')->name('folder.create');
                     Route::post('/store', 'FolderController@store')->name('folder.store');
@@ -138,7 +139,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'subfolder'], function(){
+            Route::group(['prefix' => 'subfolder'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'SubFolderController@create')->name('subfolder.create');
                     Route::post('/store', 'SubFolderController@store')->name('subfolder.store');
@@ -151,7 +152,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'guide'], function(){
+            Route::group(['prefix' => 'guide'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/create', 'GuideController@create')->name('guide.create');
                     Route::post('/store', 'GuideController@store')->name('guide.store');
@@ -162,7 +163,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
 
-            Route::group(['prefix' => 'user'], function(){
+            Route::group(['prefix' => 'user'], function () {
                 Route::get('/edit', 'UserController@edit')->name('user.edit');
                 Route::put('/update', 'UserController@update')->name('user.update');
 
@@ -177,7 +178,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
 
 
             // FORM ACCOUNT //
-            Route::group(['prefix' => 'account'], function(){
+            Route::group(['prefix' => 'account'], function () {
                 Route::get('/create', 'AccountController@create')->name('account.create');
                 Route::post('/store', 'AccountController@store')->name('account.store');
                 Route::get('/edit/{id}', 'AccountController@edit')->name('account.edit');
@@ -193,7 +194,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::post('/manager_approve', 'AccountController@manager_approve')->name('account.manager_approve');
                     Route::get('/manager_approved', 'AccountController@manager_approved')->name('account.manager_approved');
                     Route::get('/manager_approved_ajax', 'AccountController@manager_approved_ajax')->name('account.manager_approved_ajax');
-
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'AccountController@it_approval')->name('account.it_approval');
@@ -217,25 +217,24 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/finished', 'AccountController@finished')->name('account.finished');
                     Route::get('/finished_ajax', 'AccountController@finished_ajax')->name('account.finished_ajax');
                 });
-
             });
             // FORM FOLDER ACCESS //
-            Route::group(['prefix' => 'folder-access'], function(){
+            Route::group(['prefix' => 'folder-access'], function () {
                 Route::get('/create', 'FolderAccessController@create')->name('folder-access.create');
                 Route::post('/store', 'FolderAccessController@store')->name('folder-access.store');
                 Route::get('/subfolder_ajax', 'FolderAccessController@subfolder_ajax')->name('folder-access.subfolder_ajax');
                 Route::get('/list', 'FolderAccessController@list')->name('folder-access.list');
-                Route::get('/list_ajax', 'FolderAccessController@list_ajax')->name('folder-access.list_ajax'); 
-                Route::post('/approve_form', 'FolderAccessController@approve_form')->name('folder-access.approve_form');  
+                Route::get('/list_ajax', 'FolderAccessController@list_ajax')->name('folder-access.list_ajax');
+                Route::post('/approve_form', 'FolderAccessController@approve_form')->name('folder-access.approve_form');
                 Route::post('/delete_form', 'FolderAccessController@delete_form')->name('folder-access.delete_form');
-                Route::get('/get_data_subfolder', 'FolderAccessController@get_data_subfolder')->name('folder-access.get_data_subfolder');  
+                Route::get('/get_data_subfolder', 'FolderAccessController@get_data_subfolder')->name('folder-access.get_data_subfolder');
 
                 Route::group(['middleware' => ['can:approve_mgr']], function () {
                     Route::get('/manager_approval', 'FolderAccessController@manager_approval')->name('folder-access.manager_approval');
                     Route::get('/manager_approval_ajax', 'FolderAccessController@manager_approval_ajax')->name('folder-access.manager_approval_ajax');
                     Route::post('/manager_approve', 'FolderAccessController@manager_approve')->name('folder-access.manager_approve');
                     Route::get('/manager_approved', 'FolderAccessController@manager_approved')->name('folder-access.manager_approved');
-                    Route::get('/manager_approved_ajax', 'FolderAccessController@manager_approved_ajax')->name('folder-access.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'FolderAccessController@manager_approved_ajax')->name('folder-access.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'FolderAccessController@it_approval')->name('folder-access.it_approval');
@@ -261,12 +260,12 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM NEW FOLDER //
-            Route::group(['prefix' => 'new-folder'], function(){
+            Route::group(['prefix' => 'new-folder'], function () {
                 Route::get('/create', 'NewFolderController@create')->name('new-folder.create');
                 Route::post('/store', 'NewFolderController@store')->name('new-folder.store');
                 Route::get('/subfolder_ajax', 'NewFolderController@subfolder_ajax')->name('new-folder.subfolder_ajax');
                 Route::get('/list', 'NewFolderController@list')->name('new-folder.list');
-                Route::get('/list_ajax', 'NewFolderController@list_ajax')->name('new-folder.list_ajax');  
+                Route::get('/list_ajax', 'NewFolderController@list_ajax')->name('new-folder.list_ajax');
                 Route::post('/approve_form', 'NewFolderController@approve_form')->name('new-folder.approve_form');
                 Route::post('/delete_form', 'NewFolderController@delete_form')->name('new-folder.delete_form');
 
@@ -275,7 +274,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'NewFolderController@manager_approval_ajax')->name('new-folder.manager_approval_ajax');
                     Route::post('/manager_approve', 'NewFolderController@manager_approve')->name('new-folder.manager_approve');
                     Route::get('/manager_approved', 'NewFolderController@manager_approved')->name('new-folder.manager_approved');
-                    Route::get('/manager_approved_ajax', 'NewFolderController@manager_approved_ajax')->name('new-folder.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'NewFolderController@manager_approved_ajax')->name('new-folder.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'NewFolderController@it_approval')->name('new-folder.it_approval');
@@ -301,12 +300,12 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM SOFTWARE //
-            Route::group(['prefix' => 'software'], function(){
+            Route::group(['prefix' => 'software'], function () {
                 Route::get('/create', 'SoftwareController@create')->name('software.create');
                 Route::post('/store', 'SoftwareController@store')->name('software.store');
                 Route::get('/subfolder_ajax', 'SoftwareController@subfolder_ajax')->name('software.subfolder_ajax');
                 Route::get('/list', 'SoftwareController@list')->name('software.list');
-                Route::get('/list_ajax', 'SoftwareController@list_ajax')->name('software.list_ajax'); 
+                Route::get('/list_ajax', 'SoftwareController@list_ajax')->name('software.list_ajax');
                 Route::post('/approve_form', 'SoftwareController@approve_form')->name('software.approve_form');
                 Route::post('/delete_form', 'SoftwareController@delete_form')->name('software.delete_form');
 
@@ -315,7 +314,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'SoftwareController@manager_approval_ajax')->name('software.manager_approval_ajax');
                     Route::post('/manager_approve', 'SoftwareController@manager_approve')->name('software.manager_approve');
                     Route::get('/manager_approved', 'SoftwareController@manager_approved')->name('software.manager_approved');
-                    Route::get('/manager_approved_ajax', 'SoftwareController@manager_approved_ajax')->name('software.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'SoftwareController@manager_approved_ajax')->name('software.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'SoftwareController@it_approval')->name('software.it_approval');
@@ -341,14 +340,14 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM HARDWARE //
-            Route::group(['prefix' => 'hardware'], function(){
+            Route::group(['prefix' => 'hardware'], function () {
                 Route::get('/create', 'HardwareController@create')->name('hardware.create');
                 Route::post('/store', 'HardwareController@store')->name('hardware.store');
                 Route::get('/edit/{id}', 'HardwareController@edit')->name('hardware.edit');
                 Route::post('/update/{id}', 'HardwareController@update')->name('hardware.update');
                 Route::get('/subfolder_ajax', 'HardwareController@subfolder_ajax')->name('hardware.subfolder_ajax');
                 Route::get('/list', 'HardwareController@list')->name('hardware.list');
-                Route::get('/list_ajax', 'HardwareController@list_ajax')->name('hardware.list_ajax'); 
+                Route::get('/list_ajax', 'HardwareController@list_ajax')->name('hardware.list_ajax');
                 Route::post('/approve_form', 'HardwareController@approve_form')->name('hardware.approve_form');
                 Route::post('/delete_form', 'HardwareController@delete_form')->name('hardware.delete_form');
 
@@ -357,7 +356,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'HardwareController@manager_approval_ajax')->name('hardware.manager_approval_ajax');
                     Route::post('/manager_approve', 'HardwareController@manager_approve')->name('hardware.manager_approve');
                     Route::get('/manager_approved', 'HardwareController@manager_approved')->name('hardware.manager_approved');
-                    Route::get('/manager_approved_ajax', 'HardwareController@manager_approved_ajax')->name('hardware.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'HardwareController@manager_approved_ajax')->name('hardware.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'HardwareController@it_approval')->name('hardware.it_approval');
@@ -383,11 +382,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM VPN //
-            Route::group(['prefix' => 'vpn'], function(){
+            Route::group(['prefix' => 'vpn'], function () {
                 Route::get('/create', 'VpnController@create')->name('vpn.create');
                 Route::post('/store', 'VpnController@store')->name('vpn.store');
                 Route::get('/list', 'VpnController@list')->name('vpn.list');
-                Route::get('/list_ajax', 'VpnController@list_ajax')->name('vpn.list_ajax');   
+                Route::get('/list_ajax', 'VpnController@list_ajax')->name('vpn.list_ajax');
                 Route::post('/approve_form', 'VpnController@approve_form')->name('vpn.approve_form');
                 Route::post('/delete_form', 'VpnController@delete_form')->name('vpn.delete_form');
 
@@ -396,7 +395,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'VpnController@manager_approval_ajax')->name('vpn.manager_approval_ajax');
                     Route::post('/manager_approve', 'VpnController@manager_approve')->name('vpn.manager_approve');
                     Route::get('/manager_approved', 'VpnController@manager_approved')->name('vpn.manager_approved');
-                    Route::get('/manager_approved_ajax', 'VpnController@manager_approved_ajax')->name('vpn.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'VpnController@manager_approved_ajax')->name('vpn.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'VpnController@it_approval')->name('vpn.it_approval');
@@ -422,11 +421,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM NETWORK //
-            Route::group(['prefix' => 'network'], function(){
+            Route::group(['prefix' => 'network'], function () {
                 Route::get('/create', 'NetworkController@create')->name('network.create');
                 Route::post('/store', 'NetworkController@store')->name('network.store');
                 Route::get('/list', 'NetworkController@list')->name('network.list');
-                Route::get('/list_ajax', 'NetworkController@list_ajax')->name('network.list_ajax');   
+                Route::get('/list_ajax', 'NetworkController@list_ajax')->name('network.list_ajax');
                 Route::post('/approve_form', 'NetworkController@approve_form')->name('network.approve_form');
                 Route::post('/delete_form', 'NetworkController@delete_form')->name('network.delete_form');
 
@@ -435,7 +434,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'NetworkController@manager_approval_ajax')->name('network.manager_approval_ajax');
                     Route::post('/manager_approve', 'NetworkController@manager_approve')->name('network.manager_approve');
                     Route::get('/manager_approved', 'NetworkController@manager_approved')->name('network.manager_approved');
-                    Route::get('/manager_approved_ajax', 'NetworkController@manager_approved_ajax')->name('network.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'NetworkController@manager_approved_ajax')->name('network.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'NetworkController@it_approval')->name('network.it_approval');
@@ -461,11 +460,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM PROJECT //
-            Route::group(['prefix' => 'project'], function(){
+            Route::group(['prefix' => 'project'], function () {
                 Route::get('/create', 'ProjectController@create')->name('project.create');
                 Route::post('/store', 'ProjectController@store')->name('project.store');
                 Route::get('/list', 'ProjectController@list')->name('project.list');
-                Route::get('/list_ajax', 'ProjectController@list_ajax')->name('project.list_ajax');   
+                Route::get('/list_ajax', 'ProjectController@list_ajax')->name('project.list_ajax');
                 Route::post('/approve_form', 'ProjectController@approve_form')->name('project.approve_form');
                 Route::post('/delete_form', 'ProjectController@delete_form')->name('project.delete_form');
 
@@ -474,7 +473,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'ProjectController@manager_approval_ajax')->name('project.manager_approval_ajax');
                     Route::post('/manager_approve', 'ProjectController@manager_approve')->name('project.manager_approve');
                     Route::get('/manager_approved', 'ProjectController@manager_approved')->name('project.manager_approved');
-                    Route::get('/manager_approved_ajax', 'ProjectController@manager_approved_ajax')->name('project.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'ProjectController@manager_approved_ajax')->name('project.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'ProjectController@it_approval')->name('project.it_approval');
@@ -500,11 +499,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM FITUR //
-            Route::group(['prefix' => 'fitur'], function(){
+            Route::group(['prefix' => 'fitur'], function () {
                 Route::get('/create', 'FiturController@create')->name('fitur.create');
                 Route::post('/store', 'FiturController@store')->name('fitur.store');
                 Route::get('/list', 'FiturController@list')->name('fitur.list');
-                Route::get('/list_ajax', 'FiturController@list_ajax')->name('fitur.list_ajax');   
+                Route::get('/list_ajax', 'FiturController@list_ajax')->name('fitur.list_ajax');
                 Route::post('/approve_form', 'FiturController@approve_form')->name('fitur.approve_form');
                 Route::post('/delete_form', 'FiturController@delete_form')->name('fitur.delete_form');
 
@@ -513,7 +512,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'FiturController@manager_approval_ajax')->name('fitur.manager_approval_ajax');
                     Route::post('/manager_approve', 'FiturController@manager_approve')->name('fitur.manager_approve');
                     Route::get('/manager_approved', 'FiturController@manager_approved')->name('fitur.manager_approved');
-                    Route::get('/manager_approved_ajax', 'FiturController@manager_approved_ajax')->name('fitur.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'FiturController@manager_approved_ajax')->name('fitur.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'FiturController@it_approval')->name('fitur.it_approval');
@@ -539,11 +538,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM RELAYOUT //
-            Route::group(['prefix' => 'relayout'], function(){
+            Route::group(['prefix' => 'relayout'], function () {
                 Route::get('/create', 'RelayoutController@create')->name('relayout.create');
                 Route::post('/store', 'RelayoutController@store')->name('relayout.store');
                 Route::get('/list', 'RelayoutController@list')->name('relayout.list');
-                Route::get('/list_ajax', 'RelayoutController@list_ajax')->name('relayout.list_ajax');   
+                Route::get('/list_ajax', 'RelayoutController@list_ajax')->name('relayout.list_ajax');
                 Route::post('/approve_form', 'RelayoutController@approve_form')->name('relayout.approve_form');
                 Route::post('/delete_form', 'RelayoutController@delete_form')->name('relayout.delete_form');
 
@@ -552,7 +551,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'RelayoutController@manager_approval_ajax')->name('relayout.manager_approval_ajax');
                     Route::post('/manager_approve', 'RelayoutController@manager_approve')->name('relayout.manager_approve');
                     Route::get('/manager_approved', 'RelayoutController@manager_approved')->name('relayout.manager_approved');
-                    Route::get('/manager_approved_ajax', 'RelayoutController@manager_approved_ajax')->name('relayout.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'RelayoutController@manager_approved_ajax')->name('relayout.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'RelayoutController@it_approval')->name('relayout.it_approval');
@@ -578,11 +577,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM AKSES SISTEM //
-            Route::group(['prefix' => 'akses_sistem'], function(){
+            Route::group(['prefix' => 'akses_sistem'], function () {
                 Route::get('/create', 'AksesSistemController@create')->name('akses_sistem.create');
                 Route::post('/store', 'AksesSistemController@store')->name('akses_sistem.store');
                 Route::get('/list', 'AksesSistemController@list')->name('akses_sistem.list');
-                Route::get('/list_ajax', 'AksesSistemController@list_ajax')->name('akses_sistem.list_ajax');   
+                Route::get('/list_ajax', 'AksesSistemController@list_ajax')->name('akses_sistem.list_ajax');
                 Route::post('/approve_form', 'AksesSistemController@approve_form')->name('akses_sistem.approve_form');
                 Route::post('/delete_form', 'AksesSistemController@delete_form')->name('akses_sistem.delete_form');
 
@@ -591,21 +590,21 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'AksesSistemController@manager_approval_ajax')->name('akses_sistem.manager_approval_ajax');
                     Route::post('/manager_approve', 'AksesSistemController@manager_approve')->name('akses_sistem.manager_approve');
                     Route::get('/manager_approved', 'AksesSistemController@manager_approved')->name('akses_sistem.manager_approved');
-                    Route::get('/manager_approved_ajax', 'AksesSistemController@manager_approved_ajax')->name('akses_sistem.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'AksesSistemController@manager_approved_ajax')->name('akses_sistem.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can:approve_gm']], function () {
                     Route::get('/gm_approval', 'AksesSistemController@gm_approval')->name('akses_sistem.gm_approval');
                     Route::get('/gm_approval_ajax', 'AksesSistemController@gm_approval_ajax')->name('akses_sistem.gm_approval_ajax');
                     Route::post('/gm_approve', 'AksesSistemController@gm_approve')->name('akses_sistem.gm_approve');
                     Route::get('/gm_approved', 'AksesSistemController@gm_approved')->name('akses_sistem.gm_approved');
-                    Route::get('/gm_approved_ajax', 'AksesSistemController@gm_approved_ajax')->name('akses_sistem.gm_approved_ajax');                
+                    Route::get('/gm_approved_ajax', 'AksesSistemController@gm_approved_ajax')->name('akses_sistem.gm_approved_ajax');
                 });
                 Route::group(['middleware' => ['can:approve_dir']], function () {
                     Route::get('/dir_approval', 'AksesSistemController@dir_approval')->name('akses_sistem.dir_approval');
                     Route::get('/dir_approval_ajax', 'AksesSistemController@dir_approval_ajax')->name('akses_sistem.dir_approval_ajax');
                     Route::post('/dir_approve', 'AksesSistemController@dir_approve')->name('akses_sistem.dir_approve');
                     Route::get('/dir_approved', 'AksesSistemController@dir_approved')->name('akses_sistem.dir_approved');
-                    Route::get('/dir_approved_ajax', 'AksesSistemController@dir_approved_ajax')->name('akses_sistem.dir_approved_ajax');                
+                    Route::get('/dir_approved_ajax', 'AksesSistemController@dir_approved_ajax')->name('akses_sistem.dir_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'AksesSistemController@it_approval')->name('akses_sistem.it_approval');
@@ -631,12 +630,12 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM INCIDENT REPORT //
-            Route::group(['prefix' => 'incident_report'], function(){
+            Route::group(['prefix' => 'incident_report'], function () {
                 Route::get('/create', 'IncidentReportController@create')->name('incident_report.create');
                 Route::post('/store', 'IncidentReportController@store')->name('incident_report.store');
                 Route::get('/subfolder_ajax', 'IncidentReportController@subfolder_ajax')->name('incident_report.subfolder_ajax');
                 Route::get('/list', 'IncidentReportController@list')->name('incident_report.list');
-                Route::get('/list_ajax', 'IncidentReportController@list_ajax')->name('incident_report.list_ajax');   
+                Route::get('/list_ajax', 'IncidentReportController@list_ajax')->name('incident_report.list_ajax');
                 Route::post('/approve_form', 'IncidentReportController@approve_form')->name('incident_report.approve_form');
                 Route::post('/delete_form', 'IncidentReportController@delete_form')->name('incident_report.delete_form');
 
@@ -645,21 +644,21 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'IncidentReportController@manager_approval_ajax')->name('incident_report.manager_approval_ajax');
                     Route::post('/manager_approve', 'IncidentReportController@manager_approve')->name('incident_report.manager_approve');
                     Route::get('/manager_approved', 'IncidentReportController@manager_approved')->name('incident_report.manager_approved');
-                    Route::get('/manager_approved_ajax', 'IncidentReportController@manager_approved_ajax')->name('incident_report.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'IncidentReportController@manager_approved_ajax')->name('incident_report.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['can:approve_gm']], function () {
                     Route::get('/gm_approval', 'IncidentReportController@gm_approval')->name('incident_report.gm_approval');
                     Route::get('/gm_approval_ajax', 'IncidentReportController@gm_approval_ajax')->name('incident_report.gm_approval_ajax');
                     Route::post('/gm_approve', 'IncidentReportController@gm_approve')->name('incident_report.gm_approve');
                     Route::get('/gm_approved', 'IncidentReportController@gm_approved')->name('incident_report.gm_approved');
-                    Route::get('/gm_approved_ajax', 'IncidentReportController@gm_approved_ajax')->name('incident_report.gm_approved_ajax');                
+                    Route::get('/gm_approved_ajax', 'IncidentReportController@gm_approved_ajax')->name('incident_report.gm_approved_ajax');
                 });
                 Route::group(['middleware' => ['can:approve_dir']], function () {
                     Route::get('/dir_approval', 'IncidentReportController@dir_approval')->name('incident_report.dir_approval');
                     Route::get('/dir_approval_ajax', 'IncidentReportController@dir_approval_ajax')->name('incident_report.dir_approval_ajax');
                     Route::post('/dir_approve', 'IncidentReportController@dir_approve')->name('incident_report.dir_approve');
                     Route::get('/dir_approved', 'IncidentReportController@dir_approved')->name('incident_report.dir_approved');
-                    Route::get('/dir_approved_ajax', 'IncidentReportController@dir_approved_ajax')->name('incident_report.dir_approved_ajax');                
+                    Route::get('/dir_approved_ajax', 'IncidentReportController@dir_approved_ajax')->name('incident_report.dir_approved_ajax');
                 });
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
                     Route::get('/it_approval', 'IncidentReportController@it_approval')->name('incident_report.it_approval');
@@ -685,12 +684,12 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM IZIN //
-            Route::group(['prefix' => 'izin'], function(){
+            Route::group(['prefix' => 'izin'], function () {
                 Route::get('/create', 'IzinController@create')->name('izin.create');
                 Route::post('/store', 'IzinController@store')->name('izin.store');
                 Route::get('/subfolder_ajax', 'IzinController@subfolder_ajax')->name('izin.subfolder_ajax');
                 Route::get('/list', 'IzinController@list')->name('izin.list');
-                Route::get('/list_ajax', 'IzinController@list_ajax')->name('izin.list_ajax');   
+                Route::get('/list_ajax', 'IzinController@list_ajax')->name('izin.list_ajax');
                 Route::post('/approve_form', 'IzinController@approve_form')->name('izin.approve_form');
                 Route::post('/delete_form', 'IzinController@delete_form')->name('izin.delete_form');
 
@@ -699,7 +698,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'IzinController@manager_approval_ajax')->name('izin.manager_approval_ajax');
                     Route::post('/manager_approve', 'IzinController@manager_approve')->name('izin.manager_approve');
                     Route::get('/manager_approved', 'IzinController@manager_approved')->name('izin.manager_approved');
-                    Route::get('/manager_approved_ajax', 'IzinController@manager_approved_ajax')->name('izin.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'IzinController@manager_approved_ajax')->name('izin.manager_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -727,12 +726,12 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                 });
             });
             // FORM CCTV //
-            Route::group(['prefix' => 'cctv'], function(){
+            Route::group(['prefix' => 'cctv'], function () {
                 Route::get('/create', 'CctvController@create')->name('cctv.create');
                 Route::post('/store', 'CctvController@store')->name('cctv.store');
                 Route::get('/subfolder_ajax', 'CctvController@subfolder_ajax')->name('cctv.subfolder_ajax');
                 Route::get('/list', 'CctvController@list')->name('cctv.list');
-                Route::get('/list_ajax', 'CctvController@list_ajax')->name('cctv.list_ajax');   
+                Route::get('/list_ajax', 'CctvController@list_ajax')->name('cctv.list_ajax');
                 Route::post('/approve_form', 'CctvController@approve_form')->name('cctv.approve_form');
                 Route::post('/delete_form', 'CctvController@delete_form')->name('cctv.delete_form');
 
@@ -741,7 +740,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/manager_approval_ajax', 'CctvController@manager_approval_ajax')->name('cctv.manager_approval_ajax');
                     Route::post('/manager_approve', 'CctvController@manager_approve')->name('cctv.manager_approve');
                     Route::get('/manager_approved', 'CctvController@manager_approved')->name('cctv.manager_approved');
-                    Route::get('/manager_approved_ajax', 'CctvController@manager_approved_ajax')->name('cctv.manager_approved_ajax');                
+                    Route::get('/manager_approved_ajax', 'CctvController@manager_approved_ajax')->name('cctv.manager_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['can_dept:ITD']], function () {
@@ -751,7 +750,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/it_approved', 'CctvController@it_approved')->name('cctv.it_approved');
                     Route::get('/it_approved_ajax', 'CctvController@it_approved_ajax')->name('cctv.it_approved_ajax');
                 });
-                
+
                 Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
                     Route::get('/it_mgr_approval', 'CctvController@it_mgr_approval')->name('cctv.it_mgr_approval');
                     Route::get('/it_mgr_approval_ajax', 'CctvController@it_mgr_approval_ajax')->name('cctv.it_mgr_approval_ajax');
@@ -768,11 +767,51 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function() {
                     Route::get('/finished_ajax', 'CctvController@finished_ajax')->name('cctv.finished_ajax');
                 });
             });
+            // FORM IT NEEDS //
+            Route::group(['prefix' => 'it_needs'], function () {
+                Route::get('/create', 'ItNeedsController@create')->name('it_needs.create');
+                Route::post('/store', 'ItNeedsController@store')->name('it_needs.store');
+                Route::get('/subfolder_ajax', 'ItNeedsController@subfolder_ajax')->name('it_needs.subfolder_ajax');
+                Route::get('/list', 'ItNeedsController@list')->name('it_needs.list');
+                Route::get('/list_ajax', 'ItNeedsController@list_ajax')->name('it_needs.list_ajax');
+                Route::post('/approve_form', 'ItNeedsController@approve_form')->name('it_needs.approve_form');
+                Route::post('/delete_form', 'ItNeedsController@delete_form')->name('it_needs.delete_form');
+
+                Route::group(['middleware' => ['can:approve_mgr']], function () {
+                    Route::get('/manager_approval', 'ItNeedsController@manager_approval')->name('it_needs.manager_approval');
+                    Route::get('/manager_approval_ajax', 'ItNeedsController@manager_approval_ajax')->name('it_needs.manager_approval_ajax');
+                    Route::post('/manager_approve', 'ItNeedsController@manager_approve')->name('it_needs.manager_approve');
+                    Route::get('/manager_approved', 'ItNeedsController@manager_approved')->name('it_needs.manager_approved');
+                    Route::get('/manager_approved_ajax', 'ItNeedsController@manager_approved_ajax')->name('it_needs.manager_approved_ajax');
+                });
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/it_approval', 'ItNeedsController@it_approval')->name('it_needs.it_approval');
+                    Route::get('/it_approval_ajax', 'ItNeedsController@it_approval_ajax')->name('it_needs.it_approval_ajax');
+                    Route::post('/it_approve', 'ItNeedsController@it_approve')->name('it_needs.it_approve');
+                    Route::get('/it_approved', 'ItNeedsController@it_approved')->name('it_needs.it_approved');
+                    Route::get('/it_approved_ajax', 'ItNeedsController@it_approved_ajax')->name('it_needs.it_approved_ajax');
+                });
+                Route::group(['middleware' => ['permission:approve_mgr', 'can_dept:ITD']], function () {
+                    Route::get('/it_mgr_approval', 'ItNeedsController@it_mgr_approval')->name('it_needs.it_mgr_approval');
+                    Route::get('/it_mgr_approval_ajax', 'ItNeedsController@it_mgr_approval_ajax')->name('it_needs.it_mgr_approval_ajax');
+                    Route::post('/it_mgr_approve', 'ItNeedsController@it_mgr_approve')->name('it_needs.it_mgr_approve');
+                    Route::get('/it_mgr_approved', 'ItNeedsController@it_mgr_approved')->name('it_needs.it_mgr_approved');
+                    Route::get('/it_mgr_approved_ajax', 'ItNeedsController@it_mgr_approved_ajax')->name('it_needs.it_mgr_approved_ajax');
+                });
+
+                Route::group(['middleware' => ['can_dept:ITD']], function () {
+                    Route::get('/execution', 'ItNeedsController@execution')->name('it_needs.execution');
+                    Route::get('/execution_ajax', 'ItNeedsController@execution_ajax')->name('it_needs.execution_ajax');
+                    Route::post('/execution_approve', 'ItNeedsController@execution_approve')->name('it_needs.execution_approve');
+                    Route::get('/finished', 'ItNeedsController@finished')->name('it_needs.finished');
+                    Route::get('/finished_ajax', 'ItNeedsController@finished_ajax')->name('it_needs.finished_ajax');
+                });
+            });
         });
     });
 });
 
-Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], function() {
+Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], function () {
     Route::get('login', 'AuthController@showLoginPage')->name('auth.login');
     Route::post('login', 'AuthController@authenticate')->name('auth.authenticate');
 

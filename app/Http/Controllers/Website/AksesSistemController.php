@@ -355,7 +355,7 @@ class AksesSistemController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                $token = env('TOKEN');
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -578,7 +578,7 @@ class AksesSistemController extends Controller
             
             $nomor = $user->nohp;
             
-            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $token = env('TOKEN');
             $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
             $curl = curl_init();
             curl_setopt_array($curl, array(

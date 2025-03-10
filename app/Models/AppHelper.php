@@ -11,7 +11,7 @@ class AppHelper
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-    
+
         $models = [
             Account::class,
             FolderAccess::class,
@@ -26,20 +26,21 @@ class AppHelper
             Sistem::class,
             IncidentReport::class,
             Izin::class,
+            ItNeeds::class,
         ];
-    
+
         $totalCount = 0;
-    
+
         foreach ($models as $model) {
-            $count = $model::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                            $query->where('created_dept', $firstDepartmentId)
-                                ->orWhere('created_dept', $lastDepartmentId);
-                        })
-                        ->where('final_status', 'LIKE', '%created%')->count();
-    
+            $count = $model::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+                $query->where('created_dept', $firstDepartmentId)
+                    ->orWhere('created_dept', $lastDepartmentId);
+            })
+                ->where('final_status', 'LIKE', '%created%')->count();
+
             $totalCount += $count;
         }
-    
+
         return $totalCount;
     }
 
@@ -48,23 +49,23 @@ class AppHelper
         $userDepartments = Auth::user()->departments->pluck('id');
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
-    
+
         $models = [
             Sistem::class,
         ];
-    
+
         $totalCount = 0;
-    
+
         foreach ($models as $model) {
-            $count = $model::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                            $query->where('created_dept', $firstDepartmentId)
-                                ->orWhere('created_dept', $lastDepartmentId);
-                        })
-                        ->where('final_status', 'LIKE', '%Manager Approve%')->count();
-    
+            $count = $model::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+                $query->where('created_dept', $firstDepartmentId)
+                    ->orWhere('created_dept', $lastDepartmentId);
+            })
+                ->where('final_status', 'LIKE', '%Manager Approve%')->count();
+
             $totalCount += $count;
         }
-    
+
         return $totalCount;
     }
 
@@ -89,17 +90,18 @@ class AppHelper
             Sistem::class,
             IncidentReport::class,
             Izin::class,
+            ItNeeds::class,
         ];
-    
+
         $totalCount = 0;
-    
+
         foreach ($models as $model) {
             $count = $model::where('created_by', Auth::user()->id)
-                            ->where('is_confirm', 'false')->count();
-    
+                ->where('is_confirm', 'false')->count();
+
             $totalCount += $count;
         }
-    
+
         return $totalCount;
     }
 
@@ -119,16 +121,17 @@ class AppHelper
             Sistem::class,
             IncidentReport::class,
             Izin::class,
+            ItNeeds::class,
         ];
-    
+
         $totalCount = 0;
-    
+
         foreach ($models as $model) {
             $count = $model::where('final_status', 'Manager Approve')->count();
-    
+
             $totalCount += $count;
         }
-    
+
         return $totalCount;
     }
 
@@ -148,16 +151,17 @@ class AppHelper
             Sistem::class,
             IncidentReport::class,
             Izin::class,
+            ItNeeds::class,
         ];
-    
+
         $totalCount = 0;
-    
+
         foreach ($models as $model) {
             $count = $model::where('final_status', 'IT Approve')->count();
-    
+
             $totalCount += $count;
         }
-    
+
         return $totalCount;
     }
 
@@ -177,16 +181,17 @@ class AppHelper
             Sistem::class,
             IncidentReport::class,
             Izin::class,
+            ItNeeds::class,
         ];
-    
+
         $totalCount = 0;
-    
+
         foreach ($models as $model) {
             $count = $model::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
-    
+
             $totalCount += $count;
         }
-    
+
         return $totalCount;
     }
 
@@ -197,17 +202,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Account::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Account::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function account_confirm_count()
     {
         return Account::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'false')->count();
+            ->where('is_confirm', 'false')->count();
     }
 
     public static function account_it_count()
@@ -232,17 +237,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return FolderAccess::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return FolderAccess::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function folderaccess_confirm_count()
     {
         return FolderAccess::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function folderaccess_it_count()
@@ -267,17 +272,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return NewFolder::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return NewFolder::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function newfolder_confirm_count()
     {
         return NewFolder::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function newfolder_it_count()
@@ -302,17 +307,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Software::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Software::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function software_confirm_count()
     {
         return Software::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function software_it_count()
@@ -337,17 +342,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Hardware::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Hardware::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function hardware_confirm_count()
     {
         return Hardware::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function hardware_it_count()
@@ -372,17 +377,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Vpn::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Vpn::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function vpn_confirm_count()
     {
         return Vpn::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function vpn_it_count()
@@ -407,17 +412,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Project::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Project::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function project_confirm_count()
     {
         return Project::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function project_it_count()
@@ -442,17 +447,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Fitur::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Fitur::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function fitur_confirm_count()
     {
         return Fitur::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function fitur_it_count()
@@ -477,17 +482,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Relayout::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Relayout::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function relayout_confirm_count()
     {
         return Relayout::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function relayout_it_count()
@@ -512,17 +517,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Network::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Network::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function network_confirm_count()
     {
         return Network::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'LIKE', 'false')->count();
+            ->where('is_confirm', 'LIKE', 'false')->count();
     }
 
     public static function network_it_count()
@@ -547,17 +552,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Sistem::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Sistem::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function akses_sistem_confirm_count()
     {
         return Sistem::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'false')->count();
+            ->where('is_confirm', 'false')->count();
     }
 
     public static function akses_sistem_it_count()
@@ -582,11 +587,11 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return IncidentReport::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function incident_report_gm_count()
@@ -595,11 +600,11 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%Manager Approve%')->count();
+        return IncidentReport::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%Manager Approve%')->count();
     }
 
     public static function incident_report_dir_count()
@@ -608,17 +613,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return IncidentReport::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%GM Approve%')->count();
+        return IncidentReport::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%GM Approve%')->count();
     }
 
     public static function incident_report_confirm_count()
     {
         return IncidentReport::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'false')->count();
+            ->where('is_confirm', 'false')->count();
     }
 
     public static function incident_report_it_count()
@@ -643,17 +648,17 @@ class AppHelper
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        return Izin::where(function($query) use ($firstDepartmentId, $lastDepartmentId) {
-                                $query->where('created_dept', $firstDepartmentId)
-                                    ->orWhere('created_dept', $lastDepartmentId);
-                            })
-                                    ->where('final_status', 'LIKE', '%created%')->count();
+        return Izin::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
     }
 
     public static function izin_confirm_count()
     {
         return Izin::where('created_by', Auth::user()->id)
-                        ->where('is_confirm', 'false')->count();
+            ->where('is_confirm', 'false')->count();
     }
 
     public static function izin_it_count()
@@ -669,5 +674,40 @@ class AppHelper
     public static function izin_execution_count()
     {
         return Izin::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+    }
+
+    /// FORM IT NEEDS ///
+    public static function it_needs_mgr_count()
+    {
+        $userDepartments = Auth::user()->departments->pluck('id');
+        $firstDepartmentId = $userDepartments->first();
+        $lastDepartmentId = $userDepartments->last();
+
+        return ItNeeds::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+            $query->where('created_dept', $firstDepartmentId)
+                ->orWhere('created_dept', $lastDepartmentId);
+        })
+            ->where('final_status', 'LIKE', '%created%')->count();
+    }
+
+    public static function it_needs_confirm_count()
+    {
+        return ItNeeds::where('created_by', Auth::user()->id)
+            ->where('is_confirm', 'false')->count();
+    }
+
+    public static function it_needs_it_count()
+    {
+        return ItNeeds::where('final_status', 'LIKE', '%Manager Approve%')->count();
+    }
+
+    public static function it_needs_it_mgr_count()
+    {
+        return ItNeeds::where('final_status', 'LIKE', 'IT Approve%')->count();
+    }
+
+    public static function it_needs_execution_count()
+    {
+        return ItNeeds::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
     }
 }

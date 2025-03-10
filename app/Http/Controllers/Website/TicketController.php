@@ -95,7 +95,8 @@ class TicketController extends Controller
             $nomors = Alert::where('role', 'IT')->get();
 
             foreach ($nomors as $nomor) {
-                $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+                // $token = env('TOKEN');
+                $token = env('TOKEN');
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -189,7 +190,7 @@ class TicketController extends Controller
                 $isi .= "\n\nFinished by : " . Auth::user()->name;
 
                 $isi .= "\n\nMohon beri penilaian atas support dari Tim ITD dengan mengakses link berikut :";
-                $isi .= "\nhttps://fiola-qa.aiia.co.id/ticket/review/" . $ticket->id;
+                $isi .= "\nhttps://fiola.aiia.co.id/ticket/review/" . $ticket->id;
                 $isi .= "\n\nTerima Kasih.";
             } elseif ($type == 'approve') {
                 $isi .= "\n\nNote : Dear User, Tiket anda sudah diterima oleh Tim ITD.";
@@ -197,7 +198,7 @@ class TicketController extends Controller
                 $isi .= "\n\nAccepted by : " . Auth::user()->name;
             }
 
-            $token = "v2n49drKeWNoRDN4jgqcdsR8a6bcochcmk6YphL6vLcCpRZdV1";
+            $token = env('TOKEN');
             $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -221,8 +222,11 @@ class TicketController extends Controller
     public function review($id)
     {
         $ticket = Ticket::with('ticket_photos')->findOrFail($id);
-
-        return view('website.pages.ticket.review', compact('ticket'));
+        if ($ticket->status == 'Finished') {
+            return view('website.pages.ticket.review', compact('ticket'));
+        } else {
+            return redirect()->route('website.type');
+        }
     }
 
     public function rate(Request $request, $id)
@@ -235,5 +239,11 @@ class TicketController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Update Successfully');
+    }
+
+    public function reminder()
+    {
+        $tickets = Ticket::whereNull('is_confirm')->get();
+        dd($tickets);
     }
 }

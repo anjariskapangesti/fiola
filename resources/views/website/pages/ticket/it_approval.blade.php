@@ -344,6 +344,10 @@
                                     <span class="alert alert-info p-1">${row.no_reg}</span>
                                 </div>
                                 <div class="mb-3">
+                                    <b>Category : </b><br>
+                                    <span class="detail_case_container">${row.category}</span>
+                                </div>
+                                <div class="mb-3">
                                     <b>Detail Problem : </b><br>
                                     <span class="detail_case_container">${row.detail_case}</span>
                                 </div>
@@ -368,18 +372,19 @@
                         render: function(data, type, row, meta) {
                             return `
                             <div>
-                                <div>
-                                    <b>PIC&emsp;: </b>${row.it_name ? row.it_name : 'Tunggu Approve'}
+                                <div class="mb-1">
+                                    <b>PIC&emsp;: </b>${row.it_name ? row.it_name : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
-                                <div>
-                                    <b>Phone&emsp;: </b>${row.it_phone ? row.it_phone : 'Tunggu Approve'}
+                                <div class="mb-1">
+                                    <b>Phone&emsp;: </b>${row.it_phone ? row.it_phone : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
                                 <div class="mb-3">
                                     <b>IT Note&emsp;: </b><br>
                                     <span class="detail_case_container">${row.it_name ? (row.it_note ? row.it_note : '-') : '<span class="badge btn-primary">Tunggu Approve</span>'}</span>
                                 </div>
+                                
                                 <div class="mb-3">
-                                    <b>Accepted Date&emsp;: </b>${row.it_approval_date ? row.it_approval_date : 'Tunggu Approve'}
+                                    <b>Accepted Date&emsp;: </b>${row.it_approval_date ? row.it_approval_date : '<span class="badge btn-primary">Tunggu Approve</span>'}
                                 </div>
 
                                 <div>

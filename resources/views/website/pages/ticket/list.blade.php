@@ -223,11 +223,14 @@
                             // Format tanggal 'created_at' ke 'YYYY-MM-DD HH:mm'
                             let created_at = row.created_at ? moment(row.created_at).format(
                                 'YYYY-MM-DD HH:mm') : '';
-
                             return `
                             <div>
                                 <div class="mb-3">
                                     <span class="alert alert-info p-1">${row.no_reg}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <b>Category : </b><br>
+                                    <span class="detail_case_container">${row.category}</span>
                                 </div>
                                 <div class="mb-3">
                                     <b>Detail Problem : </b><br>

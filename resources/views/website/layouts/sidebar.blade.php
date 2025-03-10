@@ -50,7 +50,7 @@
             <li class="menu-item {{ Route::is('website.ticket.it_approval') ? 'active' : '' }}">
                 <a href="{{ route('website.ticket.it_approval') }}" class="menu-link">
                     <i class="menu-icon tf-icons mdi mdi-ticket"></i>
-                    <div data-i18n="Basic">Tickets</div>
+                    <div data-i18n="Tiket">Tickets</div>
                     @if (App\Models\AppHelper::ticket_count() > 0)
                         &nbsp&nbsp<span class="badge bg-danger rounded-pill"
                             id="ticket_count">{{ App\Models\AppHelper::ticket_count() }}</span>
@@ -58,6 +58,16 @@
                 </a>
             </li>
         @endif
+        {{-- <li class="menu-item {{ Route::is('website.it_needs.create') ? 'active' : '' }}">
+            <a href="{{ route('website.it_needs.create') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-note-text"></i>
+                <div data-i18n="IT Needs">IT Needs</div>
+                @if (App\Models\AppHelper::it_needs_count() > 0)
+                    &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                        id="it_needs_count">{{ App\Models\AppHelper::it_needs_count() }}</span>
+                @endif
+            </a>
+        </li> --}}
         @php
             $masterLink = [
                 'account',
@@ -73,6 +83,7 @@
                 'akses_sistem',
                 'incident_report',
                 'izin',
+                'it_needs',
             ];
             $createRoutes = [];
             $editRoutes = [];
