@@ -172,7 +172,8 @@
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            if (data.is_confirm == '0') {
+                            if (data.is_confirm == '0' && data.created_by ==
+                                '{{ Auth::user()->id }}') {
                                 return `
                                 <center>
                                     <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
@@ -180,14 +181,15 @@
                                 `;
                             } else if (data.is_confirm == '1') {
                                 return `<center><span class="badge bg-success">Confrimed</span></center>`
-                            } else if (data.final_status == 'created') {
+                            } else if (data.final_status == 'created' && data.created_by ==
+                                '{{ Auth::user()->id }}') {
                                 return `
                                 <center>
                                     <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
                                 </center>
                                 `;
                             } else {
-                                return `<center>Not yet</center>`;
+                                return `<center></center>`;
                             }
                         }
                     },

@@ -18,8 +18,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class NewFolderController extends Controller
 {
+    use HasAjaxList;
+    
     public function create()
     {
         $departments = Department::orderBy('name')->get();
@@ -145,24 +149,11 @@ class NewFolderController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = NewFolder::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_new_folder.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_new_folder.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_new_folder.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_new_folder.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_new_folder.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_new_folder.finish_by', 'finish.id')
-                        ->select('form_new_folder.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC')
-                        ->with('form_new_folder_path')
-                        ->with('form_new_folder_user');
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(
+            \App\Models\NewFolder::class,
+            'form_new_folder',
+            ['form_new_folder_path', 'form_new_folder_user']
+        );
     }
     
     public function approve_form(Request $request)

@@ -19,8 +19,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class FolderAccessController extends Controller
 {
+    use HasAjaxList;
+
     public function create()
     {
         $departments = Department::orderBy('name')->get();
@@ -157,44 +161,11 @@ class FolderAccessController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $department = Auth::user()->departments->pluck('code')->first();
-
-        if ($department == 'ITD') {
-            $data = FolderAccess::join('public.users', 'form_folder_access.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
-                        ->select('form_folder_access.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC')
-                        ->with('form_folder_access_path')
-                        ->with('form_folder_access_user');
-        } else {
-            $data = FolderAccess::where('created_by', Auth::user()->id)
-            ->join('public.users', 'form_folder_access.created_by', 'public.users.id')
-            ->leftJoin('public.users as manager', 'form_folder_access.manager_approve_by', 'manager.id')
-            ->leftJoin('public.users as it', 'form_folder_access.it_approve_by', 'it.id')
-            ->leftJoin('public.users as it_mgr', 'form_folder_access.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('public.users as on_progress', 'form_folder_access.on_progress_by', 'on_progress.id')
-            ->leftJoin('public.users as finish', 'form_folder_access.finish_by', 'finish.id')
-            ->select('form_folder_access.*', 'users.name as requestor',
-                        'manager.name as manager_name',
-                        'it.name as it_name',
-                        'it_mgr.name as it_mgr_name',
-                        'on_progress.name as on_progress_name',
-                        'finish.name as finish_name')
-            ->orderBy('created_at', 'DESC')
-            ->with('form_folder_access_path')
-            ->with('form_folder_access_user');
-        }
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(
+            \App\Models\FolderAccess::class,
+            'form_folder_access',
+            ['form_folder_access_path', 'form_folder_access_user']
+        );
     }
     
     public function approve_form(Request $request)

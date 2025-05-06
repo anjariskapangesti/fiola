@@ -16,8 +16,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class IzinController extends Controller
 {
+    use HasAjaxList;
+
     public function create()
     {
         $auth = User::where('id', Auth::user()->id)
@@ -145,24 +149,11 @@ class IzinController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = Izin::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_izin.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_izin.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_izin.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_izin.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_izin.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_izin.finish_by', 'finish.id')
-                        ->select('form_izin.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC')
-                        ->with('form_izin_barang')
-                        ->with('form_izin_user');
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(
+            \App\Models\Izin::class,
+            'form_izin',
+            ['form_izin_barang', 'form_izin_user']
+        );
     }
     
     public function approve_form(Request $request)

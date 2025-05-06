@@ -18,8 +18,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class AksesSistemController extends Controller
 {
+    use HasAjaxList;
+    
     public function create()
     {
         $auth = User::where('id', Auth::user()->id)
@@ -142,24 +146,11 @@ class AksesSistemController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = Sistem::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_sistem.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_sistem.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_sistem.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_sistem.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_sistem.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_sistem.finish_by', 'finish.id')
-                        ->select('form_sistem.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC')
-                        ->with('form_sistem_app')
-                        ->with('form_sistem_user');
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(
+            \App\Models\Sistem::class,
+            'form_sistem',
+            ['form_sistem_app', 'form_sistem_user']
+        );
     }
     
     public function approve_form(Request $request)

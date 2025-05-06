@@ -152,7 +152,7 @@
                                 </center>
                                 `;
                             } else {
-                                return `<center>Not yet</center>`;
+                                return `<center></center>`;
                             }
                         }
                     },

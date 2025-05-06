@@ -155,7 +155,8 @@
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            if (data.is_confirm == '0') {
+                            if (data.is_confirm == '0' && data.created_by ==
+                                '{{ Auth::user()->id }}') {
                                 return `
                                 <center>
                                     <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
@@ -163,14 +164,15 @@
                                 `;
                             } else if (data.is_confirm == '1') {
                                 return `<center><span class="badge bg-success">Confrimed</span></center>`
-                            } else if (data.final_status == 'created') {
+                            } else if (data.final_status == 'created' && data.created_by ==
+                                '{{ Auth::user()->id }}') {
                                 return `
                                 <center>
                                     <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
                                 </center>
                                 `;
                             } else {
-                                return `<center>Not yet</center>`;
+                                return `<center></center>`;
                             }
                         }
                     },
@@ -195,43 +197,43 @@
                                 <td>${d.account_type} </td>
                             </tr>
                                 ${d.form_type !== "Deletion" ? `
-                                    <tr>
-                                    <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
-                                    <td>${d.npk}</td>
-                                </tr>
-                                <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
-                                <td>${d.fullname} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
-                                <td>${d.phone} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Job Rank</td>
-                                <td>${d.job_rank} </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
-                            </tr>` : ""}
+                                                            <tr>
+                                                            <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">NPK</td>
+                                                            <td>${d.npk}</td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Fullname</td>
+                                                        <td>${d.fullname} </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Phone Number</td>
+                                                        <td>${d.phone} </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Job Rank</td>
+                                                        <td>${d.job_rank} </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
+                                                        <td>${d.department} </td>
+                                                    </tr>` : ""}
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username ${d.form_type === "Change" ? `
-                                                                        Before Change` : ""}</td>
+                                                                                                Before Change` : ""}</td>
                                 <td>AIIA\\${d.ad_name}</td>
                             </tr>
                             ${d.form_type === "Change" ? `
-                            <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username After Change</td>
-                                <td>AIIA\\${d.ad_name_after}</td>
-                            </tr>` : ""}
+                                                    <tr>
+                                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">AD Username After Change</td>
+                                                        <td>AIIA\\${d.ad_name_after}</td>
+                                                    </tr>` : ""}
                             ${d.form_type !== "Deletion" ? `
-                                        <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
-                                <td>
-                                    ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
-                                </td>
-                            </tr>` : ""}
+                                                                <tr>
+                                                        <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User Lisensi Microsoft Office</td>
+                                                        <td>
+                                                            ${d.is_email === false ? 'Tidak butuh lisensi' : (d.is_email === true ? (d.email_address == null ? '<i>Akan diinformasikan setelah disetujui</i>' : d.ad_name + '@aisinaiia.onmicrosoft.com') : '')}
+                                                        </td>
+                                                    </tr>` : ""}
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Email Address</td>
                                 <td>

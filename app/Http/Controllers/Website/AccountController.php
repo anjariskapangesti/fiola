@@ -16,8 +16,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class AccountController extends Controller
 {
+    use HasAjaxList;
+
     public function create()
     {
         $departments = Department::orderBy('name')->get();
@@ -266,22 +270,7 @@ class AccountController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = Account::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_account.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_account.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_account.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_account.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_account.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_account.finish_by', 'finish.id')
-                        ->select('form_account.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(\App\Models\Account::class, 'form_account');
     }
 
     public function approve_form(Request $request)

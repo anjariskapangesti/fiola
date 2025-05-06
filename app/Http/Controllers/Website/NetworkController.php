@@ -14,8 +14,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class NetworkController extends Controller
 {
+    use HasAjaxList;
+
     public function create()
     {
         $auth = User::where('id', Auth::user()->id)
@@ -195,22 +199,7 @@ class NetworkController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = Network::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_network.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_network.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_network.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_network.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_network.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_network.finish_by', 'finish.id')
-                        ->select('form_network.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(\App\Models\Network::class, 'form_network');
     }
 
     public function approve_form(Request $request)

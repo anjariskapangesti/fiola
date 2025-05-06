@@ -7,8 +7,7 @@
                 <div class="card mb-4">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-header">Edit Subfolder</h5>
-                        <a href="{{ route('website.subfolder.list') }}" class="btn btn-primary"
-                            style="margin: 1.25rem;">List</a>
+                        <a href="{{ route('website.support.list') }}" class="btn btn-primary" style="margin: 1.25rem;">List</a>
                     </div>
                     <div class="card-body demo-vertical-spacing demo-only-element">
                         @if ($errors->any())
@@ -23,30 +22,53 @@
                                     aria-label="Close"></button>
                             </div>
                         @endif
-                        <form method="post" action="{{ route('website.subfolder.update', ['id' => $subfolder->id]) }}"
-                            class="needs-validation" novalidate>
+                        <form method="POST" action="{{ route('website.support.update', $support->id) }}"
+                            class="needs-validation" id="myForm" novalidate>
                             @csrf
                             <div class="form-floating form-floating-outline mb-4">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    value="{{ old('name', $subfolder->name) }}" placeholder="00_FOLDER_NAME" />
-                                <label for="name">Name <span class="text-danger">*</span></label>
-                            </div>
-                            <div class="form-floating form-floating-outline mb-4">
-                                <select class="form-select" id="folder_id" name="folder_id" aria-label="Select">
-                                    <option value=""
-                                        {{ old('folder_id', $subfolder->folder_id) == '' ? 'selected' : '' }}>-- Select --
-                                    </option>
-                                    @foreach ($folders as $folder)
-                                        <option value="{{ $folder->id }}"
-                                            {{ old('folder_id', $subfolder->folder_id) == $folder->id ? 'selected' : '' }}>
-                                            {{ $folder->name }}
+                                <select class="form-select" id="shift" name="shift" aria-label="Select" required>
+                                    <option disabled value="">-- Choose Shift --</option>
+                                    @foreach (['Non Shift', 'Shift 1', 'Shift 2', 'Shift 3'] as $shift)
+                                        <option value="{{ $shift }}"
+                                            {{ old('shift', $support->shift) == $shift ? 'selected' : '' }}>
+                                            {{ $shift }}
                                         </option>
                                     @endforeach
                                 </select>
-                                <label for="folder_id">Folder Name <span class="text-danger">*</span></label>
+                                <label for="shift">Shift <span class="text-danger">*</span></label>
                             </div>
+
+                            <div class="form-floating form-floating-outline mb-4">
+                                <select class="form-select form-control" id="name" name="name" aria-label="Select"
+                                    onchange="fillProfile()" required>
+                                    <option value="">-- Select --</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->name }}" data-email="{{ $user->email }}"
+                                            data-nohp="{{ $user->nohp }}"
+                                            {{ old('name', $support->name) == $user->name ? 'selected' : '' }}>
+                                            {{ $user->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <label for="name">Name <span class="text-danger">*</span></label>
+                            </div>
+
+                            <div class="form-floating form-floating-outline mb-4">
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ old('email', $support->email) }}" placeholder=""
+                                    style="background-color: #efeff0" readonly required>
+                                <label for="email">Email <span class="text-danger">*</span></label>
+                            </div>
+
+                            <div class="form-floating form-floating-outline mb-4">
+                                <input type="text" class="form-control" id="nohp" name="nohp"
+                                    value="{{ old('nohp', $support->nohp) }}" placeholder=""
+                                    style="background-color: #efeff0" readonly required>
+                                <label for="nohp">Phone <span class="text-danger">*</span></label>
+                            </div>
+
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -57,7 +79,54 @@
 @endsection
 
 @push('styles')
+    <link href="{{ asset('vendor/select2/select2.min.css') }}" rel="stylesheet" />
 @endpush
 
 @push('scripts')
+    <script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('myForm');
+            var submitButton = document.getElementById('submitButton');
+
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    event.preventDefault();
+                } else {
+                    submitButton.setAttribute('disabled', 'true');
+                    submitButton.innerHTML = 'Submitting...';
+                }
+            });
+
+            form.addEventListener('input', function() {
+                if (form.checkValidity()) {
+                    submitButton.removeAttribute('disabled');
+                    submitButton.innerHTML = 'Submit';
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#name').select2({
+                maximumSelectionLength: 2,
+                // placeholder: '-- Select --',
+                // allowClear: true,
+                // theme: 'bootstrap5'
+            });
+        });
+    </script>
+    <script>
+        function fillProfile() {
+            var select = document.getElementById('name');
+            var emailInput = document.getElementById('email');
+            var phoneInput = document.getElementById('nohp');
+            // Get the selected option
+            var selectedOption = select.options[select.selectedIndex];
+            // Set the value of email input to the email address associated with the selected option
+            emailInput.value = selectedOption.getAttribute('data-email');
+            phoneInput.value = selectedOption.getAttribute('data-nohp');
+        }
+    </script>
 @endpush

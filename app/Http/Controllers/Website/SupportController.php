@@ -54,29 +54,36 @@ class SupportController extends Controller
     public function edit($id)
     {
         $support = Support::findOrFail($id);
+        $users = User::whereHas('permissions', function ($query) {
+            $query->where('permissions.name', 'apps_fiola');
+        })->select('users.*', DB::raw('STRING_AGG(departments.name, \', \') as department_names'))
+            ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
+            ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
+            ->groupBy('users.id')
+            ->orderBy('users.name', 'ASC')
+            ->get();
 
-        return view('website.pages.support.edit', compact('support'));
+        return view('website.pages.support.edit', compact('support', 'users'));
     }
 
     public function update(Request $request, $id)
     {
-        $support = Support::findOrFail($id);
-
         $request->validate([
-            'name' => 'required|regex:/^[^\s]+$/',
-        ], [
-            'name.regex' => 'The name may not contain spaces.',
+            'name' => 'required',
         ]);
-
-        try
-        {
+    
+        try {
+            $support = Support::findOrFail($id);
+    
             $support->update([
-                'name' => $request->name ,                
+                'shift' => $request->shift,
+                'name' => $request->name,
+                'email' => $request->email,
+                'nohp' => $request->nohp,
             ]);
-            return redirect('/support/list')->with('success', 'Edit Successfully');
-        }
-        catch(\Exception $e)
-        {
+    
+            return redirect('/support/list')->with('success', 'Update Successfully');
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }

@@ -14,8 +14,12 @@ use Carbon\Carbon;
 use DataTables;
 use Auth;
 
+use App\Traits\HasAjaxList;
+
 class RelayoutController extends Controller
 {
+    use HasAjaxList;
+
     public function create()
     {
         $auth = User::where('id', Auth::user()->id)
@@ -197,22 +201,7 @@ class RelayoutController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = Relayout::where('created_by', Auth::user()->id)
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
-                        ->select('form_relayout.*', 'users.name as requestor',
-                                    'manager.name as manager_name',
-                                    'it.name as it_name',
-                                    'it_mgr.name as it_mgr_name',
-                                    'on_progress.name as on_progress_name',
-                                    'finish.name as finish_name')
-                        ->orderBy('created_at', 'DESC');
-
-        return DataTables::eloquent($data)->make(true);
+        return $this->generateAjaxList(\App\Models\Relayout::class, 'form_relayout');
     }
 
     public function approve_form(Request $request)
