@@ -95,8 +95,8 @@ class TicketController extends Controller
             $nomors = Alert::where('role', 'IT')->get();
 
             foreach ($nomors as $nomor) {
-                // $token = env('TOKEN');
-                $token = env('TOKEN');
+                // $token = env('TOKEN_WA');
+                $token = env('TOKEN_WA');
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -198,7 +198,7 @@ class TicketController extends Controller
                 $isi .= "\n\nAccepted by : " . Auth::user()->name;
             }
 
-            $token = env('TOKEN');
+            $token = env('TOKEN_WA');
             $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
             $curl = curl_init();
             curl_setopt_array($curl, array(

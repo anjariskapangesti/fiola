@@ -225,6 +225,19 @@
             });
 
             function format(d) {
+                const ext = d.lampiran?.split('.').pop().toLowerCase(); // Ambil ekstensi
+                const isPdf = ext === 'pdf';
+
+                const lampiranButton = isPdf ?
+                    `<button type="button" class="btn btn-success btn-sm btn-lampiran"
+                            data-bs-toggle="modal" data-bs-target="#pdfModal"
+                            data-lampiran="/storage/lampiran/${d.lampiran}">
+                        <i class="mdi mdi-file-download"></i> View
+                    </button>` :
+                    `<a href="/storage/lampiran/${d.lampiran}" class="btn btn-warning btn-sm" target="_blank" download>
+                        <i class="mdi mdi-file-download"></i> Download
+                    </a>`;
+
                 return (
                     `
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
@@ -249,13 +262,9 @@
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
                                 <td>${d.phone}</td>
                             </tr>
-                             <tr>
+                            <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="">
-                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
-                                        <i class="mdi mdi-file-download"></i> View
-                                    </button>
-                                </td>
+                                <td>${lampiranButton}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
