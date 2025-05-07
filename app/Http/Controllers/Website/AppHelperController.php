@@ -91,11 +91,11 @@ class AppHelperController extends Controller
         $izin_execution_count = AppHelper::izin_execution_count();
         $izin_confirm_count = AppHelper::izin_confirm_count();
         // FORM IT NEEDS //
-        $it_needs_mgr_count = AppHelper::it_needs_mgr_count();
-        $it_needs_it_count = AppHelper::it_needs_it_count();
-        $it_needs_it_mgr_count = AppHelper::it_needs_it_mgr_count();
-        $it_needs_execution_count = AppHelper::it_needs_execution_count();
-        $it_needs_confirm_count = AppHelper::it_needs_confirm_count();
+        // $it_needs_mgr_count = AppHelper::it_needs_mgr_count();
+        // $it_needs_it_count = AppHelper::it_needs_it_count();
+        // $it_needs_it_mgr_count = AppHelper::it_needs_it_mgr_count();
+        // $it_needs_execution_count = AppHelper::it_needs_execution_count();
+        // $it_needs_confirm_count = AppHelper::it_needs_confirm_count();
         // ALL FORM //
         $manager_approvals_count = AppHelper::manager_approvals_count();
         $confirms_count = AppHelper::confirms_count();
@@ -184,11 +184,11 @@ class AppHelperController extends Controller
             'izin_execution_count' => $izin_execution_count,
             'izin_confirm_count' => $izin_confirm_count,
 
-            'it_needs_mgr_count' => $it_needs_mgr_count,
-            'it_needs_it_count' => $it_needs_it_count,
-            'it_needs_it_mgr_count' => $it_needs_it_mgr_count,
-            'it_needs_execution_count' => $it_needs_execution_count,
-            'it_needs_confirm_count' => $it_needs_confirm_count,
+            // 'it_needs_mgr_count' => $it_needs_mgr_count,
+            // 'it_needs_it_count' => $it_needs_it_count,
+            // 'it_needs_it_mgr_count' => $it_needs_it_mgr_count,
+            // 'it_needs_execution_count' => $it_needs_execution_count,
+            // 'it_needs_confirm_count' => $it_needs_confirm_count,
             
             'manager_approvals_count' => $manager_approvals_count,
             'confirms_count' => $confirms_count,
