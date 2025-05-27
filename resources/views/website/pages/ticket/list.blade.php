@@ -180,6 +180,11 @@
     </script>
     <script>
         $(document).ready(function() {
+            function maskPhoneNumber(phone) {
+                if (!phone || phone.length < 4) return phone;
+                return phone.substring(0, 2) + '*'.repeat(phone.length - 4) + phone.slice(-2);
+            }
+
             var table = $('#app_table').DataTable({
                 'lengthChange': true,
                 'processing': true,
@@ -207,10 +212,11 @@
                                     <b>Name : </b><br>
                                     <span class="detail_case_container">${row.requestor_name}</span>
                                 </div>
+                                <div class="mb-1">
                                     <b>Phone : </b><br>
-                                    <span class="detail_case_container">${row.requestor_phone}</span>
+                                    <span class="detail_case_container">${maskPhoneNumber(row.requestor_phone)}</span>
                                 </div>
-                                </div>
+                                <div class="mb-1">
                                     <b>Department : </b><br>
                                     <span class="detail_case_container">${row.requestor_department}</span>
                                 </div>
