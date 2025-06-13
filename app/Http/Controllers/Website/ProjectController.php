@@ -343,7 +343,7 @@ class ProjectController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = env('TOKEN_WA');
+                $token = config('services.wa.token');
                 $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
@@ -545,7 +545,7 @@ class ProjectController extends Controller
             
             $nomor = $user->nohp;
             
-            $token = env('TOKEN_WA');
+            $token = config('services.wa.token');
             $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
             $curl = curl_init();
             curl_setopt_array($curl, array(

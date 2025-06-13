@@ -30,4 +30,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'wa' => [
+        'token' => env('TOKEN_WA'),
+    ],
 ];
