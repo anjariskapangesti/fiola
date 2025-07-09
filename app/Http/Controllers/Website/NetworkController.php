@@ -53,6 +53,7 @@ class NetworkController extends Controller
             'rack' => 'required',
             'device' => 'required',
             'down_time' => 'required',
+            'lampiran' => 'required',
         ]);
 
         $year = date('y');

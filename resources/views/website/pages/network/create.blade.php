@@ -71,7 +71,7 @@
                                 <label class="col-sm-12 col-form-label" for="project_name">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="project_name" name="project_name"
-                                            value="{{ old('project_name') }}" placeholder="Change Network" />
+                                            value="{{ old('project_name') }}" placeholder="Change Network" required />
                                         <label for="project_name">Project Name <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
@@ -218,7 +218,7 @@
                                     <div class="form-floating form-floating-outline">
                                         <input type="file" class="form-control" id="lampiran" name="lampiran"
                                             value="{{ old('lampiran') }}" placeholder="Change Network"
-                                            accept=".pdf, .xlsx, .pptx, .docx" />
+                                            accept=".pdf, .xlsx, .pptx, .docx" required />
                                         <label for="lampiran">Attachment <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
