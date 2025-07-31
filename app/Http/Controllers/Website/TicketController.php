@@ -131,7 +131,7 @@ class TicketController extends Controller
                         ->leftJoin('public.users', 'tickets.it_approve_by', 'public.users.id')
                         ->with('ticket_photos')
                         ->orderBy('final_status', 'DESC'); // Urutkan berdasarkan waktu pembuatan secara menurun
-    
+
         return DataTables::eloquent($data)->make(true);
     }
 
@@ -141,7 +141,7 @@ class TicketController extends Controller
         $type = $request->type;
 
         $ticket = Ticket::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $ticket->is_it_approve = 1;
             $ticket->final_status = 'IT Approve';
@@ -174,7 +174,7 @@ class TicketController extends Controller
         }
         $ticket->it_approval_date = Carbon::now();
         $ticket->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "TICKET\n";
             $isi .= "\nNo Reg : " . $ticket->no_reg;
@@ -222,7 +222,7 @@ class TicketController extends Controller
     public function review($id)
     {
         $ticket = Ticket::with('ticket_photos')->findOrFail($id);
-        if ($ticket->status == 'Finished') {
+        if ($ticket->final_status == 'Finished') {
             return view('website.pages.ticket.review', compact('ticket'));
         } else {
             return redirect()->route('website.type');
