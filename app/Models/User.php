@@ -9,17 +9,17 @@ use Spatie\Permission\Traits\HasPermissions;
 use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+use Spatie\Permission\Models\Permission;
 use Alqaj\Organization\Traits\HasDepartments;
 
 class User extends Authenticatable
 {
-    
+
     use Notifiable;
     use HasRoles;
     use HasPermissions;
     use HasDepartments;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -74,5 +74,10 @@ class User extends Authenticatable
     public function divisions()
     {
         return $this->belongsToMany(Division::class, 'public.model_has_divisions', 'model_id', 'division_id');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'public.model_has_permissions', 'model_id', 'permission_id');
     }
 }
