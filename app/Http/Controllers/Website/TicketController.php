@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\TicketPhoto;
 use App\Models\Department;
 use App\Models\Alert;
+use App\Models\Recap;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -244,6 +245,24 @@ class TicketController extends Controller
     public function reminder()
     {
         $tickets = Ticket::whereNull('is_confirm')->get();
-        dd($tickets);
+    }
+
+    public function recap(Request $request)
+    {
+        dd("test");
+        // Validasi sederhana
+        // $validated = $request->validate([
+        //     'message' => ['required', 'string', 'max:65535'],
+        // ]);
+
+        // $recap = new Recap();
+        // $recap->message = $validated['message'];
+        // $recap->save();
+
+        // return response()->json([
+        //     'success' => true,
+        //     'id' => $recap->id,
+        //     'message' => 'Recap stored successfully.',
+        // ], 201);
     }
 }

@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
     Route::get('/email_manager', 'ReminderController@email_manager')->name('reminder.email_manager');
 
     Route::get('/update_status', 'SupportController@update_status')->name('support.update_status');
+    Route::post('/recap', 'TicketController@recap');
 
     Route::get('/', 'HomeController@type')->name('type');
     // TICKET
