@@ -205,7 +205,6 @@
                         </a>
                     </div>
                     <!-- /Logo -->
-
                     <div class="card-body">
                         <div class="table-responsive text-nowrap">
                             @if (Session::get('info'))
@@ -213,6 +212,14 @@
                                     {{ Session::get('info') }}
                                 </div>
                             @endif
+
+                            @if ($ticket->review != null)
+                                <div class="d-flex justify-content-end mb-3">
+                                    <a href="{{ route('website.ticket.list') }}" class="btn btn-secondary">Back</a>
+                                </div>
+                            @endif
+
+
                             <table class="table table-bordered" width="100%" style="vertical-align: top;">
                                 <thead>
                                     <tr>

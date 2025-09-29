@@ -3,6 +3,123 @@
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row gy-4">
+            <div class="col-md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        {{-- KPI Cards + Filters --}}
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <small class="text-muted text-uppercase">Rata-rata Keseluruhan</small>
+                                        <h3 id="overallAvg" class="mb-0">—</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <small class="text-muted text-uppercase">Total Review</small>
+                                        <h3 id="totalReviews" class="mb-0">—</h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <small class="text-muted text-uppercase d-block mb-2">Rentang Hari</small>
+                                        <div class="input-group">
+                                            <input id="daysInput" type="number" min="7" max="365"
+                                                value="30" class="form-control">
+                                            <button id="applyFilters" class="btn btn-primary">Terapkan</button>
+                                        </div>
+                                        <div class="form-text">Default 30 hari terakhir</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <small class="text-muted text-uppercase d-block mb-2">Min. Tiket (Top)</small>
+                                        <div class="input-group">
+                                            <input id="minTicketsInput" type="number" min="1" value="5"
+                                                class="form-control">
+                                            <button id="refreshBtn" class="btn btn-outline-secondary">Refresh</button>
+                                        </div>
+                                        <div class="form-text">Digunakan untuk Top Performers</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Charts --}}
+                        <div class="row g-3">
+                            <div class="col-12 col-lg-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Tren Rata-rata Harian</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="trendChart" style="height:280px"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Rata-rata per Person</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="byPersonChart" style="height:280px"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Distribusi Skor</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="distChart" style="height:280px"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Top Performers Table --}}
+                        <div class="row g-3 mt-3">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">Top Performers (≥ Min Ticket)</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width:60px">#</th>
+                                                        <th>Nama</th>
+                                                        <th>Avg</th>
+                                                        <th>Total Ticket</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="topTableBody">
+                                                    {{-- Fetched via JS --}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             @if (auth()->check())
                 <div class="col-lg-12">
                     <div class="card">
@@ -631,4 +748,148 @@
             });
         </script>
     @endif
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let trendChart, byPersonChart, distChart;
+
+        function fmt(n) {
+            return Number(n ?? 0).toFixed(2);
+        }
+
+        async function loadMetrics() {
+            const days = document.getElementById('daysInput').value || 30;
+            const minTickets = document.getElementById('minTicketsInput').value || 5;
+
+            const url = new URL("{{ route('website.metrics') }}", window.location.origin);
+            url.searchParams.set('days', days);
+            url.searchParams.set('min_tickets', minTickets);
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            // KPI
+            document.getElementById('overallAvg').textContent = fmt(data.overall?.average);
+            document.getElementById('totalReviews').textContent = data.overall?.total_reviews ?? 0;
+
+            // Trend
+            const labelsTrend = (data.trend ?? []).map(x => x.d);
+            const valuesTrend = (data.trend ?? []).map(x => Number(x.avg_review));
+
+            trendChart?.destroy();
+            trendChart = new Chart(document.getElementById('trendChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labelsTrend,
+                    datasets: [{
+                        label: 'Rata-rata',
+                        data: valuesTrend,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ` ${fmt(ctx.parsed.y)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+
+            // By person (ambil top 12 biar rapi)
+            const byPerson = (data.by_person ?? []).slice(0, 12);
+            const labelsPerson = byPerson.map(x => x.name);
+            const valuesPerson = byPerson.map(x => Number(x.avg_review));
+
+            byPersonChart?.destroy();
+            byPersonChart = new Chart(document.getElementById('byPersonChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labelsPerson,
+                    datasets: [{
+                        label: 'Avg',
+                        data: valuesPerson
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ` ${fmt(ctx.parsed.x)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+
+            // Distribution
+            const distLabels = Object.keys(data.distribution ?? {});
+            const distValues = Object.values(data.distribution ?? {}).map(Number);
+
+            distChart?.destroy();
+            distChart = new Chart(document.getElementById('distChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: distLabels,
+                    datasets: [{
+                        data: distValues
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Top performers table
+            const tb = document.getElementById('topTableBody');
+            tb.innerHTML = '';
+            (data.top_performers ?? []).forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${r.name}</td>
+      <td>${fmt(r.avg_review)}</td>
+      <td>${r.total_ticket}</td>
+    `;
+                tb.appendChild(tr);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('applyFilters').addEventListener('click', loadMetrics);
+            document.getElementById('refreshBtn').addEventListener('click', loadMetrics);
+            loadMetrics();
+        });
+    </script>
 @endpush

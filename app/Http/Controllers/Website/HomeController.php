@@ -41,13 +41,13 @@ class HomeController extends Controller
     //     }
 
     //     $total = $query->count();
-        
+
     //     $finishedQuery = clone $query;
     //     $finished = $finishedQuery->where('final_status', 'ILIKE', '%Finished%')->count();
-        
+
     //     $rejectedQuery = clone $query;
     //     $rejected = $rejectedQuery->where('final_status', 'ILIKE', '%Reject%')->count();
-        
+
     //     return compact('total', 'finished', 'rejected');
     // }
 
@@ -79,7 +79,7 @@ class HomeController extends Controller
             'IncidentReport',
             'Izin',
         ];
-    
+
         $finalStatusConditions = [
             'Finished' => ['Finished'],
             'Rejected' => ['%Rejected%', '%Manager Reject%', '%IT Reject%', '%IT MGR Reject%'],
@@ -88,16 +88,16 @@ class HomeController extends Controller
             'IT Approve' => ['IT Approve'],
             'Execution' => ['IT MGR Approve', 'On Progress'],
         ];
-    
+
         $results = [];
-    
+
         foreach ($finalStatusConditions as $statusKey => $conditions) {
             $results[$statusKey] = 0;
-    
+
             foreach ($models as $model) {
                 $modelClass = 'App\\Models\\' . $model;
                 $query = $modelClass::where('created_by', Auth::user()->id);
-    
+
                 if ($statusKey === 'Rejected') {
                     $query->where(function ($query) use ($conditions) {
                         foreach ($conditions as $condition) {
@@ -112,12 +112,12 @@ class HomeController extends Controller
                         $query->where('final_status', $conditions[0]);
                     }
                 }
-    
+
                 $results[$statusKey] += $query->count();
             }
         }
 
-        
+
         $total_form_finished = $results['Finished'];
         $total_form_rejected = $results['Rejected'];
         $total_form_mgr = $results['created'];
@@ -131,7 +131,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $account_it_count = Account::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $account_it_mgr_count = Account::where('final_status', 'LIKE', 'IT Approve%')->count();
         $account_execution_count = Account::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -151,7 +151,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $newfolder_it_count = NewFolder::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $newfolder_it_mgr_count = NewFolder::where('final_status', 'LIKE', 'IT Approve%')->count();
         $newfolder_execution_count = NewFolder::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -161,7 +161,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $software_it_count = Software::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $software_it_mgr_count = Software::where('final_status', 'LIKE', 'IT Approve%')->count();
         $software_execution_count = Software::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -171,7 +171,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $hardware_it_count = Hardware::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $hardware_it_mgr_count = Hardware::where('final_status', 'LIKE', 'IT Approve%')->count();
         $hardware_execution_count = Hardware::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -181,7 +181,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $vpn_it_count = Vpn::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $vpn_it_mgr_count = Vpn::where('final_status', 'LIKE', 'IT Approve%')->count();
         $vpn_execution_count = Vpn::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -191,7 +191,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $project_it_count = Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $project_it_mgr_count = Project::where('final_status', 'LIKE', 'IT Approve%')->count();
         $project_execution_count = Project::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -201,7 +201,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $fitur_it_count = Fitur::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $fitur_it_mgr_count = Fitur::where('final_status', 'LIKE', 'IT Approve%')->count();
         $fitur_execution_count = Fitur::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -211,7 +211,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $relayout_it_count = Relayout::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $relayout_it_mgr_count = Relayout::where('final_status', 'LIKE', 'IT Approve%')->count();
         $relayout_execution_count = Relayout::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -221,7 +221,7 @@ class HomeController extends Controller
                                     ->orWhere('created_dept', $lastDepartmentId);
                             })
                                     ->where('final_status', 'LIKE', '%created%')->count();
-                                    
+
         $network_it_count = Network::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $network_it_mgr_count = Network::where('final_status', 'LIKE', 'IT Approve%')->count();
         $network_execution_count = Network::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -231,7 +231,7 @@ class HomeController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
                 ->where('final_status', 'LIKE', '%created%')->count();
-                
+
         $akses_sistem_it_count = Sistem::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $akses_sistem_it_mgr_count = Sistem::where('final_status', 'LIKE', 'IT Approve%')->count();
         $akses_sistem_execution_count = Sistem::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -241,7 +241,7 @@ class HomeController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
                 ->where('final_status', 'LIKE', '%created%')->count();
-                
+
         $incident_report_it_count = IncidentReport::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $incident_report_it_mgr_count = IncidentReport::where('final_status', 'LIKE', 'IT Approve%')->count();
         $incident_report_execution_count = IncidentReport::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -251,7 +251,7 @@ class HomeController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
                 ->where('final_status', 'LIKE', '%created%')->count();
-                
+
         $izin_it_count = Izin::where('final_status', 'LIKE', '%Manager Approve%')->count();
         $izin_it_mgr_count = Izin::where('final_status', 'LIKE', 'IT Approve%')->count();
         $izin_execution_count = Izin::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
@@ -286,27 +286,27 @@ class HomeController extends Controller
         //     $results[$variableName] = $this->getModelCounts($model, $current_year, $current_month);
         // }
         // extract($results);
-        
-        $semua = 0; 
+
+        $semua = 0;
         // Loop untuk menghitung total count dari setiap model
         foreach ($models as $model) {
             $modelClass = 'App\\Models\\' . $model;
-        
+
             // Pastikan class model yang dibangun benar-benar ada sebelum melakukan query
             if (class_exists($modelClass)) {
                 // Membuat query untuk model
                 $total_query = $modelClass::query();
-            
+
                 // Filter berdasarkan tahun jika diatur
                 if ($current_year != '0000') {
                     $total_query->whereYear('created_at', $current_year);
                 }
-            
+
                 // Filter berdasarkan bulan jika diatur
                 if ($current_month != '00') {
                     $total_query->whereMonth('created_at', $current_month);
                 }
-            
+
                 // Tambahkan hasil count dari query ke variabel $semua
                 $semua += $total_query->count();
             } else {
@@ -501,7 +501,7 @@ class HomeController extends Controller
 
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
-                                    ->count();   
+                                    ->count();
 
         $ticket_open = Ticket::where('final_status', 'created')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
         $ticket_finished = Ticket::where('final_status', 'Finished')->whereYear('created_at', $current_year)->whereMonth('created_at', $current_month)->count();
@@ -521,7 +521,7 @@ class HomeController extends Controller
                 ->whereMonth('created_at', str_pad($month, 2, '0', STR_PAD_LEFT))
                 ->where('final_status', 'Finished')
                 ->count();
-        } 
+        }
 
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
@@ -529,7 +529,7 @@ class HomeController extends Controller
             return view('website.pages.home', [
                 'ticket_total' => $ticket_total,
                 'ticket_solved' => $ticket_solved,
-            ], 
+            ],
             compact('total_form_finished', 'total_form_rejected', 'total_form_mgr', 'total_form_it', 'total_form_it_mgr', 'total_form_execution',
                     'account_mgr_count', 'account_it_count', 'account_it_mgr_count', 'account_execution_count',
                     'account_total', 'account_finished', 'account_rejected',
@@ -560,7 +560,7 @@ class HomeController extends Controller
                     'ticket_open', 'ticket_finished', 'ticket_on_progress', 'ticket_pending', 'ticket_rejected',
                     'semua'));
         }
-    }    
+    }
 
     public function home_ajax()
     {
@@ -579,9 +579,9 @@ class HomeController extends Controller
             'form_incident_report' => ['display' => 'Form Incident Report', 'url' => 'incident_report'],
             'form_izin' => ['display' => 'Form Izin Memasuki Area Level 3', 'url' => 'izin'],
         ];
-        
+
         $mergedData = collect();
-        
+
         if (Auth::user()->hasDepartment('ITD')) {
             foreach ($tables as $table => $config) {
                 $data = DB::table($table)
@@ -598,14 +598,14 @@ class HomeController extends Controller
                     ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
                     ->whereNull("$table.is_finish")
                     ->get();
-        
+
                 $mergedData = $mergedData->concat($data);
             }
         } elseif (Auth::user()->can('approve_mgr')) {
             $userDepartments = Auth::user()->departments->pluck('id');
             $firstDepartmentId = $userDepartments->first();
             $lastDepartmentId = $userDepartments->last();
-        
+
             foreach ($tables as $table => $config) {
                 $data = DB::table($table)
                     ->select(
@@ -629,7 +629,7 @@ class HomeController extends Controller
                     ->where("$table.final_status", 'created')
                     ->orWhere("$table.created_by", Auth::user()->id)
                     ->get();
-        
+
                 $mergedData = $mergedData->concat($data);
             }
         } else {
@@ -650,19 +650,110 @@ class HomeController extends Controller
                     ->where("$table.created_by", Auth::user()->id)
                     ->whereNull("$table.is_finish")
                     ->get();
-        
+
                 $mergedData = $mergedData->concat($data);
             }
         }
-        
+
         return response()->json(['data' => $mergedData]);
     }
-    
+
 
     public function type()
     {
         $supports = Support::orderBy('shift', 'ASC')->get();
 
         return view('website.pages.type', compact('supports'));
+    }
+
+    public function get_rating()
+    {
+        // Rata-rata keseluruhan
+        $avgOverall = Ticket::selectRaw('ROUND(AVG(review::numeric), 2) as avg_review')->value('avg_review');
+
+        // Rata-rata per user
+        $avgByPerson = Ticket::join('public.users', 'tickets.finish_by', '=', 'users.id')
+            ->select('users.name')
+            ->selectRaw('ROUND(AVG(tickets.review::numeric), 2) as avg_review')
+            ->selectRaw('COUNT(*) as total_ticket')
+            ->groupBy('users.id', 'users.name')
+            ->get();
+
+        return response()->json([
+            'overall_average' => $avgOverall,
+            'average_per_person' => $avgByPerson
+        ]);
+    }
+
+    public function metrics(Request $request)
+    {
+        // Opsi filter (mis. rentang tanggal) – nilai default 30 hari terakhir
+        $days = (int) $request->get('days', 30);
+
+        // Filter hanya review numerik (PostgreSQL regex)
+        $numericFilter = "review ~ '^[0-9]+(\\.[0-9]+)?$'";
+
+        // Rata-rata keseluruhan & total review
+        $overall = Ticket::whereRaw($numericFilter)
+            ->selectRaw('ROUND(AVG(review::numeric), 2) AS avg_review, COUNT(*) AS total_reviews')
+            ->first();
+
+        // Rata-rata per user (finish_by) + nama
+        $byPerson = Ticket::join('public.users', 'tickets.finish_by', '=', 'users.id')
+            ->whereRaw($numericFilter)
+            ->selectRaw('users.id, users.name, ROUND(AVG(tickets.review::numeric), 2) AS avg_review, COUNT(*) AS total_ticket')
+            ->groupBy('users.id', 'users.name')
+            ->orderByRaw('COUNT(*) DESC, AVG(tickets.review::numeric) DESC')
+            ->get();
+
+        // Tren harian: 30 hari terakhir
+        $trend = Ticket::whereRaw($numericFilter)
+            ->where('created_at', '>=', now()->subDays($days))
+            ->selectRaw("DATE(created_at) AS d, ROUND(AVG(review::numeric), 2) AS avg_review, COUNT(*) AS n")
+            ->groupBy('d')
+            ->orderBy('d')
+            ->get();
+
+        // Distribusi bucket (0–59, 60–69, 70–79, 80–89, 90–100)
+        $distribution = Ticket::whereRaw($numericFilter)
+            ->selectRaw("
+                SUM(CASE WHEN review::numeric < 60 THEN 1 ELSE 0 END) AS b_0_59,
+                SUM(CASE WHEN review::numeric >= 60 AND review::numeric < 70 THEN 1 ELSE 0 END) AS b_60_69,
+                SUM(CASE WHEN review::numeric >= 70 AND review::numeric < 80 THEN 1 ELSE 0 END) AS b_70_79,
+                SUM(CASE WHEN review::numeric >= 80 AND review::numeric < 90 THEN 1 ELSE 0 END) AS b_80_89,
+                SUM(CASE WHEN review::numeric >= 90 THEN 1 ELSE 0 END) AS b_90_100
+            ")->first();
+
+        // Top performers (opsional): minimal 5 tiket
+        $minTickets = (int) $request->get('min_tickets', 5);
+        $topPerformers = Ticket::join('public.users', 'tickets.finish_by', '=', 'users.id')
+            ->whereRaw($numericFilter)
+            ->selectRaw('users.id, users.name, ROUND(AVG(tickets.review::numeric), 2) AS avg_review, COUNT(*) AS total_ticket')
+            ->groupBy('users.id', 'users.name')
+            ->havingRaw('COUNT(*) >= ?', [$minTickets])
+            ->orderByRaw('COUNT(*) DESC, AVG(tickets.review::numeric) DESC')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'filters' => [
+                'days' => $days,
+                'min_tickets' => $minTickets,
+            ],
+            'overall' => [
+                'average' => (float) ($overall->avg_review ?? 0),
+                'total_reviews' => (int) ($overall->total_reviews ?? 0),
+            ],
+            'by_person' => $byPerson,
+            'trend' => $trend,
+            'distribution' => [
+                '0-59'   => (int) ($distribution->b_0_59 ?? 0),
+                '60-69'  => (int) ($distribution->b_60_69 ?? 0),
+                '70-79'  => (int) ($distribution->b_70_79 ?? 0),
+                '80-89'  => (int) ($distribution->b_80_89 ?? 0),
+                '90-100' => (int) ($distribution->b_90_100 ?? 0),
+            ],
+            'top_performers' => $topPerformers,
+        ]);
     }
 }

@@ -54,10 +54,11 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
             Route::get('/home', 'HomeController@index')->name('home');
             Route::get('/mail', function () {
                 \Illuminate\Support\Facades\Mail::send(new \App\Mail\TaskReminder());
-
                 return view('website.pages.home');
             });
             Route::get('/get_approval_count', 'AppHelperController@getApprovalCount')->name('get_approval_count');
+            Route::get('/get_rating', 'HomeController@get_rating')->name('get_rating');
+            Route::get('/metrics', 'HomeController@metrics')->name('metrics');
             // MASTER //
             Route::group(['prefix' => 'reminder'], function () {
                 Route::group(['middleware' => ['can_dept:ITD']], function () {

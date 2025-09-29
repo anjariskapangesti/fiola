@@ -11,7 +11,7 @@ class Ticket extends Model
     use HasUuids;
 
     protected $table = 'tickets';
-    protected $guarded = [  
+    protected $guarded = [
         'id',
     ];
 
@@ -23,5 +23,10 @@ class Ticket extends Model
     public function accepted()
     {
         return $this->belongsTo(User::class, 'it_approve_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'finish_by');
     }
 }
