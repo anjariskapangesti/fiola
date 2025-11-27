@@ -65,12 +65,12 @@ class SoftwareController extends Controller
                     ->orderBy('no_reg', 'desc')
                     ->first();
         $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
-        
-        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
+
+        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';
         if ($lastMonth !== $month){
             $lastNumber = '000';
-        }            
-        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+        }
+        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);
         $no_reg = 'SWR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         $isManagerApprove = null;
@@ -107,7 +107,7 @@ class SoftwareController extends Controller
                 'appname' => $request->appname,
                 'installon' => $request->installon,
                 'detail' => $request->detail,
-                'purpose' => $request->purpose,                
+                'purpose' => $request->purpose,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
@@ -116,9 +116,9 @@ class SoftwareController extends Controller
                 'is_it_mgr_approve' => $isItManagerApprove,
                 'manager_approval_date' => $managerApprovalDate,
                 'it_approval_date' => $itApprovalDate,
-                'it_mgr_approval_date' => $itManagerApprovalDate,            
+                'it_mgr_approval_date' => $itManagerApprovalDate,
             ]);
-            
+
             $form_software->save();
 
             return redirect()->route('website.software.list')->with('success', 'Create Successfully');
@@ -299,7 +299,7 @@ class SoftwareController extends Controller
         $type = $request->type;
 
         $software = Software::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $software->is_it_approve = 1;
             $software->final_status = 'IT Approve';
@@ -317,7 +317,7 @@ class SoftwareController extends Controller
         }
         $software->it_approval_date = Carbon::now();
         $software->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM SOFTWARE\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -334,11 +334,13 @@ class SoftwareController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -346,11 +348,12 @@ class SoftwareController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -522,31 +525,33 @@ class SoftwareController extends Controller
 
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM software\n\n";
-            
+
             $isi .= "Category : " . $software->category;
             $isi .= "\nType : " . $software->type;
-            
+
             $isi .= "\n\nApplication Name : *" . $software->appname . "*";
             $isi .= "\nDevice Name : *" . $software->installon . "*";
             $isi .= "\nDetails : " . $software->detail;
             $isi .= "\nPurpose : " . $software->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $software->manager_note;
             $isi .= "\nITD Note : " . $software->it_note;
             $isi .= "\nITD Manager Note : " . $software->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -554,10 +559,12 @@ class SoftwareController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

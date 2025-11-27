@@ -358,7 +358,7 @@ class NetworkController extends Controller
         $type = $request->type;
 
         $network = Network::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $network->is_it_approve = 1;
             $network->final_status = 'IT Approve';
@@ -376,7 +376,7 @@ class NetworkController extends Controller
         }
         $network->it_approval_date = Carbon::now();
         $network->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM NETWORK\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -392,11 +392,13 @@ class NetworkController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -404,11 +406,12 @@ class NetworkController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -580,30 +583,32 @@ class NetworkController extends Controller
 
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM NETWORK\n\n";
-            
+
             $isi .= "Project Name : *" . $network->project_name . "*";
             $isi .= "\nDate Access : " . $network->date_access_start . " - " . $network->date_access_end;
             $isi .= "\nRack that is accessed : " . $network->rack;
             $isi .= "\nDevice that is accessed : " . $network->device;
             $isi .= "\nNeed Down Time : " . $network->down_time;
             $isi .= "\nPurpose : " . $network->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $network->manager_note;
             $isi .= "\nITD Note : " . $network->it_note;
             $isi .= "\nITD Manager Note : " . $network->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -611,10 +616,12 @@ class NetworkController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

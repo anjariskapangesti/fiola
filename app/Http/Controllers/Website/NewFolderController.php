@@ -23,15 +23,15 @@ use App\Traits\HasAjaxList;
 class NewFolderController extends Controller
 {
     use HasAjaxList;
-    
+
     public function create()
     {
         $departments = Department::orderBy('name')->get();
         $folders = Folder::orderBy('name', 'ASC')->get();
-        
+
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
-                                    ->count(); 
+                                    ->count();
 
         $data = NewFolder::where('created_by', Auth::user()->id)
                             ->where(function($query) {
@@ -40,7 +40,7 @@ class NewFolderController extends Controller
                             })
                             ->where('is_confirm', 0)
                             ->count();
-        
+
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else if($data > 0){
@@ -87,7 +87,7 @@ class NewFolderController extends Controller
                 'permission' => 'required',
                 'purpose' => 'required',
             ]);
-    
+
             $year = date('y');
             $month = date('m');
             $lastForm = DB::table('form_new_folder')
@@ -95,16 +95,16 @@ class NewFolderController extends Controller
                         ->orderBy('no_reg', 'desc')
                         ->first();
             $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
-            
-            $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
+
+            $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';
             if ($lastMonth !== $month){
                 $lastNumber = '000';
-            }            
-            $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+            }
+            $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);
             $no_reg = 'NFS/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
-    
+
             $user = Auth::user();
-    
+
             $newfolder = new NewFolder();
             $newfolder->no_reg = $no_reg;
             $newfolder->purpose = $request->purpose;
@@ -118,7 +118,7 @@ class NewFolderController extends Controller
             $newfolder->it_approval_date = $itApprovalDate;
             $newfolder->it_mgr_approval_date = $itManagerApprovalDate;
             $newfolder->save();
-    
+
             for ($i = 0; $i < count($request->foldername ); $i++) {
                 NewFolderPath::create([
                     'new_folder_id' => $newfolder->id,
@@ -135,7 +135,7 @@ class NewFolderController extends Controller
                     'permission' => $request->permission[$i],
                 ]);
             }
-    
+
             return redirect()->route('website.new-folder.list')->with('success', 'Create Successfully');
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
@@ -155,7 +155,7 @@ class NewFolderController extends Controller
             ['form_new_folder_path', 'form_new_folder_user']
         );
     }
-    
+
     public function approve_form(Request $request)
     {
         $id = $request->id;
@@ -182,7 +182,7 @@ class NewFolderController extends Controller
 
         return "Delete Successfully";
     }
-    
+
     // MGR //
     public function manager_approval()
     {
@@ -318,7 +318,7 @@ class NewFolderController extends Controller
         $newfolder = NewFolder::findOrFail($id);
         $newfolderpaths = NewFolderPath::where('new_folder_id', $id)->get();
         $newfolderusers = NewFolderUser::where('new_folder_id', $id)->get();
-        
+
         if ($type == 'approve') {
             $newfolder->is_it_approve = 1;
             $newfolder->final_status = 'IT Approve';
@@ -336,7 +336,7 @@ class NewFolderController extends Controller
         }
         $newfolder->it_approval_date = Carbon::now();
         $newfolder->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM NEW FOLDER\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -351,11 +351,13 @@ class NewFolderController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -363,11 +365,12 @@ class NewFolderController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -551,7 +554,7 @@ class NewFolderController extends Controller
 
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM FOLDER ACCESS\n\n";
-            
+
             $isi .= "Path : \n";
             $nopath = 1;
             foreach($newfolderpaths as $newfolderpath)
@@ -565,25 +568,27 @@ class NewFolderController extends Controller
             {
                 $isi .= $nouser++ . ". " . $newfolderuser->username . " - " . $newfolderuser->department . " - " . $newfolderuser->permission . "\n";
             }
-            
+
             $isi .= "\nPurpose : " . $newfolder->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $newfolder->manager_note;
             $isi .= "\nITD Note : " . $newfolder->it_note;
             $isi .= "\nITD Manager Note : " . $newfolder->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -591,10 +596,12 @@ class NewFolderController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

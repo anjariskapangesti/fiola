@@ -20,13 +20,13 @@ use App\Traits\HasAjaxList;
 class IncidentReportController extends Controller
 {
     use HasAjaxList;
-    
+
     public function create()
     {
         $auth = User::where('id', Auth::user()->id)
             ->whereNull('nohp')
             ->count();
-            
+
         $departments = Department::orderBy('name')->get();
 
         $data = IncidentReport::where('created_by', Auth::user()->id)
@@ -463,7 +463,7 @@ class IncidentReportController extends Controller
         $type = $request->type;
 
         $incident_report = IncidentReport::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $incident_report->is_it_approve = 1;
             $incident_report->final_status = 'IT Approve';
@@ -481,7 +481,7 @@ class IncidentReportController extends Controller
         }
         $incident_report->it_approval_date = Carbon::now();
         $incident_report->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM NETWORK\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -497,11 +497,13 @@ class IncidentReportController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -509,11 +511,12 @@ class IncidentReportController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -685,30 +688,32 @@ class IncidentReportController extends Controller
 
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM NETWORK\n\n";
-            
+
             $isi .= "Project Name : *" . $incident_report->project_name . "*";
             $isi .= "\nDate Access : " . $incident_report->date_access_start . " - " . $incident_report->date_access_end;
             $isi .= "\nRack that is accessed : " . $incident_report->rack;
             $isi .= "\nDevice that is accessed : " . $incident_report->device;
             $isi .= "\nNeed Down Time : " . $incident_report->down_time;
             $isi .= "\nPurpose : " . $incident_report->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $incident_report->manager_note;
             $isi .= "\nITD Note : " . $incident_report->it_note;
             $isi .= "\nITD Manager Note : " . $incident_report->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -716,10 +721,12 @@ class IncidentReportController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

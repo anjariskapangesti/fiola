@@ -204,11 +204,15 @@ class TicketController extends Controller
                 $isi .= "\n\nAccepted by : " . Auth::user()->name;
             }
 
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+            $nomor = $ticket->requestor_phone;
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -216,11 +220,12 @@ class TicketController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $ticket->requestor_phone . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
-
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
         return $return;
     }

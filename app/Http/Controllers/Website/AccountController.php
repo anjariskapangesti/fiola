@@ -428,7 +428,7 @@ class AccountController extends Controller
         $type = $request->type;
 
         $account = Account::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $account->is_it_approve = 1;
             $account->final_status = 'IT Approve';
@@ -446,7 +446,7 @@ class AccountController extends Controller
         }
         $account->it_approval_date = Carbon::now();
         $account->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM ACCOUNT\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -462,11 +462,13 @@ class AccountController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -474,11 +476,12 @@ class AccountController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -651,33 +654,35 @@ class AccountController extends Controller
 
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM ACCOUNT\n\n";
-            
+
             $isi .= "Budget Type : " . $account->budget_type;
             $isi .= "\nForm Type : " . $account->form_type;
-            
+
             $isi .= "\n\nNPK : *" . $account->npk . "*";
             $isi .= "\nName : *" . $account->fullname . "*";
             $isi .= "\nDepartment : " . $account->department;
             $isi .= "\nPhone : " . $account->phone;
             $isi .= "\nAlamat Email : " . $account->ad_name . "@aiia.co.id";
             $isi .= "\nPurpose : " . $account->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $account->manager_note;
             $isi .= "\nITD Note : " . $account->it_note;
             $isi .= "\nITD Manager Note : " . $account->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -685,10 +690,12 @@ class AccountController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

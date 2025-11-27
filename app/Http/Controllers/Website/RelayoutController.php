@@ -359,7 +359,7 @@ class RelayoutController extends Controller
         $type = $request->type;
 
         $relayout = Relayout::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $relayout->is_it_approve = 1;
             $relayout->final_status = 'IT Approve';
@@ -377,7 +377,7 @@ class RelayoutController extends Controller
         }
         $relayout->it_approval_date = Carbon::now();
         $relayout->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM RELAYOUT\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -393,11 +393,13 @@ class RelayoutController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -405,11 +407,12 @@ class RelayoutController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -584,29 +587,31 @@ class RelayoutController extends Controller
 
             $isi .= "Budget Type : " . $relayout->budget_type;
             $isi .= "\nRequest Type : " . $relayout->request_type;
-            
+
             $isi .= "\n\nProject Name : *" . $relayout->project_name . "*";
             $isi .= "\nLocation : " . $relayout->location;
             $isi .= "\nRelayout Type : " . $relayout->relayout_type;
             $isi .= "\nDescription : " . $relayout->description;
             $isi .= "\nPurpose : " . $relayout->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $relayout->manager_note;
             $isi .= "\nITD Note : " . $relayout->it_note;
             $isi .= "\nITD Manager Note : " . $relayout->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -614,10 +619,12 @@ class RelayoutController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

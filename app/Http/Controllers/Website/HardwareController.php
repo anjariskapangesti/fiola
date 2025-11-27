@@ -150,8 +150,8 @@ class HardwareController extends Controller
         $request->validate([
             'budget_type' => 'required',
             'category' => 'required',
-            'type' => 'required',  
-            'npk' => 'required',          
+            'type' => 'required',
+            'npk' => 'required',
             'fullname' => 'required',
             'department' => 'required',
             'phone' => 'required',
@@ -186,12 +186,12 @@ class HardwareController extends Controller
                 'phone' => $request->phone,
                 'due_date' => $request->due_date,
                 'device_before' => $request->device_before,
-                'purpose' => $request->purpose,                
+                'purpose' => $request->purpose,
                 'created_by' => Auth::user()->id,
                 'created_dept' => Auth::user()->departments->pluck('id')->first(),
                 'final_status' => $finalStatus,
                 'is_manager_approve' => $isManagerApprove,
-                'manager_approval_date' => $managerApprovalDate,              
+                'manager_approval_date' => $managerApprovalDate,
             ]);
 
             $depts = Department::all();
@@ -368,7 +368,7 @@ class HardwareController extends Controller
         $type = $request->type;
 
         $hardware = Hardware::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $hardware->is_it_approve = 1;
             $hardware->final_status = 'IT Approve';
@@ -386,7 +386,7 @@ class HardwareController extends Controller
         }
         $hardware->it_approval_date = Carbon::now();
         $hardware->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM HARDWARE\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -402,11 +402,13 @@ class HardwareController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -414,11 +416,12 @@ class HardwareController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -591,34 +594,36 @@ class HardwareController extends Controller
 
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM HARDWARE\n\n";
-            
+
             $isi .= "Budget Type : " . $hardware->budget_type;
             $isi .= "\nType : " . $hardware->type;
             $isi .= "\nCategory : " . $hardware->category;
-            
+
             $isi .= "\n\nNPK : *" . $hardware->npk . "*";
             $isi .= "\nName : *" . $hardware->fullname . "*";
             $isi .= "\nDepartment : " . $hardware->department;
             $isi .= "\nPhone : " . $hardware->phone;
             $isi .= "\nID Device : " . $hardware->device_after;
             $isi .= "\nPurpose : " . $hardware->purpose;
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $hardware->manager_note;
             $isi .= "\nITD Note : " . $hardware->it_note;
             $isi .= "\nITD Manager Note : " . $hardware->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -626,10 +631,12 @@ class HardwareController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;

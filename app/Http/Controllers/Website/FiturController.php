@@ -24,7 +24,7 @@ class FiturController extends Controller
     {
         $auth = User::where('id', Auth::user()->id)
                                     ->whereNull('nohp')
-                                    ->count(); 
+                                    ->count();
 
         $data = Fitur::where('created_by', Auth::user()->id)
                             ->where(function($query) {
@@ -33,7 +33,7 @@ class FiturController extends Controller
                             })
                             ->where('is_confirm', 0)
                             ->count();
-        
+
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } else if($data > 0){
@@ -47,7 +47,7 @@ class FiturController extends Controller
     {
         $request->validate([
             'no_reg' => 'unique',
-            'npk_pic' => 'required' ,          
+            'npk_pic' => 'required' ,
             'fullname_pic' => 'required' ,
             'department_pic' => 'required' ,
             'phone_pic' => 'required' ,
@@ -60,12 +60,12 @@ class FiturController extends Controller
                         ->orderBy('no_reg', 'desc')
                         ->first();
         $lastNumber = ($lastForm) ? substr($lastForm->no_reg, -3) : '000';
-        
-        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';            
+
+        $lastMonth = ($lastForm) ? substr($lastForm->no_reg, 6, 2) : '00';
         if ($lastMonth !== $month){
             $lastNumber = '000';
-        }            
-        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);            
+        }
+        $newNumber = str_pad((intval($lastNumber) + 1), strlen($lastNumber), '0', STR_PAD_LEFT);
         $no_reg = 'FTR/' . $year . $month . '/' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         $isManagerApprove = null;
@@ -99,8 +99,8 @@ class FiturController extends Controller
                 $photoExtension = $request->lampiran->getClientOriginalExtension();
                 $photoFileName = 'FTR_' . $year . $month . '_' . str_pad($newNumber, 3, '0', STR_PAD_LEFT) . '.' . $photoExtension;
                 $photoPath = $request->lampiran->storeAs('lampiran', $photoFileName, 'public');
-            }  
-            
+            }
+
             $form_fitur = Fitur::create([
                 'no_reg' => $no_reg,
                 'npk' => $request->npk_pic ,
@@ -121,7 +121,7 @@ class FiturController extends Controller
                 'is_it_mgr_approve' => $isItManagerApprove,
                 'manager_approval_date' => $managerApprovalDate,
                 'it_approval_date' => $itApprovalDate,
-                'it_mgr_approval_date' => $itManagerApprovalDate,            
+                'it_mgr_approval_date' => $itManagerApprovalDate,
             ]);
             $form_fitur->save();
 
@@ -287,7 +287,7 @@ class FiturController extends Controller
         $type = $request->type;
 
         $fitur = Fitur::findOrFail($id);
-        
+
         if ($type == 'approve') {
             $fitur->is_it_approve = 1;
             $fitur->final_status = 'IT Approve';
@@ -305,7 +305,7 @@ class FiturController extends Controller
         }
         $fitur->it_approval_date = Carbon::now();
         $fitur->save();
-        
+
         if ($request->notifikasi == 'Ya') {
             $isi = "FORM FITUR\n";
             $isi .= "*TUNGGU APPROVE IT MANAGER*";
@@ -321,11 +321,13 @@ class FiturController extends Controller
             $nomors = Alert::where('role', 'IT Manager')->get();
 
             foreach ($nomors as $nomor) {
-                $token = config('services.wa.token');
-                $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+                $token = "793D30579A77D4A0E12648872BFBB085";
+                $message = "----------FIOLA----------\n"
+                    . $isi
+                    . "\n-------------------------";
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                    CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -333,11 +335,12 @@ class FiturController extends Controller
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor->nohp . '&message=' . $message,
+                    CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-
                 $response = curl_exec($curl);
                 curl_close($curl);
+                sleep(10);
+                echo $response;
             }
         }
         return $return;
@@ -512,23 +515,25 @@ class FiturController extends Controller
 
             $isi .= "Nama Aplikasi : *" . $fitur->aplikasi . "*";
             $isi .= "\nFitur Name : *" . $fitur->nama_fitur . "*";
-            
+
             $isi .= "\n\nStatus : *Finished*";
-            
+
             $isi .= "\n\nManager Note : " . $fitur->manager_note;
             $isi .= "\nITD Note : " . $fitur->it_note;
             $isi .= "\nITD Manager Note : " . $fitur->it_mgr_note;
             $isi .= "\n\nFinish Note : " . $request->finish_note;
-            
+
             $isi .= "\n\nExecution by : " . Auth::user()->name;
-            
+
             $nomor = $user->nohp;
-            
-            $token = config('services.wa.token');
-            $message = sprintf("----------FIOLA----------%c$isi%c------------------------- ", 10, 10);
+
+            $token = "793D30579A77D4A0E12648872BFBB085";
+            $message = "----------FIOLA----------\n"
+                . $isi
+                . "\n-------------------------";
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://app.ruangwa.id/api/send_message',
+                CURLOPT_URL => 'https://app.fastwa.com/api/v1/4D9AF7CE224B91C9CE14FFDDB55D248D/send_text',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -536,10 +541,12 @@ class FiturController extends Controller
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'token=' . $token . '&number=' . $nomor . '&message=' . $message,
+                CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
             $response = curl_exec($curl);
             curl_close($curl);
+            sleep(10);
+            echo $response;
         }
 
         return $return;
