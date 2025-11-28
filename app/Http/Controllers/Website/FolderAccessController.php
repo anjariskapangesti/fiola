@@ -360,12 +360,12 @@ class FolderAccessController extends Controller
 
             $isi .= "\n\nApproved ITD by : " . Auth::user()->name;
 
-            // $nomors = Alert::where('role', 'IT Manager')->get();
-            $nomors = ['082125008160', '62881081929629']; // Nomor IT Manager
+            $nomors = Alert::where('role', 'IT Manager')->get();
+            // $nomors = ['082125008160', '62881081929629']; // Nomor IT Manager
 
             foreach ($nomors as $nomor) {
                 $token = "793D30579A77D4A0E12648872BFBB085";
-                $message = "----  DEVITA  ----\n"
+                $message = "----------FIOLA----------\n"
                     . $isi
                     . "\n-------------------------";
                 $curl = curl_init();
