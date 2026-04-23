@@ -26,7 +26,7 @@ class TicketController extends Controller
     public function list_ajax(Request $request)
     {
         $data = Ticket::select('tickets.*', 'users.name as it_name', 'users.nohp as it_phone')
-                        ->leftJoin('public.users', 'tickets.it_approve_by', 'public.users.id')
+                        ->leftJoin('users', 'tickets.it_approve_by', 'users.id')
                         ->with('ticket_photos')
                         ->orderByRaw('is_finish ASC NULLS FIRST')
                         ->orderBy('created_at', 'DESC');
@@ -134,7 +134,7 @@ class TicketController extends Controller
     public function it_approval_ajax(Request $request)
     {
         $data = Ticket::select('tickets.*', 'users.name as it_name', 'users.nohp as it_phone')
-                        ->leftJoin('public.users', 'tickets.it_approve_by', 'public.users.id')
+                        ->leftJoin('users', 'tickets.it_approve_by', 'users.id')
                         ->with('ticket_photos')
                         ->orderBy('final_status', 'DESC'); // Urutkan berdasarkan waktu pembuatan secara menurun
 

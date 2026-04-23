@@ -45,11 +45,21 @@ class UserSeeder extends Seeder
         //     }
         // }
         /// ITD ///
-        $permissionsUser = [1];
-        $permissionsMGR = [1, 2];
-        $permissionsEXC = [1, 7];
-        $permissionsITD = [1, 3, 5, 6];
-        $permissionsITDMGR = [1, 2, 3, 4, 5, 6]; 
+        $permCreateForm = DB::table('permissions')->where('name', 'can_create_form')->value('id');
+        $permApproveMgr = DB::table('permissions')->where('name', 'can_approve_mgr')->value('id');
+        $permApproveIt = DB::table('permissions')->where('name', 'can_approve_it')->value('id');
+        $permApproveItMgr = DB::table('permissions')->where('name', 'can_approve_it_mgr')->value('id');
+        $permExecution = DB::table('permissions')->where('name', 'can_execution')->value('id');
+        $permMaster = DB::table('permissions')->where('name', 'can_master')->value('id');
+        $permApproveExc = DB::table('permissions')->where('name', 'can_approve_executives')->value('id');
+        $permAppsFiola = DB::table('permissions')->where('name', 'apps_fiola')->value('id');
+        $permGeneral = DB::table('permissions')->where('name', 'general')->value('id');
+
+        $permissionsUser = [$permCreateForm, $permGeneral, $permAppsFiola];
+        $permissionsMGR = [$permCreateForm, $permApproveMgr, $permGeneral, $permAppsFiola];
+        $permissionsEXC = [$permCreateForm, $permApproveExc, $permGeneral, $permAppsFiola];
+        $permissionsITD = [$permCreateForm, $permApproveIt, $permExecution, $permMaster, $permAppsFiola];
+        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola];
 
         $departmentHRD = 1;
         $departmentIRLGA = 2;

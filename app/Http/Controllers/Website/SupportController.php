@@ -19,9 +19,9 @@ class SupportController extends Controller
     {
         $users = User::whereHas('permissions', function ($query) {
             $query->where('permissions.name', 'apps_fiola');
-        })->select('users.*', DB::raw('STRING_AGG(departments.name, \', \') as department_names'))
-            ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
-            ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
+        })->select('users.*', DB::raw('GROUP_CONCAT(departments.name SEPARATOR ", ") as department_names'))
+            ->join('model_has_departments', 'users.id', 'model_has_departments.model_id')
+            ->join('departments', 'model_has_departments.department_id', 'departments.id')
             ->groupBy('users.id')
             ->orderBy('users.name', 'ASC')
             ->get();
@@ -56,9 +56,9 @@ class SupportController extends Controller
         $support = Support::findOrFail($id);
         $users = User::whereHas('permissions', function ($query) {
             $query->where('permissions.name', 'apps_fiola');
-        })->select('users.*', DB::raw('STRING_AGG(departments.name, \', \') as department_names'))
-            ->join('public.model_has_departments', 'public.users.id', 'public.model_has_departments.model_id')
-            ->join('public.departments', 'public.model_has_departments.department_id', 'departments.id')
+        })->select('users.*', DB::raw('GROUP_CONCAT(departments.name SEPARATOR ", ") as department_names'))
+            ->join('model_has_departments', 'users.id', 'model_has_departments.model_id')
+            ->join('departments', 'model_has_departments.department_id', 'departments.id')
             ->groupBy('users.id')
             ->orderBy('users.name', 'ASC')
             ->get();

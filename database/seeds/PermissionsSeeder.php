@@ -11,53 +11,28 @@ class PermissionsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->insert([
-            'name' => 'can_create_form',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        $permissions = [
+            'can_create_form',
+            'can_approve_mgr',
+            'can_approve_it',
+            'can_approve_it_mgr',
+            'can_execution',
+            'can_master',
+            'can_approve_executives',
+            'apps_fiola',
+            'general',
+            'approve_mgr',
+            'approve_gm',
+            'approve_dir',
+            'approve_vp',
+            'approve_pres',
+        ];
 
-        DB::table('permissions')->insert([
-            'name' => 'can_approve_mgr',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-        
-        DB::table('permissions')->insert([
-            'name' => 'can_approve_it',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'can_approve_it_mgr',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'can_execution',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'can_master',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        DB::table('permissions')->insert([
-            'name' => 'can_approve_executives',
-            'guard_name' => 'web',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        foreach ($permissions as $permission) {
+            DB::table('permissions')->updateOrInsert(
+                ['name' => $permission, 'guard_name' => 'web'],
+                ['created_at' => now(), 'updated_at' => now()]
+            );
+        }
     }
 }

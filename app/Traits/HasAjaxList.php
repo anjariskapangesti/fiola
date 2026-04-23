@@ -13,12 +13,12 @@ trait HasAjaxList
         $npk = $user->npk;
 
         $query = $modelClass::with($withRelations)
-            ->join('public.users', "{$tableAlias}.created_by", '=', 'public.users.id')
-            ->leftJoin('public.users as manager', "{$tableAlias}.manager_approve_by", '=', 'manager.id')
-            ->leftJoin('public.users as it', "{$tableAlias}.it_approve_by", '=', 'it.id')
-            ->leftJoin('public.users as it_mgr', "{$tableAlias}.it_mgr_approve_by", '=', 'it_mgr.id')
-            ->leftJoin('public.users as on_progress', "{$tableAlias}.on_progress_by", '=', 'on_progress.id')
-            ->leftJoin('public.users as finish', "{$tableAlias}.finish_by", '=', 'finish.id')
+            ->join('users', "{$tableAlias}.created_by", '=', 'users.id')
+            ->leftJoin('users as manager', "{$tableAlias}.manager_approve_by", '=', 'manager.id')
+            ->leftJoin('users as it', "{$tableAlias}.it_approve_by", '=', 'it.id')
+            ->leftJoin('users as it_mgr', "{$tableAlias}.it_mgr_approve_by", '=', 'it_mgr.id')
+            ->leftJoin('users as on_progress', "{$tableAlias}.on_progress_by", '=', 'on_progress.id')
+            ->leftJoin('users as finish', "{$tableAlias}.finish_by", '=', 'finish.id')
             ->select([
                 "{$tableAlias}.*",
                 'users.name as requestor',

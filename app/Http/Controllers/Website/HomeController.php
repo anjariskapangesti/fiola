@@ -248,8 +248,8 @@ class HomeController extends Controller
             $account_query->whereMonth('created_at', $current_month);
         }
         $account_total = $account_query->count();
-        $account_finished = (clone $account_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $account_rejected = (clone $account_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $account_finished = (clone $account_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $account_rejected = (clone $account_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $folderaccess_query = FolderAccess::query();
         if ($current_year != '0000') {
@@ -259,8 +259,8 @@ class HomeController extends Controller
             $folderaccess_query->whereMonth('created_at', $current_month);
         }
         $folderaccess_total = $folderaccess_query->count();
-        $folderaccess_finished = (clone $folderaccess_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $folderaccess_rejected = (clone $folderaccess_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $folderaccess_finished = (clone $folderaccess_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $folderaccess_rejected = (clone $folderaccess_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $newfolder_query = NewFolder::query();
         if ($current_year != '0000') {
@@ -270,8 +270,8 @@ class HomeController extends Controller
             $newfolder_query->whereMonth('created_at', $current_month);
         }
         $newfolder_total = $newfolder_query->count();
-        $newfolder_finished = (clone $newfolder_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $newfolder_rejected = (clone $newfolder_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $newfolder_finished = (clone $newfolder_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $newfolder_rejected = (clone $newfolder_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $software_query = Software::query();
         if ($current_year != '0000') {
@@ -281,8 +281,8 @@ class HomeController extends Controller
             $software_query->whereMonth('created_at', $current_month);
         }
         $software_total = $software_query->count();
-        $software_finished = (clone $software_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $software_rejected = (clone $software_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $software_finished = (clone $software_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $software_rejected = (clone $software_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $hardware_query = Hardware::query();
         if ($current_year != '0000') {
@@ -292,8 +292,8 @@ class HomeController extends Controller
             $hardware_query->whereMonth('created_at', $current_month);
         }
         $hardware_total = $hardware_query->count();
-        $hardware_finished = (clone $hardware_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $hardware_rejected = (clone $hardware_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $hardware_finished = (clone $hardware_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $hardware_rejected = (clone $hardware_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $vpn_query = Vpn::query();
         if ($current_year != '0000') {
@@ -303,8 +303,8 @@ class HomeController extends Controller
             $vpn_query->whereMonth('created_at', $current_month);
         }
         $vpn_total = $vpn_query->count();
-        $vpn_finished = (clone $vpn_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $vpn_rejected = (clone $vpn_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $vpn_finished = (clone $vpn_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $vpn_rejected = (clone $vpn_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $project_query = Project::query();
         if ($current_year != '0000') {
@@ -314,8 +314,8 @@ class HomeController extends Controller
             $project_query->whereMonth('created_at', $current_month);
         }
         $project_total = $project_query->count();
-        $project_finished = (clone $project_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $project_rejected = (clone $project_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $project_finished = (clone $project_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $project_rejected = (clone $project_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $fitur_query = Fitur::query();
         if ($current_year != '0000') {
@@ -325,8 +325,8 @@ class HomeController extends Controller
             $fitur_query->whereMonth('created_at', $current_month);
         }
         $fitur_total = $fitur_query->count();
-        $fitur_finished = (clone $fitur_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $fitur_rejected = (clone $fitur_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $fitur_finished = (clone $fitur_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $fitur_rejected = (clone $fitur_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $relayout_query = Relayout::query();
         if ($current_year != '0000') {
@@ -336,8 +336,8 @@ class HomeController extends Controller
             $relayout_query->whereMonth('created_at', $current_month);
         }
         $relayout_total = $relayout_query->count();
-        $relayout_finished = (clone $relayout_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $relayout_rejected = (clone $relayout_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $relayout_finished = (clone $relayout_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $relayout_rejected = (clone $relayout_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $network_query = Network::query();
         if ($current_year != '0000') {
@@ -347,8 +347,8 @@ class HomeController extends Controller
             $network_query->whereMonth('created_at', $current_month);
         }
         $network_total = $network_query->count();
-        $network_finished = (clone $network_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $network_rejected = (clone $network_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $network_finished = (clone $network_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $network_rejected = (clone $network_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $akses_sistem_query = Sistem::query();
         if ($current_year != '0000') {
@@ -358,8 +358,8 @@ class HomeController extends Controller
             $akses_sistem_query->whereMonth('created_at', $current_month);
         }
         $akses_sistem_total = $akses_sistem_query->count();
-        $akses_sistem_finished = (clone $akses_sistem_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $akses_sistem_rejected = (clone $akses_sistem_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $akses_sistem_finished = (clone $akses_sistem_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $akses_sistem_rejected = (clone $akses_sistem_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $incident_report_query = IncidentReport::query();
         if ($current_year != '0000') {
@@ -369,8 +369,8 @@ class HomeController extends Controller
             $incident_report_query->whereMonth('created_at', $current_month);
         }
         $incident_report_total = $incident_report_query->count();
-        $incident_report_finished = (clone $incident_report_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $incident_report_rejected = (clone $incident_report_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $incident_report_finished = (clone $incident_report_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $incident_report_rejected = (clone $incident_report_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $izin_query = Izin::query();
         if ($current_year != '0000') {
@@ -380,8 +380,8 @@ class HomeController extends Controller
             $izin_query->whereMonth('created_at', $current_month);
         }
         $izin_total = $izin_query->count();
-        $izin_finished = (clone $izin_query)->where('final_status', 'ILIKE', '%Finished%')->count();
-        $izin_rejected = (clone $izin_query)->where('final_status', 'ILIKE', '%Reject%')->count();
+        $izin_finished = (clone $izin_query)->where('final_status', 'LIKE', '%Finished%')->count();
+        $izin_rejected = (clone $izin_query)->where('final_status', 'LIKE', '%Reject%')->count();
 
         $auth = User::where('id', Auth::user()->id)
             ->whereNull('nohp')
@@ -608,8 +608,8 @@ class HomeController extends Controller
                         DB::raw("'{$config['display']}' as form_name"),
                         DB::raw("'{$config['url']}' as form_url")
                     )
-                    ->join('public.users', "$table.created_by", '=', 'public.users.id')
-                    ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                    ->join('users', "$table.created_by", '=', 'users.id')
+                    ->join('departments', "$table.created_dept", '=', 'departments.id')
                     ->whereNull("$table.is_finish")
                     ->get();
 
@@ -633,8 +633,8 @@ class HomeController extends Controller
                         DB::raw("'{$config['display']}' as form_name"),
                         DB::raw("'{$config['url']}' as form_url")
                     )
-                    ->join('public.users', "$table.created_by", '=', 'public.users.id')
-                    ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                    ->join('users', "$table.created_by", '=', 'users.id')
+                    ->join('departments', "$table.created_dept", '=', 'departments.id')
                     ->where(function ($query) use ($firstDepartmentId, $lastDepartmentId, $table) {
                         $query->where("$table.created_dept", $firstDepartmentId)
                             ->orWhere("$table.created_dept", $lastDepartmentId);
@@ -659,8 +659,8 @@ class HomeController extends Controller
                         DB::raw("'{$config['display']}' as form_name"),
                         DB::raw("'{$config['url']}' as form_url")
                     )
-                    ->join('public.users', "$table.created_by", '=', 'public.users.id')
-                    ->join('public.departments', "$table.created_dept", '=', 'public.departments.id')
+                    ->join('users', "$table.created_by", '=', 'users.id')
+                    ->join('departments', "$table.created_dept", '=', 'departments.id')
                     ->where("$table.created_by", Auth::user()->id)
                     ->whereNull("$table.is_finish")
                     ->get();
@@ -683,7 +683,7 @@ class HomeController extends Controller
     {
         $avgOverall = Ticket::selectRaw('ROUND(AVG(review::numeric), 2) as avg_review')->value('avg_review');
 
-        $avgByPerson = Ticket::join('public.users', 'tickets.finish_by', '=', 'users.id')
+        $avgByPerson = Ticket::join('users', 'tickets.finish_by', '=', 'users.id')
             ->select('users.name')
             ->selectRaw('ROUND(AVG(tickets.review::numeric), 2) as avg_review')
             ->selectRaw('COUNT(*) as total_ticket')
@@ -706,7 +706,7 @@ class HomeController extends Controller
             ->selectRaw('ROUND(AVG(review::numeric), 2) AS avg_review, COUNT(*) AS total_reviews')
             ->first();
 
-        $byPerson = Ticket::join('public.users', 'tickets.finish_by', '=', 'users.id')
+        $byPerson = Ticket::join('users', 'tickets.finish_by', '=', 'users.id')
             ->whereRaw($numericFilter)
             ->selectRaw('users.id, users.name, ROUND(AVG(tickets.review::numeric), 2) AS avg_review, COUNT(*) AS total_ticket')
             ->groupBy('users.id', 'users.name')
@@ -730,7 +730,7 @@ class HomeController extends Controller
             ")->first();
 
         $minTickets = (int) $request->get('min_tickets', 5);
-        $topPerformers = Ticket::join('public.users', 'tickets.finish_by', '=', 'users.id')
+        $topPerformers = Ticket::join('users', 'tickets.finish_by', '=', 'users.id')
             ->whereRaw($numericFilter)
             ->selectRaw('users.id, users.name, ROUND(AVG(tickets.review::numeric), 2) AS avg_review, COUNT(*) AS total_ticket')
             ->groupBy('users.id', 'users.name')

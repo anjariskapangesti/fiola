@@ -48,10 +48,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // public function departments(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Department::class, 'public.model_has_departments', 'model_id', 'department_id');
-    // }
+    public function departments(): BelongsToMany
+    {
+        return $this->belongsToMany(Department::class, 'model_has_departments', 'model_id', 'department_id');
+    }
+
+    public function hasDepartment($code)
+    {
+        return $this->departments()->where('code', $code)->exists();
+    }
 
     public function createdDepartments()
     {

@@ -249,12 +249,12 @@ class RelayoutController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
             ->where('final_status', 'created')
-            ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+            ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -309,12 +309,12 @@ class RelayoutController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })
             ->whereNotNull('is_manager_approve')
-            ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+            ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -336,12 +336,12 @@ class RelayoutController extends Controller
     public function it_approval_ajax(Request $request)
     {
         $data = Relayout::where('final_status', 'Manager Approve')
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+                        ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -426,12 +426,12 @@ class RelayoutController extends Controller
     public function it_approved_ajax(Request $request)
     {
         $data = Relayout::whereNotNull('is_it_approve')
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+                        ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -452,12 +452,12 @@ class RelayoutController extends Controller
     public function it_mgr_approval_ajax(Request $request)
     {
         $data = Relayout::where('final_status', 'IT Approve')
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+                        ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -504,12 +504,12 @@ class RelayoutController extends Controller
     public function it_mgr_approved_ajax(Request $request)
     {
         $data = Relayout::whereNotNull('is_it_mgr_approve')
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+                        ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -530,12 +530,12 @@ class RelayoutController extends Controller
     public function execution_ajax(Request $request)
     {
         $data = Relayout::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+                        ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',
@@ -638,12 +638,12 @@ class RelayoutController extends Controller
     public function finished_ajax(Request $request)
     {
         $data = Relayout::whereNotNull('is_finish')
-                        ->join('public.users', 'form_relayout.created_by', 'public.users.id')
-                        ->leftJoin('public.users as manager', 'form_relayout.manager_approve_by', 'manager.id')
-                        ->leftJoin('public.users as it', 'form_relayout.it_approve_by', 'it.id')
-                        ->leftJoin('public.users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
-                        ->leftJoin('public.users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
-                        ->leftJoin('public.users as finish', 'form_relayout.finish_by', 'finish.id')
+                        ->join('users', 'form_relayout.created_by', 'users.id')
+                        ->leftJoin('users as manager', 'form_relayout.manager_approve_by', 'manager.id')
+                        ->leftJoin('users as it', 'form_relayout.it_approve_by', 'it.id')
+                        ->leftJoin('users as it_mgr', 'form_relayout.it_mgr_approve_by', 'it_mgr.id')
+                        ->leftJoin('users as on_progress', 'form_relayout.on_progress_by', 'on_progress.id')
+                        ->leftJoin('users as finish', 'form_relayout.finish_by', 'finish.id')
                         ->select('form_relayout.*', 'users.name as requestor',
                                     'manager.name as manager_name',
                                     'it.name as it_name',

@@ -38,8 +38,8 @@ class ReminderController extends Controller
     {
         $data = Reminder::select('users.name as user_name', 'users.nohp as user_nohp', 'users.email as user_email', 'departments.name as department_name',
                                  'users.id as user_id', 'departments.id as department_id', 'reminders.id')
-                        ->join('public.users', 'reminders.user_id', 'public.users.id')
-                        ->join('public.departments', 'reminders.department_id', 'public.departments.id')
+                        ->join('users', 'reminders.user_id', 'users.id')
+                        ->join('departments', 'reminders.department_id', 'departments.id')
                         ->orderBy('users.name', 'asc');
         
         return DataTables::eloquent($data)->make(true);
