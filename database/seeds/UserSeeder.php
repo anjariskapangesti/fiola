@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
         $permissionsMGR = [$permCreateForm, $permApproveMgr, $permGeneral, $permAppsFiola];
         $permissionsEXC = [$permCreateForm, $permApproveExc, $permGeneral, $permAppsFiola];
         $permissionsITD = [$permCreateForm, $permApproveIt, $permExecution, $permMaster, $permAppsFiola];
-        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola, $permApproveDir, $permApprovePres];
+        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola];
 
         $departmentHRD = 1;
         $departmentIRLGA = 2;
