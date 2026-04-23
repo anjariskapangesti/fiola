@@ -89,6 +89,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($admins as $admin) {
+            $admin['company'] = 'AIIA';
             $admindept = DB::table('users')->insertGetId($admin);
     
             // Menetapkan departemen untuk pengguna
@@ -130,6 +131,7 @@ class UserSeeder extends Seeder
         ];
     
         foreach ($usersITD as $userITD) {
+            $userITD['company'] = 'AIIA';
             $userITDdept = DB::table('users')->insertGetId($userITD);
     
             // Menetapkan departemen untuk pengguna
@@ -174,6 +176,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($usersITD as $userITD) {
+            $userITD['company'] = 'AIIA';
             $userITDdept = DB::table('users')->insertGetId($userITD);
     
             // Menetapkan departemen untuk pengguna
@@ -228,6 +231,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($usersHRD as $userHRD) {
+            $userHRD['company'] = 'AIIA';
             $userHRDdept = DB::table('users')->insertGetId($userHRD);
     
             // Menetapkan departemen untuk pengguna
@@ -258,6 +262,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($usersIRLGA as $userIRLGA) {
+            $userIRLGA['company'] = 'AIIA';
             $userIRLGAdept = DB::table('users')->insertGetId($userIRLGA);
     
             // Menetapkan departemen untuk pengguna
@@ -287,6 +292,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($mgrsHRDIRLGA as $mgrHRDIRLGA) {
+            $mgrHRDIRLGA['company'] = 'AIIA';
             $mgrHRDIRLGAdept = DB::table('users')->insertGetId($mgrHRDIRLGA);
     
             // Menetapkan departemen untuk pengguna
@@ -334,6 +340,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($usersENGB as $userENGB) {
+            $userENGB['company'] = 'AIIA';
             $userENGBdept = DB::table('users')->insertGetId($userENGB);
             
             DB::table('model_has_departments')->insert([
@@ -362,6 +369,7 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($mgrsENGB as $mgrENGB) {
+            $mgrENGB['company'] = 'AIIA';
             $mgrENGBdept = DB::table('users')->insertGetId($mgrENGB);
     
             // Menetapkan departemen untuk pengguna

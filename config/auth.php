@@ -43,12 +43,12 @@ return [
 
         'email' => [
             'driver' => 'session',
-            'provider' => 'email',
+            'provider' => 'users',
         ],
         
         'npk' => [
             'driver' => 'session',
-            'provider' => 'npk',
+            'provider' => 'users',
         ],
 
         'api' => [
@@ -111,14 +111,14 @@ return [
         ],
 
         'email' => [
-            'provider' => 'email',
+            'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
         ],
         
         'npk' => [
-            'provider' => 'npk',
+            'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

@@ -68,16 +68,16 @@ class User extends Authenticatable
 
     public function job_ranks()
     {
-        return $this->belongsToMany(JobRank::class, 'public.model_has_job_ranks', 'model_id', 'job_rank_id');
+        return $this->belongsToMany(JobRank::class, 'model_has_job_ranks', 'model_id', 'job_rank_id');
     }
 
     public function divisions()
     {
-        return $this->belongsToMany(Division::class, 'public.model_has_divisions', 'model_id', 'division_id');
+        return $this->belongsToMany(Division::class, 'model_has_divisions', 'model_id', 'division_id');
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'public.model_has_permissions', 'model_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'model_has_permissions', 'model_id', 'permission_id');
     }
 }
