@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Division extends Model
 {
-    protected $table = 'public.divisions';
+    protected $table = 'divisions';
     protected $guarded = ['id'];
 
     public function users(): BelongsToMany

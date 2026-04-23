@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Department extends Model
 {
-    protected $table = 'public.departments';
+    protected $table = 'departments';
     protected $guarded = ['id'];
 
     public function users(): BelongsToMany

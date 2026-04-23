@@ -13,19 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('alerts', function (Blueprint $table) {
+        Schema::create('job_ranks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email');
-            $table->string('nohp')->nullable();
-            $table->string('role');
-            $table->unsignedBigInteger('department');
+            $table->string('code')->nullable();
             $table->timestamps();
-
-            $table->foreign('department')
-                    ->references('id')
-                    ->on('departments')
-                    ->onDelete('cascade');
         });
     }
 
@@ -36,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('alerts');
+        Schema::dropIfExists('job_ranks');
     }
 };

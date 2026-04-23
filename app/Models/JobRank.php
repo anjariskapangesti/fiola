@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class JobRank extends Model
 {
-    protected $table = 'public.job_ranks';
+    protected $table = 'job_ranks';
     protected $fillable = [
         'code',
         'name'
