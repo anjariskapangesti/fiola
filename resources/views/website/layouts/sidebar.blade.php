@@ -3,7 +3,6 @@
         <a href="{{ route('website.home') }}" class="app-brand-link">
             <span class="app-brand-logo demo me-1">
                 <span style="color: var(--bs-primary)">
-                    <?xml version="1.0" encoding="utf-8"?>
                     <svg viewBox="0 0 159.41 159.41" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
                         <defs>
                             <radialGradient gradientUnits="userSpaceOnUse" cx="86.024" cy="65.421" r="45.997"
@@ -195,12 +194,22 @@
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form'])
             </li>
-            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons mdi mdi-history"></i>
-                    <div data-i18n="Director History">Director History</div>
-                </a>
                 @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
+            </li>
+            <li class="menu-item {{ Route::is('website.project.dir_approval') ? 'active' : '' }}">
+                <a href="{{ route('website.project.dir_approval') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-calendar-sync"></i>
+                    <div data-i18n="Project Reschedule">Project Reschedule Approval</div>
+                    @if (App\Models\AppHelper::project_dir_count() > 0)
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_dir_count() }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="menu-item {{ Route::is('website.project.dir_approved') ? 'active' : '' }}">
+                <a href="{{ route('website.project.dir_approved') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="Reschedule History">Project Reschedule History</div>
+                </a>
             </li>
         @endcan
 
@@ -252,9 +261,23 @@
                     <div data-i18n="PD History">PD History</div>
                 </a>
                 @include('website.layouts.sidebar_items', [
-                    'link' => 'manager_approved',
                     'text' => 'Form',
                 ])
+            </li>
+            <li class="menu-item {{ Route::is('website.project.dir_approval') ? 'active' : '' }}">
+                <a href="{{ route('website.project.dir_approval') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-calendar-sync"></i>
+                    <div data-i18n="Project Reschedule">Project Reschedule Approval</div>
+                    @if (App\Models\AppHelper::project_dir_count() > 0)
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_dir_count() }}</span>
+                    @endif
+                </a>
+            </li>
+            <li class="menu-item {{ Route::is('website.project.dir_approved') ? 'active' : '' }}">
+                <a href="{{ route('website.project.dir_approved') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="Reschedule History">Project Reschedule History</div>
+                </a>
             </li>
         @endcan
 

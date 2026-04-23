@@ -437,7 +437,7 @@ class AppHelper
 
     public static function project_execution_count()
     {
-        return Project::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+        return Project::whereIn('final_status', ['IT MGR Approve', 'Director Approve', 'On Progress'])->count();
     }
 
     /// FORM FITUR ///
@@ -710,4 +710,13 @@ class AppHelper
     // {
     //     return ItNeeds::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
     // }
+
+    /// PROJECT RESCHEDULE ///
+    public static function project_dir_count()
+    {
+        return Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])
+            ->where('is_reschedule', 1)
+            ->whereNull('is_dir_approve')
+            ->count();
+    }
 }

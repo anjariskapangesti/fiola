@@ -52,15 +52,24 @@ class Project extends Model
         'finish_by',
         'is_timeline_active',
         'timeline_order',
+        'is_reschedule',
+        'reschedule_target_id',
+        'is_dir_approve',
+        'dir_approve_by',
+        'dir_approval_date',
+        'dir_note',
     ];
 
     protected $casts = [
         'is_timeline_active' => 'boolean',
+        'is_reschedule' => 'boolean',
+        'is_dir_approve' => 'boolean',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'manager_approval_date' => 'datetime',
         'it_approval_date' => 'datetime',
         'it_mgr_approval_date' => 'datetime',
+        'dir_approval_date' => 'datetime',
         'on_progress_date' => 'datetime',
         'finish_date' => 'datetime',
     ];

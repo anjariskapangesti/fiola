@@ -21,6 +21,27 @@ class ProjectController extends Controller
 {
     use HasAjaxList;
 
+    public function check_month_limit(Request $request)
+    {
+        $startDate = Carbon::parse($request->start_date);
+        $month = $startDate->month;
+        $year = $startDate->year;
+
+        $projects = Project::whereYear('start_date', $year)
+            ->whereMonth('start_date', $month)
+            ->whereNotIn('final_status', ['Rejected', 'Manager Reject', 'IT Reject', 'IT MGR Reject'])
+            ->get();
+
+        if ($projects->count() >= 2) {
+            return response()->json([
+                'status' => 'full',
+                'projects' => $projects
+            ]);
+        }
+
+        return response()->json(['status' => 'available']);
+    }
+
     public function create()
     {
         $devices = Device::all();
@@ -161,6 +182,9 @@ class ProjectController extends Controller
                 'manager_approval_date' => $managerApprovalDate,
                 'it_approval_date' => $itApprovalDate,
                 'it_mgr_approval_date' => $itManagerApprovalDate,
+                'is_reschedule' => $request->is_reschedule ?? 0,
+                'reschedule_target_id' => $request->reschedule_target_id,
+                'is_dir_approve' => null,
             ]);
 
             return redirect()->route('website.project.list')->with('success', 'Create Successfully');
@@ -259,12 +283,18 @@ class ProjectController extends Controller
             $return = "Approve Successfully";
         } else {
             $project->is_manager_approve = 0;
-            $project->final_status = 'Manager Reject';
             $project->manager_note = $request->manager_note;
             $project->manager_approve_by = Auth::user()->id;
-            $project->is_finish = 0;
-            $project->is_confirm = 0;
-            $return = "Reject Successfully";
+            
+            if ($project->is_reschedule) {
+                $project->final_status = 'Manager Reject (Reschedule)';
+                $return = "Reject Successfully (Continuing to ITD)";
+            } else {
+                $project->final_status = 'Manager Reject';
+                $project->is_finish = 0;
+                $project->is_confirm = 0;
+                $return = "Reject Successfully";
+            }
         }
 
         $project->manager_approval_date = Carbon::now();
@@ -316,7 +346,7 @@ class ProjectController extends Controller
 
     public function it_approval_ajax(Request $request)
     {
-        $data = Project::where('final_status', 'Manager Approve')
+        $data = Project::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
@@ -349,12 +379,18 @@ class ProjectController extends Controller
             $return = "Approve Successfully";
         } else {
             $project->is_it_approve = 0;
-            $project->is_confirm = 0;
-            $project->final_status = 'IT Reject';
             $project->it_note = $request->it_note;
-            $project->is_finish = 0;
             $project->it_approve_by = Auth::user()->id;
-            $return = "Reject Successfully";
+            
+            if ($project->is_reschedule) {
+                $project->final_status = 'IT Reject (Reschedule)';
+                $return = "Reject Successfully (Continuing to ITD MGR)";
+            } else {
+                $project->is_confirm = 0;
+                $project->final_status = 'IT Reject';
+                $project->is_finish = 0;
+                $return = "Reject Successfully";
+            }
         }
 
         $project->it_approval_date = Carbon::now();
@@ -398,7 +434,7 @@ class ProjectController extends Controller
 
     public function it_mgr_approval_ajax(Request $request)
     {
-        $data = Project::where('final_status', 'IT Approve')
+        $data = Project::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
@@ -431,12 +467,18 @@ class ProjectController extends Controller
             $return = "Approve Successfully";
         } else {
             $project->is_it_mgr_approve = 0;
-            $project->final_status = 'IT MGR Reject';
             $project->it_mgr_note = $request->it_mgr_note;
             $project->it_mgr_approve_by = Auth::user()->id;
-            $project->is_finish = 0;
-            $project->is_confirm = 0;
-            $return = "Reject Successfully";
+            
+            if ($project->is_reschedule) {
+                $project->final_status = 'IT MGR Reject (Reschedule)';
+                $return = "Reject Successfully (Continuing to Director)";
+            } else {
+                $project->final_status = 'IT MGR Reject';
+                $project->is_finish = 0;
+                $project->is_confirm = 0;
+                $return = "Reject Successfully";
+            }
         }
 
         $project->it_mgr_approval_date = Carbon::now();
@@ -473,6 +515,97 @@ class ProjectController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
+    public function dir_approval()
+    {
+        return view('website.pages.project.dir_approval');
+    }
+
+    public function dir_approval_ajax(Request $request)
+    {
+        $data = Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])
+            ->where('is_reschedule', 1)
+            ->join('users', 'form_project.created_by', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
+            ->select(
+                'form_project.*',
+                'users.name as requestor',
+                'manager.name as manager_name',
+                'it.name as it_name',
+                'it_mgr.name as it_mgr_name'
+            )
+            ->orderBy('created_at', 'ASC');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function dir_approve(Request $request)
+    {
+        $project = Project::findOrFail($request->id);
+
+        if ($request->type == 'approve') {
+            $project->is_dir_approve = 1;
+            $project->final_status = 'Director Approve';
+            $project->dir_note = $request->dir_note;
+            $project->dir_approve_by = Auth::user()->id;
+            $project->dir_approval_date = Carbon::now();
+            $project->save();
+
+            // Reschedule the target project
+            if ($project->reschedule_target_id) {
+                $oldProject = Project::find($project->reschedule_target_id);
+                if ($oldProject) {
+                    $oldProject->update([
+                        'final_status' => 'Rescheduled',
+                        'is_timeline_active' => false,
+                        'timeline_order' => null
+                    ]);
+                }
+            }
+
+            $return = "Approve Successfully. Slot released and project approved.";
+        } else {
+            $project->is_dir_approve = 0;
+            $project->final_status = 'Director Reject';
+            $project->dir_note = $request->dir_note;
+            $project->dir_approve_by = Auth::user()->id;
+            $project->dir_approval_date = Carbon::now();
+            $project->is_finish = 0;
+            $project->is_confirm = 0;
+            $project->save();
+            $return = "Reject Successfully. New project rejected.";
+        }
+
+        return $return;
+    }
+
+    public function dir_approved()
+    {
+        return view('website.pages.project.dir_approved');
+    }
+
+    public function dir_approved_ajax(Request $request)
+    {
+        $data = Project::whereNotNull('is_dir_approve')
+            ->join('users', 'form_project.created_by', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
+            ->leftJoin('users as director', 'form_project.dir_approve_by', 'director.id')
+            ->select(
+                'form_project.*',
+                'users.name as requestor',
+                'manager.name as manager_name',
+                'it.name as it_name',
+                'it_mgr.name as it_mgr_name',
+                'director.name as director_name'
+            )
+            ->orderBy('dir_approval_date', 'DESC');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
     public function execution()
     {
         return view('website.pages.project.execution');
@@ -480,7 +613,7 @@ class ProjectController extends Controller
 
     public function execution_ajax(Request $request)
     {
-        $data = Project::whereIn('final_status', ['IT MGR Approve', 'On Progress'])
+        $data = Project::whereIn('final_status', ['IT MGR Approve', 'Director Approve', 'On Progress'])
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')

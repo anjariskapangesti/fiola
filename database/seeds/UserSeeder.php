@@ -54,12 +54,14 @@ class UserSeeder extends Seeder
         $permApproveExc = DB::table('permissions')->where('name', 'can_approve_executives')->value('id');
         $permAppsFiola = DB::table('permissions')->where('name', 'apps_fiola')->value('id');
         $permGeneral = DB::table('permissions')->where('name', 'general')->value('id');
+        $permApproveDir = DB::table('permissions')->where('name', 'approve_dir')->value('id');
+        $permApprovePres = DB::table('permissions')->where('name', 'approve_pres')->value('id');
 
         $permissionsUser = [$permCreateForm, $permGeneral, $permAppsFiola];
         $permissionsMGR = [$permCreateForm, $permApproveMgr, $permGeneral, $permAppsFiola];
         $permissionsEXC = [$permCreateForm, $permApproveExc, $permGeneral, $permAppsFiola];
         $permissionsITD = [$permCreateForm, $permApproveIt, $permExecution, $permMaster, $permAppsFiola];
-        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola];
+        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola, $permApproveDir, $permApprovePres];
 
         $departmentHRD = 1;
         $departmentIRLGA = 2;
@@ -420,6 +422,42 @@ class UserSeeder extends Seeder
             }
         }        
 
+        /// DIRECTOR ///
+        $directorData = [
+            'name' => 'Director FIOLA',
+            'npk' => '999999',
+            'email' => 'director@aiia.co.id',
+            'password' => Hash::make('aiia'),
+            'nohp' => '081111111111',
+            'company' => 'AIIA',
+        ];
+
+        $existingDirector = DB::table('users')->where('npk', '999999')->orWhere('email', 'director@aiia.co.id')->first();
         
+        if (!$existingDirector) {
+            $directorId = DB::table('users')->insertGetId($directorData);
+        } else {
+            $directorId = $existingDirector->id;
+            DB::table('users')->where('id', $directorId)->update($directorData);
+        }
+
+        DB::table('model_has_departments')->updateOrInsert([
+            'model_type' => "App\Models\User",
+            'model_id' => $directorId,
+            'department_id' => 20, // departmentEXC
+        ]);
+
+        $permApproveDir = DB::table('permissions')->where('name', 'approve_dir')->value('id');
+        $permAppsFiola = DB::table('permissions')->where('name', 'apps_fiola')->value('id');
+
+        foreach ([$permApproveDir, $permAppsFiola] as $permissionId) {
+            if ($permissionId) {
+                DB::table('model_has_permissions')->updateOrInsert([
+                    'model_type' => "App\Models\User",
+                    'model_id' => $directorId,
+                    'permission_id' => $permissionId,
+                ]);
+            }
+        }
     }
 }

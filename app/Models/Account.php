@@ -23,7 +23,6 @@ class Account extends Model
         'ad_name_after',
         'is_email',
         'email_address',
-
         'purpose',
         'final_status',
         'is_manager_approve',

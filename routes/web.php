@@ -468,6 +468,7 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
                 Route::post('/store', 'ProjectController@store')->name('project.store');
                 Route::get('/list', 'ProjectController@list')->name('project.list');
                 Route::get('/list_ajax', 'ProjectController@list_ajax')->name('project.list_ajax');
+                Route::get('/check_month_limit', 'ProjectController@check_month_limit')->name('project.check_month_limit');
                 Route::post('/approve_form', 'ProjectController@approve_form')->name('project.approve_form');
                 Route::post('/delete_form', 'ProjectController@delete_form')->name('project.delete_form');
 
@@ -491,6 +492,13 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
                     Route::post('/it_mgr_approve', 'ProjectController@it_mgr_approve')->name('project.it_mgr_approve');
                     Route::get('/it_mgr_approved', 'ProjectController@it_mgr_approved')->name('project.it_mgr_approved');
                     Route::get('/it_mgr_approved_ajax', 'ProjectController@it_mgr_approved_ajax')->name('project.it_mgr_approved_ajax');
+                });
+                Route::group(['middleware' => ['auth.web']], function () {
+                    Route::get('/dir_approval', 'ProjectController@dir_approval')->name('project.dir_approval');
+                    Route::get('/dir_approval_ajax', 'ProjectController@dir_approval_ajax')->name('project.dir_approval_ajax');
+                    Route::post('/dir_approve', 'ProjectController@dir_approve')->name('project.dir_approve');
+                    Route::get('/dir_approved', 'ProjectController@dir_approved')->name('project.dir_approved');
+                    Route::get('/dir_approved_ajax', 'ProjectController@dir_approved_ajax')->name('project.dir_approved_ajax');
                 });
 
                 Route::group(['middleware' => ['auth.web']], function () {
