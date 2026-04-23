@@ -64,6 +64,7 @@
                   </div>
 
                   <form class="form" method="post" action="{{ route('website.auth.create') }}">
+                    @csrf
                     <div class="col-12">
                       <label for="name" class="form-label">Name</label>
                       <input type="text" name="name" class="form-control" id="name" required>
