@@ -199,13 +199,6 @@
                 </a>
                 @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form', 'only_reschedule' => true])
             </li>
-            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons mdi mdi-history"></i>
-                    <div data-i18n="Director History">Director History</div>
-                </a>
-                @include('website.layouts.sidebar_items', ['link' => 'manager_approved', 'text' => 'Form'])
-            </li>
         @endcan
 
         {{-- VP --}}
