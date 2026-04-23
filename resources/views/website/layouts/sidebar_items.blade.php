@@ -1,4 +1,5 @@
 <ul class="menu-sub">
+    @if (!($only_reschedule ?? false))
     <li
         class="menu-item {{ Route::is('website.account.' . $link) || Route::is('website.account.edit') ? 'active' : '' }}">
         <a href="{{ route('website.account.' . $link) }}" class="menu-link">
@@ -398,6 +399,23 @@
             @endif
         </a>
     </li>
+@endif
+
+    @if ($link == 'manager_approval' && (auth()->user()->can('approve_dir') || auth()->user()->can('approve_pres')))
+        <li class="menu-item {{ Route::is('website.project.dir_approval') ? 'active' : '' }}">
+            <a href="{{ route('website.project.dir_approval') }}" class="menu-link">
+                <div data-i18n="Project Reschedule">Project Reschedule Approval</div>
+                @if (App\Models\AppHelper::project_dir_count() > 0)
+                    &nbsp&nbsp<span class="badge bg-danger rounded-pill">{{ App\Models\AppHelper::project_dir_count() }}</span>
+                @endif
+            </a>
+        </li>
+        <li class="menu-item {{ Route::is('website.project.dir_approved') ? 'active' : '' }}">
+            <a href="{{ route('website.project.dir_approved') }}" class="menu-link">
+                <div data-i18n="Reschedule History">Project Reschedule History</div>
+            </a>
+        </li>
+    @endif
 </ul>
 
 {{-- <ul id="forms-nav"
