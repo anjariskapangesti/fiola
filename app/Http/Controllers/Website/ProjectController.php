@@ -464,6 +464,14 @@ class ProjectController extends Controller
             $project->final_status = 'IT MGR Approve';
             $project->it_mgr_note = $request->it_mgr_note;
             $project->it_mgr_approve_by = Auth::user()->id;
+
+            // Activate timeline for standard projects (reschedule activated by Director)
+            if (!$project->is_reschedule) {
+                $project->is_timeline_active = true;
+                $maxOrder = Project::where('is_timeline_active', true)->max('timeline_order');
+                $project->timeline_order = $maxOrder ? ($maxOrder + 1) : 1;
+            }
+
             $return = "Approve Successfully";
         } else {
             $project->is_it_mgr_approve = 0;
@@ -550,6 +558,12 @@ class ProjectController extends Controller
             $project->dir_note = $request->dir_note;
             $project->dir_approve_by = Auth::user()->id;
             $project->dir_approval_date = Carbon::now();
+            
+            // Activate timeline for the new project
+            $project->is_timeline_active = true;
+            $maxOrder = Project::where('is_timeline_active', true)->max('timeline_order');
+            $project->timeline_order = $maxOrder ? ($maxOrder + 1) : 1;
+            
             $project->save();
 
             // Reschedule the target project

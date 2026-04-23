@@ -407,7 +407,7 @@ class HomeController extends Controller
                 ->count();
         }
 
-        $projectsApproved = Project::where('final_status', 'Finished')
+        $projectsApproved = Project::where('is_timeline_active', true)
             ->whereNotNull('start_date')
             ->whereNotNull('end_date')
             ->orderBy('start_date', 'asc')

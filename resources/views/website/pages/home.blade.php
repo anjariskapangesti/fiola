@@ -277,7 +277,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h4 class="mb-1 text-dark fw-bold" style="letter-spacing:.3px;">PROJECTS TIMELINE</h4>
-                                    <div style="color:#6B7280;">Project yang sudah selesai keseluruhan</div>
+                                    <div style="color:#6B7280;">Project yang sudah masuk dalam jadwal</div>
                                 </div>
                                 <div class="text-dark fs-4">...</div>
                             </div>

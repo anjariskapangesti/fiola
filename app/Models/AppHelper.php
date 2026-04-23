@@ -127,7 +127,7 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
-            $count = $model::where('final_status', 'Manager Approve')->count();
+            $count = $model::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])->count();
 
             $totalCount += $count;
         }
@@ -157,7 +157,7 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
-            $count = $model::where('final_status', 'IT Approve')->count();
+            $count = $model::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])->count();
 
             $totalCount += $count;
         }
@@ -187,7 +187,16 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
-            $count = $model::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+            if ($model == Project::class) {
+                $count = $model::where(function($query) {
+                    $query->where(function($q) {
+                        $q->where('final_status', 'IT MGR Approve')
+                          ->where('is_reschedule', 0);
+                    })->orWhereIn('final_status', ['Director Approve', 'On Progress']);
+                })->count();
+            } else {
+                $count = $model::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
+            }
 
             $totalCount += $count;
         }

@@ -24,6 +24,18 @@
                 <form method="post" enctype="multipart/form-data" action="{{ route('website.project.store') }}"
                     class="needs-validation" id="myForm" novalidate>
                     @csrf
+                    <input type="hidden" name="is_reschedule" id="is_reschedule" value="0">
+                    <input type="hidden" name="reschedule_target_id" id="reschedule_target_id" value="">
+
+                    <div id="reschedule_indicator" class="alert alert-warning d-none mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="mdi mdi-alert-circle-outline me-2"></i>
+                                <strong>Reschedule Request:</strong> Mengajukan reschedule untuk project <span id="target_project_name" class="fw-bold"></span>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="cancelReschedule()">Batalkan Reschedule</button>
+                        </div>
+                    </div>
 
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
@@ -308,6 +320,29 @@
         </div>
     </div>
     {{-- END GUIDE MODAL --}}
+
+    {{-- MODAL RESCHEDULE --}}
+    <div class="modal fade" id="rescheduleModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title text-white"><i class="mdi mdi-alert me-2"></i>Batas Maksimal Project Tercapai</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Maaf, untuk bulan yang Anda pilih sudah terdapat <strong>2 project terjadwal</strong>. 
+                       Sesuai ketentuan, maksimal hanya diperbolehkan 2 project per bulan.</p>
+                    <p>Silahkan pilih salah satu project di bawah ini untuk diajukan <strong>Reschedule</strong>:</p>
+                    
+                    <div class="list-group mt-3" id="project_list_reschedule">
+                        <!-- Will be populated via JS -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -442,24 +477,99 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var form = document.getElementById('myForm');
-            var submitButton = document.getElementById('submitButton');
-            var spinner = '<i class="mdi mdi-loading spin"></i>';
+            const form = document.getElementById('myForm');
+            const submitButton = document.getElementById('submitButton');
+            const spinner = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+            const rescheduleModal = new bootstrap.Modal(document.getElementById('rescheduleModal'));
+            let isMonthChecked = false;
+
+            window.cancelReschedule = function() {
+                document.getElementById('is_reschedule').value = '0';
+                document.getElementById('reschedule_target_id').value = '';
+                document.getElementById('reschedule_indicator').classList.add('d-none');
+                isMonthChecked = false;
+            };
+
+            window.selectProjectForReschedule = function(id, name) {
+                document.getElementById('is_reschedule').value = '1';
+                document.getElementById('reschedule_target_id').value = id;
+                document.getElementById('target_project_name').innerText = name;
+                document.getElementById('reschedule_indicator').classList.remove('d-none');
+                rescheduleModal.hide();
+                isMonthChecked = true;
+                document.getElementById('reschedule_indicator').scrollIntoView({ behavior: 'smooth' });
+            };
 
             form.addEventListener('submit', function(event) {
                 if (!form.checkValidity()) {
                     form.classList.add('was-validated');
                     event.preventDefault();
-                } else {
+                    return;
+                }
+
+                if (isMonthChecked || document.getElementById('is_reschedule').value === '1') {
                     submitButton.setAttribute('disabled', 'true');
                     submitButton.innerHTML = spinner + ' Submitting...';
+                    return;
                 }
+
+                event.preventDefault();
+                const startDate = document.getElementById('start_date').value;
+                
+                if (!startDate) return;
+
+                submitButton.setAttribute('disabled', 'true');
+                submitButton.innerHTML = spinner + ' Checking Slot...';
+
+                fetch(`{{ route('website.project.check_month_limit') }}?start_date=${startDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'full') {
+                            const listGroup = document.getElementById('project_list_reschedule');
+                            listGroup.innerHTML = '';
+                            
+                            data.projects.forEach(project => {
+                                const item = `
+                                    <a href="javascript:void(0)" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                       onclick="selectProjectForReschedule('${project.id}', '${project.nama_project}')">
+                                        <div>
+                                            <h6 class="mb-1">${project.nama_project}</h6>
+                                            <small class="text-muted">${project.no_reg} | Requestor: ${project.fullname}</small>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">Pilih untuk Reschedule</span>
+                                    </a>
+                                `;
+                                listGroup.innerHTML += item;
+                            });
+                            
+                            rescheduleModal.show();
+                            submitButton.removeAttribute('disabled');
+                            submitButton.innerHTML = 'Submit';
+                        } else {
+                            isMonthChecked = true;
+                            form.submit();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        submitButton.removeAttribute('disabled');
+                        submitButton.innerHTML = 'Submit';
+                        form.submit();
+                    });
             });
 
             form.addEventListener('input', function() {
                 if (form.checkValidity()) {
-                    submitButton.removeAttribute('disabled');
-                    submitButton.innerHTML = 'Submit';
+                    if (submitButton.innerHTML === 'Submit') {
+                        submitButton.removeAttribute('disabled');
+                    }
+                }
+            });
+            
+            document.getElementById('start_date').addEventListener('change', function() {
+                isMonthChecked = false;
+                if (document.getElementById('is_reschedule').value === '1') {
+                    cancelReschedule();
                 }
             });
         });

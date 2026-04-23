@@ -14,37 +14,6 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        // DB::table('users')->insert([
-        //     'name' => 'Administrator',
-        //     'email' => 'administrator@aiia.co.id',
-        //     'password' => Hash::make('aiia'),
-        // ]);
-
-        // // Menetapkan departemen untuk pengguna Administrator
-        // // $admin->departments()->sync([$department->id, $model_type]);
-
-        // $departmentId = 9;
-        // $userId = 1;
-
-        // DB::table('model_has_departments')->insert([
-        //     'model_type' => "App\Models\User",
-        //     'model_id' => $userId,
-        //     'department_id' => $departmentId,
-        // ]);
-
-        // $userIds = [1];
-        // $permissionIds = [1, 2, 3, 4, 5, 6]; 
-
-        // foreach ($userIds as $userId) {
-        //     foreach ($permissionIds as $permissionId) {
-        //         DB::table('model_has_permissions')->insert([
-        //             'model_type' => "App\Models\User",
-        //             'model_id' => $userId,
-        //             'permission_id' => $permissionId,
-        //         ]);
-        //     }
-        // }
-        /// ITD ///
         $permCreateForm = DB::table('permissions')->where('name', 'can_create_form')->value('id');
         $permApproveMgr = DB::table('permissions')->where('name', 'can_approve_mgr')->value('id');
         $permApproveIt = DB::table('permissions')->where('name', 'can_approve_it')->value('id');
