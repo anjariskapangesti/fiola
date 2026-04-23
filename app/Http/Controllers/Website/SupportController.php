@@ -33,6 +33,9 @@ class SupportController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'shift' => 'required',
+            'email' => 'required|email',
+            'nohp' => 'required',
         ]);
         
         try
@@ -42,6 +45,7 @@ class SupportController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'nohp' => $request->nohp,
+                'status' => 'not active',
             ]);
             return redirect('/support/list')->with('success', 'Create Successfully');
         }
@@ -70,6 +74,9 @@ class SupportController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'shift' => 'required',
+            'email' => 'required|email',
+            'nohp' => 'required',
         ]);
     
         try {
@@ -95,8 +102,7 @@ class SupportController extends Controller
 
     public function list_ajax(Request $request)
     {
-        $data = Support::select('supports.*')
-                        ->orderBy('shift', 'ASC');
+        $data = Support::select('supports.*');
 
         return DataTables::eloquent($data)->make(true);
     }

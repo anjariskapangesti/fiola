@@ -61,22 +61,47 @@ class GuideController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function edit(Request $request)
+    public function edit($uuid)
     {
-        $id = $request->id;
+        $guide = Guide::where('uuid', $uuid)->firstOrFail();
+        return view('website.pages.guide.edit', compact('guide'));
+    }
 
-        $guides = Guide::find($id);
-        if (Auth::user()->can('can_master')) {
-            $guides->update([
-                'name' => $request->name,            
-                'cost' => $request->cost,            
-                'spesifikasi' => $request->spesifikasi,
-            ]);
-            
-            return "Update Successfully";
+    public function update(Request $request, $uuid)
+    {
+        $request->validate([
+            'form_name' => 'required',
+            'lampiran' => 'nullable|image|max:10240',
+        ]);
+
+        try {
+            $guide = Guide::where('uuid', $uuid)->firstOrFail();
+            if (Auth::user()->can('can_master')) {
+                $data = [
+                    'form_name' => $request->form_name,
+                ];
+
+                if ($request->hasFile('lampiran')) {
+                    // Delete old file
+                    if ($guide->lampiran) {
+                        Storage::delete('public/' . $guide->lampiran);
+                    }
+
+                    $lampiranExtension = $request->lampiran->getClientOriginalExtension();
+                    $lampiranFileName = 'guide_' . $request->form_name . '_' . time() . '.' . $lampiranExtension;
+                    $lampiranPath = $request->lampiran->storeAs('guide', $lampiranFileName, 'public');
+                    $data['lampiran'] = $lampiranPath;
+                }
+
+                $guide->update($data);
+
+                return redirect('/guide/list')->with('success', 'Update Successfully');
+            }
+
+            return redirect()->back()->with('error', 'You do not have permission to update this item.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        return "Error";
     }
 
     public function destroy(Request $request)

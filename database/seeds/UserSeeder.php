@@ -89,12 +89,14 @@ class UserSeeder extends Seeder
                 'npk' => '000000',
                 'email' => 'administrator@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567890',
             ],
             [
                 'name' => 'Ferry Avianto',
                 'npk' => '000017',
                 'email' => 'ferry@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567891',
             ],            
         ];
 
@@ -126,16 +128,19 @@ class UserSeeder extends Seeder
                 'name' => 'Alliq Nur Imanin Aji',
                 'email' => 'alliq@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567892',
             ],
             [
                 'name' => 'Rohmat Maulana Ishaq',
                 'email' => 'rohmat@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567893',
             ],
             [
                 'name' => 'Muhammad Diki Dwi Nugraha',
                 'email' => 'diki@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567894',
             ],
             
         ];
@@ -167,21 +172,25 @@ class UserSeeder extends Seeder
                 'name' => 'Imam Mahfud',
                 'email' => 'imam@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567895',
             ],
             [
                 'name' => 'Rafie Afif Andika',
                 'email' => 'rafie@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567896',
             ],            
             [
                 'name' => 'Mitsal Fabian Nadhiem',
                 'email' => 'fabian@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567897',
             ],
             [
                 'name' => 'Handika',
                 'email' => 'handika@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567898',
             ],
         ];
 
@@ -213,30 +222,35 @@ class UserSeeder extends Seeder
                 'npk' => '002530',
                 'email' => 'irfan.anshori@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567899',
             ],
             [
                 'name' => 'Khusni Setyawan',
                 'npk' => '001084',
                 'email' => 'khusni@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567900',
             ],            
             [
                 'name' => 'Indra Pasurya',
                 'npk' => '000106',
                 'email' => 'indra@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567901',
             ],
             [
                 'name' => 'Ziyan Awaliyah Ritonga',
                 'npk' => '002168',
                 'email' => 'ziyan@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567902',
             ],
             [
                 'name' => 'Ahmad Rizky Rifai',
                 'npk' => '000567',
                 'email' => 'ahmad.rifai@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567903',
             ],
         ];
 
@@ -268,6 +282,7 @@ class UserSeeder extends Seeder
                 'npk' => '002304',
                 'email' => 'n.maulita@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567904',
             ],
         ];
 
@@ -298,6 +313,7 @@ class UserSeeder extends Seeder
                 'name' => 'Muhammad Hidayat Martin',
                 'email' => 'muhammad.hidayat@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567905',
             ],
         ];
 
@@ -335,17 +351,20 @@ class UserSeeder extends Seeder
                 'npk' => '002404',
                 'email' => 'corel@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567906',
             ],
             [
                 'name' => 'Valentsyach Rizqi Alfani',
                 'npk' => '002417',
                 'email' => 'valent.alfani@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567907',
             ],            
             [
                 'name' => 'Muhammad Naza Syaifullah',
                 'npk' => '002651',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567908',
             ],
         ];
 
@@ -375,6 +394,7 @@ class UserSeeder extends Seeder
                 'npk' => '000023',
                 'email' => 'lutfi@aiia.co.id',
                 'password' => Hash::make('aiia'),
+                'nohp' => '081234567909',
             ],
         ];
 

@@ -111,9 +111,8 @@
         $(document).ready(function() {
             $('#name').select2({
                 maximumSelectionLength: 2,
-                // placeholder: '-- Select --',
-                // allowClear: true,
-                // theme: 'bootstrap5'
+            }).on('change', function() {
+                fillProfile();
             });
         });
     </script>

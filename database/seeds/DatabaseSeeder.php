@@ -17,5 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(FolderSeeder::class);
         $this->call(SubFolderSeeder::class);
+        $this->call(SupportSeeder::class);
+        $this->call(GuideSeeder::class);
+        $this->call(DeviceSeeder::class);
+        $this->call(AppSeeder::class);
+        $this->call(AlertSeeder::class);
     }
 }

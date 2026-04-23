@@ -70,15 +70,15 @@
             var table = $('#app_table').DataTable({
                 'lengthChange': true,
                 'processing': true,
-                'serverSide': false,
+                'serverSide': true,
                 'orderable': true,
                 ajax: {
                     url: "{{ route('website.device.list_ajax') }}",
                 },
                 columns: [{
                         data: null,
-                        orderable: true,
-                        searchable: true,
+                        orderable: false,
+                        searchable: false,
                         render: function(data, type, row, meta) {
                             var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
                             return rowIndex;

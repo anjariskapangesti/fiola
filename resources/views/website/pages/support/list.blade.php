@@ -127,20 +127,21 @@
             var table = $('#app_table').DataTable({
                 'lengthChange': true,
                 'processing': true,
-                'serverSide': false,
-                'orderable': true,
+                'serverSide': true,
+                'ordering': true,
+                'order': [[1, 'asc']],
                 ajax: {
                     url: "{{ route('website.support.list_ajax') }}",
                 },
                 columns: [{
                         data: null,
-                        orderable: true,
-                        searchable: true,
+                        orderable: false,
+                        searchable: false,
                         render: function(data, type, row, meta) {
                             var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
                             return rowIndex;
                         },
-                        className: "text-center" // Menetapkan kelas CSS 'text-center'
+                        className: "text-center"
                     },
                     {
                         data: 'name',
@@ -213,7 +214,7 @@
                         data: null,
                         render: function(data, type, row, meta) {
                             return `<div class="text-center">
-                                        <a href="{{ url('support/edit/') }}/${row.id}" class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="{{ route('website.support.edit', '') }}/${row.id}" class="btn btn-sm btn-primary">Edit</a>
                                         <button class="btn btn-danger btn-sm btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-name="${data.name}">Delete</button>
                                     </div>
                             `;

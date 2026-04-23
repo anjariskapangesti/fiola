@@ -52,22 +52,36 @@ class DeviceController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function edit(Request $request)
+    public function edit($id)
     {
-        $id = $request->id;
+        $device = Device::find($id);
+        return view('website.pages.device.edit', compact('device'));
+    }
 
-        $devices = Device::find($id);
-        if (Auth::user()->can('can_master')) {
-            $devices->update([
-                'name' => $request->name,            
-                'cost' => $request->cost,            
-                'spesifikasi' => $request->spesifikasi,
-            ]);
-            
-            return "Update Successfully";
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'cost' => 'required',
+            'spesifikasi' => 'required',
+        ]);
+
+        try {
+            $device = Device::find($id);
+            if (Auth::user()->can('can_master')) {
+                $device->update([
+                    'name' => $request->name,
+                    'cost' => $request->cost,
+                    'spesifikasi' => $request->spesifikasi,
+                ]);
+
+                return redirect('/device/list')->with('success', 'Update Successfully');
+            }
+
+            return redirect()->back()->with('error', 'You do not have permission to update this item.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        return "Error";
     }
 
     public function destroy(Request $request)

@@ -1,4 +1,4 @@
-@extends('website.layouts.main', ['title' => 'Edit Folder'])
+@extends('website.layouts.main', ['title' => 'Edit Guide'])
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -6,8 +6,8 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="d-flex justify-content-between">
-                        <h5 class="card-header">Edit Folder</h5>
-                        <a href="{{ route('website.folder.list') }}" class="btn btn-primary" style="margin: 1.25rem;">List</a>
+                        <h5 class="card-header">Edit Guide</h5>
+                        <a href="{{ route('website.guide.list') }}" class="btn btn-primary" style="margin: 1.25rem;">List</a>
                     </div>
                     <div class="card-body demo-vertical-spacing demo-only-element">
                         @if ($errors->any())
@@ -22,13 +22,20 @@
                                     aria-label="Close"></button>
                             </div>
                         @endif
-                        <form method="post" action="{{ route('website.folder.update', ['id' => $folder->id]) }}"
-                            class="needs-validation" id="myForm" novalidate>
+                        <form method="post" action="{{ route('website.guide.update', $guide->uuid) }}"
+                            enctype="multipart/form-data" class="needs-validation" id="myForm" novalidate>
                             @csrf
                             <div class="form-floating form-floating-outline mb-4">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    value="{{ old('name', $folder->name) }}" placeholder="00_FOLDER_NAME" />
-                                <label for="name">Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="form_name" name="form_name"
+                                    value="{{ old('form_name', $guide->form_name) }}" placeholder="Form Name" required />
+                                <label for="form_name">Form Name <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="form-floating form-floating-outline mb-4">
+                                <input type="file" class="form-control" id="lampiran" name="lampiran" accept="image/*" />
+                                <label for="lampiran">Lampiran (Image) - Kosongkan jika tidak ingin mengganti</label>
+                                @if($guide->lampiran)
+                                    <small class="text-muted">File saat ini: <a href="{{ asset('storage/' . $guide->lampiran) }}" target="_blank">Lihat Lampiran</a></small>
+                                @endif
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
@@ -40,9 +47,6 @@
         </div>
     </div>
 @endsection
-
-@push('styles')
-@endpush
 
 @push('scripts')
     <script>
