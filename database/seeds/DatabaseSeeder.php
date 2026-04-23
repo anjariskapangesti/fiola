@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DeviceSeeder::class);
         $this->call(AppSeeder::class);
         $this->call(AlertSeeder::class);
+        $this->call(TicketSeeder::class);
     }
 }
