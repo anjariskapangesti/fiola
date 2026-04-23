@@ -23,5 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AppSeeder::class);
         $this->call(AlertSeeder::class);
         $this->call(TicketSeeder::class);
+        $this->call(AccountSeeder::class);
+        $this->call(SistemSeeder::class);
+        $this->call(NewFolderSeeder::class);
     }
 }

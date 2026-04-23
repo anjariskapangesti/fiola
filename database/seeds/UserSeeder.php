@@ -46,7 +46,8 @@ class UserSeeder extends Seeder
         // }
         /// ITD ///
         $permCreateForm = DB::table('permissions')->where('name', 'can_create_form')->value('id');
-        $permApproveMgr = DB::table('permissions')->where('name', 'can_approve_mgr')->value('id');
+        $permApproveMgr = DB::table('permissions')->where('name', 'approve_mgr')->value('id');
+        $permApproveGm = DB::table('permissions')->where('name', 'approve_gm')->value('id');
         $permApproveIt = DB::table('permissions')->where('name', 'can_approve_it')->value('id');
         $permApproveItMgr = DB::table('permissions')->where('name', 'can_approve_it_mgr')->value('id');
         $permExecution = DB::table('permissions')->where('name', 'can_execution')->value('id');
@@ -55,13 +56,14 @@ class UserSeeder extends Seeder
         $permAppsFiola = DB::table('permissions')->where('name', 'apps_fiola')->value('id');
         $permGeneral = DB::table('permissions')->where('name', 'general')->value('id');
         $permApproveDir = DB::table('permissions')->where('name', 'approve_dir')->value('id');
+        $permApproveVp = DB::table('permissions')->where('name', 'approve_vp')->value('id');
         $permApprovePres = DB::table('permissions')->where('name', 'approve_pres')->value('id');
 
         $permissionsUser = [$permCreateForm, $permGeneral, $permAppsFiola];
         $permissionsMGR = [$permCreateForm, $permApproveMgr, $permGeneral, $permAppsFiola];
         $permissionsEXC = [$permCreateForm, $permApproveExc, $permGeneral, $permAppsFiola];
         $permissionsITD = [$permCreateForm, $permApproveIt, $permExecution, $permMaster, $permAppsFiola];
-        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola, $permApproveDir, $permApprovePres];
+        $permissionsITDMGR = [$permCreateForm, $permApproveMgr, $permApproveGm, $permApproveIt, $permApproveItMgr, $permExecution, $permMaster, $permAppsFiola, $permApproveDir, $permApproveVp, $permApprovePres];
 
         $departmentHRD = 1;
         $departmentIRLGA = 2;
