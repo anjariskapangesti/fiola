@@ -450,9 +450,12 @@ class UserSeeder extends Seeder
         ]);
 
         $permApproveDir = DB::table('permissions')->where('name', 'approve_dir')->value('id');
+        $permApproveGm = DB::table('permissions')->where('name', 'approve_gm')->value('id');
+        $permApproveVp = DB::table('permissions')->where('name', 'approve_vp')->value('id');
+        $permApprovePres = DB::table('permissions')->where('name', 'approve_pres')->value('id');
         $permAppsFiola = DB::table('permissions')->where('name', 'apps_fiola')->value('id');
 
-        foreach ([$permApproveDir, $permAppsFiola] as $permissionId) {
+        foreach ([$permApproveDir, $permApproveGm, $permApproveVp, $permApprovePres, $permAppsFiola] as $permissionId) {
             if ($permissionId) {
                 DB::table('model_has_permissions')->updateOrInsert([
                     'model_type' => "App\Models\User",

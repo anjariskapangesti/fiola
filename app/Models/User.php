@@ -17,7 +17,6 @@ class User extends Authenticatable
 
     use Notifiable;
     use HasRoles;
-    use HasPermissions;
     use HasDepartments;
 
     /**
@@ -79,10 +78,5 @@ class User extends Authenticatable
     public function divisions()
     {
         return $this->belongsToMany(Division::class, 'model_has_divisions', 'model_id', 'division_id');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'model_has_permissions', 'model_id', 'permission_id');
     }
 }
