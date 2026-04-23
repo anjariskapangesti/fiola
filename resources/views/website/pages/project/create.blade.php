@@ -20,9 +20,11 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+
                 <form method="post" enctype="multipart/form-data" action="{{ route('website.project.store') }}"
                     class="needs-validation" id="myForm" novalidate>
                     @csrf
+
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
                             <h5 class="card-header">Applicant Information</h5>
@@ -37,6 +39,7 @@
                                         <label for="npk_pic">NPK <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
+
                                 <label class="col-sm-6 col-form-label" for="fullname_pic">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="fullname_pic" name="fullname_pic"
@@ -45,6 +48,7 @@
                                         <label for="fullname_pic">Name <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
+
                                 <label class="col-sm-6 col-form-label" for="department_pic">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="department_pic" name="department_pic"
@@ -53,6 +57,7 @@
                                         <label for="department_pic">Department <span class="text-danger">*</span></label>
                                     </div>
                                 </label>
+
                                 <label class="col-sm-6 col-form-label" for="phone_pic">
                                     <div class="form-floating form-floating-outline">
                                         <input type="text" class="form-control" id="phone_pic" name="phone_pic"
@@ -64,6 +69,7 @@
                             </div>
                         </div>
                     </div>
+
                     {{-- PROJECT INFORMATION --}}
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
@@ -81,6 +87,27 @@
                                             <div class="invalid-feedback">*Mohon isi Nama Project</div>
                                         </div>
                                     </label>
+
+                                    {{-- START DATE --}}
+                                    <label class="col-sm-6 col-form-label" for="start_date">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="date" class="form-control" id="start_date" name="start_date"
+                                                value="{{ old('start_date') }}" required />
+                                            <label for="start_date">Start Date <span class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi Start Date</div>
+                                        </div>
+                                    </label>
+
+                                    {{-- END DATE --}}
+                                    <label class="col-sm-6 col-form-label" for="end_date">
+                                        <div class="form-floating form-floating-outline">
+                                            <input type="date" class="form-control" id="end_date" name="end_date"
+                                                value="{{ old('end_date') }}" required />
+                                            <label for="end_date">End Date <span class="text-danger">*</span></label>
+                                            <div class="invalid-feedback">*Mohon isi End Date</div>
+                                        </div>
+                                    </label>
+
                                     <label class="col-sm-12 col-form-label" for="lampiran">
                                         <div class="form-floating form-floating-outline">
                                             <input type="file" class="form-control" id="lampiran" name="lampiran"
@@ -90,6 +117,7 @@
                                             <div class="invalid-feedback">*Mohon isi File PDF Konsep</div>
                                         </div>
                                     </label>
+
                                     <label class="col-sm-12 col-form-label" for="kondisi_sebelum">
                                         <div class="form-floating form-floating-outline">
                                             <textarea class="form-control auto-resize" id="kondisi_sebelum" name="kondisi_sebelum" placeholder="" required>{{ old('kondisi_sebelum') }}</textarea>
@@ -98,6 +126,7 @@
                                             <div class="invalid-feedback">*Mohon isi Kondisi Sebelum Improvement</div>
                                         </div>
                                     </label>
+
                                     <label class="col-sm-12 col-form-label" for="kondisi_target">
                                         <div class="form-floating form-floating-outline">
                                             <textarea class="form-control auto-resize" id="kondisi_target" name="kondisi_target" placeholder="" required>{{ old('kondisi_target') }}</textarea>
@@ -106,6 +135,7 @@
                                             <div class="invalid-feedback">*Mohon isi Kondisi yang diharapkan</div>
                                         </div>
                                     </label>
+
                                     <label class="col-sm-12 col-form-label" for="benefit">
                                         <div class="form-floating form-floating-outline">
                                             <textarea class="form-control auto-resize" id="benefit" name="benefit" placeholder="" required>{{ old('benefit') }}</textarea>
@@ -118,6 +148,7 @@
                             </div>
                         </div>
                     </div>
+
                     {{-- Additional Support Device --}}
                     <div class="card mb-4">
                         <div class="d-flex justify-content-between">
@@ -143,8 +174,7 @@
                                                             $selected = '';
                                                             if (
                                                                 old('device.' . $i) &&
-                                                                old('device.' . $i) ==
-                                                                    $device->name . ' | ' . $device->cost
+                                                                old('device.' . $i) == $device->name . ' | ' . $device->cost
                                                             ) {
                                                                 $selected = 'selected';
                                                             }
@@ -159,31 +189,34 @@
                                                 <div class="invalid-feedback">*Mohon isi Device</div>
                                             </div>
                                         </label>
+
                                         <label class="col-md-2 col-sm-6 col-form-label" for="qty{{ $i }}">
                                             <div class="form-floating form-floating-outline">
                                                 <input type="number" class="form-control" id="qty{{ $i }}"
                                                     name="qty[]" value="{{ old('qty.' . $i, '') }}"
                                                     placeholder="QTY" />
                                                 <label for="qty{{ $i }}">QTY</label>
-                                                {{-- <div class="invalid-feedback"></div> --}}
                                             </div>
                                         </label>
+
                                         <label class="col-md-2 col-sm-5 col-form-label" for="unit{{ $i }}">
                                             <div class="form-floating form-floating-outline">
                                                 <input type="text" class="form-control" id="unit{{ $i }}"
                                                     name="unit[]" value="{{ old('unit.' . $i, '') }}" placeholder=""
                                                     disabled />
                                                 <label for="unit{{ $i }}">Unit</label>
-                                                {{-- <div class="invalid-feedback"></div> --}}
                                             </div>
                                         </label>
+
                                         <button type="button"
                                             class="btn btn-success btn-tambah-device col-md-1 col-sm-1 col-form-label mt-2 mb-2"
-                                            id="btn-tambah-device" onclick="tambahFolder(this)"><i
-                                                class="mdi mdi-plus"></i></button>
+                                            id="btn-tambah-device" onclick="tambahFolder(this)">
+                                            <i class="mdi mdi-plus"></i>
+                                        </button>
                                     </div>
                                 @endfor
                             </div>
+
                             <div>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#alatModal">List Alat dan Harga</button>
@@ -192,6 +225,7 @@
                     </div>
 
                     @include('website.layouts.approval_flow')
+
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-success" id="submitButton">Submit</button>
                     </div>
@@ -221,7 +255,6 @@
                             </tr>
                         </thead>
                         <tbody id="device-table-body">
-                            <!-- Rows will be inserted here by JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -254,7 +287,6 @@
                             document.addEventListener('DOMContentLoaded', function() {
                                 var image = document.getElementById('zoomable-image');
                                 var viewer = new Viewer(image, {
-                                    // Viewer options
                                     zoomable: true,
                                     scalable: true,
                                     rotatable: false,
@@ -279,7 +311,6 @@
 @endsection
 
 @push('styles')
-    {{-- STYLE GUIDE MODAL --}}
     <link rel="stylesheet" href="{{ asset('vendor/viewer/viewer.min.css') }}">
     <style>
         #zoomable-image {
@@ -288,13 +319,11 @@
             cursor: pointer;
         }
     </style>
-    {{-- END STYLE GUIDE MODAL --}}
 @endpush
 
 @push('scripts')
-    {{-- SCRIPT GUIDE MODAL --}}
     <script src="{{ asset('vendor/viewer/viewer.min.js') }}"></script>
-    {{-- END SCRIPT GUIDE MODAL --}}
+
     <script>
         document.getElementById('search-input').addEventListener('keyup', function() {
             let input = this.value.toLowerCase();
@@ -312,14 +341,11 @@
                     }
                 }
 
-                if (match) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
+                rows[i].style.display = match ? '' : 'none';
             }
         });
     </script>
+
     <script>
         const devices = @json($devices);
         const rowsPerPage = 5;
@@ -331,20 +357,19 @@
             const paginatedDevices = devices.slice(start, end);
 
             const tbody = document.getElementById('device-table-body');
-            tbody.innerHTML = ''; // Clear existing rows
+            tbody.innerHTML = '';
 
             paginatedDevices.forEach((device, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                <td>${start + index + 1}</td>
-                <td>${device.name}</td>
-                <td>${device.cost}</td>
-                <td>${device.spesifikasi}</td>
-            `;
+                    <td>${start + index + 1}</td>
+                    <td>${device.name}</td>
+                    <td>${device.cost}</td>
+                    <td>${device.spesifikasi}</td>
+                `;
                 tbody.appendChild(row);
             });
 
-            // Update button states
             document.getElementById('previous-button').disabled = page === 0;
             document.getElementById('next-button').disabled = end >= devices.length;
         }
@@ -364,42 +389,39 @@
             }
         }
 
-        // Initial render
         renderTablePage(currentPage);
     </script>
+
     <script>
         $(document).ready(function() {
-
             @if (session()->has('success'))
                 toastr['success']("{{ Session('success') }}")
             @endif
         })
     </script>
+
     <script>
         const kondisi_target = document.querySelector('#kondisi_target');
-
         kondisi_target.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
 
         const kondisi_sebelum = document.querySelector('#kondisi_sebelum');
-
         kondisi_sebelum.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
 
         const benefit = document.querySelector('#benefit');
-
         benefit.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
         });
     </script>
+
     <script>
         $(document).ready(function() {
-
             @if (session()->has('success'))
                 toastr['success']("{{ Session('success') }}")
             @endif
@@ -417,6 +439,7 @@
             element.value = words.join(" ");
         }
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var form = document.getElementById('myForm');
@@ -441,6 +464,7 @@
             });
         });
     </script>
+
     <script>
         let deviceCount = {{ $deviceCount }};
 

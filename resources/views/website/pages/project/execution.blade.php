@@ -25,8 +25,7 @@
                             <th width="150px">Option</th>
                         </tr>
                     </thead>
-                    <tbody class="table-border-bottom-0">
-                    </tbody>
+                    <tbody class="table-border-bottom-0"></tbody>
                 </table>
             </div>
         </div>
@@ -140,28 +139,44 @@
 @push('scripts')
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
     <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
-    <script>
-        const textarea = document.querySelector('.auto-resize');
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+    <script>
+        function getApprovalCount() {
+            // kosongkan kalau function global ini tidak ada di project kamu
+            // kalau memang sudah ada di layout / file lain, biarkan saja
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.auto-resize').forEach(function(textarea) {
+                const resize = function () {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                };
+
+                textarea.addEventListener('input', resize);
+                resize.call(textarea);
+            });
         });
     </script>
+
     <script>
         $(document).ready(function() {
             @if (session()->has('success'))
-                toastr['success']("{{ Session('success') }}")
+                toastr['success']("{{ Session('success') }}");
             @endif
-        })
+        });
     </script>
+
     <script>
         $(document).ready(function() {
             var table = $('#app_table').DataTable({
-                'lengthChange': true,
-                'processing': true,
-                'serverSide': false,
-                'orderable': true,
+                lengthChange: true,
+                processing: true,
+                serverSide: false,
+                orderable: true,
                 ajax: {
                     url: "{{ route('website.project.execution_ajax') }}",
                 },
@@ -170,10 +185,9 @@
                         orderable: true,
                         searchable: true,
                         render: function(data, type, row, meta) {
-                            var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
-                            return rowIndex;
+                            return meta.row + meta.settings._iDisplayStart + 1;
                         },
-                        className: "text-center" // Menetapkan kelas CSS 'text-center'
+                        className: "text-center"
                     },
                     {
                         data: 'no_reg',
@@ -186,14 +200,14 @@
                     {
                         data: 'created_at',
                         name: 'created_at',
-                        render: function(data, type, row, meta) {
+                        render: function(data) {
                             return moment(data).format('YYYY-MM-DD HH:mm:ss');
                         }
                     },
                     {
                         data: 'final_status',
                         name: 'final_status',
-                        render: function(data, type, row, meta) {
+                        render: function(data) {
                             if (data == 'created') {
                                 return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
                             } else if (data == 'Manager Approve') {
@@ -217,7 +231,7 @@
                         data: null,
                         content: '',
                         searchable: false,
-                        render: function(data, type, row, meta) {
+                        render: function() {
                             return `<button class="badge bg-primary">Klik untuk Detail dan Approve</button>`;
                         }
                     },
@@ -225,51 +239,62 @@
             });
 
             function format(d) {
-                return (
-                    `
+                return `
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Project Name</td>
-                                <td>${d.nama_project} </td>
+                                <td>${d.nama_project ?? '-'} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
-                                <td>${d.npk} / ${d.fullname}</td>
+                                <td>${d.npk ?? '-'} / ${d.fullname ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
+                                <td>${d.department ?? '-'} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Start Date</td>
+                                <td>${d.start_date ?? '-'} </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">End Date</td>
+                                <td>${d.end_date ?? '-'} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
-                                <td>${d.phone}</td>
+                                <td>${d.phone ?? '-'}</td>
                             </tr>
-                             <tr>
+                            <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="">
-                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
+                                <td>
+                                    <button type="button" class="btn btn-success btn-sm btn-lampiran"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#pdfModal"
+                                        data-lampiran="{{ asset('storage/lampiran') }}/${d.lampiran}">
                                         <i class="mdi mdi-file-download"></i> View
                                     </button>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum ?? '-'} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi yang diharapkan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target ?? '-'} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit ?? '-'} </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Additional Support Device</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.alat} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.alat ?? '-'} </td>
                             </tr>
                         </tbody>
+
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>Manager Approval Date</td>
@@ -284,6 +309,7 @@
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
+
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Approval Date</td>
@@ -296,8 +322,9 @@
                             <tr>
                                 <td>ITD Note</td>
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
-                            </tr>  
+                            </tr>
                         </tbody>
+
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>ITD Manager Approval Date</td>
@@ -312,6 +339,7 @@
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
                             </tr>
                         </tbody>
+
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td>On Progress Date</td>
@@ -326,27 +354,42 @@
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
                             </tr>
                         </tbody>
+
                         <tfoot>
                             <tr>
                                 <th colspan="2" class="text-end">
-                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
-                                    <button class="btn btn-info btn-sm btn-table-progress" data-bs-toggle="modal" data-bs-target="#progressModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Progress</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}" data-ad_name="${d.ad_name}" data-is_email="${d.is_email}" data-npk="${d.npk}">Approve</button>
+                                    <button class="btn btn-danger btn-sm btn-table-reject"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#rejectModal"
+                                        data-id="${d.id}"
+                                        data-no_reg="${d.no_reg}">
+                                        Reject
+                                    </button>
+                                    <button class="btn btn-info btn-sm btn-table-progress"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#progressModal"
+                                        data-id="${d.id}"
+                                        data-no_reg="${d.no_reg}">
+                                        Progress
+                                    </button>
+                                    <button class="btn btn-success btn-sm btn-table-approve"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#approveModal"
+                                        data-id="${d.id}"
+                                        data-no_reg="${d.no_reg}">
+                                        Approve
+                                    </button>
                                 </th>
-                            </tr>    
+                            </tr>
                         </tfoot>
                     </table>
-                    `
-                );
+                `;
             }
 
             $(document).on('click', '.btn-lampiran', function() {
                 var lampiranUrl = $(this).data('lampiran');
-
-                // Set the source of the iframe to display the PDF
                 $('#pdfViewer').attr('src', lampiranUrl);
             });
-
 
             $('#app_table tbody').on('click', 'td.detail', function() {
                 var tr = $(this).closest('tr');
@@ -360,36 +403,32 @@
                     tr.addClass('shown');
                 }
             });
+
             // APPROVE
             $('#app_table').on('click', '.btn-table-approve', function() {
                 var id_approve = $(this).data('id');
                 var no_reg_approve = $(this).data('no_reg');
-                var ad_name_approve = $(this).data('ad_name');
-                var npk_approve = $(this).data('npk');
-                var is_email_approve = $(this).data('is_email');
                 var approveButton = document.getElementById('btn-approve');
-                var currentYear = new Date().getFullYear();
 
                 approveButton.removeAttribute('disabled');
                 approveButton.innerHTML = 'Yes, Approve!';
-                $('#id_approve').val(id_approve)
-                $('#no_reg_approve').val(no_reg_approve)
-                // $('#finish_note_approve').val('');
 
-                var noteText =
-                    'Form Project telah selesai.\n\n';
+                $('#id_approve').val(id_approve);
+                $('#no_reg_approve').val(no_reg_approve);
 
+                var noteText = 'Form Project telah selesai.\n\n';
                 noteText += 'Jika ada yang kurang dimengerti, harap hubungi Tim ITD\nTerima Kasih';
                 $('#finish_note_approve').val(noteText);
-            })
+            });
 
             $('#btn-approve').on('click', function() {
                 let id_approve = $('#id_approve').val();
-                let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' :
-                    'Tidak';
+                let notifikasi_approve = $('#notifikasi_approve').is(':checked') ? 'Ya' : 'Tidak';
+
                 $.ajax({
                     url: "{{ route('website.project.execution_approve') }}",
                     type: "POST",
+                    dataType: "json",
                     data: {
                         id: id_approve,
                         finish_note: $('#finish_note_approve').val(),
@@ -398,40 +437,74 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        getApprovalCount();
-                        $('#approveModal').modal('hide')
+                        if (response.status === 'choose_replace') {
+                            $('#approveModal').modal('hide');
+
+                            Swal.fire({
+                                title: 'Timeline Penuh',
+                                text: response.message,
+                                icon: 'warning',
+                                confirmButtonText: 'Pilih Project'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = response.redirect_url;
+                                }
+                            });
+
+                        } else if (response.status === 'success') {
+                            toastr['success'](response.message);
+                            table.ajax.reload(null, false);
+
+                            if (typeof getApprovalCount === 'function') {
+                                getApprovalCount();
+                            }
+
+                            $('#approveModal').modal('hide');
+                        } else {
+                            toastr['info'](response.message ?? 'Proses selesai');
+                            table.ajax.reload(null, false);
+                            $('#approveModal').modal('hide');
+                        }
                     },
-                    error: function(xhr, status, error) {
-                        alert(error);
+                    error: function(xhr) {
+                        let message = 'Terjadi kesalahan saat memproses data.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        Swal.fire('Error', message, 'error');
                     }
                 });
             });
+
             // ON PROGRESS
             $('#on_progress_note_progress').on('keyup', function() {
-                if ($(this).val() != "")
+                if ($(this).val() != "") {
                     $('#btn-progress').removeAttr('disabled');
-                else
+                } else {
                     $('#btn-progress').attr('disabled', 'disabled');
+                }
             });
 
             $('#app_table').on('click', '.btn-table-progress', function() {
                 var id_progress = $(this).data('id');
                 var no_reg_progress = $(this).data('no_reg');
-                var approveButton = document.getElementById('btn-progress');
+                var progressButton = document.getElementById('btn-progress');
 
-                approveButton.innerHTML = 'Yes, Progress!';
-                $('#id_progress').val(id_progress)
-                $('#no_reg_progress').val(no_reg_progress)
+                progressButton.removeAttribute('disabled');
+                progressButton.innerHTML = 'Yes, Progress!';
+
+                $('#id_progress').val(id_progress);
+                $('#no_reg_progress').val(no_reg_progress);
                 $('#on_progress_note_progress').val('');
-            })
+            });
 
             $('#btn-progress').on('click', function() {
                 let id_progress = $('#id_progress').val();
+
                 $.ajax({
                     url: "{{ route('website.project.execution_approve') }}",
                     type: "POST",
+                    dataType: "json",
                     data: {
                         id: id_progress,
                         on_progress_note: $('#on_progress_note_progress').val(),
@@ -439,40 +512,54 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        getApprovalCount();
-                        $('#progressModal').modal('hide')
+                        toastr['success'](response.message ?? 'Progress Successfully');
+                        table.ajax.reload(null, false);
+
+                        if (typeof getApprovalCount === 'function') {
+                            getApprovalCount();
+                        }
+
+                        $('#progressModal').modal('hide');
                     },
-                    error: function(xhr, status, error) {
-                        alert(error);
+                    error: function(xhr) {
+                        let message = 'Terjadi kesalahan saat memproses data.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        Swal.fire('Error', message, 'error');
                     }
                 });
             });
+
             // REJECT
             $('#finish_note_reject').on('keyup', function() {
-                if ($(this).val() != "")
+                if ($(this).val() != "") {
                     $('#btn-reject').removeAttr('disabled');
-                else
+                } else {
                     $('#btn-reject').attr('disabled', 'disabled');
+                }
             });
 
             $('#app_table').on('click', '.btn-table-reject', function() {
                 var id_reject = $(this).data('id');
                 var no_reg_reject = $(this).data('no_reg');
-                var approveButton = document.getElementById('btn-reject');
+                var rejectButton = document.getElementById('btn-reject');
 
-                approveButton.innerHTML = 'Yes, Reject!';
-                $('#id_reject').val(id_reject)
-                $('#no_reg_reject').val(no_reg_reject)
+                rejectButton.innerHTML = 'Yes, Reject!';
+                rejectButton.setAttribute('disabled', 'disabled');
+
+                $('#id_reject').val(id_reject);
+                $('#no_reg_reject').val(no_reg_reject);
                 $('#finish_note_reject').val('');
-            })
+            });
 
             $('#btn-reject').on('click', function() {
                 let id_reject = $('#id_reject').val();
+
                 $.ajax({
                     url: "{{ route('website.project.execution_approve') }}",
                     type: "POST",
+                    dataType: "json",
                     data: {
                         id: id_reject,
                         finish_note: $('#finish_note_reject').val(),
@@ -480,18 +567,27 @@
                         '_token': "{{ csrf_token() }}",
                     },
                     success: function(response) {
-                        toastr['success'](response)
-                        table.ajax.reload();
-                        getApprovalCount();
-                        $('#rejectModal').modal('hide')
+                        toastr['success'](response.message ?? 'Reject Successfully');
+                        table.ajax.reload(null, false);
+
+                        if (typeof getApprovalCount === 'function') {
+                            getApprovalCount();
+                        }
+
+                        $('#rejectModal').modal('hide');
                     },
-                    error: function(xhr, status, error) {
-                        alert(error);
+                    error: function(xhr) {
+                        let message = 'Terjadi kesalahan saat memproses data.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        Swal.fire('Error', message, 'error');
                     }
                 });
             });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var approveButton = document.getElementById('btn-approve');
@@ -503,6 +599,7 @@
             });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var progressButton = document.getElementById('btn-progress');
@@ -514,6 +611,7 @@
             });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var rejectButton = document.getElementById('btn-reject');

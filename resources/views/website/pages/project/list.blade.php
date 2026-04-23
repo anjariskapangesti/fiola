@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    {{-- CONFIRM MODAL --}}
+
     <div class="modal fade" id="confirmModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-    {{-- DELETE MODAL --}}
+
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -104,6 +104,7 @@
             @endif
         })
     </script>
+
     <script>
         $(document).ready(function() {
             var table = $('#app_table').DataTable({
@@ -122,7 +123,7 @@
                             var rowIndex = meta.row + meta.settings._iDisplayStart + 1;
                             return rowIndex;
                         },
-                        className: "text-center" // Menetapkan kelas CSS 'text-center'
+                        className: "text-center"
                     },
                     {
                         className: 'dt-control text-center',
@@ -172,8 +173,7 @@
                         searchable: false,
                         data: null,
                         render: function(data, type, row, meta) {
-                            if (data.is_confirm == '0' && data.created_by ==
-                                '{{ Auth::user()->id }}') {
+                            if (data.is_confirm == '0' && data.created_by == '{{ Auth::user()->id }}') {
                                 return `
                                 <center>
                                     <button class="btn btn-success btn-sm btn-table-confirm" data-bs-toggle="modal" data-bs-target="#confirmModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Confirm</button>
@@ -181,8 +181,7 @@
                                 `;
                             } else if (data.is_confirm == '1') {
                                 return `<center><span class="badge bg-success">Confrimed</span></center>`
-                            } else if (data.final_status == 'created' && data.created_by ==
-                                '{{ Auth::user()->id }}') {
+                            } else if (data.final_status == 'created' && data.created_by == '{{ Auth::user()->id }}') {
                                 return `
                                 <center>
                                     <button class="btn btn-danger btn-sm btn-table-delete mt-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${data.id}" data-no_reg="${data.no_reg}">Delete</button>
@@ -203,23 +202,31 @@
                         <tbody style="border: 2px solid black;">
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Project Name</td>
-                                <td>${d.nama_project} </td>
+                                <td>${d.nama_project ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
-                                <td>${d.npk} / ${d.fullname}</td>
+                                <td>${d.npk ?? '-'} / ${d.fullname ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Department</td>
-                                <td>${d.department} </td>
+                                <td>${d.department ?? '-'}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Start Date</td>
+                                <td>${d.start_date ? moment(d.start_date).format('YYYY-MM-DD') : '-'}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">End Date</td>
+                                <td>${d.end_date ? moment(d.end_date).format('YYYY-MM-DD') : '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">No. HP</td>
-                                <td>${d.phone}</td>
+                                <td>${d.phone ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Lampiran</td>
-                                <td style="">
+                                <td>
                                     <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
                                         <i class="mdi mdi-file-download"></i> View
                                     </button>
@@ -227,19 +234,19 @@
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi Sebelum Improvement</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_sebelum ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Kondisi yang diharapkan</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.kondisi_target ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Additional Support Device</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.alat} </td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.alat ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
@@ -319,8 +326,6 @@
 
             $(document).on('click', '.btn-lampiran', function() {
                 var lampiranUrl = $(this).data('lampiran');
-
-                // Set the source of the iframe to display the PDF
                 $('#pdfViewer').attr('src', lampiranUrl);
             });
 
@@ -337,7 +342,6 @@
                 }
             });
 
-            // DELETE MODAL
             $('#app_table').on('click', '.btn-table-delete', function() {
                 var id_delete = $(this).data('id');
                 var no_reg_delete = $(this).data('no_reg');
@@ -365,9 +369,7 @@
                     }
                 });
             });
-            // END DELETE MODAL
 
-            // CONFIRM MODAL
             $('#app_table').on('click', '.btn-table-confirm', function() {
                 var id_confirm = $(this).data('id');
                 var no_reg_confirm = $(this).data('no_reg');
@@ -377,7 +379,6 @@
                 confirmButton.innerHTML = 'Yes, Confirm!';
                 $('#id_confirm').val(id_confirm)
                 $('#no_reg_confirm').val(no_reg_confirm)
-                $('#it_mgr_note_confirm').val('');
             })
 
             $('#btn-confirm').on('click', function() {
@@ -401,9 +402,9 @@
                     }
                 });
             });
-            // END CONFIRM MODAL
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var confirmButton = document.getElementById('btn-confirm');
@@ -415,6 +416,7 @@
             });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var deleteButton = document.getElementById('btn-delete');
