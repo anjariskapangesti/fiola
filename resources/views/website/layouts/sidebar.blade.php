@@ -106,6 +106,7 @@
             $manager_approval_routes[] = 'website.project.dir_approved';
 
         @endphp
+        @can('can_create_form')
         <li
             class="menu-item {{ in_array(Route::currentRouteName(), $createRoutes) || in_array(Route::currentRouteName(), $editRoutes) ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -114,6 +115,7 @@
             </a>
             @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
         </li>
+        @endcan
         <li class="menu-item {{ in_array(Route::currentRouteName(), $listRoutes) ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-text-search"></i>
@@ -308,8 +310,7 @@
             </li>
         @endcan --}}
         {{-- ITD --}}
-        @if (auth()->user()->hasDepartment('ITD'))
-            @if (auth()->user()->hasDepartment('ITD') && !auth()->user()->hasPermissionTo('approve_mgr'))
+            @can('can_approve_it')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -331,7 +332,7 @@
                     </a>
                     @include('website.layouts.sidebar_items', ['link' => 'it_approved', 'text' => 'Form'])
                 </li>
-            @endif
+            @endcan
             {{-- ITD MGR --}}
             @can('approve_mgr')
                 <li
@@ -363,7 +364,7 @@
                 </li>
             @endcan
             {{-- Execution --}}
-            @if (auth()->user()->hasDepartment('ITD') && !auth()->user()->hasPermissionTo('approve_mgr'))
+            @can('can_execution')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $execution_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -385,7 +386,8 @@
                     </a>
                     @include('website.layouts.sidebar_items', ['link' => 'finished', 'text' => 'Form'])
                 </li>
-            @endif
+            @endcan
+            @can('can_master')
             <!-- Master -->
             <li class="menu-header fw-medium mt-4"><span class="menu-header-text">Master</span></li>
             @php
@@ -469,6 +471,6 @@
                     <div data-i18n="Users">Users</div>
                 </a>
             </li>
-        @endcan
-</ul>
+            @endcan
+    </ul>
 </aside>
