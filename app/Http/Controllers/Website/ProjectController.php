@@ -238,7 +238,9 @@ class ProjectController extends Controller
         
         // If user is IT Manager or Director, they can see all project requests
         // Otherwise, restrict to their own departments
-        if (!Auth::user()->can('ITDMGR') && !Auth::user()->can('approve_dir')) {
+        // If user is Director, they can see all project requests
+        // Otherwise, restrict to their own departments
+        if (!Auth::user()->can('approve_dir')) {
             $data = $data->where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
                 $query->where('created_dept', $firstDepartmentId)
                     ->orWhere('created_dept', $lastDepartmentId);
@@ -247,19 +249,9 @@ class ProjectController extends Controller
 
         $data = $data->where('final_status', 'created')
             ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
             ->select(
                 'form_project.*',
-                'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
+                'users.name as requestor'
             )
             ->orderBy('created_at', 'ASC');
 
@@ -318,207 +310,19 @@ class ProjectController extends Controller
             ->whereNotNull('is_manager_approve')
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
+                'manager.name as manager_name'
             )
             ->orderBy('manager_approval_date', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function it_approval()
-    {
-        return view('website.pages.project.it_approval');
-    }
 
-    public function it_approval_ajax(Request $request)
-    {
-        $data = Project::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
-            ->select(
-                'form_project.*',
-                'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
-            )
-            ->orderBy('created_at', 'ASC');
 
-        return DataTables::eloquent($data)->make(true);
-    }
 
-    public function it_approve(Request $request)
-    {
-        $project = Project::findOrFail($request->id);
-
-        if ($request->type == 'approve') {
-            $project->is_it_approve = 1;
-            $project->final_status = 'IT Approve';
-            $project->it_note = $request->it_note;
-            $project->it_approve_by = Auth::user()->id;
-            $return = "Approve Successfully";
-        } else {
-            $project->is_it_approve = 0;
-            $project->it_note = $request->it_note;
-            $project->it_approve_by = Auth::user()->id;
-            
-            if ($project->is_reschedule) {
-                $project->final_status = 'IT Reject (Reschedule)';
-                $return = "Berhasil Ditolak (Berlanjut ke IT MGR)";
-            } else {
-                $project->is_confirm = 0;
-                $project->final_status = 'IT Reject';
-                $project->is_finish = 0;
-                $return = "Reject Successfully";
-            }
-        }
-
-        $project->it_approval_date = Carbon::now();
-        $project->save();
-
-        return $return;
-    }
-
-    public function it_approved()
-    {
-        return view('website.pages.project.it_approved');
-    }
-
-    public function it_approved_ajax(Request $request)
-    {
-        $data = Project::whereNotNull('is_it_approve')
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
-            ->select(
-                'form_project.*',
-                'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
-            )
-            ->orderBy('manager_approval_date', 'DESC');
-
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function it_mgr_approval()
-    {
-        return view('website.pages.project.it_mgr_approval');
-    }
-
-    public function it_mgr_approval_ajax(Request $request)
-    {
-        $data = Project::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
-            ->select(
-                'form_project.*',
-                'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
-            )
-            ->orderBy('created_at', 'ASC');
-
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function it_mgr_approve(Request $request)
-    {
-        $project = Project::findOrFail($request->id);
-
-        if ($request->type == 'approve') {
-            $project->is_it_mgr_approve = 1;
-            $project->final_status = 'IT MGR Approve';
-            $project->it_mgr_note = $request->it_mgr_note;
-            $project->it_mgr_approve_by = Auth::user()->id;
-
-            // Activate timeline for standard projects (reschedule activated by Director)
-            if (!$project->is_reschedule) {
-                $project->is_timeline_active = true;
-                $maxOrder = Project::where('is_timeline_active', true)->max('timeline_order');
-                $project->timeline_order = $maxOrder ? ($maxOrder + 1) : 1;
-            }
-
-            $return = "Approve Successfully";
-        } else {
-            $project->is_it_mgr_approve = 0;
-            $project->it_mgr_note = $request->it_mgr_note;
-            $project->it_mgr_approve_by = Auth::user()->id;
-            
-            if ($project->is_reschedule) {
-                $project->final_status = 'IT MGR Reject (Reschedule)';
-                $return = "Berhasil Ditolak (Berlanjut ke Direktur)";
-            } else {
-                $project->final_status = 'IT MGR Reject';
-                $project->is_finish = 0;
-                $project->is_confirm = 0;
-                $return = "Reject Successfully";
-            }
-        }
-
-        $project->it_mgr_approval_date = Carbon::now();
-        $project->save();
-
-        return $return;
-    }
-
-    public function it_mgr_approved()
-    {
-        return view('website.pages.project.it_mgr_approved');
-    }
-
-    public function it_mgr_approved_ajax(Request $request)
-    {
-        $data = Project::whereNotNull('is_it_mgr_approve')
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
-            ->select(
-                'form_project.*',
-                'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
-            )
-            ->orderBy('created_at', 'DESC');
-
-        return DataTables::eloquent($data)->make(true);
-    }
 
     public function dir_approval()
     {
@@ -550,7 +354,7 @@ class ProjectController extends Controller
 
         if ($request->type == 'approve') {
             $project->is_dir_approve = 1;
-            $project->final_status = 'Director Approve';
+            $project->final_status = 'Finished';
             $project->dir_note = $request->dir_note;
             $project->dir_approve_by = Auth::user()->id;
             $project->dir_approval_date = Carbon::now();
@@ -576,7 +380,7 @@ class ProjectController extends Controller
                         $updateData['start_date'] = $project->target_reschedule_start_date;
                         $updateData['end_date'] = $project->target_reschedule_end_date;
                         $updateData['is_timeline_active'] = true;
-                        $updateData['final_status'] = 'Director Approve';
+                        $updateData['final_status'] = 'Finished';
                     }
                     
                     $oldProject->update($updateData);
@@ -625,68 +429,7 @@ class ProjectController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
-    public function execution()
-    {
-        return view('website.pages.project.execution');
-    }
 
-    public function execution_ajax(Request $request)
-    {
-        $data = Project::whereIn('final_status', ['Director Approve', 'On Progress'])
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
-            ->select(
-                'form_project.*',
-                'users.name as requestor',
-                'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
-            )
-            ->orderBy('created_at', 'ASC');
-
-        return DataTables::eloquent($data)->make(true);
-    }
-
-    public function execution_approve(Request $request)
-    {
-        $project = Project::findOrFail($request->id);
-        $user = $project->createdBy;
-
-        if ($request->type == 'approve') {
-            $project->is_finish = 1;
-            $project->is_confirm = 0;
-            $project->finish_by = Auth::user()->id;
-            $project->final_status = 'Finished';
-            $project->finish_note = $request->finish_note;
-            $project->finish_date = Carbon::now();
-            $return = "Berhasil Diselesaikan";
-        } elseif ($request->type == 'progress') {
-            $project->is_on_progress = 1;
-            $project->final_status = 'On Progress';
-            $project->on_progress_note = $request->on_progress_note;
-            $project->on_progress_by = Auth::user()->id;
-            $project->on_progress_date = Carbon::now();
-            $return = "Berhasil Diperbarui ke On Progress";
-        } else {
-            $project->is_finish = 0;
-            $project->is_confirm = 0;
-            $project->final_status = 'Rejected';
-            $project->finish_note = $request->finish_note;
-            $project->finish_by = Auth::user()->id;
-            $project->finish_date = Carbon::now();
-            $return = "Berhasil Ditolak";
-        }
-
-        $project->save();
-
-        return $return;
-    }
 
     public function finished()
     {
@@ -695,21 +438,15 @@ class ProjectController extends Controller
 
     public function finished_ajax(Request $request)
     {
-        $data = Project::whereNotNull('is_finish')
+        $data = Project::where('final_status', 'Finished')
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
+            ->leftJoin('users as director', 'form_project.dir_approve_by', 'director.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
                 'manager.name as manager_name',
-                'it.name as it_name',
-                'it_mgr.name as it_mgr_name',
-                'on_progress.name as on_progress_name',
-                'finish.name as finish_name'
+                'director.name as director_name'
             )
             ->orderBy('created_at', 'DESC');
 

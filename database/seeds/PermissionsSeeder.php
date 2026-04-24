@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PermissionsSeeder extends Seeder
 {
@@ -13,20 +14,11 @@ class PermissionsSeeder extends Seeder
     {
         $permissions = [
             'can_create_form',
-            'can_approve_mgr',
-            'can_approve_it',
-            'can_approve_it_mgr',
-            'can_execution',
-            'can_master',
-            'can_approve_executives',
-            'apps_fiola',
-            'general',
             'approve_mgr',
-            'approve_gm',
             'approve_dir',
-            'approve_vp',
             'approve_pres',
-            'ITDMGR',
+            'apps_fiola',
+            'can_master',
         ];
 
         foreach ($permissions as $permission) {
