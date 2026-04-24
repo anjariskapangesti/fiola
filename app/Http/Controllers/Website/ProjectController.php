@@ -61,7 +61,7 @@ class ProjectController extends Controller
         if ($auth > 0) {
             return redirect()->route('website.user.edit');
         } elseif ($data > 0) {
-            return redirect()->route('website.project.list')->with('info', 'Please confirm!');
+            return redirect()->route('website.project.list')->with('info', 'Harap konfirmasi!');
         } else {
             return view('website.pages.project.create', compact(['devices']));
         }
@@ -183,7 +183,7 @@ class ProjectController extends Controller
                 'is_dir_approve' => null,
             ]);
 
-            return redirect()->route('website.project.list')->with('success', 'Create Successfully');
+            return redirect()->route('website.project.list')->with('success', 'Berhasil Dibuat');
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -228,7 +228,7 @@ class ProjectController extends Controller
 
         $project->save();
 
-        return "Confirm Successfully";
+        return "Berhasil Dikonfirmasi";
     }
 
     public function manager_approval()
@@ -276,7 +276,7 @@ class ProjectController extends Controller
             $project->final_status = 'Manager Approve';
             $project->manager_note = $request->manager_note;
             $project->manager_approve_by = Auth::user()->id;
-            $return = "Approve Successfully";
+            $return = "Berhasil Disetujui";
         } else {
             $project->is_manager_approve = 0;
             $project->manager_note = $request->manager_note;
@@ -286,12 +286,12 @@ class ProjectController extends Controller
                 $project->final_status = 'Manager Reject (Reschedule)';
                 $project->is_finish = 0;
                 $project->is_confirm = 0;
-                $return = "Reject Successfully. Request terminated (cannot proceed to Director).";
+                $return = "Berhasil Ditolak. Permintaan dihentikan (tidak dapat berlanjut ke Direktur).";
             } else {
                 $project->final_status = 'Manager Reject';
                 $project->is_finish = 0;
                 $project->is_confirm = 0;
-                $return = "Reject Successfully";
+                $return = "Berhasil Ditolak";
             }
         }
 
@@ -382,7 +382,7 @@ class ProjectController extends Controller
             
             if ($project->is_reschedule) {
                 $project->final_status = 'IT Reject (Reschedule)';
-                $return = "Reject Successfully (Continuing to ITD MGR)";
+                $return = "Berhasil Ditolak (Berlanjut ke IT MGR)";
             } else {
                 $project->is_confirm = 0;
                 $project->final_status = 'IT Reject';
@@ -478,7 +478,7 @@ class ProjectController extends Controller
             
             if ($project->is_reschedule) {
                 $project->final_status = 'IT MGR Reject (Reschedule)';
-                $return = "Reject Successfully (Continuing to Director)";
+                $return = "Berhasil Ditolak (Berlanjut ke Direktur)";
             } else {
                 $project->final_status = 'IT MGR Reject';
                 $project->is_finish = 0;
@@ -585,7 +585,7 @@ class ProjectController extends Controller
                 }
             }
 
-            $return = "Approve Successfully. Slot released and project approved.";
+            $return = "Berhasil Disetujui. Slot dilepaskan dan project baru disetujui.";
         } else {
             $project->is_dir_approve = 0;
             $project->final_status = 'Director Reject';
@@ -595,7 +595,7 @@ class ProjectController extends Controller
             $project->is_finish = 0;
             $project->is_confirm = 0;
             $project->save();
-            $return = "Reject Successfully. New project rejected.";
+            $return = "Berhasil Ditolak. Project baru ditolak.";
         }
 
         return $return;
@@ -674,7 +674,7 @@ class ProjectController extends Controller
             $project->on_progress_note = $request->on_progress_note;
             $project->on_progress_by = Auth::user()->id;
             $project->on_progress_date = Carbon::now();
-            $return = "Progress Successfully";
+            $return = "Berhasil Diperbarui ke On Progress";
         } else {
             $project->is_finish = 0;
             $project->is_confirm = 0;
@@ -754,12 +754,12 @@ class ProjectController extends Controller
             }
 
             $project->final_status = 'created'; // Move to Manager Approval
-            $return = "You agreed to reschedule. Request proceeds to Manager approval.";
+            $return = "Anda menyetujui reschedule. Permintaan berlanjut ke persetujuan Manager.";
         } else {
             $project->target_response = 'no';
             $project->target_response_date = Carbon::now();
             $project->final_status = 'created'; // Still move to Manager Approval, but with "No" response
-            $return = "You declined to reschedule. Request still proceeds through approval chain to Director.";
+            $return = "Anda menolak reschedule. Permintaan tetap berlanjut melalui rantai persetujuan hingga Direktur.";
         }
 
         $project->save();
