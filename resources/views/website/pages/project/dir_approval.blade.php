@@ -152,7 +152,7 @@
                         orderable: false,
                         data: null,
                         render: function() {
-                            return `<button class="badge bg-primary">Klik untuk Detail</button>`;
+                            return `<button class="btn btn-sm btn-info"><i class="mdi mdi-eye"></i></button>`;
                         }
                     },
                 ],
@@ -188,18 +188,16 @@
                                 <td style="white-space: pre-wrap;">${d.benefit}</td>
                             </tr>
                         </tbody>
-                        <tbody style="border: 2px solid black;">
                             <tr>
-                                <td>Manager Approval</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Target Response</td>
+                                <td>
+                                    <strong>${d.target_response ? d.target_response.toUpperCase() : 'PENDING'}</strong>
+                                    ${d.target_response == 'yes' ? `<br><small class="text-success">Reschedule Proposed: ${d.target_reschedule_start_date} s/d ${d.target_reschedule_end_date}</small>` : ''}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Manager Approval</td>
                                 <td>${d.is_manager_approve ? 'Approved' : 'Rejected'} by ${d.manager_name ?? '-'} (${d.manager_note ?? '-'})</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Approval</td>
-                                <td>${d.is_it_approve ? 'Approved' : 'Rejected'} by ${d.it_name ?? '-'} (${d.it_note ?? '-'})</td>
-                            </tr>
-                            <tr>
-                                <td>ITD MGR Approval</td>
-                                <td>${d.is_it_mgr_approve ? 'Approved' : 'Rejected'} by ${d.it_mgr_name ?? '-'} (${d.it_mgr_note ?? '-'})</td>
                             </tr>
                         </tbody>
                         <tfoot>

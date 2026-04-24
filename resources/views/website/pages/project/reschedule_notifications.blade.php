@@ -147,7 +147,7 @@
                         content: '',
                         searchable: false,
                         render: function(data) {
-                            return `<button class="badge bg-primary">Lihat Detail & Respon</button>`;
+                            return `<button class="btn btn-sm btn-info detail"><i class="mdi mdi-eye"></i></button>`;
                         }
                     },
                 ],

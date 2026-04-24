@@ -234,11 +234,18 @@ class ProjectController extends Controller
         $firstDepartmentId = $userDepartments->first();
         $lastDepartmentId = $userDepartments->last();
 
-        $data = Project::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
+        $data = Project::query();
+        
+        // If user is IT Manager or Director, they can see all project requests
+        // Otherwise, restrict to their own departments
+        if (!Auth::user()->can('ITDMGR') && !Auth::user()->can('approve_dir')) {
+            $data = $data->where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
                 $query->where('created_dept', $firstDepartmentId)
                     ->orWhere('created_dept', $lastDepartmentId);
-            })
-            ->where('final_status', 'created')
+            });
+        }
+
+        $data = $data->where('final_status', 'created')
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
