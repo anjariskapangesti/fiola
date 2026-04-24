@@ -18,11 +18,19 @@ class NewFolderSeeder extends Seeder
         }
 
         // Truncate existing data
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('form_new_folder_user')->truncate();
-        DB::table('form_new_folder_path')->truncate();
-        DB::table('form_new_folder')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            DB::table('form_new_folder_user')->truncate();
+            DB::table('form_new_folder_path')->truncate();
+            DB::table('form_new_folder')->truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement('TRUNCATE TABLE form_new_folder_user, form_new_folder_path, form_new_folder RESTART IDENTITY CASCADE');
+        } else {
+            DB::table('form_new_folder_user')->truncate();
+            DB::table('form_new_folder_path')->truncate();
+            DB::table('form_new_folder')->truncate();
+        }
 
         $userHRD = User::where('email', 'irfan.anshori@aiia.co.id')->first() ?: $users->random();
         $deptHRD = Department::where('id', 1)->first() ?: $departments->random();

@@ -12,11 +12,19 @@ class SistemSeeder extends Seeder
     public function run()
     {
         // Truncate existing data to prevent duplicates
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('form_sistem_user')->truncate();
-        DB::table('form_sistem_app')->truncate();
-        DB::table('form_sistem')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            DB::table('form_sistem_user')->truncate();
+            DB::table('form_sistem_app')->truncate();
+            DB::table('form_sistem')->truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        } elseif (DB::getDriverName() === 'pgsql') {
+            DB::statement('TRUNCATE TABLE form_sistem_user, form_sistem_app, form_sistem RESTART IDENTITY CASCADE');
+        } else {
+            DB::table('form_sistem_user')->truncate();
+            DB::table('form_sistem_app')->truncate();
+            DB::table('form_sistem')->truncate();
+        }
 
         $users = User::all();
         $departments = Department::all();
