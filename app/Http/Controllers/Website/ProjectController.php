@@ -247,7 +247,7 @@ class ProjectController extends Controller
             });
         }
 
-        $data = $data->whereIn('final_status', ['created', 'Waiting Manager Approval'])
+        $data = $data->whereIn('form_project.final_status', ['created', 'Waiting Manager Approval'])
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
@@ -265,7 +265,7 @@ class ProjectController extends Controller
                 'on_progress.name as on_progress_name',
                 'finish.name as finish_name'
             )
-            ->orderBy('created_at', 'ASC');
+            ->orderBy('form_project.created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
@@ -347,7 +347,7 @@ class ProjectController extends Controller
 
     public function dir_approval_ajax(Request $request)
     {
-        $data = Project::whereIn('final_status', ['Waiting Director Approval', 'Manager Approve'])
+        $data = Project::whereIn('form_project.final_status', ['Waiting Director Approval', 'Manager Approve'])
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
@@ -361,7 +361,7 @@ class ProjectController extends Controller
                 'it.name as it_name',
                 'it_mgr.name as it_mgr_name'
             )
-            ->orderBy('created_at', 'ASC');
+            ->orderBy('form_project.created_at', 'ASC');
 
         return DataTables::eloquent($data)->make(true);
     }
