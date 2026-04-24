@@ -89,7 +89,7 @@ class ProjectSeeder extends Seeder
         ]);
 
         // Row 4: Project for next month
-        DB::table('form_project')->insert([
+        $nextMonthProject = DB::table('form_project')->insertGetId([
             'no_reg' => 'PRJ-' . $now->copy()->addMonth()->format('Ymd') . '-001',
             'npk' => $admin->npk,
             'fullname' => $admin->name,
@@ -107,5 +107,111 @@ class ProjectSeeder extends Seeder
             'kondisi_sebelum' => '1Gbps backbone',
             'kondisi_target' => '10Gbps backbone',
         ]);
+
+        // Row 5: PENDING RESCHEDULE REQUEST (Waiting for Irfan Anshori to respond)
+        // Irfan owns PRJ-...-002 (Employee Portal Upgrade)
+        $targetProject = DB::table('form_project')->where('no_reg', 'PRJ-' . $now->copy()->format('Ymd') . '-002')->first();
+        if ($targetProject) {
+            DB::table('form_project')->insert([
+                'no_reg' => 'PRJ-' . $now->copy()->format('Ymd') . '-004',
+                'npk' => $admin->npk,
+                'fullname' => $admin->name,
+                'department' => 'ITD',
+                'nama_project' => 'AI Integration for Sales',
+                'start_date' => $now->copy()->startOfMonth()->addDays(5)->format('Y-m-d'),
+                'end_date' => $now->copy()->startOfMonth()->addDays(25)->format('Y-m-d'),
+                'final_status' => 'Waiting Target Response',
+                'is_reschedule' => 1,
+                'reschedule_target_id' => $targetProject->id,
+                'target_response' => 'pending',
+                'is_timeline_active' => false,
+                'created_by' => $admin->id,
+                'created_dept' => 9,
+                'created_at' => Carbon::now(),
+                'benefit' => 'Automate sales predictions',
+                'kondisi_sebelum' => 'Manual Excel',
+                'kondisi_target' => 'AI Automated',
+            ]);
+        }
+
+        // Row 6: RESCHEDULE ACCEPTED BY TARGET (Waiting for Manager Approval)
+        $anotherAdminProject = DB::table('form_project')->where('no_reg', 'PRJ-' . $now->copy()->format('Ymd') . '-001')->first();
+        if ($anotherAdminProject) {
+            DB::table('form_project')->insert([
+                'no_reg' => 'PRJ-' . $now->copy()->format('Ymd') . '-005',
+                'npk' => $user->npk,
+                'fullname' => $user->name,
+                'department' => 'HRD',
+                'nama_project' => 'Payroll System Migration',
+                'start_date' => $now->copy()->startOfMonth()->format('Y-m-d'),
+                'end_date' => $now->copy()->startOfMonth()->addDays(20)->format('Y-m-d'),
+                'final_status' => 'created', // This means it's waiting for Manager
+                'is_reschedule' => 1,
+                'reschedule_target_id' => $anotherAdminProject->id,
+                'target_response' => 'yes',
+                'target_reschedule_start_date' => $now->copy()->addYear()->startOfMonth()->format('Y-m-d'),
+                'target_reschedule_end_date' => $now->copy()->addYear()->startOfMonth()->addDays(14)->format('Y-m-d'),
+                'is_timeline_active' => false,
+                'created_by' => $user->id,
+                'created_dept' => 1,
+                'created_at' => Carbon::now(),
+                'benefit' => 'More secure payroll',
+                'kondisi_sebelum' => 'Legacy server',
+                'kondisi_target' => 'Cloud native',
+            ]);
+        }
+
+        // Row 7: RESCHEDULE DECLINED BY TARGET (But still proceeds to Manager/Director)
+        if ($nextMonthProject) {
+            DB::table('form_project')->insert([
+                'no_reg' => 'PRJ-' . $now->copy()->addMonth()->format('Ymd') . '-002',
+                'npk' => $user->npk,
+                'fullname' => $user->name,
+                'department' => 'HRD',
+                'nama_project' => 'LMS Implementation',
+                'start_date' => $now->copy()->addMonth()->startOfMonth()->addDays(5)->format('Y-m-d'),
+                'end_date' => $now->copy()->addMonth()->startOfMonth()->addDays(15)->format('Y-m-d'),
+                'final_status' => 'created',
+                'is_reschedule' => 1,
+                'reschedule_target_id' => $nextMonthProject,
+                'target_response' => 'no',
+                'is_timeline_active' => false,
+                'created_by' => $user->id,
+                'created_dept' => 1,
+                'created_at' => Carbon::now(),
+                'benefit' => 'Centralized learning',
+                'kondisi_sebelum' => 'Offline training',
+                'kondisi_target' => 'Digital LMS',
+            ]);
+        }
+        // Row 8: READY FOR DIRECTOR APPROVAL (Reschedule)
+        if ($targetProject) {
+            DB::table('form_project')->insert([
+                'no_reg' => 'PRJ-' . $now->copy()->format('Ymd') . '-006',
+                'npk' => $user->npk,
+                'fullname' => $user->name,
+                'department' => 'HRD',
+                'nama_project' => 'E-Learning Content Pack',
+                'start_date' => $now->copy()->startOfMonth()->addDays(2)->format('Y-m-d'),
+                'end_date' => $now->copy()->startOfMonth()->addDays(22)->format('Y-m-d'),
+                'final_status' => 'IT MGR Approve', // Status that Director looks for
+                'is_reschedule' => 1,
+                'reschedule_target_id' => $targetProject->id,
+                'target_response' => 'yes',
+                'target_reschedule_start_date' => $now->copy()->addYear()->startOfMonth()->addDays(15)->format('Y-m-d'),
+                'target_reschedule_end_date' => $now->copy()->addYear()->startOfMonth()->addDays(25)->format('Y-m-d'),
+                'is_timeline_active' => false,
+                'is_manager_approve' => 1,
+                'manager_approval_date' => $now->copy()->subDays(2),
+                'is_it_mgr_approve' => 1,
+                'it_mgr_approval_date' => $now->copy()->subDays(1),
+                'created_by' => $user->id,
+                'created_dept' => 1,
+                'created_at' => Carbon::now(),
+                'benefit' => 'More content for training',
+                'kondisi_sebelum' => 'Limited content',
+                'kondisi_target' => 'Rich multimedia content',
+            ]);
+        }
     }
 }
