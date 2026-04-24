@@ -28,12 +28,17 @@
                     <input type="hidden" name="reschedule_target_id" id="reschedule_target_id" value="">
 
                     <div id="reschedule_indicator" class="alert alert-warning d-none mb-4">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
                             <span>
                                 <i class="mdi mdi-alert-circle-outline me-2"></i>
                                 <strong>Reschedule Request:</strong> Mengajukan reschedule untuk project <span id="target_project_name" class="fw-bold"></span>
                             </span>
                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="cancelReschedule()">Batalkan Reschedule</button>
+                        </div>
+                        <div class="form-floating form-floating-outline">
+                            <textarea class="form-control" id="reschedule_reason" name="reschedule_reason" style="height: 100px" placeholder="Alasan Penggantian"></textarea>
+                            <label for="reschedule_reason">Alasan Penggantian <span class="text-danger">*</span></label>
+                            <div class="invalid-feedback">*Mohon isi alasan penggantian</div>
                         </div>
                     </div>
 
@@ -427,6 +432,8 @@
             window.cancelReschedule = function() {
                 document.getElementById('is_reschedule').value = '0';
                 document.getElementById('reschedule_target_id').value = '';
+                document.getElementById('reschedule_reason').value = '';
+                document.getElementById('reschedule_reason').required = false;
                 document.getElementById('reschedule_indicator').classList.add('d-none');
                 isMonthChecked = false;
             };
@@ -435,6 +442,7 @@
                 document.getElementById('is_reschedule').value = '1';
                 document.getElementById('reschedule_target_id').value = id;
                 document.getElementById('target_project_name').innerText = name;
+                document.getElementById('reschedule_reason').required = true;
                 document.getElementById('reschedule_indicator').classList.remove('d-none');
                 rescheduleModal.hide();
                 isMonthChecked = true;

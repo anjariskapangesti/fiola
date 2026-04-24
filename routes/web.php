@@ -480,20 +480,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
                     Route::get('/manager_approved_ajax', 'ProjectController@manager_approved_ajax')->name('project.manager_approved_ajax');
                 });
                 Route::group(['middleware' => ['auth.web']], function () {
-                    Route::get('/it_approval', 'ProjectController@it_approval')->name('project.it_approval');
-                    Route::get('/it_approval_ajax', 'ProjectController@it_approval_ajax')->name('project.it_approval_ajax');
-                    Route::post('/it_approve', 'ProjectController@it_approve')->name('project.it_approve');
-                    Route::get('/it_approved', 'ProjectController@it_approved')->name('project.it_approved');
-                    Route::get('/it_approved_ajax', 'ProjectController@it_approved_ajax')->name('project.it_approved_ajax');
-                });
-                Route::group(['middleware' => ['permission:approve_mgr', 'auth.web']], function () {
-                    Route::get('/it_mgr_approval', 'ProjectController@it_mgr_approval')->name('project.it_mgr_approval');
-                    Route::get('/it_mgr_approval_ajax', 'ProjectController@it_mgr_approval_ajax')->name('project.it_mgr_approval_ajax');
-                    Route::post('/it_mgr_approve', 'ProjectController@it_mgr_approve')->name('project.it_mgr_approve');
-                    Route::get('/it_mgr_approved', 'ProjectController@it_mgr_approved')->name('project.it_mgr_approved');
-                    Route::get('/it_mgr_approved_ajax', 'ProjectController@it_mgr_approved_ajax')->name('project.it_mgr_approved_ajax');
-                });
-                Route::group(['middleware' => ['auth.web']], function () {
                     Route::get('/dir_approval', 'ProjectController@dir_approval')->name('project.dir_approval');
                     Route::get('/dir_approval_ajax', 'ProjectController@dir_approval_ajax')->name('project.dir_approval_ajax');
                     Route::post('/dir_approve', 'ProjectController@dir_approve')->name('project.dir_approve');
@@ -502,11 +488,6 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
                 });
 
                 Route::group(['middleware' => ['auth.web']], function () {
-                    Route::get('/execution', 'ProjectController@execution')->name('project.execution');
-                    Route::get('/execution_ajax', 'ProjectController@execution_ajax')->name('project.execution_ajax');
-                    Route::post('/execution_approve', 'ProjectController@execution_approve')->name('project.execution_approve');
-                    Route::get('/finished', 'ProjectController@finished')->name('project.finished');
-                    Route::get('/finished_ajax', 'ProjectController@finished_ajax')->name('project.finished_ajax');
                     Route::get('/reschedule_notifications', 'ProjectController@reschedule_notifications')->name('project.reschedule_notifications');
                     Route::get('/reschedule_notifications_ajax', 'ProjectController@reschedule_notifications_ajax')->name('project.reschedule_notifications_ajax');
                     Route::post('/target_respond', 'ProjectController@target_respond')->name('project.target_respond');

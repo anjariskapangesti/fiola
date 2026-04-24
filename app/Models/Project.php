@@ -62,6 +62,7 @@ class Project extends Model
         'target_response_date',
         'target_reschedule_start_date',
         'target_reschedule_end_date',
+        'reschedule_reason',
     ];
 
     protected $casts = [

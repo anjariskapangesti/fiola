@@ -718,7 +718,7 @@ class AppHelper
     /// PROJECT RESCHEDULE ///
     public static function project_dir_count()
     {
-        return Project::where('final_status', 'Manager Approve')->count();
+        return Project::where('final_status', 'Waiting Director Approval')->count();
     }
 
     public static function project_reschedule_notifications_count()

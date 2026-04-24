@@ -195,17 +195,13 @@
                         name: 'final_status',
                         render: function(data, type, row, meta) {
                             if (data == 'created') {
-                                return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
-                            } else if (data == 'Manager Approve') {
-                                return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
-                            } else if (data == 'IT Approve') {
-                                return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
-                            } else if (data == 'IT MGR Approve') {
-                                return `<span class="badge bg-warning">Waiting Execution</span>`;
-                            } else if (data == 'On Progress') {
-                                return `<span class="badge bg-info">On Progress</span>`;
-                            } else if (data == 'Finished') {
+                                return `<span class="badge bg-warning">Waiting Manager Approval</span>`;
+                            } else if (data == 'Waiting Director Approval' || data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Waiting Director Approval</span>`;
+                            } else if (data == 'Director Approve' || data == 'Finished') {
                                 return `<span class="badge bg-success">Finished</span>`;
+                            } else if (data == 'Waiting Target Response') {
+                                return `<span class="badge bg-info">Waiting Target Response</span>`;
                             } else {
                                 return `<span class="badge bg-danger">${data}</span>`;
                             }

@@ -436,17 +436,13 @@
                             name: 'final_status',
                             render: function(data) {
                                 if (data == 'created') {
-                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Manager Approve</span>`;
-                                } else if (data == 'Manager Approve') {
-                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD Approve</span>`;
-                                } else if (data == 'IT Approve') {
-                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting ITD MGR Approve</span>`;
-                                } else if (data == 'IT MGR Approve') {
-                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Execution</span>`;
-                                } else if (data == 'On Progress') {
-                                    return `<span class="badge bg-info" style="font-size: 15px;">On Progress</span>`;
-                                } else if (data == 'Finished') {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Manager Approval</span>`;
+                                } else if (data == 'Waiting Director Approval' || data == 'Manager Approve') {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Director Approval</span>`;
+                                } else if (data == 'Director Approve' || data == 'Finished') {
                                     return `<span class="badge bg-success" style="font-size: 15px;">Finished</span>`;
+                                } else if (data == 'Waiting Target Response') {
+                                    return `<span class="badge bg-info" style="font-size: 15px;">Waiting Target Response</span>`;
                                 } else {
                                     return `<span class="badge bg-danger" style="font-size: 15px;">${data}</span>`;
                                 }

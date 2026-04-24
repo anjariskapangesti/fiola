@@ -179,8 +179,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="font-weight: bold;">Alasan Project</td>
+                                <td style="font-weight: bold;">Alasan Project (Target)</td>
                                 <td style="white-space: pre-wrap;">${d.kondisi_target} </td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold; color: #d9534f;">Alasan Penggantian (Reschedule)</td>
+                                <td style="white-space: pre-wrap; font-weight: bold;">${d.reschedule_reason} </td>
                             </tr>
                         </tbody>
                         <tfoot>
