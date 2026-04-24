@@ -127,6 +127,10 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
+            if ($model == Project::class) {
+                // Projects skip IT approval and go straight from Manager to Director
+                continue;
+            }
             $count = $model::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])->count();
 
             $totalCount += $count;
@@ -157,6 +161,10 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
+            if ($model == Project::class) {
+                // Projects skip IT MGR approval
+                continue;
+            }
             $count = $model::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])->count();
 
             $totalCount += $count;
@@ -188,12 +196,7 @@ class AppHelper
 
         foreach ($models as $model) {
             if ($model == Project::class) {
-                $count = $model::where(function($query) {
-                    $query->where(function($q) {
-                        $q->where('final_status', 'IT MGR Approve')
-                          ->where('is_reschedule', 0);
-                    })->orWhereIn('final_status', ['Director Approve', 'On Progress']);
-                })->count();
+                $count = $model::whereIn('final_status', ['Director Approve', 'On Progress'])->count();
             } else {
                 $count = $model::whereIn('final_status', ['IT MGR Approve', 'On Progress'])->count();
             }
@@ -436,12 +439,14 @@ class AppHelper
 
     public static function project_it_count()
     {
-        return Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
+        // Projects skip IT approval
+        return 0;
     }
 
     public static function project_it_mgr_count()
     {
-        return Project::where('final_status', 'LIKE', 'IT Approve%')->count();
+        // Projects skip IT MGR approval
+        return 0;
     }
 
     public static function project_execution_count()
@@ -723,8 +728,7 @@ class AppHelper
     /// PROJECT RESCHEDULE ///
     public static function project_dir_count()
     {
-        return Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])
-            ->where('is_reschedule', 1)
+        return Project::where('final_status', 'Manager Approve')
             ->whereNull('is_dir_approve')
             ->count();
     }

@@ -140,8 +140,8 @@ class UserSeeder extends Seeder
             }
         }
 
-        /// USER ITD ///
-        $usersITD = [
+        /// IT MANAGER ///
+        $managerITD = [
             [
                 'name' => 'Imam Mahfud',
                 'npk' => '001004',
@@ -149,6 +149,30 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567895',
             ],
+        ];
+
+        foreach ($managerITD as $mgrITD) {
+            $mgrITD['company'] = 'AIIA';
+            $mgrITDId = DB::table('users')->insertGetId($mgrITD);
+
+            DB::table('model_has_departments')->insert([
+                'model_type' => "App\Models\User",
+                'model_id' => $mgrITDId,
+                'department_id' => $departmentITD,
+            ]);
+
+            foreach ($permissionsITDMGR as $perm) {
+                DB::table('model_has_permissions')->insert([
+                    'model_type' => "App\Models\User",
+                    'model_id' => $mgrITDId,
+                    'permission_id' => $perm,
+                ]);
+            }
+        }
+
+        /// USER ITD ///
+        $usersITD = [
+
             [
                 'name' => 'Rafie Afif Andika',
                 'npk' => '001005',

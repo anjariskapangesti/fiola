@@ -215,7 +215,7 @@
                         @endif
                     </div>
                 </a>
-                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form', 'only_reschedule' => true])
+                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form', 'is_director_project' => true])
             </li>
         @endcan
 

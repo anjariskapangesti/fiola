@@ -1,5 +1,5 @@
 <ul class="menu-sub">
-    @if (!($only_reschedule ?? false))
+    @if (!($only_reschedule ?? false) && !($is_director_project ?? false))
         <li
             class="menu-item {{ Route::is('website.account.' . $link) || Route::is('website.account.edit') ? 'active' : '' }}">
             <a href="{{ route('website.account.' . $link) }}" class="menu-link">
@@ -183,6 +183,7 @@
             </a>
         </li>
 
+    @if (!($only_reschedule ?? false) || ($is_director_project ?? false))
         <li class="menu-item {{ Route::is('website.project.' . $link) ? 'active' : '' }}">
             <a href="{{ route('website.project.' . $link) }}" class="menu-link">
                 <div data-i18n="Request Project">{{ $text }} Request Project
@@ -213,7 +214,9 @@
                 @endif
             </a>
         </li>
+    @endif
 
+    @if (!($only_reschedule ?? false) && !($is_director_project ?? false))
         <li class="menu-item {{ Route::is('website.fitur.' . $link) ? 'active' : '' }}">
             <a href="{{ route('website.fitur.' . $link) }}" class="menu-link">
                 <div data-i18n="Request Fitur">{{ $text }} Request Fitur

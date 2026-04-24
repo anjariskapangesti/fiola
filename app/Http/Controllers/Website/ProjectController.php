@@ -104,11 +104,7 @@ class ProjectController extends Controller
         $isItManagerApprove = null;
         $itManagerApprovalDate = null;
 
-        if (Auth::user()->hasDepartment('ITD') && Auth::user()->can('approve_mgr')) {
-            $finalStatus = 'IT MGR Approve';
-            $isItManagerApprove = 1;
-            $itManagerApprovalDate = Carbon::now();
-        } elseif (
+        if (
             Auth::user()->can('approve_mgr') ||
             Auth::user()->can('approve_gm') ||
             Auth::user()->can('approve_dir') ||
@@ -118,10 +114,6 @@ class ProjectController extends Controller
             $finalStatus = 'Manager Approve';
             $isManagerApprove = 1;
             $managerApprovalDate = Carbon::now();
-        } elseif (Auth::user()->hasDepartment('ITD')) {
-            $finalStatus = 'IT Approve';
-            $isItApprove = 1;
-            $itApprovalDate = Carbon::now();
         } else {
             $finalStatus = $request->is_reschedule ? 'Waiting Target Response' : 'created';
         }
@@ -528,8 +520,7 @@ class ProjectController extends Controller
 
     public function dir_approval_ajax(Request $request)
     {
-        $data = Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])
-            ->where('is_reschedule', 1)
+        $data = Project::where('final_status', 'Manager Approve')
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
@@ -578,14 +569,14 @@ class ProjectController extends Controller
                         $updateData['start_date'] = $project->target_reschedule_start_date;
                         $updateData['end_date'] = $project->target_reschedule_end_date;
                         $updateData['is_timeline_active'] = true;
-                        $updateData['final_status'] = 'IT MGR Approve';
+                        $updateData['final_status'] = 'Director Approve';
                     }
                     
                     $oldProject->update($updateData);
                 }
             }
 
-            $return = "Berhasil Disetujui. Slot dilepaskan dan project baru disetujui.";
+            $return = "Berhasil Disetujui. Project dapat berlanjut ke tahap pelaksanaan.";
         } else {
             $project->is_dir_approve = 0;
             $project->final_status = 'Director Reject';
@@ -634,7 +625,7 @@ class ProjectController extends Controller
 
     public function execution_ajax(Request $request)
     {
-        $data = Project::whereIn('final_status', ['IT MGR Approve', 'Director Approve', 'On Progress'])
+        $data = Project::whereIn('final_status', ['Director Approve', 'On Progress'])
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
@@ -667,7 +658,7 @@ class ProjectController extends Controller
             $project->final_status = 'Finished';
             $project->finish_note = $request->finish_note;
             $project->finish_date = Carbon::now();
-            $return = "Approve Successfully";
+            $return = "Berhasil Diselesaikan";
         } elseif ($request->type == 'progress') {
             $project->is_on_progress = 1;
             $project->final_status = 'On Progress';
@@ -682,7 +673,7 @@ class ProjectController extends Controller
             $project->finish_note = $request->finish_note;
             $project->finish_by = Auth::user()->id;
             $project->finish_date = Carbon::now();
-            $return = "Reject Successfully";
+            $return = "Berhasil Ditolak";
         }
 
         $project->save();
