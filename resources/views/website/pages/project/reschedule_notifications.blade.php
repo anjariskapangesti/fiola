@@ -137,7 +137,19 @@
                         data: 'final_status',
                         name: 'final_status',
                         render: function(data) {
-                            return `<span class="badge bg-warning">${data}</span>`;
+                            if (data == 'created') {
+                                return `<span class="badge bg-warning">Waiting Manager Approval</span>`;
+                            } else if (data == 'Waiting Director Approval' || data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Waiting Director Approval</span>`;
+                            } else if (data == 'Director Approve' || data == 'Finished') {
+                                return `<span class="badge bg-success">Finished</span>`;
+                            } else if (data == 'Waiting Target Response') {
+                                return `<span class="badge bg-info">Waiting Target Response</span>`;
+                            } else if (data.includes('Reject')) {
+                                return `<span class="badge bg-danger">Rejected</span>`;
+                            } else {
+                                return `<span class="badge bg-danger">${data}</span>`;
+                            }
                         }
                     },
                     {
