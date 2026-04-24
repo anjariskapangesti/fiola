@@ -277,6 +277,7 @@ class ProjectController extends Controller
         if ($request->type == 'approve') {
             $project->is_manager_approve = 1;
             $project->manager_approve_by = Auth::user()->id;
+            $project->manager_note = $request->manager_note;
             $project->final_status = 'Waiting Director Approval';
             $return = "Berhasil Disetujui";
         } else {
