@@ -162,17 +162,19 @@
                         name: 'final_status',
                         render: function(data, type, row, meta) {
                             if (data == 'created') {
-                                return `<span class="badge bg-warning">Waiting Manager Approve</span>`;
+                                return `<span class="badge bg-warning">Menunggu Persetujuan Manager</span>`;
                             } else if (data == 'Manager Approve') {
-                                return `<span class="badge bg-warning">Waiting ITD Approve</span>`;
-                            } else if (data == 'IT Approve') {
-                                return `<span class="badge bg-warning">Waiting ITD MGR Approve</span>`;
-                            } else if (data == 'IT MGR Approve') {
-                                return `<span class="badge bg-warning">Waiting Execution</span>`;
+                                return `<span class="badge bg-warning">Menunggu Persetujuan Direktur</span>`;
+                            } else if (data == 'Director Approve') {
+                                return `<span class="badge bg-success">Disetujui Direktur</span>`;
                             } else if (data == 'On Progress') {
                                 return `<span class="badge bg-info">On Progress</span>`;
                             } else if (data == 'Finished') {
                                 return `<span class="badge bg-success">Finished</span>`;
+                            } else if (data == 'Manager Reject') {
+                                return `<span class="badge bg-danger">Ditolak Manager</span>`;
+                            } else if (data == 'Director Reject') {
+                                return `<span class="badge bg-danger">Ditolak Direktur</span>`;
                             } else {
                                 return `<span class="badge bg-danger">${data}</span>`;
                             }

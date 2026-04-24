@@ -144,7 +144,21 @@
                         data: 'final_status',
                         name: 'final_status',
                         render: function(data) {
-                            return `<span class="badge bg-warning">${data}</span>`;
+                            if (data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Menunggu Persetujuan Direktur</span>`;
+                            } else if (data == 'Director Approve') {
+                                return `<span class="badge bg-success">Disetujui Direktur</span>`;
+                            } else if (data == 'On Progress') {
+                                return `<span class="badge bg-info">On Progress</span>`;
+                            } else if (data == 'Finished') {
+                                return `<span class="badge bg-success">Finished</span>`;
+                            } else if (data == 'Manager Reject') {
+                                return `<span class="badge bg-danger">Ditolak Manager</span>`;
+                            } else if (data == 'Director Reject') {
+                                return `<span class="badge bg-danger">Ditolak Direktur</span>`;
+                            } else {
+                                return `<span class="badge bg-warning">${data}</span>`;
+                            }
                         }
                     },
                     {
@@ -197,14 +211,6 @@
                             <tr>
                                 <td style="background-color: #66a7e3; font-weight: bold;">Approval Manager</td>
                                 <td>${d.is_manager_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.manager_name ?? '-'} (Catatan: ${d.manager_note ?? '-'})</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Approval ITD</td>
-                                <td>${d.is_it_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.it_name ?? '-'} (Catatan: ${d.it_note ?? '-'})</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Approval IT Manager</td>
-                                <td>${d.is_it_mgr_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.it_mgr_name ?? '-'} (Catatan: ${d.it_mgr_note ?? '-'})</td>
                             </tr>
                         </tbody>
                         <tfoot>

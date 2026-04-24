@@ -336,7 +336,8 @@
             </li>
         @endcan --}}
         {{-- ITD --}}
-            @can('can_approve_it')
+            {{-- ITD --}}
+            {{-- @can('can_approve_it')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -387,7 +388,7 @@
                         'text' => 'Form',
                     ])
                 </li>
-            @endcan
+            @endcan --}}
             {{-- Execution --}}
             @can('can_execution')
                 <li

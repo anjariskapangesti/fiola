@@ -282,8 +282,10 @@ class ProjectController extends Controller
             $project->manager_approve_by = Auth::user()->id;
             
             if ($project->is_reschedule) {
-                $project->final_status = 'Manager Reject (Reschedule)';
-                $return = "Berhasil Ditolak (Berlanjut ke ITD)";
+                $project->final_status = 'Manager Reject';
+                $project->is_finish = 0;
+                $project->is_confirm = 0;
+                $return = "Berhasil Ditolak. Proses dihentikan.";
             } else {
                 $project->final_status = 'Manager Reject';
                 $project->is_finish = 0;
@@ -525,7 +527,7 @@ class ProjectController extends Controller
 
     public function dir_approval_ajax(Request $request)
     {
-        $data = Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])
+        $data = Project::where('final_status', 'Manager Approve')
             ->join('users', 'form_project.created_by', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')

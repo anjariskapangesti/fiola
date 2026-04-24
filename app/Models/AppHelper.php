@@ -431,12 +431,12 @@ class AppHelper
 
     public static function project_it_count()
     {
-        return Project::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])->count();
+        return 0;
     }
 
     public static function project_it_mgr_count()
     {
-        return Project::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])->count();
+        return 0;
     }
 
     public static function project_execution_count()
@@ -718,7 +718,7 @@ class AppHelper
     /// PROJECT RESCHEDULE ///
     public static function project_dir_count()
     {
-        return Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])->count();
+        return Project::where('final_status', 'Manager Approve')->count();
     }
 
     public static function project_reschedule_notifications_count()
