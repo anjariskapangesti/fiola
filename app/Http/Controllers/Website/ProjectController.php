@@ -254,9 +254,11 @@ class ProjectController extends Controller
             ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
             ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
             ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
+            ->leftJoin('form_project as target', 'form_project.reschedule_target_id', 'target.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
+                'target.nama_project as target_project_name',
                 'manager.name as manager_name',
                 'it.name as it_name',
                 'it_mgr.name as it_mgr_name',
@@ -350,9 +352,11 @@ class ProjectController extends Controller
             ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
             ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
+            ->leftJoin('form_project as target', 'form_project.reschedule_target_id', 'target.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
+                'target.nama_project as target_project_name',
                 'manager.name as manager_name',
                 'it.name as it_name',
                 'it_mgr.name as it_mgr_name'

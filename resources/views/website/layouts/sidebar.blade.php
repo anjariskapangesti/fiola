@@ -42,12 +42,12 @@
             <ul class="menu-sub">
                 <li class="menu-item {{ Route::is('website.home') ? 'active' : '' }}">
                     <a href="{{ route('website.home') }}" class="menu-link">
-                        <div data-i18n="Basic">Statistik Umum</div>
+                        <div data-i18n="Basic">Dashboard Utama</div>
                     </a>
                 </li>
                 <li class="menu-item {{ Route::is('website.project_timeline.index') ? 'active' : '' }}">
                     <a href="{{ route('website.project_timeline.index') }}" class="menu-link">
-                        <div data-i18n="Project Timeline">Timeline Proyek</div>
+                        <div data-i18n="Project Timeline">Dashboard Timeline</div>
                     </a>
                 </li>
             </ul>

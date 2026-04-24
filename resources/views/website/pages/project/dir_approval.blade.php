@@ -178,17 +178,34 @@
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td style="background-color: #66a7e3; width: 200px; font-weight: bold;">Project Name</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Project Name</td>
                                 <td>${d.nama_project} </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Requestor</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
                                 <td>${d.npk} / ${d.fullname}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Reschedule Target ID</td>
-                                <td>${d.reschedule_target_id} (Project to be replaced)</td>
+                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
                             </tr>
+                            ${d.is_reschedule ? `
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; font-weight: bold;">Reschedule Target</td>
+                                <td style="font-weight: bold; color: #856404;">${d.target_project_name}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; font-weight: bold;">Alasan Reschedule</td>
+                                <td style="font-weight: bold; color: #856404; white-space: pre-wrap;">${d.reschedule_reason}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; font-weight: bold;">Respon Target</td>
+                                <td style="font-weight: bold; color: #856404;">
+                                    <strong>${d.target_response ? (d.target_response == 'yes' ? 'SETUJU (YES)' : 'MENOLAK (NO)') : 'PENDING'}</strong>
+                                    ${d.target_response == 'yes' ? `<br><small>Rencana Jadwal Baru: ${d.target_reschedule_start_date} s/d ${d.target_reschedule_end_date}</small>` : ''}
+                                </td>
+                            </tr>
+                            ` : ''}
                              <tr>
                                 <td style="background-color: #66a7e3; font-weight: bold;">Lampiran</td>
                                 <td>

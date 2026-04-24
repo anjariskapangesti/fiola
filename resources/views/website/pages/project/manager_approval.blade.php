@@ -234,6 +234,20 @@
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
                             </tr>
+                            ${d.is_reschedule ? `
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; width: 30px; font-weight: bold;">Reschedule Target</td>
+                                <td style="font-weight: bold; color: #856404;">${d.target_project_name}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; width: 30px; font-weight: bold;">Alasan Reschedule</td>
+                                <td style="font-weight: bold; color: #856404; white-space: pre-wrap;">${d.reschedule_reason}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; width: 30px; font-weight: bold;">Respon Target</td>
+                                <td style="font-weight: bold; color: #856404;">${d.target_response === 'yes' ? 'SETUJU (Ya)' : (d.target_response === 'no' ? 'TIDAK SETUJU (Tidak)' : 'Belum Ada Respon')}</td>
+                            </tr>
+                            ` : ''}
                             <tr>
                                 <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Additional Support Device</td>
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.alat} </td>
