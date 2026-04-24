@@ -34,17 +34,23 @@
 
     <ul class="menu-inner py-1">
         <!-- Dashboards -->
-        <li class="menu-item {{ Route::is('website.home') ? 'active' : '' }}">
-            <a href="{{ route('website.home') }}" class="menu-link">
+        <li class="menu-item {{ Route::is('website.home') || Route::is('website.project_timeline.index') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-home-outline"></i>
-                <div data-i18n="Basic">Dashboard</div>
+                <div data-i18n="Dashboards">Dashboard</div>
             </a>
-        </li>
-        <li class="menu-item {{ Route::is('website.project_timeline.index') ? 'active' : '' }}">
-            <a href="{{ route('website.project_timeline.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons mdi mdi-chart-gantt"></i>
-                <div data-i18n="Project Timeline">Project Timeline</div>
-            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Route::is('website.home') ? 'active' : '' }}">
+                    <a href="{{ route('website.home') }}" class="menu-link">
+                        <div data-i18n="Basic">Statistik Umum</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Route::is('website.project_timeline.index') ? 'active' : '' }}">
+                    <a href="{{ route('website.project_timeline.index') }}" class="menu-link">
+                        <div data-i18n="Project Timeline">Timeline Proyek</div>
+                    </a>
+                </li>
+            </ul>
         </li>
         <li class="menu-header fw-medium mt-4">
             <span class="menu-header-text">Apps &amp; Pages</span>

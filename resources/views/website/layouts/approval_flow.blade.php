@@ -19,36 +19,27 @@
                 <div class="md-step-bar-right"></div>
             </div>
 
-            {{-- Step 2: Target Response (Only for Reschedule) --}}
-            <div class="md-step {{ $is_reschedule && $target_res == 'pending' && $status != 'new' ? 'active blinking' : ($is_reschedule && $target_res != 'pending' ? 'done' : '') }}">
+            {{-- Step 2: Manager --}}
+            <div class="md-step {{ $status == 'created' ? 'active blinking' : (in_array($status, ['Manager Approve', 'Director Approve', 'Finished']) ? 'done' : '') }}">
                 <div class="md-step-circle"><span>2</span></div>
-                <div class="md-step-title">Respon Target</div>
-                <div class="md-step-optional">User yg Digeser</div>
-                <div class="md-step-bar-left"></div>
-                <div class="md-step-bar-right"></div>
-            </div>
-
-            {{-- Step 3: Manager --}}
-            <div class="md-step {{ $status == 'created' ? 'active blinking' : (in_array($status, ['Manager Approve', 'Director Approve', 'On Progress', 'Finished']) ? 'done' : '') }}">
-                <div class="md-step-circle"><span>3</span></div>
                 <div class="md-step-title">Approval Manager</div>
                 <div class="md-step-optional">Persetujuan Atasan</div>
                 <div class="md-step-bar-left"></div>
                 <div class="md-step-bar-right"></div>
             </div>
 
-            {{-- Step 4: Director --}}
-            <div class="md-step {{ $status == 'Manager Approve' ? 'active blinking' : (in_array($status, ['Director Approve', 'On Progress', 'Finished']) ? 'done' : '') }}">
-                <div class="md-step-circle"><span>4</span></div>
+            {{-- Step 3: Director --}}
+            <div class="md-step {{ $status == 'Manager Approve' || $status == 'Waiting Director Approval' ? 'active blinking' : (in_array($status, ['Director Approve', 'Finished']) ? 'done' : '') }}">
+                <div class="md-step-circle"><span>3</span></div>
                 <div class="md-step-title">Approval Director</div>
                 <div class="md-step-optional">Keputusan Final</div>
                 <div class="md-step-bar-left"></div>
                 <div class="md-step-bar-right"></div>
             </div>
 
-            {{-- Step 5: Finished --}}
-            <div class="md-step {{ $status == 'Finished' ? 'active done' : '' }}">
-                <div class="md-step-circle"><span>6</span></div>
+            {{-- Step 4: Finished --}}
+            <div class="md-step {{ $status == 'Finished' || $status == 'Director Approve' ? 'active done' : '' }}">
+                <div class="md-step-circle"><span>4</span></div>
                 <div class="md-step-title">Finished</div>
                 <div class="md-step-optional">Project Selesai</div>
                 <div class="md-step-bar-left"></div>
