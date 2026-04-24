@@ -186,7 +186,7 @@
                 </a>
                 @include('website.layouts.sidebar_items', [
                     'link' => 'dir_approval',
-                    'text' => 'Project Reschedule',
+                    'text' => 'Form',
                     'is_director_project' => true,
                 ])
             </li>
@@ -197,7 +197,7 @@
                 </a>
                 @include('website.layouts.sidebar_items', [
                     'link' => 'dir_approved',
-                    'text' => 'Project Reschedule',
+                    'text' => 'Form',
                     'is_director_project' => true,
                 ])
             </li>
