@@ -11,7 +11,7 @@
             @endphp
 
             {{-- Step 1: Submit --}}
-            <div class="md-step {{ $status == 'new' || Route::is('*create') ? 'active blinking' : 'done' }}">
+            <div class="md-step {{ $status == 'new' || $status == 'Waiting Target Response' || Route::is('*create') ? 'active blinking' : 'done' }}">
                 <div class="md-step-circle"><span>1</span></div>
                 <div class="md-step-title">Submit Request</div>
                 <div class="md-step-optional">Pendaftaran Project</div>
