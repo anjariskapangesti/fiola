@@ -70,10 +70,6 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'npk_pic' => 'required',
-            'fullname_pic' => 'required',
-            'department_pic' => 'required',
-            'phone_pic' => 'required',
             'nama_project' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -160,10 +156,10 @@ class ProjectController extends Controller
 
             Project::create([
                 'no_reg' => $no_reg,
-                'npk' => $request->npk_pic,
-                'fullname' => $request->fullname_pic,
-                'department' => $request->department_pic,
-                'phone' => $request->phone_pic,
+                'npk' => Auth::user()->npk,
+                'fullname' => Auth::user()->name,
+                'department' => Auth::user()->departments->pluck('name')->implode(', '),
+                'phone' => Auth::user()->nohp,
                 'aplikasi' => $request->aplikasi,
                 'nama_project' => $request->nama_project,
                 'start_date' => request()->input('start_date'),
