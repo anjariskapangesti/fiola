@@ -26,5 +26,15 @@ class DatabaseSeeder extends Seeder
         $this->call(AccountSeeder::class);
         $this->call(SistemSeeder::class);
         $this->call(NewFolderSeeder::class);
+        $this->call(ProjectSeeder::class);
+        $this->call(FiturSeeder::class);
+        $this->call(SoftwareSeeder::class);
+        $this->call(HardwareSeeder::class);
+        $this->call(VpnSeeder::class);
+        $this->call(NetworkSeeder::class);
+        $this->call(RelayoutSeeder::class);
+        $this->call(IzinSeeder::class);
+        $this->call(IncidentReportSeeder::class);
+        $this->call(FolderAccessSeeder::class);
     }
 }
