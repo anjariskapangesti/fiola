@@ -8,11 +8,63 @@ use App\Models\ProjectTimelineRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ProjectTimelineController extends Controller
 {
     public function index()
     {
+        $projectsApproved = Project::where('is_timeline_active', true)
+            ->whereNotNull('start_date')
+            ->whereNotNull('end_date')
+            ->orderBy('start_date', 'asc')
+            ->get([
+                'id',
+                'no_reg',
+                'nama_project',
+                'fullname',
+                'department',
+                'start_date',
+                'end_date',
+                'final_status',
+            ]);
+
+        $timelineRows = [];
+        $timelineStart = null;
+        $timelineEnd = null;
+
+        foreach ($projectsApproved as $project) {
+            $startMs = Carbon::parse($project->start_date)->startOfDay()->timestamp * 1000;
+            $endMs = Carbon::parse($project->end_date)->endOfDay()->timestamp * 1000;
+            $durationDays = Carbon::parse($project->start_date)->diffInDays(Carbon::parse($project->end_date)) + 1;
+
+            $timelineRows[] = [
+                'nama_project' => $project->nama_project,
+                'no_reg' => $project->no_reg,
+                'requestor' => $project->fullname,
+                'department' => $project->department,
+                'status' => $project->final_status,
+                'start_ms' => $startMs,
+                'end_ms' => $endMs,
+                'start_label' => Carbon::parse($project->start_date)->format('d M Y'),
+                'end_label' => Carbon::parse($project->end_date)->format('d M Y'),
+                'duration_days' => $durationDays,
+            ];
+
+            if ($timelineStart === null || $startMs < $timelineStart) {
+                $timelineStart = $startMs;
+            }
+
+            if ($timelineEnd === null || $endMs > $timelineEnd) {
+                $timelineEnd = $endMs;
+            }
+        }
+
+        if ($timelineStart !== null && $timelineEnd !== null) {
+            $timelineStart = Carbon::createFromTimestampMs($timelineStart)->subDays(2)->timestamp * 1000;
+            $timelineEnd = Carbon::createFromTimestampMs($timelineEnd)->addDays(2)->timestamp * 1000;
+        }
+
         $activeProjects = Project::where('is_timeline_active', true)
             ->where('final_status', 'Finished')
             ->orderBy('timeline_order', 'asc')
@@ -31,10 +83,13 @@ class ProjectTimelineController extends Controller
             ->latest()
             ->get();
 
-        return view('website.project.timeline_management', compact(
+        return view('website.pages.project_timeline.index', compact(
             'activeProjects',
             'eligibleProjects',
-            'incomingRequests'
+            'incomingRequests',
+            'timelineRows',
+            'timelineStart',
+            'timelineEnd'
         ));
     }
 

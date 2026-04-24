@@ -40,6 +40,12 @@
                 <div data-i18n="Basic">Dashboard</div>
             </a>
         </li>
+        <li class="menu-item {{ Route::is('website.project_timeline.index') ? 'active' : '' }}">
+            <a href="{{ route('website.project_timeline.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-chart-gantt"></i>
+                <div data-i18n="Project Timeline">Project Timeline</div>
+            </a>
+        </li>
         <li class="menu-header fw-medium mt-4">
             <span class="menu-header-text">Apps &amp; Pages</span>
         </li>
