@@ -26,6 +26,7 @@ class PermissionsSeeder extends Seeder
             'approve_dir',
             'approve_vp',
             'approve_pres',
+            'ITDMGR',
         ];
 
         foreach ($permissions as $permission) {

@@ -149,7 +149,7 @@
 
         {{-- MANAGER --}}
         @can('approve_mgr')
-            @if (!auth()->user()->hasDepartment('ITD'))
+            @if (!auth()->user()->hasDepartment('ITD') || auth()->user()->can('ITDMGR'))
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -321,7 +321,7 @@
             </li>
         @endcan --}}
         {{-- ITD --}}
-            @can('can_approve_it')
+            {{-- @can('can_approve_it')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -343,9 +343,9 @@
                     </a>
                     @include('website.layouts.sidebar_items', ['link' => 'it_approved', 'text' => 'Form'])
                 </li>
-            @endcan
+            @endcan --}}
             {{-- ITD MGR --}}
-            @can('approve_mgr')
+            {{-- @can('approve_mgr')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $it_mgr_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -373,7 +373,7 @@
                         'text' => 'Form',
                     ])
                 </li>
-            @endcan
+            @endcan --}}
             {{-- Execution --}}
             @can('can_execution')
                 <li
