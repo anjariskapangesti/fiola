@@ -97,18 +97,21 @@ class UserSeeder extends Seeder
         $usersITD = [
             [
                 'name' => 'Alliq Nur Imanin Aji',
+                'npk' => '001001',
                 'email' => 'alliq@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567892',
             ],
             [
                 'name' => 'Rohmat Maulana Ishaq',
+                'npk' => '001002',
                 'email' => 'rohmat@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567893',
             ],
             [
                 'name' => 'Muhammad Diki Dwi Nugraha',
+                'npk' => '001003',
                 'email' => 'diki@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567894',
@@ -141,24 +144,28 @@ class UserSeeder extends Seeder
         $usersITD = [
             [
                 'name' => 'Imam Mahfud',
+                'npk' => '001004',
                 'email' => 'imam@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567895',
             ],
             [
                 'name' => 'Rafie Afif Andika',
+                'npk' => '001005',
                 'email' => 'rafie@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567896',
             ],            
             [
                 'name' => 'Mitsal Fabian Nadhiem',
+                'npk' => '001006',
                 'email' => 'fabian@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567897',
             ],
             [
                 'name' => 'Handika',
+                'npk' => '001007',
                 'email' => 'handika@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567898',
@@ -282,6 +289,7 @@ class UserSeeder extends Seeder
         $mgrsHRDIRLGA = [
             [
                 'name' => 'Muhammad Hidayat Martin',
+                'npk' => '001008',
                 'email' => 'muhammad.hidayat@aiia.co.id',
                 'password' => Hash::make('aiia'),
                 'nohp' => '081234567905',
