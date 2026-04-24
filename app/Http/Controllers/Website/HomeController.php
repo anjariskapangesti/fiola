@@ -60,12 +60,10 @@ class HomeController extends Controller
         ];
 
         $finalStatusConditions = [
-            'Finished' => ['Finished'],
-            'Rejected' => ['%Rejected%', '%Manager Reject%', '%IT Reject%', '%IT MGR Reject%'],
+            'Finished' => ['Finished', 'Director Approve'],
+            'Rejected' => ['%Rejected%', '%Manager Reject%', '%Director Reject%'],
             'created' => ['created'],
-            'Manager Approve' => ['Manager Approve'],
-            'IT Approve' => ['IT Approve'],
-            'Execution' => ['IT MGR Approve', 'On Progress'],
+            'Waiting Director Approval' => ['Waiting Director Approval', 'Manager Approve'],
         ];
 
         $results = [];
@@ -98,9 +96,9 @@ class HomeController extends Controller
         $total_form_finished = $results['Finished'];
         $total_form_rejected = $results['Rejected'];
         $total_form_mgr = $results['created'];
-        $total_form_it = $results['Manager Approve'];
-        $total_form_it_mgr = $results['IT Approve'];
-        $total_form_execution = $results['Execution'];
+        $total_form_it = $results['Waiting Director Approval'];
+        $total_form_it_mgr = 0;
+        $total_form_execution = 0;
 
         $account_mgr_count = Account::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
@@ -542,13 +540,14 @@ class HomeController extends Controller
 
         $mergedData = collect();
 
-        if (Auth::user()->hasDepartment('ITD')) {
+        if (Auth::user()->can('approve_dir')) {
             foreach ($tables as $table => $config) {
                 $data = DB::table($table)
                     ->select(
                         "$table.no_reg",
                         "$table.final_status",
                         "$table.created_at",
+                        "$table.created_by",
                         'users.name as created_name',
                         'departments.code as created_dept',
                         DB::raw("'{$config['display']}' as form_name"),
@@ -556,6 +555,7 @@ class HomeController extends Controller
                     )
                     ->join('users', "$table.created_by", '=', 'users.id')
                     ->join('departments', "$table.created_dept", '=', 'departments.id')
+                    ->whereIn("$table.final_status", ['Waiting Director Approval', 'Manager Approve'])
                     ->whereNull("$table.is_finish")
                     ->get();
 
@@ -582,12 +582,14 @@ class HomeController extends Controller
                     ->join('users', "$table.created_by", '=', 'users.id')
                     ->join('departments', "$table.created_dept", '=', 'departments.id')
                     ->where(function ($query) use ($firstDepartmentId, $lastDepartmentId, $table) {
-                        $query->where("$table.created_dept", $firstDepartmentId)
-                            ->orWhere("$table.created_dept", $lastDepartmentId);
+                        $query->where(function($q) use ($firstDepartmentId, $lastDepartmentId, $table) {
+                            $q->where("$table.created_dept", $firstDepartmentId)
+                              ->orWhere("$table.created_dept", $lastDepartmentId);
+                        })
+                        ->where("$table.final_status", 'created');
                     })
-                    ->whereNull("$table.is_finish")
-                    ->where("$table.final_status", 'created')
                     ->orWhere("$table.created_by", Auth::user()->id)
+                    ->whereNull("$table.is_finish")
                     ->get();
 
                 $mergedData = $mergedData->concat($data);
