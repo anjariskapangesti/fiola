@@ -193,74 +193,49 @@
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.alat} </td>
                             </tr>
                         </tbody>
+                            ${d.is_reschedule ? `
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; font-weight: bold;">Reschedule Target</td>
+                                <td style="font-weight: bold; color: #856404;">${d.target_project_name ?? d.reschedule_target_id}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; font-weight: bold;">Alasan Reschedule</td>
+                                <td style="font-weight: bold; color: #856404; white-space: pre-wrap;">${d.reschedule_reason ?? '-'}</td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td style="background-color: #ffc107; font-weight: bold;">Respon Target</td>
+                                <td style="font-weight: bold; color: #856404;">
+                                    <strong>${d.target_response ? (d.target_response == 'yes' ? 'SETUJU (YES)' : 'MENOLAK (NO)') : 'PENDING'}</strong>
+                                </td>
+                            </tr>
+                            ` : ''}
+                        </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td>Manager Approval Date</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Manager Approval Date</td>
                                 <td>${d.manager_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td>Manager Approval By</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Manager Approval By</td>
                                 <td>${d.manager_name ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td>Manager Note</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Manager Note</td>
                                 <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
                             </tr>
                         </tbody>
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td>ITD Approval Date</td>
-                                <td>${d.it_approval_date ?? '-'}</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Director Approval Date</td>
+                                <td>${d.dir_approval_date ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td>ITD Approval By</td>
-                                <td>${d.it_name ?? '-'}</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Director Approval By</td>
+                                <td>${d.dir_approve_by_name ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td>ITD Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_note ?? '-'}</td>
-                            </tr>  
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>ITD Manager Approval Date</td>
-                                <td>${d.it_mgr_approval_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Manager Approval By</td>
-                                <td>${d.it_mgr_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>ITD Manager Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.it_mgr_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>On Progress Date</td>
-                                <td>${d.on_progress_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>On Progress By</td>
-                                <td>${d.on_progress_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>On Progress Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.on_progress_note ?? '-'}</td>
-                            </tr>
-                        </tbody>
-                        <tbody style="border: 2px solid black;">
-                            <tr>
-                                <td>Finish Date</td>
-                                <td>${d.finish_date ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>Finish By</td>
-                                <td>${d.finish_name ?? '-'}</td>
-                            </tr>
-                            <tr>
-                                <td>Finish Note</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.finish_note ?? '-'}</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Director Note</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.dir_note ?? '-'}</td>
                             </tr>
                         </tbody>
                     </table>
