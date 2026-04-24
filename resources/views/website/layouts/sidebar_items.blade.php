@@ -209,6 +209,11 @@
                         id="project_execution_count">{{ App\Models\AppHelper::project_execution_count() }}</span>
                 @endif
 
+                @if ($link == 'dir_approval' && App\Models\AppHelper::project_dir_count() > 0)
+                    &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                        id="project_dir_count">{{ App\Models\AppHelper::project_dir_count() }}</span>
+                @endif
+
                 @if ($link == 'list' && App\Models\AppHelper::project_confirm_count() > 0)
                     &nbsp&nbsp<span class="badge bg-danger rounded-pill"
                         id="project_confirm_count">{{ App\Models\AppHelper::project_confirm_count() }}</span>

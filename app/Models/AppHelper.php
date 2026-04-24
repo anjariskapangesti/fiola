@@ -127,10 +127,6 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
-            if ($model == Project::class) {
-                // Projects skip IT approval and go straight from Manager to Director
-                continue;
-            }
             $count = $model::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])->count();
 
             $totalCount += $count;
@@ -161,10 +157,6 @@ class AppHelper
         $totalCount = 0;
 
         foreach ($models as $model) {
-            if ($model == Project::class) {
-                // Projects skip IT MGR approval
-                continue;
-            }
             $count = $model::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])->count();
 
             $totalCount += $count;
@@ -439,14 +431,12 @@ class AppHelper
 
     public static function project_it_count()
     {
-        // Projects skip IT approval
-        return 0;
+        return Project::whereIn('final_status', ['Manager Approve', 'Manager Reject (Reschedule)'])->count();
     }
 
     public static function project_it_mgr_count()
     {
-        // Projects skip IT MGR approval
-        return 0;
+        return Project::whereIn('final_status', ['IT Approve', 'IT Reject (Reschedule)'])->count();
     }
 
     public static function project_execution_count()
@@ -728,9 +718,7 @@ class AppHelper
     /// PROJECT RESCHEDULE ///
     public static function project_dir_count()
     {
-        return Project::where('final_status', 'Manager Approve')
-            ->whereNull('is_dir_approve')
-            ->count();
+        return Project::whereIn('final_status', ['IT MGR Approve', 'IT MGR Reject (Reschedule)'])->count();
     }
 
     public static function project_reschedule_notifications_count()

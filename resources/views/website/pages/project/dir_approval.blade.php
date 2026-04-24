@@ -187,24 +187,31 @@
                                 <td style="background-color: #66a7e3; font-weight: bold;">Benefit</td>
                                 <td style="white-space: pre-wrap;">${d.benefit}</td>
                             </tr>
-                        </tbody>
                             <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Target Response</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Respon Target (User yg Digeser)</td>
                                 <td>
-                                    <strong>${d.target_response ? d.target_response.toUpperCase() : 'PENDING'}</strong>
-                                    ${d.target_response == 'yes' ? `<br><small class="text-success">Reschedule Proposed: ${d.target_reschedule_start_date} s/d ${d.target_reschedule_end_date}</small>` : ''}
+                                    <strong>${d.target_response ? (d.target_response == 'yes' ? 'SETUJU (YES)' : 'MENOLAK (NO)') : 'PENDING'}</strong>
+                                    ${d.target_response == 'yes' ? `<br><small class="text-success">Rencana Jadwal Baru: ${d.target_reschedule_start_date} s/d ${d.target_reschedule_end_date}</small>` : ''}
                                 </td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Manager Approval</td>
-                                <td>${d.is_manager_approve ? 'Approved' : 'Rejected'} by ${d.manager_name ?? '-'} (${d.manager_note ?? '-'})</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Approval Manager</td>
+                                <td>${d.is_manager_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.manager_name ?? '-'} (Catatan: ${d.manager_note ?? '-'})</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Approval ITD</td>
+                                <td>${d.is_it_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.it_name ?? '-'} (Catatan: ${d.it_note ?? '-'})</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Approval IT Manager</td>
+                                <td>${d.is_it_mgr_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.it_mgr_name ?? '-'} (Catatan: ${d.it_mgr_note ?? '-'})</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="2" class="text-end">
-                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve</button>
+                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject (No)</button>
+                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve (Yes)</button>
                                 </th>
                             </tr>    
                         </tfoot>

@@ -205,17 +205,32 @@
 
         {{-- DIRECTOR --}}
         @can('approve_dir')
-            <li class="menu-item {{ Route::is('website.project.dir_approval') || Route::is('website.project.dir_approved') ? 'active open' : '' }}">
+            <li class="menu-item {{ Route::is('website.project.dir_approval') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
                     <div data-i18n="Director Approval">Director Approval
                         @if (App\Models\AppHelper::project_dir_count() > 0)
                             &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                id="manager_approvals_count">{{ App\Models\AppHelper::project_dir_count() }}</span>
+                                id="dir_approvals_count">{{ App\Models\AppHelper::project_dir_count() }}</span>
                         @endif
                     </div>
                 </a>
-                @include('website.layouts.sidebar_items', ['link' => 'manager_approval', 'text' => 'Form', 'is_director_project' => true])
+                @include('website.layouts.sidebar_items', [
+                    'link' => 'dir_approval',
+                    'text' => 'Project Reschedule',
+                    'is_director_project' => true,
+                ])
+            </li>
+            <li class="menu-item {{ Route::is('website.project.dir_approved') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-history"></i>
+                    <div data-i18n="Director History">Director History</div>
+                </a>
+                @include('website.layouts.sidebar_items', [
+                    'link' => 'dir_approved',
+                    'text' => 'Project Reschedule',
+                    'is_director_project' => true,
+                ])
             </li>
         @endcan
 
@@ -321,7 +336,7 @@
             </li>
         @endcan --}}
         {{-- ITD --}}
-            {{-- @can('can_approve_it')
+            @can('can_approve_it')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -343,9 +358,8 @@
                     </a>
                     @include('website.layouts.sidebar_items', ['link' => 'it_approved', 'text' => 'Form'])
                 </li>
-            @endcan --}}
-            {{-- ITD MGR --}}
-            {{-- @can('approve_mgr')
+            @endcan
+            @can('approve_mgr')
                 <li
                     class="menu-item {{ in_array(Route::currentRouteName(), $it_mgr_approval_routes) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -373,7 +387,7 @@
                         'text' => 'Form',
                     ])
                 </li>
-            @endcan --}}
+            @endcan
             {{-- Execution --}}
             @can('can_execution')
                 <li
