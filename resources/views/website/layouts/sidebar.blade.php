@@ -87,7 +87,20 @@
         </li> --}}
         @php
             $masterLink = [
+                'account',
+                'folder-access',
+                'new-folder',
+                'software',
+                'hardware',
+                'vpn',
                 'project',
+                'fitur',
+                'relayout',
+                'network',
+                'akses_sistem',
+                'incident_report',
+                'izin',
+                'it_needs',
             ];
             $createRoutes = [];
             $editRoutes = [];
@@ -99,6 +112,11 @@
                 $listRoutes[] = 'website.' . $link . '.list';
                 $manager_approval_routes[] = 'website.' . $link . '.manager_approval';
                 $manager_approved_routes[] = 'website.' . $link . '.manager_approved';
+                $it_approval_routes[] = 'website.' . $link . '.it_approval';
+                $it_approved_routes[] = 'website.' . $link . '.it_approved';
+                $it_mgr_approval_routes[] = 'website.' . $link . '.it_mgr_approval';
+                $it_mgr_approved_routes[] = 'website.' . $link . '.it_mgr_approved';
+                $execution_routes[] = 'website.' . $link . '.execution';
                 $finished_routes[] = 'website.' . $link . '.finished';
             }
 
@@ -371,7 +389,30 @@
                     ])
                 </li>
             @endcan --}}
-
+            {{-- Execution --}}
+            @can('can_execution')
+                <li
+                    class="menu-item {{ in_array(Route::currentRouteName(), $execution_routes) ? 'active open' : '' }}">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons mdi mdi-rocket-launch"></i>
+                        <div data-i18n="Execution">Execution
+                            @if (App\Models\AppHelper::execution_count() > 0)
+                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
+                                    id="execution_count">{{ App\Models\AppHelper::execution_count() }}</span>
+                            @endif
+                        </div>
+                    </a>
+                    @include('website.layouts.sidebar_items', ['link' => 'execution', 'text' => 'Form'])
+                </li>
+                <li
+                    class="menu-item {{ in_array(Route::currentRouteName(), $finished_routes) ? 'active open' : '' }}">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons mdi mdi-clipboard-check"></i>
+                        <div data-i18n="Finished">Finished</div>
+                    </a>
+                    @include('website.layouts.sidebar_items', ['link' => 'finished', 'text' => 'Form'])
+                </li>
+            @endcan
             @can('can_master')
             <!-- Master -->
             <li class="menu-header fw-medium mt-4"><span class="menu-header-text">Master</span></li>

@@ -46,7 +46,16 @@
                 <div class="md-step-bar-right"></div>
             </div>
 
-            {{-- Step 5: Finished --}}
+            {{-- Step 5: Execution --}}
+            <div class="md-step {{ $status == 'Director Approve' || $status == 'On Progress' ? 'active blinking' : ($status == 'Finished' ? 'done' : '') }}">
+                <div class="md-step-circle"><span>5</span></div>
+                <div class="md-step-title">Execution</div>
+                <div class="md-step-optional">Tahap Pengerjaan</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right"></div>
+            </div>
+
+            {{-- Step 6: Finished --}}
             <div class="md-step {{ $status == 'Finished' ? 'active done' : '' }}">
                 <div class="md-step-circle"><span>6</span></div>
                 <div class="md-step-title">Finished</div>
