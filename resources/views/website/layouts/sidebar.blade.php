@@ -57,6 +57,18 @@
                 </a>
             </li>
         @endif
+        <li class="menu-item {{ Route::is('website.project.reschedule_notifications') ? 'active' : '' }}">
+            <a href="{{ route('website.project.reschedule_notifications') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-calendar-alert"></i>
+                <div data-i18n="Reschedule Requests">Reschedule Requests
+                    @if (App\Models\AppHelper::project_reschedule_notifications_count() > 0)
+                        &nbsp&nbsp<span class="badge bg-danger rounded-pill">
+                            {{ App\Models\AppHelper::project_reschedule_notifications_count() }}
+                        </span>
+                    @endif
+                </div>
+            </a>
+        </li>
         {{-- <li class="menu-item {{ Route::is('website.it_needs.create') ? 'active' : '' }}">
             <a href="{{ route('website.it_needs.create') }}" class="menu-link">
                 <i class="menu-icon tf-icons mdi mdi-note-text"></i>

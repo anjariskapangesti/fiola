@@ -507,6 +507,9 @@ Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
                     Route::post('/execution_approve', 'ProjectController@execution_approve')->name('project.execution_approve');
                     Route::get('/finished', 'ProjectController@finished')->name('project.finished');
                     Route::get('/finished_ajax', 'ProjectController@finished_ajax')->name('project.finished_ajax');
+                    Route::get('/reschedule_notifications', 'ProjectController@reschedule_notifications')->name('project.reschedule_notifications');
+                    Route::get('/reschedule_notifications_ajax', 'ProjectController@reschedule_notifications_ajax')->name('project.reschedule_notifications_ajax');
+                    Route::post('/target_respond', 'ProjectController@target_respond')->name('project.target_respond');
                 });
             });
             // FORM FITUR //

@@ -127,7 +127,7 @@ class ProjectController extends Controller
             $isItApprove = 1;
             $itApprovalDate = Carbon::now();
         } else {
-            $finalStatus = 'created';
+            $finalStatus = $request->is_reschedule ? 'Waiting Target Response' : 'created';
         }
 
         try {
@@ -288,7 +288,9 @@ class ProjectController extends Controller
             
             if ($project->is_reschedule) {
                 $project->final_status = 'Manager Reject (Reschedule)';
-                $return = "Reject Successfully (Continuing to ITD)";
+                $project->is_finish = 0;
+                $project->is_confirm = 0;
+                $return = "Reject Successfully. Request terminated (cannot proceed to Director).";
             } else {
                 $project->final_status = 'Manager Reject';
                 $project->is_finish = 0;
@@ -570,11 +572,20 @@ class ProjectController extends Controller
             if ($project->reschedule_target_id) {
                 $oldProject = Project::find($project->reschedule_target_id);
                 if ($oldProject) {
-                    $oldProject->update([
+                    $updateData = [
                         'final_status' => 'Rescheduled',
                         'is_timeline_active' => false,
                         'timeline_order' => null
-                    ]);
+                    ];
+                    
+                    if ($project->target_response == 'yes' && $project->target_reschedule_start_date) {
+                        $updateData['start_date'] = $project->target_reschedule_start_date;
+                        $updateData['end_date'] = $project->target_reschedule_end_date;
+                        $updateData['is_timeline_active'] = true;
+                        $updateData['final_status'] = 'IT MGR Approve';
+                    }
+                    
+                    $oldProject->update($updateData);
                 }
             }
 
@@ -709,5 +720,80 @@ class ProjectController extends Controller
             ->orderBy('created_at', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
+    }
+    public function reschedule_notifications()
+    {
+        return view('website.pages.project.reschedule_notifications');
+    }
+
+    public function reschedule_notifications_ajax(Request $request)
+    {
+        $myProjectsIds = Project::where('created_by', Auth::user()->id)->pluck('id');
+        $data = Project::whereIn('reschedule_target_id', $myProjectsIds)
+            ->where('target_response', 'pending')
+            ->join('users', 'form_project.created_by', 'users.id')
+            ->select('form_project.*', 'users.name as requestor')
+            ->orderBy('created_at', 'ASC');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function target_respond(Request $request)
+    {
+        $project = Project::findOrFail($request->id);
+        $targetProject = Project::find($project->reschedule_target_id);
+
+        if (!$targetProject || $targetProject->created_by != Auth::user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        if ($request->type == 'yes') {
+            $project->target_response = 'yes';
+            $project->target_response_date = Carbon::now();
+
+            $nextSlot = $this->getNextAvailableSlot($targetProject->start_date);
+            if ($nextSlot) {
+                $project->target_reschedule_start_date = $nextSlot['start_date'];
+                $project->target_reschedule_end_date = $nextSlot['end_date'];
+            }
+
+            $project->final_status = 'created'; // Move to Manager Approval
+            $return = "You agreed to reschedule. Request proceeds to Manager approval.";
+        } else {
+            $project->target_response = 'no';
+            $project->target_response_date = Carbon::now();
+            $project->final_status = 'created'; // Still move to Manager Approval, but with "No" response
+            $return = "You declined to reschedule. Request still proceeds through approval chain to Director.";
+        }
+
+        $project->save();
+        return $return;
+    }
+
+    private function getNextAvailableSlot($startDate)
+    {
+        $currentDate = Carbon::parse($startDate);
+        $countYears = 0;
+
+        while ($countYears < 2) {
+            $count = Project::whereYear('start_date', $currentDate->year)
+                ->whereMonth('start_date', $currentDate->month)
+                ->where('is_timeline_active', true)
+                ->count();
+
+            if ($count < 2) {
+                $newStart = $currentDate->copy()->startOfMonth();
+                $newEnd = $newStart->copy()->addDays(14);
+                return [
+                    'start_date' => $newStart,
+                    'end_date' => $newEnd
+                ];
+            }
+
+            $currentDate->addMonth();
+            if ($currentDate->month == 1) $countYears++;
+        }
+
+        return null;
     }
 }

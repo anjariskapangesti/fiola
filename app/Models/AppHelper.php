@@ -728,4 +728,12 @@ class AppHelper
             ->whereNull('is_dir_approve')
             ->count();
     }
+
+    public static function project_reschedule_notifications_count()
+    {
+        $myProjectsIds = Project::where('created_by', Auth::user()->id)->pluck('id');
+        return Project::whereIn('reschedule_target_id', $myProjectsIds)
+            ->where('target_response', 'pending')
+            ->count();
+    }
 }

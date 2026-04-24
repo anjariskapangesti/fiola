@@ -58,6 +58,10 @@ class Project extends Model
         'dir_approve_by',
         'dir_approval_date',
         'dir_note',
+        'target_response',
+        'target_response_date',
+        'target_reschedule_start_date',
+        'target_reschedule_end_date',
     ];
 
     protected $casts = [
@@ -72,6 +76,9 @@ class Project extends Model
         'dir_approval_date' => 'datetime',
         'on_progress_date' => 'datetime',
         'finish_date' => 'datetime',
+        'target_response_date' => 'datetime',
+        'target_reschedule_start_date' => 'datetime',
+        'target_reschedule_end_date' => 'datetime',
     ];
 
     public function createdBy()
