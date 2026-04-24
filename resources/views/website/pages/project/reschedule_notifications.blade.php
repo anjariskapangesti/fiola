@@ -41,7 +41,7 @@
                 </div>
                 <div class="modal-body">
                     Apakah Anda yakin ingin melakukan <b>reschedule</b> project Anda untuk memberikan slot bagi permintaan baru ini? 
-                    Project Anda akan dipindahkan ke slot kosong berikutnya yang tersedia di timeline.
+                    Kemungkinan besar slot untuk project Anda akan kosong di tahun depan.
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
                     <input type="hidden" id="id_approve">
                 </div>
@@ -202,7 +202,7 @@
                         <tfoot>
                             <tr>
                                 <th colspan="2" class="text-end">
-                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Tidak (Tetap Jadwal Saya)</button>
+                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Tidak</button>
                                     <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Ya (Reschedule)</button>
                                 </th>
                             </tr>    
