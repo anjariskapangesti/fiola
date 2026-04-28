@@ -7,6 +7,7 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#guideModal"><i
                     class="menu-icon tf-icons mdi mdi-book-information-variant"></i>Guide</button>
         </div>
+    
         <div class="row">
             <div class="col-md-12">
                 @if ($errors->any())

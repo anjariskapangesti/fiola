@@ -13,7 +13,7 @@ class Alert extends Model
         'email',
         'nohp',
         'role',
-        'department',
+        'department', 
     ];
 
     // protected $nohpitmgr = '081223506433';

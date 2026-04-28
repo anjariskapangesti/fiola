@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Department;
 use Carbon\Carbon;
-use DataTables;
+use DataTables; 
 use Auth;
 
 use Spatie\Permission\Models\Role;

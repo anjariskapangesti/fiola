@@ -1,5 +1,6 @@
 @extends('website.layouts.main', ['title' => 'Form Account'])
 
+
 @section('content')
     <div class="pagetitle">
         <h4>Account Registration/Change/Deletion Form (FRM-ITD-S13-001-00)</h4>

@@ -1,3 +1,4 @@
+
 @can('can_approve_mgr')
     <div class="col-xl-3 col-lg-6">
         <div class="card l-bg-red">

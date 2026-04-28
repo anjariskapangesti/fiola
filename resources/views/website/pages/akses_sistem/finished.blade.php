@@ -1,5 +1,6 @@
 @extends('website.layouts.main', ['title' => 'Finished Akses Sistem'])
 
+
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
