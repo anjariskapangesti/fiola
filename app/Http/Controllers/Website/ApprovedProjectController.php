@@ -8,7 +8,6 @@ use App\Models\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class ApprovedProjectController extends Controller
 {
@@ -57,52 +56,67 @@ class ApprovedProjectController extends Controller
 
     public function store(Request $request)
     {
-        $projectTable = (new Project)->getTable();
-
         $request->validate([
-            'project_id' => [
-                'required',
-                Rule::exists($projectTable, 'id'),
-            ],
-            'tanggal' => 'required|date',
+            'nama_project' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'lampiran' => 'required|file|mimes:pdf|max:10240',
+            'kondisi_sebelum' => 'required|string',
+            'kondisi_target' => 'required|string',
+            'benefit' => 'required|string',
+            'device' => 'nullable|string|max:255',
+            'qty' => 'nullable|numeric',
+            'unit' => 'nullable|string|max:255',
         ]);
 
-        $project = Project::where('id', $request->project_id)
-            ->where('final_status', 'Director Approve')
-            ->firstOrFail();
+        $lampiranPath = null;
 
-        $tanggal = Carbon::parse($request->tanggal);
+        if ($request->hasFile('lampiran')) {
+            $lampiranPath = $request->file('lampiran')->store('lampiran_project', 'public');
+        }
 
-        ApprovedProject::updateOrCreate(
-            [
-                'project_id' => $project->id,
-            ],
-            [
-                'nama' => $project->fullname
-                    ?? $project->requestor
-                    ?? $project->name
-                    ?? '-',
+        $user = Auth::user();
 
-                'department' => $project->department
-                    ?? $project->department_name
-                    ?? '-',
+        $alat = null;
+        if ($request->device) {
+            $alat = $request->device . ' | ' . ($request->unit ?? 'Unit');
+        }
 
-                'hari' => $tanggal->format('d'),
-                'bulan' => $tanggal->format('m'),
-                'tahun' => $tanggal->format('Y'),
-
-                'nama_project' => $project->nama_project ?? '-',
-            ]
-        );
-
-        $project->update([
+        $project = Project::create([
+            'npk' => $user->npk ?? null,
+            'fullname' => $user->name ?? '-',
+            'department' => $user->department ?? '-',
+            'phone' => $user->nohp ?? null,
+            'nama_project' => $request->nama_project,
+            'lampiran' => $lampiranPath,
+            'kondisi_sebelum' => $request->kondisi_sebelum,
+            'kondisi_target' => $request->kondisi_target,
+            'benefit' => $request->benefit,
+            'alat' => $alat,
+            'cost' => $request->qty,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
             'final_status' => 'Director Approve',
+            'is_dir_approve' => true,
             'is_timeline_active' => true,
+            'created_by' => $user->id ?? null,
+        ]);
+
+        $tanggal = Carbon::parse($request->start_date);
+
+        ApprovedProject::create([
+            'project_id' => $project->id,
+            'nama' => $user->name ?? '-',
+            'department' => $project->department ?? '-',
+            'hari' => $tanggal->format('d'),
+            'bulan' => $tanggal->format('m'),
+            'tahun' => $tanggal->format('Y'),
+            'nama_project' => $request->nama_project,
         ]);
 
         return redirect()
             ->route('website.approved_project.index')
-            ->with('success', 'Project aktif berhasil disimpan.');
+            ->with('success', 'Project aktif berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -110,6 +124,31 @@ class ApprovedProjectController extends Controller
         $approvedProject = ApprovedProject::findOrFail($id);
 
         return view('website.pages.approved_project.edit', compact('approvedProject'));
+    }
+
+    public function editProject($projectId)
+    {
+        $project = Project::findOrFail($projectId);
+
+        $tanggal = $project->start_date
+            ? Carbon::parse($project->start_date)
+            : Carbon::now();
+
+        $approvedProject = ApprovedProject::firstOrCreate(
+            [
+                'project_id' => $project->id,
+            ],
+            [
+                'nama' => $project->fullname ?? '-',
+                'department' => $project->department ?? '-',
+                'hari' => $tanggal->format('d'),
+                'bulan' => $tanggal->format('m'),
+                'tahun' => $tanggal->format('Y'),
+                'nama_project' => $project->nama_project ?? '-',
+            ]
+        );
+
+        return redirect()->route('website.approved_project.edit', $approvedProject->id);
     }
 
     public function update(Request $request, $id)
@@ -121,6 +160,21 @@ class ApprovedProjectController extends Controller
             'department' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'nama_project' => 'required|string|max:255',
+
+            'phone' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'kondisi_sebelum' => 'nullable|string',
+            'kondisi_target' => 'nullable|string',
+            'benefit' => 'nullable|string',
+            'alat' => 'nullable|string',
+            'reschedule_reason' => 'nullable|string',
+
+            'target_project_id' => 'nullable|integer',
+            'target_nama_project' => 'nullable|string|max:255',
+            'target_npk' => 'nullable|string|max:255',
+            'target_fullname' => 'nullable|string|max:255',
+            'target_department' => 'nullable|string|max:255',
         ]);
 
         $tanggal = Carbon::parse($request->tanggal);
@@ -140,8 +194,31 @@ class ApprovedProjectController extends Controller
             if ($project) {
                 $project->update([
                     'nama_project' => $request->nama_project,
+                    'fullname' => $request->nama,
+                    'department' => $request->department,
+                    'phone' => $request->phone,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'kondisi_sebelum' => $request->kondisi_sebelum,
+                    'kondisi_target' => $request->kondisi_target,
+                    'benefit' => $request->benefit,
+                    'alat' => $request->alat,
+                    'reschedule_reason' => $request->reschedule_reason,
                     'is_timeline_active' => true,
                     'final_status' => 'Director Approve',
+                ]);
+            }
+        }
+
+        if ($request->filled('target_project_id')) {
+            $targetProject = Project::find($request->target_project_id);
+
+            if ($targetProject) {
+                $targetProject->update([
+                    'nama_project' => $request->target_nama_project,
+                    'npk' => $request->target_npk,
+                    'fullname' => $request->target_fullname,
+                    'department' => $request->target_department,
                 ]);
             }
         }

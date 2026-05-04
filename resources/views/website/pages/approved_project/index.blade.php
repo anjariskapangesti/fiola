@@ -25,8 +25,10 @@
                         <tr>
                             <th width="60">No</th>
                             <th>Nama Project</th>
-                            <th>Nama</th>
+                            <th>Requestor</th>
                             <th>Department</th>
+                            <th>Kondisi Sebelum Improvement</th>
+                            <th>Kondisi yang Diharapkan</th>
                             <th width="160">Action</th>
                         </tr>
                     </thead>
@@ -36,20 +38,19 @@
                             @php
                                 $active = $activeProjectData[$project->id] ?? null;
 
-                                $namaUser = $active->nama
-                                    ?? $project->fullname
-                                    ?? $project->requestor
-                                    ?? $project->name
-                                    ?? '-';
-
-                                $department = $active->department
-                                    ?? $project->department
-                                    ?? $project->department_name
-                                    ?? '-';
-
                                 $namaProject = $active->nama_project
                                     ?? $project->nama_project
                                     ?? '-';
+
+                                $requestor = trim(($project->npk ?? '-') . ' / ' . ($project->fullname ?? '-'));
+
+                                $department = $active->department
+                                    ?? $project->department
+                                    ?? '-';
+
+                                $kondisiSebelum = $project->kondisi_sebelum ?? '-';
+
+                                $kondisiTarget = $project->kondisi_target ?? '-';
                             @endphp
 
                             <tr>
@@ -57,15 +58,23 @@
 
                                 <td>{{ $namaProject }}</td>
 
-                                <td>{{ $namaUser }}</td>
+                                <td>{{ $requestor }}</td>
 
                                 <td>{{ $department }}</td>
+
+                                <td style="white-space: normal; min-width: 220px;">
+                                    {{ \Illuminate\Support\Str::limit($kondisiSebelum, 60) }}
+                                </td>
+
+                                <td style="white-space: normal; min-width: 220px;">
+                                    {{ \Illuminate\Support\Str::limit($kondisiTarget, 60) }}
+                                </td>
 
                                 <td>
                                     @if($active)
                                         <a href="{{ route('website.approved_project.edit', $active->id) }}"
                                            class="btn btn-warning btn-sm"
-                                           title="Edit">
+                                           title="Edit / Detail">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
 
@@ -83,9 +92,9 @@
                                             </button>
                                         </form>
                                     @else
-                                        <a href="{{ route('website.approved_project.create', ['project_id' => $project->id]) }}"
+                                        <a href="{{ route('website.approved_project.edit_project', $project->id) }}"
                                            class="btn btn-warning btn-sm"
-                                           title="Edit / Atur Data">
+                                           title="Edit / Detail">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
 
@@ -107,7 +116,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted">
+                                <td colspan="7" class="text-center text-muted">
                                     Belum ada project aktif.
                                 </td>
                             </tr>
