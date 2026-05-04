@@ -1,5 +1,23 @@
 @extends('website.layouts.main', ['title' => 'Project Timeline'])
 
+@php
+    $baseMs = $timelineStart ?? ($timelineRows[0]['start_ms'] ?? null);
+
+    if ($baseMs) {
+        $baseDate = \Carbon\Carbon::createFromTimestampMs($baseMs);
+
+        if ($baseDate->month < 4) {
+            $fiscalStart = \Carbon\Carbon::create($baseDate->year - 1, 4, 1)->startOfDay();
+        } else {
+            $fiscalStart = \Carbon\Carbon::create($baseDate->year, 4, 1)->startOfDay();
+        }
+
+        $fiscalEnd = $fiscalStart->copy()->addYear()->subDay()->endOfDay();
+
+        $timelineStart = $fiscalStart->timestamp * 1000;
+        $timelineEnd = $fiscalEnd->timestamp * 1000;
+    }
+@endphp
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -23,10 +41,15 @@
                                         <div class="timeline-months" id="timelineMonths"></div>
                                     </div>
 
-                                    <div class="timeline-body">
+                                    <div class="timeline-body" id="timelineBody">
+                                        <div class="timeline-today-line" id="timelineTodayLine">
+                                            <div class="today-label-box">Today</div>
+                                        </div>
+
                                         @foreach ($timelineRows as $row)
                                             <div class="timeline-row">
                                                 <div class="timeline-label">{{ $row['nama_project'] }}</div>
+
                                                 <div class="timeline-track">
                                                     <div class="timeline-grid-days"></div>
 
@@ -77,14 +100,14 @@
         .timeline-scroll {
             width: 100%;
             overflow-x: auto;
-            overflow-y: hidden;
+            overflow-y: visible;
             padding-bottom: 8px;
         }
 
         .timeline-header {
             display: flex;
             align-items: center;
-            min-width: 1100px;
+            width: max-content;
             margin-bottom: 14px;
         }
 
@@ -95,22 +118,32 @@
 
         .timeline-months {
             position: relative;
-            flex: 1;
-            height: 28px;
+            width: 1200px;
+            height: 34px;
             border-bottom: 1px solid rgba(0,0,0,0.08);
         }
 
         .timeline-month-item {
             position: absolute;
             top: 0;
-            transform: translateX(-50%);
+            height: 34px;
             color: #6B7280;
             font-size: 12px;
             white-space: nowrap;
+            text-align: center;
+            border-left: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .timeline-month-item span {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .timeline-body {
-            min-width: 1100px;
+            width: max-content;
+            position: relative;
+            padding-top: 26px;
         }
 
         .timeline-row {
@@ -132,9 +165,9 @@
 
         .timeline-track {
             position: relative;
-            flex: 1;
+            width: 1200px;
             height: 52px;
-            border-radius: 16px;
+            border-radius: 4px;
             overflow: hidden;
             background: #f8f9fa;
         }
@@ -142,33 +175,55 @@
         .timeline-grid-days {
             position: absolute;
             inset: 0;
-            background-image: repeating-linear-gradient(
-                to right,
-                rgba(0,0,0,0.08) 0,
-                rgba(0,0,0,0.08) 1px,
-                transparent 1px,
-                transparent 4.1666666667%
-            );
+        }
+
+        .timeline-today-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ef4444;
+            z-index: 999;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.45);
+            display: none;
+            pointer-events: none;
+        }
+
+        .today-label-box {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
         }
 
         .timeline-bar {
             position: absolute;
             top: 8px;
             height: 36px;
-            border-radius: 999px;
-            display: flex;
+            border-radius: 4px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0 14px;
+            padding: 0 18px;
             box-sizing: border-box;
             z-index: 2;
-            min-width: 70px;
+            min-width: max-content;
+            width: auto;
         }
 
         .finished-bar {
             background: #A3E635;
             color: #111827;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .timeline-bar-text {
@@ -186,25 +241,37 @@
             const min = {{ $timelineStart ?? 'null' }};
             const max = {{ $timelineEnd ?? 'null' }};
             const monthsContainer = document.getElementById('timelineMonths');
+            const todayLine = document.getElementById('timelineTodayLine');
+
+            const labelWidth = 220;
+            const trackWidth = 1200;
+            const today = new Date().getTime();
+
+            document.querySelectorAll('.timeline-track, .timeline-months').forEach(function (el) {
+                el.style.width = trackWidth + 'px';
+            });
 
             if (monthsContainer && min && max) {
                 const total = max - min;
                 const cursor = new Date(min);
-                cursor.setDate(1);
 
                 while (cursor.getTime() <= max) {
-                    const monthStart = cursor.getTime();
+                    const monthStart = new Date(cursor.getFullYear(), cursor.getMonth(), 1).getTime();
+                    const monthEnd = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1).getTime();
+
+                    const left = ((monthStart - min) / total) * 100;
+                    const width = ((monthEnd - monthStart) / total) * 100;
+
                     const label = cursor.toLocaleDateString('id-ID', {
                         month: 'short',
                         year: 'numeric'
                     });
 
-                    const left = ((monthStart - min) / total) * 100;
-
                     const item = document.createElement('div');
                     item.className = 'timeline-month-item';
                     item.style.left = left + '%';
-                    item.textContent = label;
+                    item.style.width = width + '%';
+                    item.innerHTML = `<span>${label}</span>`;
 
                     monthsContainer.appendChild(item);
                     cursor.setMonth(cursor.getMonth() + 1);
@@ -222,12 +289,63 @@
                 }
 
                 const total = maxTime - minTime;
-                const left = ((start - minTime) / total) * 100;
-                const width = ((end - start) / total) * 100;
+                const clippedStart = Math.max(start, minTime);
+                const clippedEnd = Math.min(end, maxTime);
+
+                if (clippedEnd <= minTime || clippedStart >= maxTime) {
+                    el.style.display = 'none';
+                    return;
+                }
+
+                const left = ((clippedStart - minTime) / total) * 100;
+                const width = ((clippedEnd - clippedStart) / total) * 100;
 
                 el.style.left = left + '%';
-                el.style.width = Math.max(width, 6) + '%';
+
+                const calculatedPercent = Math.max(width, 4);
+                el.style.width = calculatedPercent + '%';
+
+                const text = el.querySelector('.timeline-bar-text');
+                const textWidth = text ? text.scrollWidth : 0;
+                const minPixelWidth = textWidth + 36;
+
+                if (el.offsetWidth < minPixelWidth) {
+                    el.style.width = minPixelWidth + 'px';
+                }
             });
+
+            document.querySelectorAll('.timeline-grid-days').forEach(function (grid) {
+                grid.style.backgroundImage = `
+                    repeating-linear-gradient(
+                        to right,
+                        rgba(0,0,0,0.08) 0,
+                        rgba(0,0,0,0.08) 1px,
+                        transparent 1px,
+                        transparent calc(100% / 365)
+                    )
+                `;
+            });
+
+            if (todayLine && min && max && max > min && today >= min && today <= max) {
+                const total = max - min;
+                const leftPercent = ((today - min) / total) * 100;
+                const leftPx = labelWidth + ((leftPercent / 100) * trackWidth);
+
+                todayLine.style.left = leftPx + 'px';
+                todayLine.style.display = 'block';
+
+                const todayDate = new Date();
+                const todayLabel = todayDate.toLocaleDateString('id-ID', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short'
+                });
+
+                const labelBox = todayLine.querySelector('.today-label-box');
+                if (labelBox) {
+                    labelBox.innerText = todayLabel;
+                }
+            }
         });
     </script>
 @endpush

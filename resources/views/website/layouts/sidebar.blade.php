@@ -17,8 +17,7 @@
                         </defs>
                         <text
                             style="fill: url('#gradient-0'); font-family: Agbalumo; font-size: 143.7px; font-style: italic; white-space: pre;"
-                            x="34.409" y="132.453"
-                            transform="matrix(1, 0, 0, 1, 7.105427357601002e-15, 7.105427357601002e-15)">F</text>
+                            x="34.409" y="132.453">F</text>
                     </svg>
                 </span>
             </span>
@@ -33,7 +32,6 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <!-- Dashboards -->
         <li class="menu-item {{ Route::is('website.home') || Route::is('website.project_timeline.index') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-home-outline"></i>
@@ -52,45 +50,43 @@
                 </li>
             </ul>
         </li>
+
         <li class="menu-header fw-medium mt-4">
             <span class="menu-header-text">Apps &amp; Pages</span>
         </li>
-        <!-- Apps -->
-        <!-- Pages -->
+
+        <li class="menu-item {{ Route::is('website.approved_project.*') ? 'active' : '' }}">
+            <a href="{{ route('website.approved_project.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-check-circle-outline"></i>
+                <div>Active Project</div>
+            </a>
+        </li>
+
         @if (auth()->user()->hasDepartment('ITD'))
             <li class="menu-item {{ Route::is('website.ticket.it_approval') ? 'active' : '' }}">
                 <a href="{{ route('website.ticket.it_approval') }}" class="menu-link">
                     <i class="menu-icon tf-icons mdi mdi-ticket"></i>
                     <div data-i18n="Tiket">Tickets</div>
                     @if (App\Models\AppHelper::ticket_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="ticket_count">{{ App\Models\AppHelper::ticket_count() }}</span>
+                        &nbsp;&nbsp;<span class="badge bg-danger rounded-pill" id="ticket_count">{{ App\Models\AppHelper::ticket_count() }}</span>
                     @endif
                 </a>
             </li>
         @endif
+
         <li class="menu-item {{ Route::is('website.project.reschedule_notifications') ? 'active' : '' }}">
             <a href="{{ route('website.project.reschedule_notifications') }}" class="menu-link">
                 <i class="menu-icon tf-icons mdi mdi-calendar-alert"></i>
                 <div data-i18n="Reschedule Requests">Reschedule Requests
                     @if (App\Models\AppHelper::project_reschedule_notifications_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill">
+                        &nbsp;&nbsp;<span class="badge bg-danger rounded-pill">
                             {{ App\Models\AppHelper::project_reschedule_notifications_count() }}
                         </span>
                     @endif
                 </div>
             </a>
         </li>
-        {{-- <li class="menu-item {{ Route::is('website.it_needs.create') ? 'active' : '' }}">
-            <a href="{{ route('website.it_needs.create') }}" class="menu-link">
-                <i class="menu-icon tf-icons mdi mdi-note-text"></i>
-                <div data-i18n="IT Needs">IT Needs</div>
-                @if (App\Models\AppHelper::it_needs_count() > 0)
-                    &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                        id="it_needs_count">{{ App\Models\AppHelper::it_needs_count() }}</span>
-                @endif
-            </a>
-        </li> --}}
+
         @php
             $masterLink = [
                 'account',
@@ -108,9 +104,12 @@
                 'izin',
                 'it_needs',
             ];
+
             $createRoutes = [];
             $editRoutes = [];
             $listRoutes = [];
+            $manager_approval_routes = [];
+            $manager_approved_routes = [];
 
             foreach ($masterLink as $link) {
                 $createRoutes[] = 'website.' . $link . '.create';
@@ -122,41 +121,37 @@
 
             $manager_approval_routes[] = 'website.project.dir_approval';
             $manager_approval_routes[] = 'website.project.dir_approved';
-
         @endphp
+
         @can('can_create_form')
-        <li
-            class="menu-item {{ in_array(Route::currentRouteName(), $createRoutes) || in_array(Route::currentRouteName(), $editRoutes) ? 'active open' : '' }}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons mdi mdi-list-box-outline"></i>
-                <div data-i18n="Forms">Forms</div>
-            </a>
-            @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
-        </li>
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $createRoutes) || in_array(Route::currentRouteName(), $editRoutes) ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons mdi mdi-list-box-outline"></i>
+                    <div data-i18n="Forms">Forms</div>
+                </a>
+                @include('website.layouts.sidebar_items', ['link' => 'create', 'text' => 'Form'])
+            </li>
         @endcan
+
         <li class="menu-item {{ in_array(Route::currentRouteName(), $listRoutes) ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons mdi mdi-text-search"></i>
                 <div data-i18n="Track Forms">Track Forms
                     @if (App\Models\AppHelper::confirms_count() > 0)
-                        &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                            id="confirms_count">{{ App\Models\AppHelper::confirms_count() }}</span>
+                        &nbsp;&nbsp;<span class="badge bg-danger rounded-pill" id="confirms_count">{{ App\Models\AppHelper::confirms_count() }}</span>
                     @endif
                 </div>
             </a>
             @include('website.layouts.sidebar_items', ['link' => 'list', 'text' => 'Form'])
         </li>
 
-        {{-- MANAGER --}}
         @can('approve_mgr')
-            <li
-                class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) && !Route::is('website.project.dir_approval') ? 'active open' : '' }}">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approval_routes) && !Route::is('website.project.dir_approval') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
                     <div data-i18n="Manager Approval">Manager Approval
                         @if (App\Models\AppHelper::manager_approvals_count() > 0)
-                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
+                            &nbsp;&nbsp;<span class="badge bg-danger rounded-pill" id="manager_approvals_count">{{ App\Models\AppHelper::manager_approvals_count() }}</span>
                         @endif
                     </div>
                 </a>
@@ -165,8 +160,8 @@
                     'text' => 'Form',
                 ])
             </li>
-            <li
-                class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) && !Route::is('website.project.dir_approved') ? 'active open' : '' }}">
+
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $manager_approved_routes) && !Route::is('website.project.dir_approved') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-history"></i>
                     <div data-i18n="Manager History">Manager History</div>
@@ -178,15 +173,13 @@
             </li>
         @endcan
 
-        {{-- DIRECTOR --}}
         @can('approve_dir')
             <li class="menu-item {{ Route::is('website.project.dir_approval') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
                     <div data-i18n="Director Approval">Director Approval
                         @if (App\Models\AppHelper::project_dir_count() > 0)
-                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                id="dir_approvals_count">{{ App\Models\AppHelper::project_dir_count() }}</span>
+                            &nbsp;&nbsp;<span class="badge bg-danger rounded-pill" id="dir_approvals_count">{{ App\Models\AppHelper::project_dir_count() }}</span>
                         @endif
                     </div>
                 </a>
@@ -196,6 +189,7 @@
                     'is_director_project' => true,
                 ])
             </li>
+
             <li class="menu-item {{ Route::is('website.project.dir_approved') ? 'active open' : '' }}">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-history"></i>
@@ -209,111 +203,11 @@
             </li>
         @endcan
 
-
-        {{-- GM --}}
-        {{-- @php
-            $masterLink = ['akses_sistem'];
-            $createRoutes = [];
-            $editRoutes = [];
-            $listRoutes = [];
-
-            foreach ($masterLink as $link) {
-                $createRoutes[] = 'website.' . $link . '.create';
-                $editRoutes[] = 'website.' . $link . '.edit';
-                $listRoutes[] = 'website.' . $link . '.list';
-                $gm_approval_routes[] = 'website.' . $link . '.gm_approval';
-                $gm_approved_routes[] = 'website.' . $link . '.gm_approved';
-            }
-
-        @endphp --}}
-        {{-- @can('approve_gm')
-            <li class="menu-item {{ in_array(Route::currentRouteName(), $gm_approval_routes) ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
-                    <div data-i18n="GM Approval">GM Approval
-                        @if (App\Models\AppHelper::gm_approvals_count() > 0)
-                            &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                id="gm_approvals_count">{{ App\Models\AppHelper::gm_approvals_count() }}</span>
-                        @endif
-                    </div>
-                </a>
-                <ul class="menu-sub">
-                    <li
-                        class="menu-item {{ Route::is('website.akses_sistem.gm_approval') || Route::is('website.akses_sistem.edit') ? 'active' : '' }}">
-                        <a href="{{ route('website.akses_sistem.gm_approval') }}" class="menu-link">
-                            <div data-i18n="Akses Sistem">Form Akses Sistem</div>
-                            @if (App\Models\AppHelper::akses_sistem_gm_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="akses_sistem_gm_count">{{ App\Models\AppHelper::akses_sistem_gm_count() }}</span>
-                            @endif
-                        </a>
-                    </li>
-                </ul>
+        @can('can_master')
+            <li class="menu-header fw-medium mt-4">
+                <span class="menu-header-text">Master</span>
             </li>
-            <li class="menu-item {{ in_array(Route::currentRouteName(), $gm_approved_routes) ? 'active open' : '' }}">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons mdi mdi-history"></i>
-                    <div data-i18n="GM History">GM History</div>
-                </a>
-            </li>
-        @endcan --}}
-        {{-- ITD --}}
-            {{-- ITD --}}
-            {{-- @can('can_approve_it')
-                <li
-                    class="menu-item {{ in_array(Route::currentRouteName(), $it_approval_routes) ? 'active open' : '' }}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
-                        <div data-i18n="ITD Approval">ITD Approval
-                            @if (App\Models\AppHelper::it_approvals_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="it_approvals_count">{{ App\Models\AppHelper::it_approvals_count() }}</span>
-                            @endif
-                        </div>
-                    </a>
-                    @include('website.layouts.sidebar_items', ['link' => 'it_approval', 'text' => 'Form'])
-                </li>
-                <li
-                    class="menu-item {{ in_array(Route::currentRouteName(), $it_approved_routes) ? 'active open' : '' }}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons mdi mdi-history"></i>
-                        <div data-i18n="ITD History">ITD History</div>
-                    </a>
-                    @include('website.layouts.sidebar_items', ['link' => 'it_approved', 'text' => 'Form'])
-                </li>
-            @endcan
-            @can('approve_mgr')
-                <li
-                    class="menu-item {{ in_array(Route::currentRouteName(), $it_mgr_approval_routes) ? 'active open' : '' }}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
-                        <div data-i18n="ITD MGR Approval">ITD MGR Approval
-                            @if (App\Models\AppHelper::it_mgr_approvals_count() > 0)
-                                &nbsp&nbsp<span class="badge bg-danger rounded-pill"
-                                    id="it_mgr_approvals_count">{{ App\Models\AppHelper::it_mgr_approvals_count() }}</span>
-                            @endif
-                        </div>
-                    </a>
-                    @include('website.layouts.sidebar_items', [
-                        'link' => 'it_mgr_approval',
-                        'text' => 'Form',
-                    ])
-                </li>
-                <li
-                    class="menu-item {{ in_array(Route::currentRouteName(), $it_mgr_approved_routes) ? 'active open' : '' }}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons mdi mdi-history"></i>
-                        <div data-i18n="ITD MGR History">ITD MGR History</div>
-                    </a>
-                    @include('website.layouts.sidebar_items', [
-                        'link' => 'it_mgr_approved',
-                        'text' => 'Form',
-                    ])
-                </li>
-            @endcan --}}
-            @can('can_master')
-            <!-- Master -->
-            <li class="menu-header fw-medium mt-4"><span class="menu-header-text">Master</span></li>
+
             @php
                 $alertRoutes = ['website.alert.list', 'website.alert.create', 'website.alert.edit'];
             @endphp
@@ -348,8 +242,7 @@
                 $folderRoutes = ['website.folder.list', 'website.folder.create', 'website.folder.edit'];
                 $subfolderRoutes = ['website.subfolder.list', 'website.subfolder.create', 'website.subfolder.edit'];
             @endphp
-            <li
-                class="menu-item {{ in_array(Route::currentRouteName(), $folderRoutes) || in_array(Route::currentRouteName(), $subfolderRoutes) ? 'active open' : '' }}">
+            <li class="menu-item {{ in_array(Route::currentRouteName(), $folderRoutes) || in_array(Route::currentRouteName(), $subfolderRoutes) ? 'active open' : '' }}">
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons mdi mdi-folder"></i>
                     <div data-i18n="Folder">Folder</div>
@@ -388,13 +281,12 @@
                 </a>
             </li>
 
-            <!-- Users -->
             <li class="menu-item {{ Route::is('website.user.list') ? 'active' : '' }}">
                 <a href="{{ route('website.user.list') }}" class="menu-link">
                     <i class="menu-icon tf-icons mdi mdi-account-multiple"></i>
                     <div data-i18n="Users">Users</div>
                 </a>
             </li>
-            @endcan
+        @endcan
     </ul>
 </aside>

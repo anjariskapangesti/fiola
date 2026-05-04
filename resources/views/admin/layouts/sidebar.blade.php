@@ -1,34 +1,99 @@
 <!-- Sidebar -->
-<div class="sidebar">
-  <!-- Sidebar user panel (optional) -->
+<aside class="layout-menu menu-vertical menu bg-menu-theme">
 
-  @if(Auth::check())
-  <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-    <div class="image">
-     <!--  <img src="{{ asset('vendor/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-   </div>
-   <div class="info text-white">
-    <i class="fas fa-user-circle"></i> <span class="align-center ml-2">{{ Auth::user()->name }}</span>
-  </div>
-</div>
-@endif
+    <div class="app-brand demo">
+        <a href="{{ route('dashboard') }}" class="app-brand-link">
+            <span class="app-brand-text demo menu-text fw-bold ms-2">FIOLA</span>
+        </a>
+    </div>
 
-<!-- Sidebar Menu -->
-@if(Auth::user())
-<nav class="mt-2">
-  <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
-    <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
-    <li class="nav-item">
-      <a href="{{ route('admin.home') }}" class="nav-link {{ (Route::is('admin.home') ? 'active' : '') }}">
-        <i class="nav-icon fas fa-home"></i>
-        <p>
-          Beranda
-        </p>
-      </a>
-    </li>
-  </ul>
-</nav>
-@endif
-<!-- /.sidebar-menu -->
-</div>
-    <!-- /.sidebar -->
+    <div class="menu-inner-shadow"></div>
+
+    <ul class="menu-inner py-1">
+
+        <!-- Dashboard -->
+        <li class="menu-item {{ request()->routeIs('dashboard*') ? 'active open' : '' }}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons mdi mdi-home-outline"></i>
+                <div>Dashboard</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}" class="menu-link">
+                        <div>Dashboard Utama</div>
+                    </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <div>Dashboard Timeline</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <!-- APPS & PAGES -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Apps & Pages</span>
+        </li>
+
+        <!-- ✅ AKTIF PROJECT -->
+        <li class="menu-item {{ request()->routeIs('website.approved_project.*') ? 'active' : '' }}">
+            <a href="{{ route('website.approved_project.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-check-circle-outline"></i>
+                <div>Aktif Project</div>
+            </a>
+        </li>
+
+        <!-- Tickets -->
+        <li class="menu-item">
+            <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-ticket-outline"></i>
+                <div>Tickets</div>
+            </a>
+        </li>
+
+        <!-- Reschedule -->
+        <li class="menu-item">
+            <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-calendar-clock-outline"></i>
+                <div>Reschedule Requests</div>
+            </a>
+        </li>
+
+        <!-- Forms -->
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons mdi mdi-form-select"></i>
+                <div>Forms</div>
+            </a>
+        </li>
+
+        <!-- Track -->
+        <li class="menu-item">
+            <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-magnify"></i>
+                <div>Track Forms</div>
+            </a>
+        </li>
+
+        <!-- Manager Approval -->
+        <li class="menu-item">
+            <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-timer-sand"></i>
+                <div>Manager Approval</div>
+            </a>
+        </li>
+
+        <!-- Manager History -->
+        <li class="menu-item">
+            <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons mdi mdi-history"></i>
+                <div>Manager History</div>
+            </a>
+        </li>
+
+    </ul>
+</aside>
+<!-- / Sidebar -->

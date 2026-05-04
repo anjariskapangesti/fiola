@@ -1,6 +1,5 @@
 @extends('website.layouts.main', ['title' => 'Director Approval Project'])
 
-
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
@@ -26,8 +25,7 @@
                             <th width="150px">Option</th>
                         </tr>
                     </thead>
-                    <tbody class="table-border-bottom-0">
-                    </tbody>
+                    <tbody class="table-border-bottom-0"></tbody>
                 </table>
             </div>
         </div>
@@ -41,8 +39,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure want to approve this reschedule request?
-                    <p class="text-danger">This will reschedule the selected project and approve the new project for this slot.</p>
+                    Are you sure want to approve this request?
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_approve">
                     <input type="hidden" id="id_approve">
                     <div class="form-floating form-floating-outline">
@@ -67,8 +64,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure want to reject this reschedule request?
-                    <p class="text-danger">This will reject the new project request.</p>
+                    Are you sure want to reject this request?
                     <input type="text" readonly class="form-control-plaintext" id="no_reg_reject">
                     <input type="hidden" id="id_reject">
                     <div class="form-floating form-floating-outline">
@@ -110,16 +106,23 @@
 @push('scripts')
     <script src="{{ asset('vendor/datatables/js/datatables.min.js') }}"></script>
     <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
+
     <script>
         $(document).ready(function() {
+            $('.auto-resize').on('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+
             var table = $('#app_table').DataTable({
-                'lengthChange': true,
-                'processing': true,
-                'serverSide': false,
+                lengthChange: true,
+                processing: true,
+                serverSide: false,
                 ajax: {
                     url: "{{ route('website.project.dir_approval_ajax') }}",
                 },
-                columns: [{
+                columns: [
+                    {
                         data: null,
                         render: function(data, type, row, meta) {
                             return meta.row + 1;
@@ -145,18 +148,18 @@
                         data: 'final_status',
                         name: 'final_status',
                         render: function(data) {
-                            if (data == 'Manager Approve') {
-                                return `<span class="badge bg-warning">Menunggu Persetujuan Direktur</span>`;
+                            if (data == 'Waiting Director Approval' || data == 'Manager Approve') {
+                                return `<span class="badge bg-warning">Waiting Director Approval</span>`;
                             } else if (data == 'Director Approve') {
-                                return `<span class="badge bg-success">Disetujui Direktur</span>`;
+                                return `<span class="badge bg-success">Director Approved</span>`;
                             } else if (data == 'On Progress') {
                                 return `<span class="badge bg-info">On Progress</span>`;
                             } else if (data == 'Finished') {
                                 return `<span class="badge bg-success">Finished</span>`;
                             } else if (data == 'Manager Reject') {
-                                return `<span class="badge bg-danger">Ditolak Manager</span>`;
+                                return `<span class="badge bg-danger">Manager Rejected</span>`;
                             } else if (data == 'Director Reject') {
-                                return `<span class="badge bg-danger">Ditolak Direktur</span>`;
+                                return `<span class="badge bg-danger">Director Rejected</span>`;
                             } else {
                                 return `<span class="badge bg-warning">${data}</span>`;
                             }
@@ -174,74 +177,105 @@
             });
 
             function format(d) {
-                return (
-                    `
+                let html = `
                     <table class="table table-bordered table-sm" style="background-color: #ebf1f2;">
                         <tbody style="border: 2px solid black;">
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Project Name</td>
-                                <td>${d.nama_project} </td>
+                                <td style="background-color: #66a7e3; width:260px; font-weight: bold;">Project Name</td>
+                                <td>${d.nama_project ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">User</td>
-                                <td>${d.npk} / ${d.fullname}</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">User</td>
+                                <td>${d.npk ?? '-'} / ${d.fullname ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; width: 30px; font-weight: bold;">Benefit yang didapat</td>
-                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit} </td>
-                            </tr>
-                            ${d.is_reschedule ? `
-                            <tr class="table-warning">
-                                <td style="background-color: #ffc107; font-weight: bold;">Reschedule Target</td>
-                                <td style="font-weight: bold; color: #856404;">${d.target_project_name}</td>
-                            </tr>
-                            <tr class="table-warning">
-                                <td style="background-color: #ffc107; font-weight: bold;">Alasan Reschedule</td>
-                                <td style="font-weight: bold; color: #856404; white-space: pre-wrap;">${d.reschedule_reason}</td>
-                            </tr>
-                            <tr class="table-warning">
-                                <td style="background-color: #ffc107; font-weight: bold;">Respon Target</td>
-                                <td style="font-weight: bold; color: #856404;">
-                                    <strong>${d.target_response ? (d.target_response == 'yes' ? 'SETUJU (YES)' : 'MENOLAK (NO)') : 'PENDING'}</strong>
-                                    ${d.target_response == 'yes' ? `<br><small>Rencana Jadwal Baru: ${d.target_reschedule_start_date} s/d ${d.target_reschedule_end_date}</small>` : ''}
-                                </td>
-                            </tr>
-                            ` : ''}
-                             <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Lampiran</td>
-                                <td>
-                                    <button type="button" class="btn btn-success btn-sm btn-lampiran" data-bs-toggle="modal" data-bs-target="#pdfModal" data-lampiran="{{ asset('storage/lampiran/${d.lampiran}') }}">
-                                        <i class="mdi mdi-file-download"></i> View
-                                    </button>
-                                </td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Department</td>
+                                <td>${d.department ?? '-'}</td>
                             </tr>
                             <tr>
                                 <td style="background-color: #66a7e3; font-weight: bold;">Benefit</td>
-                                <td style="white-space: pre-wrap;">${d.benefit}</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.benefit ?? '-'}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #66a7e3; font-weight: bold;">Respon Target (User yg Digeser)</td>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Lampiran</td>
                                 <td>
-                                    <strong>${d.target_response ? (d.target_response == 'yes' ? 'SETUJU (YES)' : 'MENOLAK (NO)') : 'PENDING'}</strong>
-                                    ${d.target_response == 'yes' ? `<br><small class="text-success">Rencana Jadwal Baru: ${d.target_reschedule_start_date} s/d ${d.target_reschedule_end_date}</small>` : ''}
+                                    ${
+                                        d.lampiran
+                                            ? `<button type="button" class="btn btn-success btn-sm btn-lampiran"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#pdfModal"
+                                                    data-lampiran="/storage/lampiran/${d.lampiran}">
+                                                    <i class="mdi mdi-file-download"></i> View
+                                               </button>`
+                                            : '-'
+                                    }
                                 </td>
                             </tr>
                             <tr>
+                                <td style="background-color: #66a7e3; font-weight: bold;">Alasan Manager</td>
+                                <td style="max-width: 250px; white-space: pre-wrap;">${d.manager_note ?? '-'}</td>
+                            </tr>
+                            <tr>
                                 <td style="background-color: #66a7e3; font-weight: bold;">Approval Manager</td>
-                                <td>${d.is_manager_approve ? '<span class="text-success">Approved</span>' : '<span class="text-danger">Rejected</span>'} oleh ${d.manager_name ?? '-'} (Catatan: ${d.manager_note ?? '-'})</td>
+                                <td>
+                                    ${
+                                        d.is_manager_approve
+                                            ? `<span class="text-success">Approved</span>`
+                                            : `<span class="text-danger">Not Approved</span>`
+                                    }
+                                    oleh ${d.manager_name ?? '-'}
+                                </td>
                             </tr>
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="2" class="text-end">
-                                    <button class="btn btn-danger btn-sm btn-table-reject" data-bs-toggle="modal" data-bs-target="#rejectModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Reject (No)</button>
-                                    <button class="btn btn-success btn-sm btn-table-approve" data-bs-toggle="modal" data-bs-target="#approveModal" data-id="${d.id}" data-no_reg="${d.no_reg}">Approve (Yes)</button>
-                                </th>
-                            </tr>    
-                        </tfoot>
                     </table>
-                    `
-                );
+                `;
+
+                if (d.is_reschedule == 1 || d.is_reschedule === true || d.is_reschedule === '1') {
+                    html += `
+                        <div class="mt-3">
+                            <h5 style="color:#856404;">Project yang Ingin Di-Reschedule</h5>
+
+                            <table class="table table-bordered table-sm">
+                                <tbody style="border: 2px solid #ffc107;">
+                                    <tr style="background-color:#fff3cd;">
+                                        <td style="width:260px; font-weight:bold;">Project Name</td>
+                                        <td>${d.target_project_name ?? '-'}</td>
+                                    </tr>
+                                    <tr style="background-color:#fff3cd;">
+                                        <td style="font-weight:bold;">User</td>
+                                        <td>${d.target_fullname ?? '-'}</td>
+                                    </tr>
+                                    <tr style="background-color:#fff3cd;">
+                                        <td style="font-weight:bold;">Department</td>
+                                        <td>${d.target_department ?? '-'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="text-end mt-2">
+                        <button class="btn btn-danger btn-sm btn-table-reject"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rejectModal"
+                            data-id="${d.id}"
+                            data-no_reg="${d.no_reg}">
+                            Reject (No)
+                        </button>
+
+                        <button class="btn btn-success btn-sm btn-table-approve"
+                            data-bs-toggle="modal"
+                            data-bs-target="#approveModal"
+                            data-id="${d.id}"
+                            data-no_reg="${d.no_reg}">
+                            Approve (Yes)
+                        </button>
+                    </div>
+                `;
+
+                return html;
             }
 
             $('#app_table tbody').on('click', 'td.detail', function() {
@@ -261,15 +295,18 @@
                 $('#pdfViewer').attr('src', $(this).data('lampiran'));
             });
 
-            // APPROVE
             $('#app_table').on('click', '.btn-table-approve', function() {
                 $('#id_approve').val($(this).data('id'));
                 $('#no_reg_approve').val($(this).data('no_reg'));
+                $('#dir_note_approve').val('');
+                $('#btn-approve').removeAttr('disabled').html('Yes, Approve!');
             });
 
             $('#btn-approve').on('click', function() {
                 let btn = $(this);
+
                 btn.attr('disabled', 'disabled').html('<i class="mdi mdi-loading spin"></i> Approving...');
+
                 $.ajax({
                     url: "{{ route('website.project.dir_approve') }}",
                     type: "POST",
@@ -277,31 +314,42 @@
                         id: $('#id_approve').val(),
                         dir_note: $('#dir_note_approve').val(),
                         type: 'approve',
-                        '_token': "{{ csrf_token() }}",
+                        _token: "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         toastr['success'](response);
                         table.ajax.reload();
+                        getApprovalCount();
                         $('#approveModal').modal('hide');
+                        btn.removeAttr('disabled').html('Yes, Approve!');
+                    },
+                    error: function(xhr) {
+                        toastr['error'](xhr.responseJSON?.error || 'Something went wrong');
                         btn.removeAttr('disabled').html('Yes, Approve!');
                     }
                 });
             });
 
-            // REJECT
             $('#dir_note_reject').on('keyup', function() {
-                if ($(this).val() != "") $('#btn-reject').removeAttr('disabled');
-                else $('#btn-reject').attr('disabled', 'disabled');
+                if ($(this).val() != "") {
+                    $('#btn-reject').removeAttr('disabled');
+                } else {
+                    $('#btn-reject').attr('disabled', 'disabled');
+                }
             });
 
             $('#app_table').on('click', '.btn-table-reject', function() {
                 $('#id_reject').val($(this).data('id'));
                 $('#no_reg_reject').val($(this).data('no_reg'));
+                $('#dir_note_reject').val('');
+                $('#btn-reject').attr('disabled', 'disabled').html('Yes, Reject!');
             });
 
             $('#btn-reject').on('click', function() {
                 let btn = $(this);
+
                 btn.attr('disabled', 'disabled').html('<i class="mdi mdi-loading spin"></i> Rejecting...');
+
                 $.ajax({
                     url: "{{ route('website.project.dir_approve') }}",
                     type: "POST",
@@ -309,12 +357,17 @@
                         id: $('#id_reject').val(),
                         dir_note: $('#dir_note_reject').val(),
                         type: 'reject',
-                        '_token': "{{ csrf_token() }}",
+                        _token: "{{ csrf_token() }}",
                     },
                     success: function(response) {
                         toastr['success'](response);
                         table.ajax.reload();
+                        getApprovalCount();
                         $('#rejectModal').modal('hide');
+                        btn.removeAttr('disabled').html('Yes, Reject!');
+                    },
+                    error: function(xhr) {
+                        toastr['error'](xhr.responseJSON?.error || 'Something went wrong');
                         btn.removeAttr('disabled').html('Yes, Reject!');
                     }
                 });

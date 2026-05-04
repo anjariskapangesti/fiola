@@ -13,6 +13,48 @@ use App\Http\Controllers\Website\ProjectTimelineController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware(['auth'])->group(function () {
+    Route::get('/approved-project', 'Website\ApprovedProjectController@index')
+        ->name('website.approved_project.index');
+
+    Route::get('/approved-project/create', 'Website\ApprovedProjectController@create')
+        ->name('website.approved_project.create');
+
+    Route::post('/approved-project', 'Website\ApprovedProjectController@store')
+        ->name('website.approved_project.store');
+
+    Route::get('/approved-project/{id}/edit', 'Website\ApprovedProjectController@edit')
+        ->name('website.approved_project.edit');
+
+    Route::put('/approved-project/{id}', 'Website\ApprovedProjectController@update')
+        ->name('website.approved_project.update');
+
+    Route::delete('/approved-project/{id}', 'Website\ApprovedProjectController@destroy')
+        ->name('website.approved_project.destroy');
+
+    Route::delete('/approved-project/project/{id}', 'Website\ApprovedProjectController@destroyProject')
+        ->name('website.approved_project.destroy_project');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/approved-project', 'Website\ApprovedProjectController@index')
+        ->name('website.approved_project.index');
+
+    Route::get('/approved-project/create', 'Website\ApprovedProjectController@create')
+        ->name('website.approved_project.create');
+
+    Route::post('/approved-project', 'Website\ApprovedProjectController@store')
+        ->name('website.approved_project.store');
+
+    Route::get('/approved-project/{id}/edit', 'Website\ApprovedProjectController@edit')
+        ->name('website.approved_project.edit');
+
+    Route::put('/approved-project/{id}', 'Website\ApprovedProjectController@update')
+        ->name('website.approved_project.update');
+
+    Route::delete('/approved-project/{id}', 'Website\ApprovedProjectController@destroy')
+        ->name('website.approved_project.destroy');
+});
 
 Route::group(['namespace' => 'Website', 'as' => 'website.'], function () {
     Route::get('login', 'AuthController@showLoginPage')->name('auth.login');

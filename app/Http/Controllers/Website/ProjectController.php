@@ -155,8 +155,8 @@ class ProjectController extends Controller
                 'phone' => Auth::user()->nohp,
                 'aplikasi' => $request->aplikasi,
                 'nama_project' => $request->nama_project,
-                'start_date' => request()->input('start_date'),
-                'end_date'   => request()->input('end_date'),
+                'start_date' => $request->input('start_date'),
+                'end_date' => $request->input('end_date'),
                 'lampiran' => $photoFileName,
                 'kondisi_sebelum' => $request->kondisi_sebelum,
                 'kondisi_target' => $request->kondisi_target,
@@ -203,7 +203,9 @@ class ProjectController extends Controller
                 'users.name as requestor',
                 'manager.name as manager_name',
                 'director.name as dir_approve_by_name',
-                'target.nama_project as target_project_name'
+                'target.nama_project as target_project_name',
+                'target.fullname as target_fullname',
+                'target.department as target_department'
             )
             ->orderBy('form_project.created_at', 'desc');
 
@@ -237,28 +239,28 @@ class ProjectController extends Controller
         $lastDepartmentId = $userDepartments->last();
 
         $data = Project::query();
-        
-        // If user is IT Manager or Director, they can see all project requests
-        // Otherwise, restrict to their own departments
+
         if (!Auth::user()->can('ITDMGR') && !Auth::user()->can('approve_dir')) {
             $data = $data->where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
-                $query->where('created_dept', $firstDepartmentId)
-                    ->orWhere('created_dept', $lastDepartmentId);
+                $query->where('form_project.created_dept', $firstDepartmentId)
+                    ->orWhere('form_project.created_dept', $lastDepartmentId);
             });
         }
 
         $data = $data->whereIn('form_project.final_status', ['created', 'Waiting Manager Approval'])
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
-            ->leftJoin('form_project as target', 'form_project.reschedule_target_id', 'target.id')
+            ->join('users', 'form_project.created_by', '=', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', '=', 'it_mgr.id')
+            ->leftJoin('users as on_progress', 'form_project.on_progress_by', '=', 'on_progress.id')
+            ->leftJoin('users as finish', 'form_project.finish_by', '=', 'finish.id')
+            ->leftJoin('form_project as target', 'form_project.reschedule_target_id', '=', 'target.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
                 'target.nama_project as target_project_name',
+                'target.fullname as target_fullname',
+                'target.department as target_department',
                 'manager.name as manager_name',
                 'it.name as it_name',
                 'it_mgr.name as it_mgr_name',
@@ -284,16 +286,13 @@ class ProjectController extends Controller
             $project->is_manager_approve = 0;
             $project->manager_note = $request->manager_note;
             $project->manager_approve_by = Auth::user()->id;
-            
+            $project->final_status = 'Manager Reject';
+            $project->is_finish = 0;
+            $project->is_confirm = 0;
+
             if ($project->is_reschedule) {
-                $project->final_status = 'Manager Reject';
-                $project->is_finish = 0;
-                $project->is_confirm = 0;
                 $return = "Berhasil Ditolak. Proses dihentikan.";
             } else {
-                $project->final_status = 'Manager Reject';
-                $project->is_finish = 0;
-                $project->is_confirm = 0;
                 $return = "Berhasil Ditolak";
             }
         }
@@ -316,16 +315,16 @@ class ProjectController extends Controller
         $lastDepartmentId = $userDepartments->last();
 
         $data = Project::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
-                $query->where('created_dept', $firstDepartmentId)
-                    ->orWhere('created_dept', $lastDepartmentId);
+                $query->where('form_project.created_dept', $firstDepartmentId)
+                    ->orWhere('form_project.created_dept', $lastDepartmentId);
             })
             ->whereNotNull('is_manager_approve')
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as on_progress', 'form_project.on_progress_by', 'on_progress.id')
-            ->leftJoin('users as finish', 'form_project.finish_by', 'finish.id')
+            ->join('users', 'form_project.created_by', '=', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', '=', 'it_mgr.id')
+            ->leftJoin('users as on_progress', 'form_project.on_progress_by', '=', 'on_progress.id')
+            ->leftJoin('users as finish', 'form_project.finish_by', '=', 'finish.id')
             ->leftJoin('users as director', 'form_project.dir_approve_by', '=', 'director.id')
             ->leftJoin('form_project as target', 'form_project.reschedule_target_id', '=', 'target.id')
             ->select(
@@ -333,13 +332,14 @@ class ProjectController extends Controller
                 'users.name as requestor',
                 'manager.name as manager_name',
                 'director.name as dir_approve_by_name',
-                'target.nama_project as target_project_name'
+                'target.nama_project as target_project_name',
+                'target.fullname as target_fullname',
+                'target.department as target_department'
             )
             ->orderBy('manager_approval_date', 'DESC');
 
         return DataTables::eloquent($data)->make(true);
     }
-
 
     public function dir_approval()
     {
@@ -349,15 +349,17 @@ class ProjectController extends Controller
     public function dir_approval_ajax(Request $request)
     {
         $data = Project::whereIn('form_project.final_status', ['Waiting Director Approval', 'Manager Approve'])
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('form_project as target', 'form_project.reschedule_target_id', 'target.id')
+            ->join('users', 'form_project.created_by', '=', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', '=', 'it_mgr.id')
+            ->leftJoin('form_project as target', 'form_project.reschedule_target_id', '=', 'target.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
                 'target.nama_project as target_project_name',
+                'target.fullname as target_fullname',
+                'target.department as target_department',
                 'manager.name as manager_name',
                 'it.name as it_name',
                 'it_mgr.name as it_mgr_name'
@@ -377,31 +379,30 @@ class ProjectController extends Controller
             $project->dir_note = $request->dir_note;
             $project->dir_approve_by = Auth::user()->id;
             $project->dir_approval_date = Carbon::now();
-            
-            // Activate timeline for the new project
+
             $project->is_timeline_active = true;
             $maxOrder = Project::where('is_timeline_active', true)->max('timeline_order');
             $project->timeline_order = $maxOrder ? ($maxOrder + 1) : 1;
-            
+
             $project->save();
 
-            // Reschedule the target project
             if ($project->reschedule_target_id) {
                 $oldProject = Project::find($project->reschedule_target_id);
+
                 if ($oldProject) {
                     $updateData = [
                         'final_status' => 'Rescheduled',
                         'is_timeline_active' => false,
-                        'timeline_order' => null
+                        'timeline_order' => null,
                     ];
-                    
+
                     if ($project->target_reschedule_start_date) {
                         $updateData['start_date'] = $project->target_reschedule_start_date;
                         $updateData['end_date'] = $project->target_reschedule_end_date;
                         $updateData['is_timeline_active'] = true;
                         $updateData['final_status'] = 'Director Approve';
                     }
-                    
+
                     $oldProject->update($updateData);
                 }
             }
@@ -416,6 +417,7 @@ class ProjectController extends Controller
             $project->is_finish = 0;
             $project->is_confirm = 0;
             $project->save();
+
             $return = "Berhasil Ditolak. Project baru ditolak.";
         }
 
@@ -430,11 +432,11 @@ class ProjectController extends Controller
     public function dir_approved_ajax(Request $request)
     {
         $data = Project::whereNotNull('is_dir_approve')
-            ->join('users', 'form_project.created_by', 'users.id')
-            ->leftJoin('users as manager', 'form_project.manager_approve_by', 'manager.id')
-            ->leftJoin('users as it', 'form_project.it_approve_by', 'it.id')
-            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', 'it_mgr.id')
-            ->leftJoin('users as director', 'form_project.dir_approve_by', 'director.id')
+            ->join('users', 'form_project.created_by', '=', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', '=', 'it_mgr.id')
+            ->leftJoin('users as director', 'form_project.dir_approve_by', '=', 'director.id')
             ->select(
                 'form_project.*',
                 'users.name as requestor',
@@ -456,9 +458,10 @@ class ProjectController extends Controller
     public function reschedule_notifications_ajax(Request $request)
     {
         $myProjectsIds = Project::where('created_by', Auth::user()->id)->pluck('id');
+
         $data = Project::whereIn('reschedule_target_id', $myProjectsIds)
             ->where('target_response', 'pending')
-            ->join('users', 'form_project.created_by', 'users.id')
+            ->join('users', 'form_project.created_by', '=', 'users.id')
             ->select('form_project.*', 'users.name as requestor')
             ->orderBy('created_at', 'ASC');
 
@@ -475,6 +478,7 @@ class ProjectController extends Controller
         }
 
         $nextSlot = $this->getNextAvailableSlot($targetProject->start_date);
+
         if ($nextSlot) {
             $project->target_reschedule_start_date = $nextSlot['start_date'];
             $project->target_reschedule_end_date = $nextSlot['end_date'];
@@ -483,16 +487,17 @@ class ProjectController extends Controller
         if ($request->type == 'yes') {
             $project->target_response = 'yes';
             $project->target_response_date = Carbon::now();
-            $project->final_status = 'created'; // Move to Manager Approval
+            $project->final_status = 'created';
             $return = "Anda menyetujui reschedule. Permintaan berlanjut ke persetujuan Manager.";
         } else {
             $project->target_response = 'no';
             $project->target_response_date = Carbon::now();
-            $project->final_status = 'created'; // Move to Manager Approval even if No
+            $project->final_status = 'created';
             $return = "Anda menolak reschedule. Permintaan tetap berlanjut melalui rantai persetujuan Manager dan Direktur.";
         }
 
         $project->save();
+
         return $return;
     }
 
@@ -510,14 +515,18 @@ class ProjectController extends Controller
             if ($count < 2) {
                 $newStart = $currentDate->copy()->startOfMonth();
                 $newEnd = $newStart->copy()->addDays(14);
+
                 return [
                     'start_date' => $newStart,
-                    'end_date' => $newEnd
+                    'end_date' => $newEnd,
                 ];
             }
 
             $currentDate->addMonth();
-            if ($currentDate->month == 1) $countYears++;
+
+            if ($currentDate->month == 1) {
+                $countYears++;
+            }
         }
 
         return null;
