@@ -1,351 +1,351 @@
-@extends('website.layouts.main', ['title' => 'Project Timeline'])
+@extends('website.layouts.main', ['title' => 'Projects Timeline'])
 
+@section('content')
 @php
-    $baseMs = $timelineStart ?? ($timelineRows[0]['start_ms'] ?? null);
+    use Carbon\Carbon;
 
-    if ($baseMs) {
-        $baseDate = \Carbon\Carbon::createFromTimestampMs($baseMs);
+    $timelineStart = Carbon::create(2026, 4, 1)->startOfMonth();
+    $timelineEnd = Carbon::create(2027, 3, 31)->endOfMonth();
 
-        if ($baseDate->month < 4) {
-            $fiscalStart = \Carbon\Carbon::create($baseDate->year - 1, 4, 1)->startOfDay();
-        } else {
-            $fiscalStart = \Carbon\Carbon::create($baseDate->year, 4, 1)->startOfDay();
+    $months = [];
+    $cursor = $timelineStart->copy();
+
+    while ($cursor->lte($timelineEnd)) {
+        $months[] = $cursor->copy();
+        $cursor->addMonth();
+    }
+
+    if (!isset($projects)) {
+        $projects = \App\Models\Project::where('final_status', 'Director Approve')
+            ->where('is_timeline_active', true)
+            ->orderBy('start_date', 'asc')
+            ->get();
+    }
+
+    $today = Carbon::now();
+    $todayLabel = $today->locale('id')->translatedFormat('D, d M');
+
+    $monthNames = [
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mar',
+        4 => 'Apr',
+        5 => 'Mei',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Agu',
+        9 => 'Sep',
+        10 => 'Okt',
+        11 => 'Nov',
+        12 => 'Des',
+    ];
+
+    $monthColumnWidth = 260;
+    $nameColumnWidth = 190;
+    $barMinWidth = 120;
+
+    $todayInTimeline = false;
+    $todayGlobalLeft = 0;
+
+    foreach ($months as $monthIndex => $month) {
+        if ($today->format('Y-m') === $month->format('Y-m')) {
+            $todayInTimeline = true;
+
+            $daysInMonth = $month->copy()->startOfMonth()->daysInMonth;
+            $todayPercentInMonth = (((int) $today->format('d') - 1) / $daysInMonth);
+
+            $todayGlobalLeft = $nameColumnWidth
+                + ($monthIndex * $monthColumnWidth)
+                + ($todayPercentInMonth * $monthColumnWidth);
+
+            break;
         }
-
-        $fiscalEnd = $fiscalStart->copy()->addYear()->subDay()->endOfDay();
-
-        $timelineStart = $fiscalStart->timestamp * 1000;
-        $timelineEnd = $fiscalEnd->timestamp * 1000;
     }
 @endphp
 
-@section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="row gy-4">
-            {{-- VISUAL TIMELINE (GANTT CHART) --}}
-            <div class="col-md-12 col-lg-12">
-                <div class="card border-0 shadow-sm" style="background: #ffffff; border-radius: 24px; overflow: hidden;">
-                    <div class="card-body px-4 py-4">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h4 class="mb-1 text-dark fw-bold" style="letter-spacing:.3px;">PROJECTS TIMELINE</h4>
-                                <div style="color:#6B7280;">Project yang sudah masuk dalam jadwal</div>
-                            </div>
-                        </div>
+<style>
+    .timeline-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
 
-                        @if (isset($timelineRows) && count($timelineRows) > 0)
-                            <div class="timeline-board" style="background:#ffffff; border-radius:18px; padding:12px 6px 6px 6px;">
-                                <div class="timeline-scroll">
-                                    <div class="timeline-header">
-                                        <div class="timeline-left-space"></div>
-                                        <div class="timeline-months" id="timelineMonths"></div>
-                                    </div>
+    .timeline-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: #444;
+        margin-bottom: 4px;
+    }
 
-                                    <div class="timeline-body" id="timelineBody">
-                                        <div class="timeline-today-line" id="timelineTodayLine">
-                                            <div class="today-label-box">Today</div>
-                                        </div>
+    .timeline-subtitle {
+        color: #6b7280;
+        font-size: 17px;
+        margin-bottom: 28px;
+    }
 
-                                        @foreach ($timelineRows as $row)
-                                            <div class="timeline-row">
-                                                <div class="timeline-label">{{ $row['nama_project'] }}</div>
+    .timeline-wrapper {
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-top: 44px;
+        padding-bottom: 18px;
+    }
 
-                                                <div class="timeline-track">
-                                                    <div class="timeline-grid-days"></div>
+    .timeline-grid {
+        min-width: calc({{ $nameColumnWidth }}px + ({{ count($months) }} * {{ $monthColumnWidth }}px));
+        display: grid;
+        grid-template-columns: {{ $nameColumnWidth }}px repeat({{ count($months) }}, {{ $monthColumnWidth }}px);
+        position: relative;
+        overflow: visible;
+    }
 
-                                                    <div class="timeline-bar finished-bar"
-                                                        data-start="{{ $row['start_ms'] }}"
-                                                        data-end="{{ $row['end_ms'] }}"
-                                                        data-min="{{ $timelineStart }}"
-                                                        data-max="{{ $timelineEnd }}"
-                                                        title="{{ $row['nama_project'] }} | {{ $row['start_label'] }} - {{ $row['end_label'] }}">
-                                                        <span class="timeline-bar-text">{{ $row['no_reg'] }}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
+    .timeline-empty-head {
+        height: 52px;
+        background: #fff;
+        border-bottom: 1px solid #e5e7eb;
+    }
 
-                                <div class="d-flex justify-content-between align-items-center flex-wrap mt-4 px-2">
-                                    <div class="d-flex align-items-center text-dark">
-                                        <span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#A3E635;margin-right:10px;"></span>
-                                        Finished
-                                    </div>
+    .timeline-month {
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        font-size: 14px;
+        border-left: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        background: #fff;
+        white-space: nowrap;
+    }
 
-                                    <div class="text-dark mt-2 mt-md-0">
-                                        Total: {{ count($timelineRows) }}
-                                    </div>
-                                </div>
-                            </div>
-                        @else
-                            <div class="alert alert-warning mb-0">
-                                Belum ada project finished yang memiliki start date dan end date.
-                            </div>
-                        @endif
+    .timeline-name {
+        height: 78px;
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        color: #111827;
+        padding-right: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .timeline-month-cell {
+        height: 78px;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 16px solid #fff;
+        background:
+            repeating-linear-gradient(
+                to right,
+                #f3f4f6 0,
+                #f3f4f6 1px,
+                transparent 1px,
+                transparent 5px
+            );
+    }
+
+    .timeline-project-bar {
+        position: absolute;
+        top: 18px;
+        left: var(--bar-left);
+        width: var(--bar-width);
+        height: 36px;
+        background: #9bea23;
+        color: #000;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-sizing: border-box;
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .today-line-global {
+        position: absolute;
+        left: var(--today-left);
+        top: 52px;
+        bottom: 0;
+        width: 2px;
+        background: #ff3b3b;
+        z-index: 30;
+        pointer-events: none;
+    }
+
+    .today-label {
+        position: absolute;
+        top: -36px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff3b3b;
+        color: #fff;
+        padding: 5px 9px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 800;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0,0,0,.18);
+    }
+
+    .timeline-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        color: #555;
+        font-size: 16px;
+    }
+
+    .legend {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .legend-dot {
+        width: 14px;
+        height: 14px;
+        background: #9bea23;
+        border-radius: 50%;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="timeline-card">
+        <div class="timeline-title">PROJECTS TIMELINE</div>
+        <div class="timeline-subtitle">Project yang sudah masuk dalam jadwal</div>
+
+        <div class="timeline-wrapper">
+            <div class="timeline-grid">
+
+                @if($todayInTimeline)
+                    <div class="today-line-global" style="--today-left: {{ $todayGlobalLeft }}px;">
+                        <div class="today-label">{{ $todayLabel }}</div>
                     </div>
-                </div>
+                @endif
+
+                <div class="timeline-empty-head"></div>
+
+                @foreach($months as $month)
+                    <div class="timeline-month">
+                        {{ $monthNames[(int) $month->format('n')] }} {{ $month->format('Y') }}
+                    </div>
+                @endforeach
+
+                @foreach($projects as $project)
+                    @php
+                        $projectStart = $project->start_date
+                            ? Carbon::parse($project->start_date)
+                            : Carbon::parse($project->created_at ?? now());
+
+                        $projectEnd = $project->end_date
+                            ? Carbon::parse($project->end_date)
+                            : $projectStart->copy();
+
+                        $projectName = $project->nama_project ?? '-';
+                        $projectNumber = $project->no_reg ?? $project->nama_project ?? '-';
+                    @endphp
+
+                    <div class="timeline-name">
+                        {{ $projectName }}
+                    </div>
+
+                    @foreach($months as $month)
+                        @php
+                            $monthStart = $month->copy()->startOfMonth();
+
+                            $isInThisMonth = $projectStart->format('Y-m') === $month->format('Y-m');
+
+                            $barLeftPx = 0;
+                            $barWidthPx = 0;
+
+                            if ($isInThisMonth) {
+                                $daysInMonth = $monthStart->daysInMonth;
+                                $startDay = (int) $projectStart->format('d');
+
+                                if ($projectEnd->format('Y-m') === $projectStart->format('Y-m')) {
+                                    $endDay = (int) $projectEnd->format('d');
+                                } else {
+                                    $endDay = $daysInMonth;
+                                }
+
+                                if ($endDay < $startDay) {
+                                    $endDay = $startDay;
+                                }
+
+                                $leftPercent = ($startDay - 1) / $daysInMonth;
+                                $widthPercent = ($endDay - $startDay + 1) / $daysInMonth;
+
+                                $barLeftPx = $leftPercent * $monthColumnWidth;
+                                $barWidthPx = $widthPercent * $monthColumnWidth;
+
+                                if ($barWidthPx < $barMinWidth) {
+                                    $barWidthPx = $barMinWidth;
+                                }
+
+                                if (($barLeftPx + $barWidthPx) > $monthColumnWidth) {
+                                    $barLeftPx = $monthColumnWidth - $barWidthPx;
+                                }
+
+                                if ($barLeftPx < 0) {
+                                    $barLeftPx = 0;
+                                }
+
+                                if ($barWidthPx > $monthColumnWidth) {
+                                    $barWidthPx = $monthColumnWidth;
+                                }
+                            }
+                        @endphp
+
+                        <div class="timeline-month-cell">
+                            @if($isInThisMonth)
+                                <div class="timeline-project-bar"
+                                     data-bs-toggle="tooltip"
+                                     data-bs-placement="top"
+                                     title="Project: {{ $projectName }} | No Reg: {{ $projectNumber }} | Start: {{ $projectStart->format('m/d/Y') }} | End: {{ $projectEnd->format('m/d/Y') }}"
+                                     style="--bar-left: {{ $barLeftPx }}px; --bar-width: {{ $barWidthPx }}px;">
+                                    {{ $projectNumber }}
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @endforeach
+
+            </div>
+        </div>
+
+        <div class="timeline-footer">
+            <div class="legend">
+                <span class="legend-dot"></span>
+                <span>Finished</span>
             </div>
 
+            <div>
+                Total: {{ $projects->count() }}
+            </div>
         </div>
     </div>
-@endsection
-
-@push('styles')
-    <style>
-        .timeline-board {
-            color: #111827;
-        }
-
-        .timeline-scroll {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: visible;
-            padding-bottom: 8px;
-        }
-
-        .timeline-header {
-            display: flex;
-            align-items: center;
-            width: max-content;
-            margin-bottom: 14px;
-        }
-
-        .timeline-left-space {
-            width: 220px;
-            flex: 0 0 220px;
-        }
-
-        .timeline-months {
-            position: relative;
-            width: 1200px;
-            height: 34px;
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-        }
-
-        .timeline-month-item {
-            position: absolute;
-            top: 0;
-            height: 34px;
-            color: #6B7280;
-            font-size: 12px;
-            white-space: nowrap;
-            text-align: center;
-            border-left: 1px solid rgba(0,0,0,0.08);
-        }
-
-        .timeline-month-item span {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .timeline-body {
-            width: max-content;
-            position: relative;
-            padding-top: 26px;
-        }
-
-        .timeline-row {
-            display: flex;
-            align-items: center;
-            min-height: 64px;
-            margin-bottom: 14px;
-        }
-
-        .timeline-label {
-            width: 220px;
-            flex: 0 0 220px;
-            color: #111827;
-            font-size: 13px;
-            font-weight: 600;
-            padding-right: 14px;
-            word-break: break-word;
-        }
-
-        .timeline-track {
-            position: relative;
-            width: 1200px;
-            height: 52px;
-            border-radius: 4px;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
-
-        .timeline-grid-days {
-            position: absolute;
-            inset: 0;
-        }
-
-        .timeline-today-line {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #ef4444;
-            z-index: 999;
-            box-shadow: 0 0 6px rgba(239, 68, 68, 0.45);
-            display: none;
-            pointer-events: none;
-        }
-
-        .today-label-box {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ef4444;
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 3px;
-            white-space: nowrap;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-        }
-
-        .timeline-bar {
-            position: absolute;
-            top: 8px;
-            height: 36px;
-            border-radius: 4px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 18px;
-            box-sizing: border-box;
-            z-index: 2;
-            min-width: max-content;
-            width: auto;
-        }
-
-        .finished-bar {
-            background: #A3E635;
-            color: #111827;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .timeline-bar-text {
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-    </style>
-@endpush
+</div>
 
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const rows = document.querySelectorAll('.timeline-bar');
-            const min = {{ $timelineStart ?? 'null' }};
-            const max = {{ $timelineEnd ?? 'null' }};
-            const monthsContainer = document.getElementById('timelineMonths');
-            const todayLine = document.getElementById('timelineTodayLine');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof bootstrap !== 'undefined') {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 
-            const labelWidth = 220;
-            const trackWidth = 1200;
-            const today = new Date().getTime();
-
-            document.querySelectorAll('.timeline-track, .timeline-months').forEach(function (el) {
-                el.style.width = trackWidth + 'px';
-            });
-
-            if (monthsContainer && min && max) {
-                const total = max - min;
-                const cursor = new Date(min);
-
-                while (cursor.getTime() <= max) {
-                    const monthStart = new Date(cursor.getFullYear(), cursor.getMonth(), 1).getTime();
-                    const monthEnd = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1).getTime();
-
-                    const left = ((monthStart - min) / total) * 100;
-                    const width = ((monthEnd - monthStart) / total) * 100;
-
-                    const label = cursor.toLocaleDateString('id-ID', {
-                        month: 'short',
-                        year: 'numeric'
-                    });
-
-                    const item = document.createElement('div');
-                    item.className = 'timeline-month-item';
-                    item.style.left = left + '%';
-                    item.style.width = width + '%';
-                    item.innerHTML = `<span>${label}</span>`;
-
-                    monthsContainer.appendChild(item);
-                    cursor.setMonth(cursor.getMonth() + 1);
-                }
-            }
-
-            rows.forEach(function (el) {
-                const start = parseInt(el.dataset.start);
-                const end = parseInt(el.dataset.end);
-                const minTime = parseInt(el.dataset.min);
-                const maxTime = parseInt(el.dataset.max);
-
-                if (!start || !end || !minTime || !maxTime || maxTime <= minTime) {
-                    return;
-                }
-
-                const total = maxTime - minTime;
-                const clippedStart = Math.max(start, minTime);
-                const clippedEnd = Math.min(end, maxTime);
-
-                if (clippedEnd <= minTime || clippedStart >= maxTime) {
-                    el.style.display = 'none';
-                    return;
-                }
-
-                const left = ((clippedStart - minTime) / total) * 100;
-                const width = ((clippedEnd - clippedStart) / total) * 100;
-
-                el.style.left = left + '%';
-
-                const calculatedPercent = Math.max(width, 4);
-                el.style.width = calculatedPercent + '%';
-
-                const text = el.querySelector('.timeline-bar-text');
-                const textWidth = text ? text.scrollWidth : 0;
-                const minPixelWidth = textWidth + 36;
-
-                if (el.offsetWidth < minPixelWidth) {
-                    el.style.width = minPixelWidth + 'px';
-                }
-            });
-
-            document.querySelectorAll('.timeline-grid-days').forEach(function (grid) {
-                grid.style.backgroundImage = `
-                    repeating-linear-gradient(
-                        to right,
-                        rgba(0,0,0,0.08) 0,
-                        rgba(0,0,0,0.08) 1px,
-                        transparent 1px,
-                        transparent calc(100% / 365)
-                    )
-                `;
-            });
-
-            if (todayLine && min && max && max > min && today >= min && today <= max) {
-                const total = max - min;
-                const leftPercent = ((today - min) / total) * 100;
-                const leftPx = labelWidth + ((leftPercent / 100) * trackWidth);
-
-                todayLine.style.left = leftPx + 'px';
-                todayLine.style.display = 'block';
-
-                const todayDate = new Date();
-                const todayLabel = todayDate.toLocaleDateString('id-ID', {
-                    weekday: 'short',
-                    day: 'numeric',
-                    month: 'short'
-                });
-
-                const labelBox = todayLine.querySelector('.today-label-box');
-                if (labelBox) {
-                    labelBox.innerText = todayLabel;
-                }
-            }
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
         });
-    </script>
+    }
+});
+</script>
 @endpush
+@endsection

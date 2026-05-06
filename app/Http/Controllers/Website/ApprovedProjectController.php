@@ -14,7 +14,7 @@ class ApprovedProjectController extends Controller
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            if (!Auth::check() || !Auth::user()->can('can_master')) {
+            if (!Auth::check() || Auth::user()->npk !== '000000') {
                 abort(403, 'Unauthorized');
             }
 
@@ -54,6 +54,24 @@ class ApprovedProjectController extends Controller
         ));
     }
 
+    private function generateNoReg()
+    {
+        $prefix = 'PRJ/' . now()->format('ym') . '/';
+
+        $lastProject = Project::where('no_reg', 'LIKE', $prefix . '%')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $lastNumber = 0;
+
+        if ($lastProject && $lastProject->no_reg) {
+            $parts = explode('/', $lastProject->no_reg);
+            $lastNumber = (int) end($parts);
+        }
+
+        return $prefix . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -69,6 +87,22 @@ class ApprovedProjectController extends Controller
             'unit' => 'nullable|string|max:255',
         ]);
 
+        $startDate = Carbon::parse($request->start_date);
+
+        $countInMonth = Project::where('final_status', 'Director Approve')
+            ->where('is_timeline_active', true)
+            ->whereYear('start_date', $startDate->year)
+            ->whereMonth('start_date', $startDate->month)
+            ->count();
+
+        if ($countInMonth >= 2) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'start_date' => 'Bulan ' . $startDate->translatedFormat('F Y') . ' sudah mencapai maksimal 2 project aktif.',
+                ]);
+        }
+
         $lampiranPath = null;
 
         if ($request->hasFile('lampiran')) {
@@ -83,9 +117,11 @@ class ApprovedProjectController extends Controller
         }
 
         $project = Project::create([
+            'no_reg' => $this->generateNoReg(),
+            'budget_type' => null,
             'npk' => $user->npk ?? null,
-            'fullname' => $user->name ?? '-',
-            'department' => $user->department ?? '-',
+            'fullname' => $user->name ?? null,
+            'department' => $user->department ?? null,
             'phone' => $user->nohp ?? null,
             'nama_project' => $request->nama_project,
             'lampiran' => $lampiranPath,
@@ -94,12 +130,14 @@ class ApprovedProjectController extends Controller
             'benefit' => $request->benefit,
             'alat' => $alat,
             'cost' => $request->qty,
+            'purpose' => null,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'final_status' => 'Director Approve',
             'is_dir_approve' => true,
             'is_timeline_active' => true,
             'created_by' => $user->id ?? null,
+            'created_dept' => null,
         ]);
 
         $tanggal = Carbon::parse($request->start_date);
@@ -176,6 +214,25 @@ class ApprovedProjectController extends Controller
             'target_fullname' => 'nullable|string|max:255',
             'target_department' => 'nullable|string|max:255',
         ]);
+
+        if ($request->start_date) {
+            $startDate = Carbon::parse($request->start_date);
+
+            $countInMonth = Project::where('final_status', 'Director Approve')
+                ->where('is_timeline_active', true)
+                ->whereYear('start_date', $startDate->year)
+                ->whereMonth('start_date', $startDate->month)
+                ->where('id', '!=', $approvedProject->project_id)
+                ->count();
+
+            if ($countInMonth >= 2) {
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'start_date' => 'Bulan ' . $startDate->translatedFormat('F Y') . ' sudah mencapai maksimal 2 project aktif.',
+                    ]);
+            }
+        }
 
         $tanggal = Carbon::parse($request->tanggal);
 

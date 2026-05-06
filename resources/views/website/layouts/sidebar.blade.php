@@ -55,12 +55,14 @@
             <span class="menu-header-text">Apps &amp; Pages</span>
         </li>
 
-        <li class="menu-item {{ Route::is('website.approved_project.*') ? 'active' : '' }}">
-            <a href="{{ route('website.approved_project.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons mdi mdi-check-circle-outline"></i>
-                <div>Active Project</div>
-            </a>
-        </li>
+        @if(Auth::check() && Auth::user()->npk === '000000')
+            <li class="menu-item {{ Route::is('website.approved_project.*') ? 'active' : '' }}">
+                <a href="{{ route('website.approved_project.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons mdi mdi-check-circle-outline"></i>
+                    <div>Active Project</div>
+                </a>
+            </li>
+        @endif
 
         @if (auth()->user()->hasDepartment('ITD'))
             <li class="menu-item {{ Route::is('website.ticket.it_approval') ? 'active' : '' }}">
