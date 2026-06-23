@@ -13,20 +13,7 @@ class AppHelper
         $lastDepartmentId = $userDepartments->last();
 
         $models = [
-            Account::class,
-            FolderAccess::class,
-            NewFolder::class,
-            Software::class,
-            Hardware::class,
-            Vpn::class,
             Project::class,
-            Fitur::class,
-            Relayout::class,
-            Network::class,
-            Sistem::class,
-            IncidentReport::class,
-            Izin::class,
-            // ItNeeds::class,
         ];
 
         $totalCount = 0;
@@ -114,7 +101,6 @@ class AppHelper
             Software::class,
             Hardware::class,
             Vpn::class,
-            Project::class,
             Fitur::class,
             Relayout::class,
             Network::class,
@@ -144,7 +130,6 @@ class AppHelper
             Software::class,
             Hardware::class,
             Vpn::class,
-            Project::class,
             Fitur::class,
             Relayout::class,
             Network::class,

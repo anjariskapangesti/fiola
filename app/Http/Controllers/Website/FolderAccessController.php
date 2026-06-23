@@ -380,10 +380,8 @@ class FolderAccessController extends Controller
                     CURLOPT_CUSTOMREQUEST => 'POST',
                     CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
                 ));
-                $response = curl_exec($curl);
+                curl_exec($curl);
                 curl_close($curl);
-                sleep(10);
-                echo $response;
             }
         }
         return $return;
@@ -616,10 +614,8 @@ class FolderAccessController extends Controller
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => 'api_key='.$token.'&phone='.$nomor.'&message='.$message,
             ));
-            $response = curl_exec($curl);
+            curl_exec($curl);
             curl_close($curl);
-            sleep(10);
-            echo $response;
         }
 
         return $return;

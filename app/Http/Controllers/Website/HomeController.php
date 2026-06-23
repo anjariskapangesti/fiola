@@ -63,7 +63,7 @@ class HomeController extends Controller
             'Finished' => ['Finished', 'Director Approve'],
             'Rejected' => ['%Rejected%', '%Manager Reject%', '%Director Reject%'],
             'created' => ['created'],
-            'Waiting Director Approval' => ['Waiting Director Approval', 'Manager Approve'],
+            'Waiting Director Approval' => ['Waiting GM Approval', 'Manager Approve'],
         ];
 
         $results = [];
@@ -73,23 +73,12 @@ class HomeController extends Controller
 
             foreach ($models as $model) {
                 $modelClass = 'App\\Models\\' . $model;
-                $query = $modelClass::where('created_by', Auth::user()->id);
 
-                if ($statusKey === 'Rejected') {
-                    $query->where(function ($query) use ($conditions) {
-                        foreach ($conditions as $condition) {
-                            $query->orWhere('final_status', 'LIKE', $condition);
-                        }
-                    });
-                } elseif ($statusKey === 'Execution') {
-                    $query->whereIn('final_status', $conditions);
-                } else {
-                    if (!empty($conditions)) {
-                        $query->where('final_status', $conditions[0]);
-                    }
+                if (!class_exists($modelClass)) {
+                    continue;
                 }
 
-                $results[$statusKey] += $query->count();
+                $results[$statusKey] += $this->safeCountByStatus($modelClass, $statusKey, $conditions, Auth::user()->id);
             }
         }
 
@@ -159,9 +148,9 @@ class HomeController extends Controller
                 ->orWhere('created_dept', $lastDepartmentId);
         })->where('final_status', 'LIKE', '%created%')->count();
 
-        $project_it_count = Project::where('final_status', 'LIKE', '%Manager Approve%')->count();
-        $project_it_mgr_count = Project::where('final_status', 'LIKE', 'IT Approve%')->count();
-        $project_execution_count = Project::where('final_status', 'LIKE', '%IT MGR Approve%')->count();
+        $project_it_count = Project::where('final_status', 'Waiting GM Approval')->count();
+        $project_it_mgr_count = Project::where('final_status', 'created')->count();
+        $project_execution_count = 0;
 
         $fitur_mgr_count = Fitur::where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
             $query->where('created_dept', $firstDepartmentId)
@@ -221,7 +210,11 @@ class HomeController extends Controller
         foreach ($models as $model) {
             $modelClass = 'App\\Models\\' . $model;
 
-            if (class_exists($modelClass)) {
+            if (!class_exists($modelClass)) {
+                continue;
+            }
+
+            try {
                 $total_query = $modelClass::query();
 
                 if ($current_year != '0000') {
@@ -233,8 +226,11 @@ class HomeController extends Controller
                 }
 
                 $semua += $total_query->count();
-            } else {
-                throw new \Exception("Model class {$modelClass} does not exist.");
+            } catch (\Throwable $e) {
+                \Log::warning('Skip dashboard total count because model query failed', [
+                    'model' => $modelClass,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
 
@@ -520,6 +516,45 @@ class HomeController extends Controller
         ));
     }
 
+
+    private function safeCountByStatus($modelClass, $statusKey, array $conditions, $userId)
+    {
+        try {
+            $query = $modelClass::query()
+                ->where('created_by', $userId);
+
+            if ($statusKey === 'Rejected') {
+                $query->where(function ($query) use ($conditions) {
+                    foreach ($conditions as $condition) {
+                        $query->orWhere('final_status', 'LIKE', $condition);
+                    }
+                });
+            } elseif ($statusKey === 'Execution') {
+                $query->whereIn('final_status', $conditions);
+            } elseif ($statusKey === 'Waiting Director Approval') {
+                if ($modelClass === Project::class) {
+                    $query->where('final_status', 'Waiting GM Approval');
+                } else {
+                    $query->where('final_status', 'Manager Approve');
+                }
+            } else {
+                if (!empty($conditions)) {
+                    $query->where('final_status', $conditions[0]);
+                }
+            }
+
+            return $query->count();
+        } catch (\Throwable $e) {
+            \Log::warning('Skip dashboard status count because model query failed', [
+                'model' => $modelClass,
+                'status' => $statusKey,
+                'error' => $e->getMessage(),
+            ]);
+
+            return 0;
+        }
+    }
+
     public function home_ajax()
     {
         $tables = [
@@ -541,7 +576,7 @@ class HomeController extends Controller
         $mergedData = collect();
 
         if (Auth::user()->can('approve_dir')) {
-            foreach ($tables as $table => $config) {
+            foreach (['form_project' => $tables['form_project']] as $table => $config) {
                 $data = DB::table($table)
                     ->select(
                         "$table.no_reg",
@@ -553,9 +588,9 @@ class HomeController extends Controller
                         DB::raw("'{$config['display']}' as form_name"),
                         DB::raw("'{$config['url']}' as form_url")
                     )
-                    ->join('users', "$table.created_by", '=', 'users.id')
+                    ->join('public.users as users', "$table.created_by", '=', 'users.id')
                     ->join('departments', "$table.created_dept", '=', 'departments.id')
-                    ->whereIn("$table.final_status", ['Waiting Director Approval', 'Manager Approve'])
+                    ->whereIn("$table.final_status", ['Waiting GM Approval', 'IT MGR Approve'])
                     ->whereNull("$table.is_finish")
                     ->get();
 
@@ -567,6 +602,10 @@ class HomeController extends Controller
             $lastDepartmentId = $userDepartments->last();
 
             foreach ($tables as $table => $config) {
+                if ($table === 'form_project') {
+                    continue;
+                }
+
                 $data = DB::table($table)
                     ->select(
                         "$table.no_reg",
@@ -579,7 +618,7 @@ class HomeController extends Controller
                         DB::raw("'{$config['display']}' as form_name"),
                         DB::raw("'{$config['url']}' as form_url")
                     )
-                    ->join('users', "$table.created_by", '=', 'users.id')
+                    ->join('public.users as users', "$table.created_by", '=', 'users.id')
                     ->join('departments', "$table.created_dept", '=', 'departments.id')
                     ->where(function ($query) use ($firstDepartmentId, $lastDepartmentId, $table) {
                         $query->where(function($q) use ($firstDepartmentId, $lastDepartmentId, $table) {
@@ -589,6 +628,37 @@ class HomeController extends Controller
                         ->where("$table.final_status", 'created');
                     })
                     ->orWhere("$table.created_by", Auth::user()->id)
+                    ->whereNull("$table.is_finish")
+                    ->get();
+
+                $mergedData = $mergedData->concat($data);
+            }
+        } elseif (Auth::user()->hasDepartment('ITD')) {
+            foreach ($tables as $table => $config) {
+                if ($table === 'form_project') {
+                    continue;
+                }
+
+                $data = DB::table($table)
+                    ->select(
+                        "$table.no_reg",
+                        "$table.final_status",
+                        "$table.created_at",
+                        "$table.created_by",
+                        'users.name as created_name',
+                        'departments.code as created_dept',
+                        DB::raw("'{$config['display']}' as form_name"),
+                        DB::raw("'{$config['url']}' as form_url")
+                    )
+                    ->join('public.users as users', "$table.created_by", '=', 'users.id')
+                    ->join('departments', "$table.created_dept", '=', 'departments.id')
+                    ->where(function ($query) use ($table) {
+                        if ($table === 'form_project') {
+                            $query->whereIn("$table.final_status", ['created', 'Waiting Target Response', 'Waiting Target Reschedule Approval']);
+                        } else {
+                            $query->whereIn("$table.final_status", ['Manager Approve', 'IT Approve']);
+                        }
+                    })
                     ->whereNull("$table.is_finish")
                     ->get();
 
@@ -607,7 +677,7 @@ class HomeController extends Controller
                         DB::raw("'{$config['display']}' as form_name"),
                         DB::raw("'{$config['url']}' as form_url")
                     )
-                    ->join('users', "$table.created_by", '=', 'users.id')
+                    ->join('public.users as users', "$table.created_by", '=', 'users.id')
                     ->join('departments', "$table.created_dept", '=', 'departments.id')
                     ->where("$table.created_by", Auth::user()->id)
                     ->whereNull("$table.is_finish")
@@ -631,7 +701,7 @@ class HomeController extends Controller
     {
         $avgOverall = Ticket::selectRaw('ROUND(AVG(review::numeric), 2) as avg_review')->value('avg_review');
 
-        $avgByPerson = Ticket::join('users', 'tickets.finish_by', '=', 'users.id')
+        $avgByPerson = Ticket::join('public.users as users', 'tickets.finish_by', '=', 'users.id')
             ->select('users.name')
             ->selectRaw('ROUND(AVG(tickets.review::numeric), 2) as avg_review')
             ->selectRaw('COUNT(*) as total_ticket')
@@ -654,7 +724,7 @@ class HomeController extends Controller
             ->selectRaw('ROUND(AVG(review::numeric), 2) AS avg_review, COUNT(*) AS total_reviews')
             ->first();
 
-        $byPerson = Ticket::join('users', 'tickets.finish_by', '=', 'users.id')
+        $byPerson = Ticket::join('public.users as users', 'tickets.finish_by', '=', 'users.id')
             ->whereRaw($numericFilter)
             ->selectRaw('users.id, users.name, ROUND(AVG(tickets.review::numeric), 2) AS avg_review, COUNT(*) AS total_ticket')
             ->groupBy('users.id', 'users.name')
@@ -678,7 +748,7 @@ class HomeController extends Controller
             ")->first();
 
         $minTickets = (int) $request->get('min_tickets', 5);
-        $topPerformers = Ticket::join('users', 'tickets.finish_by', '=', 'users.id')
+        $topPerformers = Ticket::join('public.users as users', 'tickets.finish_by', '=', 'users.id')
             ->whereRaw($numericFilter)
             ->selectRaw('users.id, users.name, ROUND(AVG(tickets.review::numeric), 2) AS avg_review, COUNT(*) AS total_ticket')
             ->groupBy('users.id', 'users.name')

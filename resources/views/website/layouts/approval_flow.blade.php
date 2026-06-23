@@ -3,48 +3,114 @@
         <h5 class="card-header">Approval Flow</h5>
     </div>
     <div class="card-body demo-vertical-spacing demo-only-element">
+        @php
+            $status = $project->final_status ?? 'new';
+            $statusLower = strtolower($status);
+            $isCreatePage = Route::is('*create');
+
+            /*
+             * Flow approval dibuat mengikuti logic:
+             * - Form Request Project  : Submit -> Manager -> Director/GM -> Finished
+             * - Request selain Project: Submit -> ITD -> ITD Manager -> Finished
+             */
+            $isProjectFlow = Route::is('website.project.*') || request()->is('*/project/*') || request()->is('project/*');
+
+            if ($isProjectFlow) {
+                $steps = [
+                    [
+                        'number' => 1,
+                        'title' => 'Submit Request',
+                        'optional' => 'Pendaftaran Project',
+                        'active' => $isCreatePage || in_array($status, ['new', 'Waiting Target Response']),
+                        'done' => !$isCreatePage && !in_array($status, ['new', 'Waiting Target Response']),
+                    ],
+                    [
+                        'number' => 2,
+                        'title' => 'Approval Manager',
+                        'optional' => 'Persetujuan Atasan',
+                        'active' => $status == 'created',
+                        'done' => in_array($status, [
+                            'Manager Approve',
+                            'Waiting Director Approval',
+                            'Director Approve',
+                            'GM Approve',
+                            'On Progress',
+                            'Finished',
+                        ]),
+                    ],
+                    [
+                        'number' => 3,
+                        'title' => 'Approval Director / GM',
+                        'optional' => 'Keputusan Final',
+                        'active' => in_array($status, ['Manager Approve', 'Waiting Director Approval']),
+                        'done' => in_array($status, ['Director Approve', 'GM Approve', 'On Progress', 'Finished']),
+                    ],
+                    [
+                        'number' => 4,
+                        'title' => 'Finished',
+                        'optional' => 'Project Selesai',
+                        'active' => in_array($status, ['Director Approve', 'GM Approve', 'On Progress']),
+                        'done' => in_array($status, ['Director Approve', 'GM Approve', 'On Progress', 'Finished']),
+                    ],
+                ];
+            } else {
+                $steps = [
+                    [
+                        'number' => 1,
+                        'title' => 'Submit Request',
+                        'optional' => 'Pendaftaran Request',
+                        'active' => $isCreatePage || in_array($status, ['new', 'Waiting Target Response']),
+                        'done' => !$isCreatePage && !in_array($status, ['new', 'Waiting Target Response']),
+                    ],
+                    [
+                        'number' => 2,
+                        'title' => 'Approval ITD',
+                        'optional' => 'Verifikasi ITD',
+                        'active' => in_array($status, ['created', 'Manager Approve', 'Manager Reject (Reschedule)']),
+                        'done' => in_array($status, ['IT Approve', 'IT MGR Approve', 'On Progress', 'Finished']),
+                    ],
+                    [
+                        'number' => 3,
+                        'title' => 'Approval ITD Manager',
+                        'optional' => 'Persetujuan ITD Manager',
+                        'active' => in_array($status, ['IT Approve', 'IT Reject (Reschedule)']),
+                        'done' => in_array($status, ['IT MGR Approve', 'On Progress', 'Finished']),
+                    ],
+                    [
+                        'number' => 4,
+                        'title' => 'Finished',
+                        'optional' => 'Request Selesai',
+                        'active' => in_array($status, ['IT MGR Approve', 'On Progress']),
+                        'done' => in_array($status, ['IT MGR Approve', 'On Progress', 'Finished']),
+                    ],
+                ];
+            }
+        @endphp
+
         <div class="md-stepper-horizontal orange">
-            @php
-                $status = $project->final_status ?? 'new';
-                $target_res = $project->target_response ?? 'pending';
-                $is_reschedule = $project->is_reschedule ?? false;
-            @endphp
+            @foreach ($steps as $step)
+                @php
+                    $stepClass = '';
 
-            {{-- Step 1: Submit --}}
-            <div class="md-step {{ $status == 'new' || $status == 'Waiting Target Response' || Route::is('*create') ? 'active blinking' : 'done' }}">
-                <div class="md-step-circle"><span>1</span></div>
-                <div class="md-step-title">Submit Request</div>
-                <div class="md-step-optional">Pendaftaran Project</div>
-                <div class="md-step-bar-left"></div>
-                <div class="md-step-bar-right"></div>
-            </div>
+                    if ($step['active']) {
+                        $stepClass = 'active blinking';
+                    } elseif ($step['done']) {
+                        $stepClass = 'done';
+                    }
 
-            {{-- Step 2: Manager --}}
-            <div class="md-step {{ $status == 'created' ? 'active blinking' : (in_array($status, ['Manager Approve', 'Director Approve', 'Finished']) ? 'done' : '') }}">
-                <div class="md-step-circle"><span>2</span></div>
-                <div class="md-step-title">Approval Manager</div>
-                <div class="md-step-optional">Persetujuan Atasan</div>
-                <div class="md-step-bar-left"></div>
-                <div class="md-step-bar-right"></div>
-            </div>
+                    if ($step['done'] && $step['number'] == 4) {
+                        $stepClass = trim($stepClass . ' active');
+                    }
+                @endphp
 
-            {{-- Step 3: Director --}}
-            <div class="md-step {{ $status == 'Manager Approve' || $status == 'Waiting Director Approval' ? 'active blinking' : (in_array($status, ['Director Approve', 'Finished']) ? 'done' : '') }}">
-                <div class="md-step-circle"><span>3</span></div>
-                <div class="md-step-title">Approval Director</div>
-                <div class="md-step-optional">Keputusan Final</div>
-                <div class="md-step-bar-left"></div>
-                <div class="md-step-bar-right"></div>
-            </div>
-
-            {{-- Step 4: Finished --}}
-            <div class="md-step {{ $status == 'Finished' || $status == 'Director Approve' ? 'active done' : '' }}">
-                <div class="md-step-circle"><span>4</span></div>
-                <div class="md-step-title">Finished</div>
-                <div class="md-step-optional">Project Selesai</div>
-                <div class="md-step-bar-left"></div>
-                <div class="md-step-bar-right"></div>
-            </div>
+                <div class="md-step {{ $stepClass }}">
+                    <div class="md-step-circle"><span>{{ $step['number'] }}</span></div>
+                    <div class="md-step-title">{{ $step['title'] }}</div>
+                    <div class="md-step-optional">{{ $step['optional'] }}</div>
+                    <div class="md-step-bar-left"></div>
+                    <div class="md-step-bar-right"></div>
+                </div>
+            @endforeach
         </div>
     </div>
 </div>

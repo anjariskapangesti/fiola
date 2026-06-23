@@ -24,7 +24,7 @@ class ApprovedProjectController extends Controller
 
     public function index()
     {
-        $approvedProjects = Project::where('final_status', 'Director Approve')
+        $approvedProjects = Project::where('final_status', 'GM Approve')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -40,7 +40,7 @@ class ApprovedProjectController extends Controller
 
     public function create(Request $request)
     {
-        $projects = Project::where('final_status', 'Director Approve')
+        $projects = Project::where('final_status', 'GM Approve')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -89,7 +89,7 @@ class ApprovedProjectController extends Controller
 
         $startDate = Carbon::parse($request->start_date);
 
-        $countInMonth = Project::where('final_status', 'Director Approve')
+        $countInMonth = Project::where('final_status', 'GM Approve')
             ->where('is_timeline_active', true)
             ->whereYear('start_date', $startDate->year)
             ->whereMonth('start_date', $startDate->month)
@@ -133,7 +133,7 @@ class ApprovedProjectController extends Controller
             'purpose' => null,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
-            'final_status' => 'Director Approve',
+            'final_status' => 'GM Approve',
             'is_dir_approve' => true,
             'is_timeline_active' => true,
             'created_by' => $user->id ?? null,
@@ -218,7 +218,7 @@ class ApprovedProjectController extends Controller
         if ($request->start_date) {
             $startDate = Carbon::parse($request->start_date);
 
-            $countInMonth = Project::where('final_status', 'Director Approve')
+            $countInMonth = Project::where('final_status', 'GM Approve')
                 ->where('is_timeline_active', true)
                 ->whereYear('start_date', $startDate->year)
                 ->whereMonth('start_date', $startDate->month)
@@ -262,7 +262,7 @@ class ApprovedProjectController extends Controller
                     'alat' => $request->alat,
                     'reschedule_reason' => $request->reschedule_reason,
                     'is_timeline_active' => true,
-                    'final_status' => 'Director Approve',
+                    'final_status' => 'GM Approve',
                 ]);
             }
         }

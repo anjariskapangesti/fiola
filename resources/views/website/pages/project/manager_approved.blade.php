@@ -132,16 +132,19 @@
                         data: 'final_status',
                         name: 'final_status',
                         render: function(data, type, row, meta) {
-                            if (data == 'created') {
+                            const status = (data ?? '').toString();
+                            const statusLower = status.toLowerCase();
+
+                            if (status == 'created') {
                                 return `<span class="badge bg-warning">Waiting Manager Approval</span>`;
-                            } else if (data == 'Waiting Director Approval' || data == 'Manager Approve') {
-                                return `<span class="badge bg-warning">Waiting Director Approval</span>`;
-                            } else if (data == 'Director Approve' || data == 'Finished') {
-                                return `<span class="badge bg-success">Finished</span>`;
-                            } else if (data == 'Waiting Target Response') {
-                                return `<span class="badge bg-info">Waiting Target Response</span>`;
+                            } else if (statusLower.includes('reject') || statusLower.includes('rejected') || statusLower.includes('not accepted') || statusLower.includes('tidak diterima')) {
+                                return `<span class="badge bg-danger">${status}</span>`;
+                            } else if (statusLower.includes('waiting') || statusLower.includes('pending')) {
+                                return `<span class="badge bg-warning">${status}</span>`;
+                            } else if (statusLower.includes('approve') || statusLower.includes('approved') || statusLower.includes('finished') || statusLower.includes('on progress') || statusLower.includes('done') || statusLower.includes('confirmed')) {
+                                return `<span class="badge bg-success">${status}</span>`;
                             } else {
-                                return `<span class="badge bg-danger">${data}</span>`;
+                                return `<span class="badge bg-danger">${status}</span>`;
                             }
                         }
                     },

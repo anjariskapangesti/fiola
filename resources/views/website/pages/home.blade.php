@@ -435,16 +435,19 @@
                             data: 'final_status',
                             name: 'final_status',
                             render: function(data) {
-                                if (data == 'created') {
+                                const status = (data ?? '').toString();
+                                const statusLower = status.toLowerCase();
+
+                                if (status == 'created') {
                                     return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Manager Approval</span>`;
-                                } else if (data == 'Waiting Director Approval' || data == 'Manager Approve') {
-                                    return `<span class="badge bg-warning" style="font-size: 15px;">Waiting Director Approval</span>`;
-                                } else if (data == 'Director Approve' || data == 'Finished') {
-                                    return `<span class="badge bg-success" style="font-size: 15px;">Finished</span>`;
-                                } else if (data == 'Waiting Target Response') {
-                                    return `<span class="badge bg-info" style="font-size: 15px;">Waiting Target Response</span>`;
+                                } else if (statusLower.includes('reject') || statusLower.includes('rejected') || statusLower.includes('not accepted') || statusLower.includes('tidak diterima')) {
+                                    return `<span class="badge bg-danger" style="font-size: 15px;">${status}</span>`;
+                                } else if (statusLower.includes('waiting') || statusLower.includes('pending')) {
+                                    return `<span class="badge bg-warning" style="font-size: 15px;">${status}</span>`;
+                                } else if (statusLower.includes('approve') || statusLower.includes('approved') || statusLower.includes('finished') || statusLower.includes('on progress') || statusLower.includes('done') || statusLower.includes('confirmed')) {
+                                    return `<span class="badge bg-success" style="font-size: 15px;">${status}</span>`;
                                 } else {
-                                    return `<span class="badge bg-danger" style="font-size: 15px;">${data}</span>`;
+                                    return `<span class="badge bg-danger" style="font-size: 15px;">${status}</span>`;
                                 }
                             }
                         },

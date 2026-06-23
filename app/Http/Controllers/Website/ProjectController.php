@@ -105,19 +105,14 @@ class ProjectController extends Controller
         $isItManagerApprove = null;
         $itManagerApprovalDate = null;
 
-        if (
-            Auth::user()->can('approve_mgr') ||
-            Auth::user()->can('approve_gm') ||
-            Auth::user()->can('approve_dir') ||
-            Auth::user()->can('approve_vp') ||
-            Auth::user()->can('approve_pres')
-        ) {
-            $finalStatus = 'Manager Approve';
-            $isManagerApprove = 1;
-            $managerApprovalDate = Carbon::now();
-        } else {
-            $finalStatus = $request->is_reschedule ? 'Waiting Target Response' : 'created';
-        }
+        /*
+         * Semua project baru, termasuk request reschedule, masuk ke IT MGR Approval.
+         * Karena form_project berada di schema fiola dan users di public,
+         * schema diatur dari config/database.php: public,fiola.
+         */
+        $finalStatus = 'created';
+        $isManagerApprove = null;
+        $managerApprovalDate = null;
 
         try {
             $photoFileName = null;
@@ -171,9 +166,10 @@ class ProjectController extends Controller
                 'manager_approval_date' => $managerApprovalDate,
                 'it_approval_date' => $itApprovalDate,
                 'it_mgr_approval_date' => $itManagerApprovalDate,
-                'is_reschedule' => $request->is_reschedule ?? 0,
+                'is_rescheduled' => $request->is_reschedule ?? 0,
                 'reschedule_target_id' => $request->reschedule_target_id,
                 'reschedule_reason' => $request->reschedule_reason,
+                'target_response' => $request->is_reschedule ? 'pending' : null,
                 'is_dir_approve' => null,
             ]);
 
@@ -234,20 +230,8 @@ class ProjectController extends Controller
 
     public function manager_approval_ajax(Request $request)
     {
-        $userDepartments = Auth::user()->departments->pluck('id');
-        $firstDepartmentId = $userDepartments->first();
-        $lastDepartmentId = $userDepartments->last();
-
-        $data = Project::query();
-
-        if (!Auth::user()->can('ITDMGR') && !Auth::user()->can('approve_dir')) {
-            $data = $data->where(function ($query) use ($firstDepartmentId, $lastDepartmentId) {
-                $query->where('form_project.created_dept', $firstDepartmentId)
-                    ->orWhere('form_project.created_dept', $lastDepartmentId);
-            });
-        }
-
-        $data = $data->whereIn('form_project.final_status', ['created', 'Waiting Manager Approval'])
+        $data = Project::query()
+            ->whereRaw('1 = 0')
             ->join('users', 'form_project.created_by', '=', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
@@ -280,7 +264,7 @@ class ProjectController extends Controller
             $project->is_manager_approve = 1;
             $project->manager_approve_by = Auth::user()->id;
             $project->manager_note = $request->manager_note;
-            $project->final_status = 'Waiting Director Approval';
+            $project->final_status = 'Waiting GM Approval';
             $return = "Berhasil Disetujui";
         } else {
             $project->is_manager_approve = 0;
@@ -290,7 +274,7 @@ class ProjectController extends Controller
             $project->is_finish = 0;
             $project->is_confirm = 0;
 
-            if ($project->is_reschedule) {
+            if ($project->is_rescheduled) {
                 $return = "Berhasil Ditolak. Proses dihentikan.";
             } else {
                 $return = "Berhasil Ditolak";
@@ -341,6 +325,72 @@ class ProjectController extends Controller
         return DataTables::eloquent($data)->make(true);
     }
 
+    public function it_mgr_approval()
+    {
+        return view('website.pages.project.it_mgr_approval');
+    }
+
+    public function it_mgr_approval_ajax(Request $request)
+    {
+        $data = Project::whereIn('form_project.final_status', [
+                'created',
+                'Waiting Target Response',
+                'Waiting Target Reschedule Approval'
+            ])
+            ->join('users', 'form_project.created_by', '=', 'users.id')
+            ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
+            ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
+            ->leftJoin('users as it_mgr', 'form_project.it_mgr_approve_by', '=', 'it_mgr.id')
+            ->leftJoin('users as on_progress', 'form_project.on_progress_by', '=', 'on_progress.id')
+            ->leftJoin('users as finish', 'form_project.finish_by', '=', 'finish.id')
+            ->select(
+                'form_project.*',
+                'users.name as requestor',
+                'manager.name as manager_name',
+                'it.name as it_name',
+                'it_mgr.name as it_mgr_name',
+                'on_progress.name as on_progress_name',
+                'finish.name as finish_name'
+            )
+            ->orderBy('form_project.created_at', 'ASC');
+
+        return DataTables::eloquent($data)->make(true);
+    }
+
+    public function it_mgr_approve(Request $request)
+    {
+        try {
+            $project = Project::findOrFail($request->id);
+
+            $project->it_mgr_note = $request->it_mgr_note;
+            $project->it_mgr_approve_by = Auth::user()->id;
+            $project->it_mgr_approval_date = Carbon::now();
+
+            if ($request->type == 'approve') {
+                $project->is_it_mgr_approve = 1;
+                $project->final_status = 'Waiting GM Approval';
+                $return = "Berhasil Disetujui";
+            } else {
+                $project->is_it_mgr_approve = 0;
+                $project->final_status = 'IT MGR Reject';
+                $project->is_finish = 0;
+                $project->is_confirm = 0;
+                $return = "Berhasil Ditolak";
+            }
+
+            $project->save();
+
+            return $return;
+        } catch (\Throwable $e) {
+            \Log::error($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function dir_approval()
     {
         return view('website.pages.project.dir_approval');
@@ -348,7 +398,7 @@ class ProjectController extends Controller
 
     public function dir_approval_ajax(Request $request)
     {
-        $data = Project::whereIn('form_project.final_status', ['Waiting Director Approval', 'Manager Approve'])
+        $data = Project::whereIn('form_project.final_status', ['Waiting GM Approval', 'IT MGR Approve'])
             ->join('users', 'form_project.created_by', '=', 'users.id')
             ->leftJoin('users as manager', 'form_project.manager_approve_by', '=', 'manager.id')
             ->leftJoin('users as it', 'form_project.it_approve_by', '=', 'it.id')
@@ -375,7 +425,7 @@ class ProjectController extends Controller
 
         if ($request->type == 'approve') {
             $project->is_dir_approve = 1;
-            $project->final_status = 'Director Approve';
+            $project->final_status = 'GM Approve';
             $project->dir_note = $request->dir_note;
             $project->dir_approve_by = Auth::user()->id;
             $project->dir_approval_date = Carbon::now();
@@ -400,7 +450,7 @@ class ProjectController extends Controller
                         $updateData['start_date'] = $project->target_reschedule_start_date;
                         $updateData['end_date'] = $project->target_reschedule_end_date;
                         $updateData['is_timeline_active'] = true;
-                        $updateData['final_status'] = 'Director Approve';
+                        $updateData['final_status'] = 'GM Approve';
                     }
 
                     $oldProject->update($updateData);
@@ -410,7 +460,7 @@ class ProjectController extends Controller
             $return = "Berhasil Disetujui. Project dapat berlanjut ke tahap pelaksanaan.";
         } else {
             $project->is_dir_approve = 0;
-            $project->final_status = 'Director Reject';
+            $project->final_status = 'GM Reject';
             $project->dir_note = $request->dir_note;
             $project->dir_approve_by = Auth::user()->id;
             $project->dir_approval_date = Carbon::now();
@@ -488,12 +538,12 @@ class ProjectController extends Controller
             $project->target_response = 'yes';
             $project->target_response_date = Carbon::now();
             $project->final_status = 'created';
-            $return = "Anda menyetujui reschedule. Permintaan berlanjut ke persetujuan Manager.";
+            $return = "Anda menyetujui reschedule. Permintaan berlanjut ke persetujuan IT MGR.";
         } else {
             $project->target_response = 'no';
             $project->target_response_date = Carbon::now();
             $project->final_status = 'created';
-            $return = "Anda menolak reschedule. Permintaan tetap berlanjut melalui rantai persetujuan Manager dan Direktur.";
+            $return = "Anda menolak reschedule. Permintaan tetap berlanjut melalui rantai persetujuan IT MGR dan GM.";
         }
 
         $project->save();

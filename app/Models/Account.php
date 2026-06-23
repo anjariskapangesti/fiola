@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Account extends Model
 {
     protected $table = 'form_account';
+
     protected $fillable = [
         'no_reg',
         'budget_type',

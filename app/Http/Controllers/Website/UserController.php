@@ -111,8 +111,8 @@ class UserController extends Controller
             })
             ->select(
                 'users.*',
-                DB::raw('GROUP_CONCAT(DISTINCT departments.code SEPARATOR \', \') as department_codes'),
-                DB::raw('GROUP_CONCAT(permissions.name SEPARATOR \', \') as permission_names')
+                DB::raw("STRING_AGG(DISTINCT departments.code, ', ') as department_codes"),
+                DB::raw("STRING_AGG(permissions.name, ', ') as permission_names")
             )
             ->join('model_has_departments', 'users.id', 'model_has_departments.model_id')
             ->join('departments', 'model_has_departments.department_id', 'departments.id')
